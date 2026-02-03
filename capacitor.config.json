@@ -1,0 +1,15 @@
+{
+  "appId": "com.rombmaster.game",
+  "appName": "Rhombus Master",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0f172a"
+    }
+  }
+}
