@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Rhombus Master</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-7dcefaae.js"></script>
+  <link rel="stylesheet" href="/assets/index-a060c185.css">
+</head>
+<body>
+    <div class="bg-layer">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div id="app">
+        <!-- MENU VIEW -->
+        <div id="view-menu" class="view active-view">
+            <h1>RHOMBUS<br><span>MASTER</span></h1>
+            <div class="glass-panel">
+                <div>
+                    <label>Board Size</label>
+                    <div class="btn-group">
+                        <button data-size="4">Small</button>
+                        <button data-size="6" class="selected">Classic</button>
+                        <button data-size="8">Large</button>
+                    </div>
+                </div>
+                <div>
+                    <label>Game Mode</label>
+                    <div class="btn-group">
+                        <button data-ai="pvp">👥 PvP</button>
+                        <button data-ai="ai" class="selected">🤖 vs AI</button>
+                    </div>
+                </div>
+                <div id="difficulty-wrapper">
+                    <label>AI Level</label>
+                    <div class="btn-group">
+                        <button data-diff="easy">Casual</button>
+                        <button data-diff="normal" class="selected">Smart</button>
+                        <button data-diff="hard">Master</button>
+                    </div>
+                </div>
+                <button id="startBtn" class="btn-primary">Play Now</button>
+                <div style="text-align:center; margin-top:-10px;">
+                    <button id="helpBtn" class="text-btn">How to play?</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME VIEW -->
+        <div id="view-game" class="view hidden">
+            <div id="scoreboard">
+                <div class="player-card" id="p1-card" style="border-left: 4px solid var(--accent)">
+                    <span class="badge badge-x"></span>
+                    <div class="score-meta">
+                        <span class="p-label" style="color:var(--accent)">Player 1</span>
+                        <span class="score-num" id="p1-score">0</span>
+                    </div>
+                </div>
+                <div class="player-card" id="p2-card" style="border-right: 4px solid var(--primary); flex-direction: row-reverse;">
+                    <span class="badge badge-o"></span>
+                    <div class="score-meta" style="align-items:flex-end">
+                        <span class="p-label" style="color:var(--primary)">Player 2</span>
+                        <span class="score-num" id="p2-score">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="canvas-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div id="controls">
+                <button id="undoBtn" class="btn-icon disabled" title="Undo">↩</button>
+                <button id="restartBtn" class="btn-icon" title="Restart">↻</button>
+                <button id="menuBtn" class="btn-icon" title="Menu">🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="overlay">
+        <div class="glass-panel center-panel">
+            <h2 id="result-title">Winner!</h2>
+            <p id="result-score">0 - 0</p>
+            <button id="againBtn" class="btn-primary full-width">Play Again</button>
+            <button id="backMenuBtn" class="btn-secondary full-width">Main Menu</button>
+        </div>
+    </div>
+
+    <div id="help-modal">
+        <div class="glass-panel help-content">
+            <h3>How to Play</h3>
+            <ul>
+                <li>Tap between two dots to connect them.</li>
+                <li>Close a <strong>square</strong> to get a point + extra turn.</li>
+                <li>Most squares wins!</li>
+            </ul>
+            <button id="closeHelpBtn" class="btn-primary full-width">Got it!</button>
+        </div>
+    </div>
+
+    
+</body>
+</html>

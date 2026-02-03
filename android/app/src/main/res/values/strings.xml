@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Rhombus Master</string>
+    <string name="title_activity_main">Rhombus Master</string>
+    <string name="package_name">com.rombmaster.game</string>
+    <string name="custom_url_scheme">com.rombmaster.game</string>
+</resources>

@@ -1,6 +1,6 @@
 {
-  "appId": "com.rombmaster.game",
-  "appName": "Rhombus Master",
+  "appId": "com.aleksandar.rombusmaster",
+  "appName": "RombusMaster",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "plugins": {
@@ -11,5 +11,8 @@
       "style": "DARK",
       "backgroundColor": "#0f172a"
     }
+  },
+  "server": {
+    "androidScheme": "https"
   }
 }
