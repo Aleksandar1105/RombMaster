@@ -81,6 +81,24 @@
                         <button data-diff="hard">Master</button>
                     </div>
                 </div>
+                <section class="career-panel" aria-label="Player profile and career">
+                    <div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <div class="profile-name-row">
+                        <input id="profile-name" type="text" maxlength="32" placeholder="Player name"
+                            aria-label="Your player name" autocomplete="nickname">
+                        <button id="save-profile-btn" type="button" class="btn-secondary">Save</button>
+                    </div>
+                    <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
+                    <div class="career-heading">
+                        <span>CAREER MODE</span>
+                        <span id="career-progress">Level 1 / 30</span>
+                    </div>
+                    <label class="career-select-label" for="career-level">Choose unlocked level</label>
+                    <select id="career-level" aria-label="Unlocked career level"></select>
+                    <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
+                    <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
+                    <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                </section>
                 <button id="continueBtn" class="btn-primary" hidden>Continue</button>
                 <p id="save-status" class="save-status" role="status" hidden></p>
                 <button id="startBtn" class="btn-primary">Play Now</button>
@@ -133,6 +151,7 @@
         <div class="glass-panel center-panel">
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
+            <p id="career-reward" class="career-reward" hidden></p>
             <button id="againBtn" class="btn-primary full-width">Play Again</button>
             <button id="backMenuBtn" class="btn-secondary full-width">Main Menu</button>
         </div>
