@@ -1,7 +1,7 @@
 import './style.css';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, careerLevel } from './profile.js';
+import { ProfileStore, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 
 // Elements
@@ -26,6 +26,8 @@ const careerXP = el('career-xp');
 const careerSelect = el('career-level');
 const careerDescription = el('career-description');
 const careerStatus = el('career-status');
+const avatarSelect = el('profile-avatar');
+const avatarPreview = el('profile-avatar-preview');
 const refreshCareer = () => {
     const state = ProfileStore.read();
     if (state.status === 'invalid' || state.status === 'unavailable') {
@@ -38,6 +40,33 @@ const refreshCareer = () => {
     const p = state.profile;
     el('career-start-btn').disabled = false;
     profileName.value = p.name;
+    avatarSelect.value = p.avatar;
+    avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
+    const summary = careerSummary(p);
+    for (const [id, value] of Object.entries({
+        'stat-played': summary.played,
+        'stat-wins': summary.wins,
+        'stat-draws': summary.draws,
+        'stat-losses': summary.losses,
+        'stat-win-rate': `${summary.winRate}%`,
+        'stat-best-streak': summary.bestStreak,
+        'stat-cleared': `${summary.clearedLevels} / 30`,
+        'stat-stars': `${summary.totalStars} / 90`,
+    })) el(id).textContent = String(value);
+    el('achievement-count').textContent =
+        `${summary.earnedAchievements} / ${summary.achievements.length}`;
+    const achievementList = el('achievement-list');
+    // Create plain text nodes, never inject player names or remote HTML.
+    achievementList.replaceChildren?.();
+    if (typeof document.createElement === 'function' && achievementList.appendChild) {
+        for (const achievement of summary.achievements) {
+            const li = document.createElement('li');
+            li.className = achievement.earned ? 'earned' : 'locked';
+            li.textContent =
+                `${achievement.earned ? '🏆' : '🔒'} ${achievement.title} — ${achievement.description}`;
+            achievementList.appendChild(li);
+        }
+    }
     careerXP.textContent = `${p.xp} XP`;
     careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
     const selected = Number(careerSelect.value) || p.unlockedLevel;
@@ -62,6 +91,15 @@ el('save-profile-btn').onclick = () => {
         profileFeedback.textContent = 'Name saved on this device.';
     } else {
         profileFeedback.textContent = 'Could not save. Existing profile data was preserved.';
+    }
+};
+avatarSelect.onchange = () => {
+    const state = ProfileStore.saveAvatar(avatarSelect.value);
+    if (state.status === 'ready') {
+        refreshCareer();
+        profileFeedback.textContent = 'Avatar saved on this device.';
+    } else {
+        profileFeedback.textContent = 'Could not save avatar; profile unchanged.';
     }
 };
 careerSelect.onchange = () => {

@@ -218,3 +218,30 @@ test('help tutorial moves between steps without changing match or save', async (
   assert.equal(JSON.stringify(h.game.board), beforeBoard);
   assert.equal(h.storage.get('rhombus_save'), beforeSave);
 });
+
+
+test('avatar choice persists through the real application menu without changing a game save', async () => {
+  const h = await boot();
+  const matchSave = h.storage.get('rhombus_save');
+  h.el('profile-avatar').value = 'dragon';
+  h.el('profile-avatar').onchange();
+  const profile = JSON.parse(h.storage.get('rombmaster_profile_v1'));
+  assert.equal(profile.avatar, 'dragon');
+  assert.equal(profile.stats.played, 0);
+  assert.equal(h.storage.get('rhombus_save'), matchSave);
+  assert.equal(h.el('profile-avatar-preview').textContent, '🐉');
+});
+
+test('statistics from local Career can be displayed without network or a login', async () => {
+  const profile = JSON.stringify({
+    version: 1, name: 'Veteran', xp: 300, unlockedLevel: 2,
+    stars: { 1: 3 },
+    stats: { played: 3, wins: 2, draws: 0, losses: 1 },
+  });
+  const h = await boot({ storage: new Map([['rombmaster_profile_v1', profile]]) });
+  assert.equal(h.el('stat-played').textContent, '3');
+  assert.equal(h.el('stat-wins').textContent, '2');
+  assert.equal(h.el('stat-win-rate').textContent, '67%');
+  assert.equal(h.el('stat-stars').textContent, '3 / 90');
+  assert.equal(h.el('achievement-count').textContent, '1 / 7');
+});

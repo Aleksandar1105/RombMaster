@@ -88,7 +88,35 @@
                             aria-label="Your player name" autocomplete="nickname">
                         <button id="save-profile-btn" type="button" class="btn-secondary">Save</button>
                     </div>
+                    <div class="profile-avatar-row">
+                        <span id="profile-avatar-preview" class="profile-avatar-preview" aria-hidden="true">✨</span>
+                        <label for="profile-avatar" class="profile-avatar-label">Avatar</label>
+                        <select id="profile-avatar" aria-label="Choose a player avatar">
+                            <option value="spark">✨ Spark</option>
+                            <option value="fox">🦊 Fox</option>
+                            <option value="robot">🤖 Robot</option>
+                            <option value="rocket">🚀 Rocket</option>
+                            <option value="dragon">🐉 Dragon</option>
+                            <option value="shield">🛡️ Shield</option>
+                        </select>
+                    </div>
                     <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
+                    <details id="player-stats" class="profile-stats">
+                        <summary>Career statistics &amp; achievements</summary>
+                        <div class="stats-grid">
+                            <div><span>Career matches</span><strong id="stat-played">0</strong></div>
+                            <div><span>Wins</span><strong id="stat-wins">0</strong></div>
+                            <div><span>Draws</span><strong id="stat-draws">0</strong></div>
+                            <div><span>Losses</span><strong id="stat-losses">0</strong></div>
+                            <div><span>Win rate</span><strong id="stat-win-rate">0%</strong></div>
+                            <div><span>Best win streak</span><strong id="stat-best-streak">0</strong></div>
+                            <div><span>Levels cleared</span><strong id="stat-cleared">0 / 30</strong></div>
+                            <div><span>Stars earned</span><strong id="stat-stars">0 / 90</strong></div>
+                        </div>
+                        <h3 class="achievements-title">Achievements <span id="achievement-count">0 / 7</span></h3>
+                        <ul id="achievement-list" class="achievement-list" aria-label="Career achievements"></ul>
+                        <p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
+                    </details>
                     <div class="career-heading">
                         <span>CAREER MODE</span>
                         <span id="career-progress">Level 1 / 30</span>
