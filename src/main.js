@@ -60,14 +60,6 @@ el('backMenuBtn').onclick = () => {
 el('helpBtn').onclick = () => el('help-modal').classList.add('flex');
 el('closeHelpBtn').onclick = () => el('help-modal').classList.remove('flex');
 
-// Touch Events
-const canvas = el('canvas');
-canvas.addEventListener('mousedown', e => Game.handleInput(e.clientX, e.clientY));
-canvas.addEventListener('touchstart', e => {
-    e.preventDefault();
-    Game.handleInput(e.touches[0].clientX, e.touches[0].clientY);
-}, { passive: false });
-
 // Native Back Button Handling
 Native.onBack(({ canGoBack }) => {
     if (!ui.viewGame.classList.contains('hidden')) {
