@@ -17,6 +17,10 @@ android {
         }
     }
     buildTypes {
+        debug {
+            // Install a test build beside the existing com.rombmaster.game app.
+            applicationIdSuffix ".test"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
