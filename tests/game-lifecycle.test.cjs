@@ -673,3 +673,21 @@ test('locked career levels cannot be started directly', async () => {
   assert.equal(JSON.stringify(h.game.board), boardBefore);
   assert.equal(h.game.settings.careerLevel, undefined);
 });
+
+
+test('committed career win cannot be undone in the result delay', async () => {
+  const h = await harness();
+  h.game.start(4, 'ai', 'easy', 1);
+  while (h.game.board.getFreeMoves().length > 1) {
+    const move = h.game.board.getFreeMoves()[0];
+    h.game.board.makeMove(move.t, move.r, move.c, 1);
+  }
+  h.game.player = 1;
+  h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  const finalBoard = JSON.stringify(h.game.board);
+  const savedProfile = h.storage.get('rombmaster_profile_v1');
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), finalBoard);
+  assert.equal(h.storage.get('rombmaster_profile_v1'), savedProfile);
+  assert.equal(h.game.ui.undoBtn.classList.contains('disabled'), true);
+});
