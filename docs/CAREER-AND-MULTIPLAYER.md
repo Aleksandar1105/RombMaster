@@ -73,6 +73,37 @@ Offline XP/stats must never be imported as authoritative ranked match data.
 - Estimate backend, concurrency and abuse costs before selecting hosted service.
   Prototype with private two-player rooms before public matchmaking.
 
+## Step 10 — progressive AI and Undo policy (pending tests)
+
+- Career 1–10: increasing likelihood of taking an available square.
+- Career 11–20: increasing likelihood of choosing safer edges without
+  gifting an immediate square.
+- Career 21–30: capture-first, defensive selection and shallow bounded
+  search that respects extra turns. The search has a node/branch budget,
+  and does **not** guarantee optimal play. Benchmark it on physical phones
+  before shipping.
+- The existing Easy / Normal / Hard Quick Play options remain available.
+
+Undo policy:
+- Career: **one Undo of the last human decision per match**. In AI mode this
+  can roll back multiple computer lines made after that decision. The
+  allowance is persisted with the same save as the board and restored
+  by Continue. No additional Career Undo after a committed final move.
+- Quick AI: repeat Undo on eligible prior human decisions.
+- Local PvP: repeat Undo, one line at a time.
+- Future online modes: no Undo for either ranked or casual competitive
+  matches by default (can be reconsidered for friendly rooms).
+- Restart/rematch starts a new match and grants a fresh Career allowance.
+  The game does not sell or grant additional competitive Undo with ads.
+
+Save compatibility:
+- Existing version-1 move logs omit `careerUndosUsed` and load with
+  zero used. New Career saves record 0 or 1; other modes must use 0.
+- If local storage writes fail, the player sees a warning; the
+  stored slot may be older than the in-memory game. Full transactional
+  durability and anti-tamper protections require later work.
+- Progress and results remain local and untrusted for online rankings.
+
 ## Acceptance gates for this feature
 
 - `npm test`, `npm run build`, Android debug APK build and real-device tests.
