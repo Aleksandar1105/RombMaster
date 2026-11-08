@@ -274,7 +274,10 @@ export const Game = {
   },
 
   undo() {
-    if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking) return;
+    // A finished Career match is committed when the last move awards progress.
+    // Prevent an Undo during the brief result delay from reopening that match.
+    if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking ||
+        (this.settings.careerLevel && this.board?.isGameOver())) return;
     // In AI mode, restore the decision before the latest human move,
     // including every extra move earned by the computer afterwards.
     let index = this.historyStack.length - 1;
@@ -378,7 +381,8 @@ export const Game = {
       this.ui.p2Card.classList.add('active');
     }
 
-    if (this.historyStack.length > 0)
+    if (this.historyStack.length > 0 &&
+        !(this.settings.careerLevel && this.board.isGameOver()))
       this.ui.undoBtn.classList.remove('disabled');
     else this.ui.undoBtn.classList.add('disabled');
   },
