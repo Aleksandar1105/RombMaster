@@ -20,8 +20,11 @@ optional monetization phase after the core experience is validated.
   separately installable `com.rombmaster.game.test` debug APK with a distinct
   launcher label, and document local build and real-device checks in
   `docs/ANDROID-TEST-BUILD.md`. No release package is generated here.
-- Next: run integrated checks and physical Android validation of steps 1–7,
-  followed by mobile layout and turn-status improvements.
+- Step 8: responsive in-game HUD with an accessible turn banner, human/AI
+  and earned-extra-turn cues, measured board sizing for compact screens,
+  keyboard focus indicators and reduced-motion CSS. No gameplay rule changes.
+- Next: run integrated checks and physical Android validation of steps 1–8,
+  then refine line selection and onboarding.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch
 apps during an AI capture chain and the result delay; reopen after OS process

@@ -601,3 +601,47 @@ test('restoring a saved AI turn while hidden waits until foreground', async () =
   assert.equal(restored.frames.size, 1);
   assert.equal(restored.timers.size, 1);
 });
+
+
+test('turn banner explains human, AI, background pause and foreground resume', async () => {
+  const h = await harness();
+  const label = h.getElement('turn-label');
+  const hint = h.getElement('turn-hint');
+  assert.equal(label.textContent, 'Your turn');
+  assert.ok(hint.textContent.includes('dots'));
+
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(label.textContent, 'Computer thinking…');
+  assert.equal(h.timers.size, 1);
+
+  h.game.setActive('native', false);
+  assert.equal(label.textContent, 'Game paused');
+  assert.equal(h.timers.size, 0);
+  h.game.setActive('native', true);
+  assert.equal(label.textContent, 'Computer thinking…');
+  assert.equal(h.timers.size, 1);
+});
+
+test('turn banner reports PvP players and earned extra turns', async () => {
+  const h = await harness();
+  h.game.start(6, 'pvp', 'normal');
+  assert.equal(h.getElement('turn-label').textContent, "Player 1's turn");
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(h.getElement('turn-label').textContent, "Player 2's turn");
+
+  // An earned extra turn is detected from the previous snapshot's score
+  // and player; the banner must not change any gameplay state.
+  const before = JSON.stringify(h.game.board);
+  const scoreBefore = h.game.board.score[h.game.player];
+  h.game.historyStack.push({
+    player: h.game.player,
+    score: [...h.game.board.score],
+  });
+  h.game.board.score[h.game.player] += 1;
+  h.game.updateTurnStatus();
+  assert.equal(h.getElement('turn-label').textContent, 'Player 2 gets another turn');
+  assert.ok(h.getElement('turn-hint').textContent.includes('captured'));
+  assert.equal(h.game.player, 0);
+  assert.equal(h.game.board.score[h.game.player], scoreBefore + 1);
+  assert.notEqual(JSON.stringify(h.game.board), before);
+});

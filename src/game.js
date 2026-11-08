@@ -36,12 +36,14 @@ export const Game = {
       this.cancelPendingAction();
       this.cancelAnimation();
       audio.pause();
+      if (this.board) this.updateUI();
       return;
     }
     if (!this.board || this.ui.viewGame.classList.contains('hidden')) return;
     audio.resume();
     this.renderer.resize(this.ui.viewGame, this.board.S);
     this.requestRender();
+    this.updateUI();
     if (this.gameOver) return;
     if (this.board.isGameOver()) this.scheduleAction(() => this.endGame(), 500);
     else if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
@@ -289,10 +291,47 @@ export const Game = {
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     document.getElementById('overlay').classList.add('flex');
+    this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
   },
 
+  updateTurnStatus() {
+    // This is advisory UI: never use the banner to decide whose move is legal.
+    // Query lazily so existing native and test harnesses without these elements work.
+    const banner = document.getElementById('turn-status');
+    const label = document.getElementById('turn-label');
+    const hint = document.getElementById('turn-hint');
+    if (!banner || !label || !hint || !this.board) return;
+
+    const isComputer = this.settings.mode === 'ai' && this.player === CONSTANTS.O;
+    const currentName = this.player === CONSTANTS.X
+      ? 'Player 1'
+      : isComputer ? 'Computer' : 'Player 2';
+    const last = this.historyStack[this.historyStack.length - 1];
+    const extraTurn = last && last.player === this.player &&
+      this.board.score[this.player] > last.score[this.player];
+
+    if (banner.dataset) banner.dataset.player = this.player === CONSTANTS.X ? 'one' : 'two';
+    if (this.paused) {
+      label.textContent = 'Game paused';
+      hint.textContent = 'Return to continue playing';
+    } else if (this.gameOver || this.board.isGameOver()) {
+      label.textContent = 'Round complete';
+      hint.textContent = 'View the final score';
+    } else if (isComputer) {
+      label.textContent = extraTurn ? 'Computer gets another turn' : 'Computer thinking…';
+      hint.textContent = 'Your turn is next';
+    } else if (extraTurn) {
+      label.textContent = currentName + ' gets another turn';
+      hint.textContent = 'You captured a square — play again';
+    } else {
+      label.textContent = this.settings.mode === 'ai' ? 'Your turn' : currentName + "'s turn";
+      hint.textContent = 'Tap between two dots to draw a line';
+    }
+  },
+
   updateUI() {
+    this.updateTurnStatus();
     this.ui.p1Score.textContent = this.board.score[CONSTANTS.X];
     this.ui.p2Score.textContent = this.board.score[CONSTANTS.O];
     if (this.player === CONSTANTS.X) {
