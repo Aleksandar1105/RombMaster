@@ -6,6 +6,8 @@ const vm = require('node:vm');
 
 async function harness() {
   const timers = new Map();
+  const frames = new Map();
+  let frameId = 0;
   const elements = new Map();
   let timerId = 0;
   const element = () => {
@@ -24,7 +26,8 @@ async function harness() {
     console, window: {},
     document: { getElementById: getElement },
     localStorage: { setItem() {}, removeItem() {} },
-    requestAnimationFrame() {},
+    requestAnimationFrame(callback) { frames.set(++frameId, callback); return frameId; },
+    cancelAnimationFrame(id) { frames.delete(id); },
     setTimeout(callback) { timers.set(++timerId, callback); return timerId; },
     clearTimeout(id) { timers.delete(id); },
   });
@@ -58,7 +61,13 @@ async function harness() {
     'p1Card', 'p2Card', 'undoBtn'].map(key => [key, element()]));
   game.renderer = { particles: [], resize() {}, spawnParticles() {} };
   game.start(6, 'ai', 'normal');
-  return { game, timers, getElement, fire() {
+  return { game, timers, frames, getElement, tick() {
+    const batch = [...frames.entries()];
+    for (const [id, callback] of batch) {
+      frames.delete(id);
+      callback();
+    }
+  }, fire() {
     const [id, callback] = timers.entries().next().value;
     timers.delete(id);
     callback();
@@ -295,4 +304,91 @@ test('undo cannot reopen a stopped or completed game', async () => {
   h.game.undo();
   assert.equal(h.game.board.isGameOver(), true);
   assert.equal(h.getElement('overlay').classList.contains('flex'), true);
+});
+
+test('twenty restarts leave one frame and one draw per tick', async () => {
+  const h = await harness();
+  let draws = 0;
+  h.game.renderer.draw = () => draws++;
+  for (let i = 0; i < 20; i++) h.game.start(6, 'pvp', 'normal');
+  assert.equal(h.frames.size, 1);
+  for (let i = 1; i <= 5; i++) {
+    h.tick();
+    assert.equal(draws, i);
+    assert.equal(h.frames.size, 1);
+  }
+});
+
+test('a stale frame cannot draw or clear the new game frame', async () => {
+  const h = await harness();
+  const stale = [...h.frames.values()][0];
+  let draws = 0;
+  h.game.renderer.draw = () => draws++;
+  h.game.start(6, 'pvp', 'normal');
+  const currentFrame = h.game.animationFrame;
+  stale();
+  assert.equal(draws, 0);
+  assert.equal(h.game.animationFrame, currentFrame);
+  assert.equal(h.frames.size, 1);
+  h.tick();
+  assert.equal(draws, 1);
+  assert.equal(h.frames.size, 1);
+});
+
+test('menu exit cancels the frame even when particles remain', async () => {
+  const h = await harness();
+  const stale = [...h.frames.values()][0];
+  let draws = 0;
+  h.game.renderer.draw = () => draws++;
+  h.game.renderer.particles.push({ life: 1 });
+  h.game.stop();
+  h.game.ui.viewGame.classList.add('hidden');
+  stale();
+  h.game.requestRender();
+  assert.equal(draws, 0);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
+});
+
+test('completed game drains remaining effects then stops scheduling frames', async () => {
+  const h = await harness();
+  scheduleFinish(h.game);
+  h.fire();
+  h.game.renderer.particles = [{}, {}, {}];
+  let draws = 0;
+  h.game.renderer.draw = () => { draws++; h.game.renderer.particles.pop(); };
+  h.tick();
+  assert.equal(h.frames.size, 1);
+  h.tick();
+  assert.equal(h.frames.size, 1);
+  h.tick();
+  assert.equal(draws, 3);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
+});
+
+test('completed board can repaint once without restarting an endless loop', async () => {
+  const h = await harness();
+  scheduleFinish(h.game);
+  h.fire();
+  let draws = 0;
+  h.game.renderer.draw = () => draws++;
+  h.tick();
+  assert.equal(h.frames.size, 0);
+  h.game.requestRender();
+  h.game.requestRender();
+  assert.equal(h.frames.size, 1);
+  h.tick();
+  assert.equal(draws, 2);
+  assert.equal(h.frames.size, 0);
+});
+
+test('hidden game drops its queued frame without drawing', async () => {
+  const h = await harness();
+  let draws = 0;
+  h.game.renderer.draw = () => draws++;
+  h.game.ui.viewGame.classList.add('hidden');
+  h.tick();
+  assert.equal(draws, 0);
+  assert.equal(h.frames.size, 0);
 });

@@ -21,6 +21,25 @@ export const Game = {
   historyStack: [],
   pendingTimer: null,
   timerGeneration: 0,
+  animationFrame: null,
+  animationGeneration: 0,
+
+  cancelAnimation() {
+    this.animationGeneration++;
+    if (this.animationFrame !== null) cancelAnimationFrame(this.animationFrame);
+    this.animationFrame = null;
+  },
+
+  requestRender() {
+    if (this.animationFrame !== null || !this.board ||
+        this.ui.viewGame.classList.contains('hidden')) return;
+    const generation = this.animationGeneration;
+    this.animationFrame = requestAnimationFrame(() => {
+      if (generation !== this.animationGeneration) return;
+      this.animationFrame = null;
+      this.loop();
+    });
+  },
 
   cancelPendingAction() {
     this.timerGeneration++;
@@ -40,6 +59,7 @@ export const Game = {
 
   stop() {
     this.cancelPendingAction();
+    this.cancelAnimation();
     this.aiThinking = false;
     this.gameOver = true;
   },
@@ -51,7 +71,10 @@ export const Game = {
 
     // Resize Listener
     window.addEventListener('resize', () => {
-      if (this.board) this.renderer.resize(this.ui.viewGame, this.board.S);
+      if (this.board && !this.ui.viewGame.classList.contains('hidden')) {
+        this.renderer.resize(this.ui.viewGame, this.board.S);
+        this.requestRender();
+      }
     });
 
     // One input path for mouse, touch and pen. Ignore secondary contacts
@@ -94,7 +117,7 @@ export const Game = {
     this.updateUI();
 
     // 5. Стартувај ја јамката веднаш
-    requestAnimationFrame(() => this.loop());
+    this.requestRender();
   },
 
   processInput(clientX, clientY) {
@@ -255,7 +278,7 @@ export const Game = {
     this.renderer.draw(this.board, this.lastMove);
 
     if (!this.gameOver || this.renderer.particles.length > 0)
-      requestAnimationFrame(() => this.loop());
+      this.requestRender();
   },
 
   saveLocal() {
