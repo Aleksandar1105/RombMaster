@@ -23,8 +23,12 @@ optional monetization phase after the core experience is validated.
 - Step 8: responsive in-game HUD with an accessible turn banner, human/AI
   and earned-extra-turn cues, measured board sizing for compact screens,
   keyboard focus indicators and reduced-motion CSS. No gameplay rule changes.
-- Next: run integrated checks and physical Android validation of steps 1–8,
-  then refine line selection and onboarding.
+- Step 9: guest-first local profile, name, XP, stars, win statistics and
+  30-stage offline career campaign; preserve Quick AI and local PvP. Existing
+  three AI tiers are reused until deeper AI progression is built.
+- Next: execute integrated tests, review saved-career interactions and Android
+  behavior, then refine touch targets and add a first-play tutorial.
+  See `docs/CAREER-AND-MULTIPLAYER.md` for online matchmaking plans.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch
 apps during an AI capture chain and the result delay; reopen after OS process
