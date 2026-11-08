@@ -30,9 +30,13 @@ optional monetization phase after the core experience is validated.
   capture awareness, increasingly defensive play, and bounded lookahead.
   Career Undo is limited to one last-human-decision rewind per match,
   persisted across Continue; Quick AI and local PvP remain repeatable.
-- Next: execute integrated tests, benchmark AI search on Android,
-  review Career save/Undo interactions, then refine touch targets and
-  add a first-play tutorial.
+- Step 11: bounded legal-line hit testing rejects far-away or ambiguous
+  taps, mouse/pen hover previews the next line, and Help opens an optional
+  four-step illustrated tutorial explaining initial 2–2 ownership, line
+  placement, captures and extra turns. Tutorial actions cannot alter saves.
+- Next: execute integrated tests, benchmark AI on Android and test different
+  finger sizes and screens, then add sound/vibration preferences and
+  achievements.
   See `docs/CAREER-AND-MULTIPLAYER.md` for online matchmaking plans.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch
