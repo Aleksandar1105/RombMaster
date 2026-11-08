@@ -245,6 +245,7 @@ let dailyPuzzle = null;
 let dailyDate = null;
 let dailySolved = false;
 const dailyModal = el('daily-modal');
+dailyModal.hidden = true; // Explicit initial state, including minimal DOM test harnesses.
 const dailyNext = el('daily-next-btn');
 const dailyFeedback = el('daily-feedback');
 const dailyStatusMessage = status => ({
