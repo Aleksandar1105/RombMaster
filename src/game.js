@@ -4,6 +4,7 @@ import { CONSTANTS } from './constants.js';
 import { Board } from './board.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
+import { SaveStore } from './save.js';
 
 const audio = new AudioController();
 
@@ -19,6 +20,8 @@ export const Game = {
   aiThinking: false,
   lastMove: null,
   historyStack: [],
+  moveLog: [],
+  saveFailed: false,
   pendingTimer: null,
   timerGeneration: 0,
   animationFrame: null,
@@ -91,16 +94,21 @@ export const Game = {
     audio.init();
     this.settings = { size, mode, diff };
     document.getElementById('overlay').classList.remove('flex');
-    localStorage.removeItem('rhombus_save');
 
     this.player = CONSTANTS.X;
     this.gameOver = false;
     this.historyStack = [];
+    this.moveLog = [];
     this.lastMove = null;
 
     // 1. Креирај логика
     this.board = new Board(size);
 
+    this.showBoard();
+    this.saveLocal();
+  },
+
+  showBoard() {
     // 2. Исчисти партикли
     this.renderer.particles = [];
 
@@ -171,6 +179,7 @@ export const Game = {
     const res = this.board.makeMove(move.t, move.r, move.c, this.player);
     if (!res) return;
     this.historyStack.push(snapshot);
+    this.moveLog.push({ t: move.t, r: move.r, c: move.c });
 
     this.lastMove = move;
     Native.vibrate('light');
@@ -224,6 +233,7 @@ export const Game = {
     this.cancelPendingAction();
     const s = this.historyStack[index];
     this.historyStack.length = index;
+    this.moveLog.length = index;
     this.board = s.boardState;
     this.player = s.player;
     this.board.score = s.score;
@@ -250,7 +260,7 @@ export const Game = {
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     document.getElementById('overlay').classList.add('flex');
-    localStorage.removeItem('rhombus_save');
+    this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
   },
 
   updateUI() {
@@ -281,15 +291,53 @@ export const Game = {
       this.requestRender();
   },
 
-  saveLocal() {
-    if (this.gameOver) return;
-    const state = {
-      board: this.board,
-      player: this.player,
-      settings: this.settings,
-      history: this.historyStack,
+  setSaveStatus(message) {
+    for (const id of ['save-status', 'game-save-status']) {
+      const element = document.getElementById(id);
+      if (element) { element.textContent = message; element.hidden = !message; }
+    }
+  },
+
+  refreshSavedGame() {
+    const saved = SaveStore.read();
+    const button = document.getElementById('continueBtn');
+    if (button) button.hidden = saved.status !== 'ready';
+    const messages = {
+      invalid: 'The saved game could not be loaded. You can start a new game.',
+      unavailable: 'Saving is unavailable. Progress may be lost when you close the game.',
     };
-    localStorage.setItem('rhombus_save', JSON.stringify(state));
+    this.setSaveStatus(this.saveFailed
+      ? 'The latest progress could not be saved. Continue may restore an earlier move.'
+      : messages[saved.status] || '');
+    return saved;
+  },
+
+  resume() {
+    const saved = this.refreshSavedGame();
+    if (saved.status !== 'ready') return false;
+    this.stop();
+    audio.init();
+    const state = saved.state;
+    this.board = state.board;
+    this.player = state.player;
+    this.settings = state.settings;
+    this.historyStack = state.history;
+    this.moveLog = state.moves;
+    this.lastMove = state.lastMove;
+    this.gameOver = false;
+    document.getElementById('overlay').classList.remove('flex');
+    this.showBoard();
+    this.saveLocal(); // Also migrates validated legacy data to the compact format.
+    if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
+      this.scheduleAction(() => this.runAI(), 500);
+    }
+    return true;
+  },
+
+  saveLocal() {
+    if (this.gameOver || !this.board) return;
+    const saved = SaveStore.write(this.settings, this.moveLog);
+    this.saveFailed = !saved;
+    this.setSaveStatus(saved ? '' : 'Could not save your latest move. Keep the game open to avoid losing progress.');
   },
 };
-

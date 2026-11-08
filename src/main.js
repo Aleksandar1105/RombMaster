@@ -14,6 +14,7 @@ const ui = {
 
 // Init
 Game.init(el('canvas'), ui);
+Game.refreshSavedGame();
 
 // Inputs
 const setupGroup = (sel, cb) => {
@@ -32,13 +33,36 @@ setupGroup("[data-ai]", b => {
 });
 setupGroup("[data-diff]", b => diff = b.dataset.diff);
 
-el('startBtn').onclick = () => Game.start(size, mode, diff);
+el('startBtn').onclick = () => {
+    const saved = Game.refreshSavedGame();
+    if (['ready', 'invalid'].includes(saved.status) &&
+        !window.confirm('Start a new game and replace the saved game?')) return;
+    Game.start(size, mode, diff);
+};
+el('continueBtn').onclick = () => {
+    if (!Game.resume()) return;
+    ({ size, mode, diff } = Game.settings);
+    for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
+        document.querySelectorAll(`[data-${key}]`).forEach(button => {
+            if (button.dataset[key] === String(value)) button.classList.add('selected');
+            else button.classList.remove('selected');
+        });
+    }
+    el('difficulty-wrapper').style.opacity = mode === 'pvp' ? '0.3' : '1';
+    el('difficulty-wrapper').style.pointerEvents = mode === 'pvp' ? 'none' : 'auto';
+};
 el('undoBtn').onclick = () => Game.undo();
-el('restartBtn').onclick = () => Game.start(size, mode, diff);
+el('restartBtn').onclick = () => {
+    if (Game.historyStack.length && !window.confirm('Restart this game and discard its progress?')) return;
+    const settings = Game.settings;
+    Game.start(settings.size, settings.mode, settings.diff);
+};
 el('menuBtn').onclick = () => {
+    Game.saveLocal();
     Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
     ui.viewMenu.classList.remove('hidden'); ui.viewMenu.classList.add('active-view');
+    Game.refreshSavedGame();
 };
 
 // Копче "Play Again"
@@ -46,7 +70,8 @@ el('againBtn').onclick = () => {
     // 1. Скриј го прозорецот за победа
     el('overlay').classList.remove('flex');
     // 2. Рестартирај ја играта со истите подесувања
-    Game.start(size, mode, diff);
+    const settings = Game.settings;
+    Game.start(settings.size, settings.mode, settings.diff);
 };
 
 // Копче "Main Menu" (од прозорецот за победа)

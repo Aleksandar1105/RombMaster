@@ -11,8 +11,9 @@ optional monetization phase after the core experience is validated.
   contacts and non-primary buttons. Automated integration coverage includes main.js.
 - Step 4: manage a single animation loop across restart, menu exit and completion;
   cancel stale frames and permit a one-off repaint of a completed board.
-- Next: save/restore versioned game data, validate it, and offer Continue.
-- Handle app background/resume, Android Back and interruptions consistently.
+- Step 5: save versioned move logs, reconstruct validated boards and undo history,
+  offer Continue, migrate valid legacy snapshots and report storage failures.
+- Next: handle app background/resume, Android Back and interruptions consistently.
 
 Gate: regression tests and web build pass; actual Android play tests still required.
 Draft pull requests and successful builds are not release approval.

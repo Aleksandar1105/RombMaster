@@ -81,6 +81,8 @@
                         <button data-diff="hard">Master</button>
                     </div>
                 </div>
+                <button id="continueBtn" class="btn-primary" hidden>Continue</button>
+                <p id="save-status" class="save-status" role="status" hidden></p>
                 <button id="startBtn" class="btn-primary">Play Now</button>
                 <div style="text-align:center; margin-top:-10px;">
                     <button id="helpBtn" class="text-btn">How to play?</button>
@@ -112,6 +114,7 @@
                 <canvas id="canvas"></canvas>
             </div>
 
+            <p id="game-save-status" class="save-status" role="status" hidden></p>
             <div id="controls">
                 <button id="undoBtn" class="btn-icon disabled" title="Undo">↩</button>
                 <button id="restartBtn" class="btn-icon" title="Restart">↻</button>

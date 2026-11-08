@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-async function boot() {
+async function boot({ storage = new Map(), autoStart = true, confirm = () => true } = {}) {
   const elements = new Map();
   function el(id) {
     if (elements.has(id)) return elements.get(id);
@@ -25,9 +25,10 @@ async function boot() {
   }
   const context = vm.createContext({
     console,
-    window: { devicePixelRatio: 1, addEventListener() {} },
+    window: { devicePixelRatio: 1, addEventListener() {}, confirm },
     document: { getElementById: el, querySelectorAll: () => [] },
-    localStorage: { setItem() {}, removeItem() {} },
+    localStorage: { getItem: key => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     requestAnimationFrame() { return 1; }, cancelAnimationFrame() {}, setTimeout: () => 1, clearTimeout() {},
   });
   const modules = new Map();
@@ -53,14 +54,14 @@ async function boot() {
   await main.link((specifier, parent) => load(path.resolve(path.dirname(parent.identifier), specifier)));
   await main.evaluate();
   const game = modules.get(path.resolve(__dirname, '../src/game.js')).namespace.Game;
-  game.start(6, 'pvp', 'normal');
-  const move = game.board.getFreeMoves()[0];
+  if (autoStart) game.start(6, 'pvp', 'normal');
+  const move = game.board?.getFreeMoves()[0] || { t: 'h', r: 1, c: 3 };
   const event = {
     isPrimary: true, button: 0, pointerType: 'mouse', preventDefault() {},
     clientX: (move.c + (move.t === 'h' ? 0.5 : 0)) * 40,
     clientY: (move.r + (move.t === 'v' ? 0.5 : 0)) * 40,
   };
-  return { game, el, event, canvas: el('canvas') };
+  return { game, el, event, storage, canvas: el('canvas') };
 }
 
 for (const pointerType of ['mouse', 'touch', 'pen']) {
@@ -109,4 +110,39 @@ test('restarts do not add extra input handlers', async () => {
   h.game.processInput = () => calls++;
   h.canvas.dispatch('pointerdown', h.event);
   assert.equal(calls, 1);
+});
+
+test('menu and Continue retain the game, and a declined new game preserves the save', async () => {
+  const h = await boot({ confirm: () => false });
+  h.canvas.dispatch('pointerdown', h.event);
+  const board = JSON.stringify(h.game.board);
+  const raw = h.storage.get('rhombus_save');
+  h.el('menuBtn').click();
+  assert.equal(h.game.gameOver, true);
+  assert.equal(h.el('continueBtn').hidden, false);
+  h.el('startBtn').click();
+  assert.equal(h.storage.get('rhombus_save'), raw);
+  assert.equal(h.game.gameOver, true);
+  h.el('continueBtn').click();
+  assert.equal(h.game.gameOver, false);
+  assert.equal(JSON.stringify(h.game.board), board);
+  h.el('restartBtn').click();
+  assert.equal(JSON.stringify(h.game.board), board);
+});
+
+test('Continue after reload uses saved settings for restart and rematch', async () => {
+  const first = await boot();
+  first.game.start(8, 'pvp', 'hard');
+  first.game.executeMove(first.game.board.getFreeMoves()[0]);
+  const h = await boot({ storage: first.storage, autoStart: false });
+  assert.equal(h.el('continueBtn').hidden, false);
+  h.el('continueBtn').click();
+  assert.equal(h.game.settings.size, 8);
+  h.el('restartBtn').click();
+  assert.equal(h.game.settings.size, 8);
+  assert.equal(h.game.settings.mode, 'pvp');
+  assert.equal(h.game.settings.diff, 'hard');
+  assert.equal(h.game.historyStack.length, 0);
+  h.el('againBtn').click();
+  assert.equal(h.game.settings.size, 8);
 });

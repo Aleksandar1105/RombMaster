@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-async function harness() {
+async function harness({ storage = new Map(), autoStart = true } = {}) {
   const timers = new Map();
   const frames = new Map();
   let frameId = 0;
@@ -25,7 +25,11 @@ async function harness() {
   const context = vm.createContext({
     console, window: {},
     document: { getElementById: getElement },
-    localStorage: { setItem() {}, removeItem() {} },
+    localStorage: {
+      getItem: key => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+      removeItem: key => storage.delete(key),
+    },
     requestAnimationFrame(callback) { frames.set(++frameId, callback); return frameId; },
     cancelAnimationFrame(id) { frames.delete(id); },
     setTimeout(callback) { timers.set(++timerId, callback); return timerId; },
@@ -60,8 +64,8 @@ async function harness() {
   game.ui = Object.fromEntries(['viewMenu', 'viewGame', 'p1Score', 'p2Score',
     'p1Card', 'p2Card', 'undoBtn'].map(key => [key, element()]));
   game.renderer = { particles: [], resize() {}, spawnParticles() {} };
-  game.start(6, 'ai', 'normal');
-  return { game, timers, frames, getElement, tick() {
+  if (autoStart) game.start(6, 'ai', 'normal');
+  return { storage, save: modules.get(path.resolve(__dirname, '../src/save.js')).namespace, game, timers, frames, getElement, tick() {
     const batch = [...frames.entries()];
     for (const [id, callback] of batch) {
       frames.delete(id);
@@ -391,4 +395,130 @@ test('hidden game drops its queued frame without drawing', async () => {
   h.tick();
   assert.equal(draws, 0);
   assert.equal(h.frames.size, 0);
+});
+
+for (const size of [4, 6, 8]) {
+  test(`reload restores size ${size}, scores, turn, highlight and working Undo`, async () => {
+    const first = await harness();
+    first.game.start(size, 'pvp', 'hard');
+    for (let i = 0; i < 5; i++) first.game.executeMove(first.game.board.getFreeMoves()[0]);
+    const before = JSON.stringify(first.game.board);
+    const history = JSON.stringify(first.game.historyStack);
+    const last = JSON.stringify(first.game.lastMove);
+    const second = await harness({ storage: first.storage, autoStart: false });
+    assert.equal(second.game.resume(), true);
+    assert.equal(JSON.stringify(second.game.board), before);
+    assert.equal(JSON.stringify(second.game.historyStack), history);
+    assert.equal(JSON.stringify(second.game.lastMove), last);
+    assert.equal(second.game.player, first.game.player);
+    assert.equal(second.game.settings.size, size);
+    assert.equal(second.game.settings.diff, 'hard');
+    assert.equal(typeof second.game.board.clone, 'function');
+    const undoBoard = JSON.stringify(first.game.historyStack.at(-1).boardState);
+    second.game.undo();
+    assert.equal(JSON.stringify(second.game.board), undoBoard);
+    const third = await harness({ storage: first.storage, autoStart: false });
+    assert.equal(third.game.resume(), true);
+    assert.equal(JSON.stringify(third.game.board), undoBoard);
+  });
+}
+
+test('reload during AI delay schedules one response, and undo still restores human turn', async () => {
+  const first = await harness();
+  first.game.executeMove(nonScoringMove(first.game.board));
+  const second = await harness({ storage: first.storage, autoStart: false });
+  assert.equal(second.game.resume(), true);
+  assert.equal(second.game.player, 0);
+  assert.equal(second.timers.size, 1);
+  second.game.resume();
+  assert.equal(second.timers.size, 1);
+  assert.equal(second.frames.size, 1);
+  second.fire();
+  assert.equal(second.game.historyStack.length, 2);
+  second.game.undo();
+  assert.equal(second.game.player, 1);
+  assert.equal(second.game.historyStack.length, 0);
+  assert.equal(second.timers.size, 0);
+});
+
+test('validated legacy snapshots migrate with undo history intact', async () => {
+  const h = await harness();
+  h.game.start(6, 'pvp', 'normal');
+  for (let i = 0; i < 5; i++) h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  const expected = JSON.stringify(h.game.board);
+  h.storage.set('rhombus_save', JSON.stringify({ board: h.game.board,
+    player: h.game.player, settings: h.game.settings, history: h.game.historyStack }));
+  const restored = await harness({ storage: h.storage, autoStart: false });
+  assert.equal(restored.game.resume(), true);
+  assert.equal(JSON.stringify(restored.game.board), expected);
+  assert.equal(restored.game.historyStack.length, 5);
+  assert.equal(JSON.parse(h.storage.get('rhombus_save')).version, 1);
+});
+
+for (const [label, raw] of [
+  ['broken JSON', '{'],
+  ['unknown version', JSON.stringify({ version: 999, settings: { size: 6, mode: 'ai', diff: 'normal' }, moves: [] })],
+  ['invalid size', JSON.stringify({ version: 1, settings: { size: 1000, mode: 'ai', diff: 'normal' }, moves: [] })],
+  ['invalid coordinate', JSON.stringify({ version: 1, settings: { size: 6, mode: 'ai', diff: 'normal' }, moves: [{ t: 'h', r: -1, c: 0 }] })],
+]) {
+  test(`${label} is rejected without deleting the saved data`, async () => {
+    const storage = new Map([['rhombus_save', raw]]);
+    const h = await harness({ storage, autoStart: false });
+    assert.equal(h.game.resume(), false);
+    assert.equal(h.game.board, null);
+    assert.equal(storage.get('rhombus_save'), raw);
+    assert.equal(h.getElement('continueBtn').hidden, true);
+    assert.ok(h.getElement('save-status').textContent.includes('could not be loaded'));
+  });
+}
+
+test('duplicate saved moves and tampered legacy scores are rejected', async () => {
+  const h = await harness();
+  h.game.executeMove(nonScoringMove(h.game.board));
+  const data = JSON.parse(h.storage.get('rhombus_save'));
+  data.moves.push(data.moves[0]);
+  h.storage.set('rhombus_save', JSON.stringify(data));
+  assert.equal(h.save.SaveStore.read().status, 'invalid');
+  const legacy = { settings: h.game.settings, player: h.game.player,
+    board: h.game.board, history: h.game.historyStack };
+  legacy.board.score[0] += 100;
+  h.storage.set('rhombus_save', JSON.stringify(legacy));
+  assert.equal(h.save.SaveStore.read().status, 'invalid');
+});
+
+test('storage read/write failures do not interrupt play or undo', async () => {
+  const storage = { get() { throw Error('denied'); }, set() { throw Error('quota'); }, delete() { throw Error('denied'); } };
+  const h = await harness({ storage });
+  assert.equal(h.game.refreshSavedGame().status, 'unavailable');
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(h.game.historyStack.length, 1);
+  assert.ok(h.getElement('game-save-status').textContent.includes('Could not save'));
+  h.game.undo();
+  assert.equal(h.game.historyStack.length, 0);
+  assert.equal(h.game.player, 1);
+  assert.equal(h.game.resume(), false);
+});
+
+test('finished move logs are not offered as Continue even if deletion fails', async () => {
+  const h = await harness();
+  h.game.start(4, 'pvp', 'normal');
+  while (!h.game.board.isGameOver()) h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  const completed = h.storage.get('rhombus_save');
+  const restored = await harness({ storage: new Map([['rhombus_save', completed]]), autoStart: false });
+  assert.equal(restored.game.refreshSavedGame().status, 'finished');
+  assert.equal(restored.game.resume(), false);
+  assert.equal(restored.getElement('continueBtn').hidden, true);
+  h.fire();
+  assert.equal(h.storage.has('rhombus_save'), false);
+});
+
+test('empty storage offers no Continue and a new game saves immediately', async () => {
+  const h = await harness({ autoStart: false });
+  assert.equal(h.game.refreshSavedGame().status, 'empty');
+  assert.equal(h.getElement('continueBtn').hidden, true);
+  h.game.start(8, 'pvp', 'hard');
+  const saved = h.save.SaveStore.read();
+  assert.equal(saved.status, 'ready');
+  assert.equal(saved.state.settings.size, 8);
+  assert.equal(saved.state.moves.length, 0);
 });
