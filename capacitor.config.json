@@ -1,6 +1,6 @@
 {
-  "appId": "com.aleksandar.rombusmaster",
-  "appName": "RombusMaster",
+  "appId": "com.rombmaster.game",
+  "appName": "RombMaster",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "plugins": {
