@@ -70,9 +70,14 @@ export function decodeSave(raw) {
   const data = JSON.parse(raw);
   if (!data || typeof data !== 'object') throw new Error('Invalid save');
   const settings = settingsOf(data.settings);
-  if (data.version === undefined) return migrateLegacy(data, settings);
+  if (data.version === undefined) return { ...migrateLegacy(data, settings), careerUndosUsed: 0 };
   if (data.version !== 1) throw new Error('Unsupported save version');
-  return replay(settings, data.moves);
+  const careerUndosUsed = data.careerUndosUsed === undefined ? 0 : data.careerUndosUsed;
+  if (!Number.isInteger(careerUndosUsed) || careerUndosUsed < 0 ||
+      careerUndosUsed > (settings.careerLevel ? 1 : 0)) {
+    throw new Error('Invalid Undo count');
+  }
+  return { ...replay(settings, data.moves), careerUndosUsed };
 }
 
 export const SaveStore = {
@@ -89,9 +94,13 @@ export const SaveStore = {
       return { status: 'invalid' };
     }
   },
-  write(settings, moves) {
+  write(settings, moves, careerUndosUsed = 0) {
+    if (!Number.isInteger(careerUndosUsed) || careerUndosUsed < 0 ||
+        careerUndosUsed > (settings?.careerLevel ? 1 : 0)) return false;
     try {
-      localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 1, settings, moves }));
+      const data = { version: 1, settings, moves };
+      if (settings.careerLevel) data.careerUndosUsed = careerUndosUsed;
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
       return true;
     } catch { return false; }
   },
