@@ -2,6 +2,7 @@ import './style.css';
 import { Game } from './game.js';
 import { Native } from './native.js';
 import { ProfileStore, careerLevel } from './profile.js';
+import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 
 // Elements
 const el = id => document.getElementById(id);
@@ -162,7 +163,36 @@ el('backMenuBtn').onclick = () => {
     el('menuBtn').click();
 };
 
-el('helpBtn').onclick = () => el('help-modal').classList.add('flex');
+// Self-contained tutorial: no Board moves, career XP or save data are modified.
+let tutorialIndex = 0;
+const updateTutorial = () => {
+    const step = tutorialStep(tutorialIndex);
+    el('tutorial-count').textContent = `Step ${tutorialIndex + 1} of ${TUTORIAL_STEPS.length}`;
+    el('tutorial-step-title').textContent = step.title;
+    el('tutorial-step-text').textContent = step.text;
+    const diagram = el('tutorial-demo');
+    if (diagram.dataset) diagram.dataset.phase = step.diagram;
+    el('tutorial-back').hidden = tutorialIndex === 0;
+    el('tutorial-next').textContent =
+        tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Finish' : 'Next';
+};
+el('helpBtn').onclick = () => {
+    tutorialIndex = 0;
+    updateTutorial();
+    el('help-modal').classList.add('flex');
+};
+el('tutorial-next').onclick = () => {
+    if (tutorialIndex < TUTORIAL_STEPS.length - 1) {
+        tutorialIndex++;
+        updateTutorial();
+    } else el('closeHelpBtn').click();
+};
+el('tutorial-back').onclick = () => {
+    if (tutorialIndex > 0) {
+        tutorialIndex--;
+        updateTutorial();
+    }
+};
 el('closeHelpBtn').onclick = () => el('help-modal').classList.remove('flex');
 
 // Visibility and native state may arrive in either order. Both must be active
