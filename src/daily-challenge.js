@@ -87,16 +87,28 @@ function createCapture(key) {
 function createSafe(key) {
   const board = new Board(6);
   const seed = hash(key + ':safe');
-  const cell = rotatePick(cellCandidates(board), seed);
-  const chosen = seed % 4;
-  const pair = [cell.freeEdges[chosen], cell.freeEdges[(chosen + 1) % 4]];
-  for (const edge of pair) board.makeMove(edge.t, edge.r, edge.c, CONSTANTS.O);
-  const moves = board.getFreeMoves();
-  if (!moves.some(m => isSafe(board, m)) || !moves.some(m => !isSafe(board, m))) {
-    throw new Error('Safe-move exercise has no meaningful choices');
+  // Some geometric positions have only safe or only risky answers.
+  // Search a deterministic rotating sequence until the exercise offers both.
+  const cells = cellCandidates(board);
+  let selectedBoard = null;
+  for (let offset = 0; offset < cells.length * 4; offset++) {
+    const candidate = cells[(seed + Math.floor(offset / 4)) % cells.length];
+    const pairIndex = (seed + offset) % 4;
+    const attempt = board.clone();
+    for (const edge of [candidate.freeEdges[pairIndex],
+      candidate.freeEdges[(pairIndex + 1) % 4]]) {
+      attempt.makeMove(edge.t, edge.r, edge.c, CONSTANTS.O);
+    }
+    const moves = attempt.getFreeMoves();
+    if (moves.some(m => isSafe(attempt, m)) &&
+        moves.some(m => !isSafe(attempt, m))) {
+      selectedBoard = attempt;
+      break;
+    }
   }
+  if (!selectedBoard) throw new Error('No meaningful safe-move position');
   return {
-    type: 'safe', board, title: 'Play It Safe',
+    type: 'safe', board: selectedBoard, title: 'Play It Safe',
     instruction: 'Choose a line that does not give the other player an immediate capture.',
     success: 'Smart defense! That move leaves no easy square for your opponent.',
     retry: 'Check which squares would have three sides after your move.',
