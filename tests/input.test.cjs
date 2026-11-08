@@ -28,7 +28,7 @@ async function boot() {
     window: { devicePixelRatio: 1, addEventListener() {} },
     document: { getElementById: el, querySelectorAll: () => [] },
     localStorage: { setItem() {}, removeItem() {} },
-    requestAnimationFrame() {}, setTimeout: () => 1, clearTimeout() {},
+    requestAnimationFrame() { return 1; }, cancelAnimationFrame() {}, setTimeout: () => 1, clearTimeout() {},
   });
   const modules = new Map();
   const stubs = {
