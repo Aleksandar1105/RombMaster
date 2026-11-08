@@ -127,6 +127,12 @@
                     <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
                     <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
                 </section>
+                <section class="daily-panel" aria-label="Daily brain challenge">
+                    <div class="daily-heading"><strong>🧠 Daily Brain Challenge</strong><span id="daily-points">0 Brain Points</span></div>
+                    <p>Three quick tactics: capture, defend, and find the double capture.</p>
+                    <p id="daily-menu-status" role="status">A fresh challenge each day. No pressure to maintain a streak.</p>
+                    <button id="daily-open-btn" type="button" class="btn-primary">Train Your Brain</button>
+                </section>
                 <button id="continueBtn" class="btn-primary" hidden>Continue</button>
                 <p id="save-status" class="save-status" role="status" hidden></p>
                 <button id="startBtn" class="btn-primary">Play Now</button>
@@ -213,6 +219,23 @@
                 <button id="tutorial-next" type="button" class="btn-primary">Next</button>
             </div>
             <button id="closeHelpBtn" class="text-btn full-width" type="button">Close tutorial</button>
+        </div>
+    </div>
+
+    <!-- Isolated practice board; never modifies an active match or Career save. -->
+    <div id="daily-modal" class="daily-modal" hidden>
+        <div class="glass-panel daily-content" role="dialog" aria-modal="true"
+             aria-labelledby="daily-title">
+            <p id="daily-step" class="daily-step">Challenge 1 of 3</p>
+            <h2 id="daily-title">Daily Brain Challenge</h2>
+            <p id="daily-instruction">Find a tactical move.</p>
+            <div class="daily-canvas-shell"><canvas id="daily-canvas"
+                 aria-label="Daily tactical board. Tap a dotted line to select it."></canvas></div>
+            <p id="daily-feedback" role="status" aria-live="polite"></p>
+            <div class="daily-actions">
+                <button id="daily-next-btn" type="button" class="btn-primary" hidden>Next Challenge</button>
+                <button id="daily-close-btn" type="button" class="btn-secondary">Back to Menu</button>
+            </div>
         </div>
     </div>
 
