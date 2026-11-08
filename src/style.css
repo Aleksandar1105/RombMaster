@@ -457,3 +457,13 @@ canvas {
   margin-bottom: 10px;
   z-index: 2;
 }
+
+
+/* Save feedback remains readable without forcing a fixed-height toast. */
+[hidden] { display: none !important; }
+.save-status { color: #fbbf24; font-size: 0.85rem; line-height: 1.4; margin: 0; max-width: 360px; text-align: center; }
+/* Continue and save feedback can make the menu taller than a small screen. */
+body { touch-action: manipulation; }
+#view-menu { justify-content: flex-start; overflow-y: auto; }
+#view-menu > .logo-container { flex-shrink: 0; margin-top: auto; }
+#view-menu > .glass-panel { flex-shrink: 0; margin-bottom: auto; box-sizing: border-box; }
