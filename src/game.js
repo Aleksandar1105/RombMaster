@@ -143,14 +143,16 @@ export const Game = {
 
   executeMove(move) {
     if (this.gameOver) return;
-    this.historyStack.push({
+    const snapshot = {
       boardState: this.board.clone(),
       player: this.player,
       score: [...this.board.score],
-    });
+      lastMove: this.lastMove ? { ...this.lastMove } : null,
+    };
 
     const res = this.board.makeMove(move.t, move.r, move.c, this.player);
     if (!res) return;
+    this.historyStack.push(snapshot);
 
     this.lastMove = move;
     Native.vibrate('light');
@@ -193,12 +195,22 @@ export const Game = {
   },
 
   undo() {
-    if (this.historyStack.length === 0 || this.aiThinking) return;
+    if (this.gameOver || this.historyStack.length === 0 || this.aiThinking) return;
+    // In AI mode, restore the decision before the latest human move,
+    // including every extra move earned by the computer afterwards.
+    let index = this.historyStack.length - 1;
+    if (this.settings.mode === 'ai') {
+      while (index >= 0 && this.historyStack[index].player !== CONSTANTS.X) index--;
+      if (index < 0) return;
+    }
     this.cancelPendingAction();
-    const s = this.historyStack.pop();
+    const s = this.historyStack[index];
+    this.historyStack.length = index;
     this.board = s.boardState;
     this.player = s.player;
     this.board.score = s.score;
+    this.lastMove = s.lastMove;
+    this.renderer.particles = [];
     this.updateUI();
     this.saveLocal();
     Native.vibrate('light');

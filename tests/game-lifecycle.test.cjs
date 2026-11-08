@@ -32,11 +32,11 @@ async function harness() {
   function load(filename) {
     if (modules.has(filename)) return modules.get(filename);
     let module;
-    if (filename.endsWith('/native.js')) {
+    if (path.basename(filename) === 'native.js') {
       module = new vm.SyntheticModule(['Native'], function () {
         this.setExport('Native', { vibrate() {} });
       }, { context, identifier: filename });
-    } else if (filename.endsWith('/audio.js')) {
+    } else if (path.basename(filename) === 'audio.js') {
       module = new vm.SyntheticModule(['AudioController'], function () {
         this.setExport('AudioController', class {
           init() {} move() {} score() {} win() {}
@@ -161,4 +161,138 @@ test('AI cannot play directly in PvP or during the human turn', async () => {
     h.game.runAI();
     assert.equal(JSON.stringify(h.game.board), before);
   }
+});
+
+function scoringMove(board, player = 0) {
+  return board.getFreeMoves().find(move =>
+    board.clone().makeMove(move.t, move.r, move.c, player).points > 0);
+}
+
+function chainFixture(game) {
+  // Find a legal position where a human move hands at least two captures to AI.
+  const board = game.board.clone();
+  while (!board.isGameOver()) {
+    for (const move of board.getFreeMoves()) {
+      const next = board.clone();
+      if (next.makeMove(move.t, move.r, move.c, 1).points) continue;
+      let captures = 0, scorer;
+      while ((scorer = scoringMove(next))) {
+        next.makeMove(scorer.t, scorer.r, scorer.c, 0);
+        captures++;
+      }
+      if (captures >= 2 && !next.isGameOver()) return { board, move };
+    }
+    const move = board.getFreeMoves()[0];
+    board.makeMove(move.t, move.r, move.c, 1);
+  }
+  throw new Error('No chain fixture found');
+}
+
+test('undo after AI reply restores the human decision and allows another move', async () => {
+  const h = await harness();
+  const before = JSON.stringify(h.game.board);
+  h.game.executeMove(nonScoringMove(h.game.board));
+  h.fire();
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(h.game.player, 1);
+  assert.equal(h.game.historyStack.length, 0);
+  assert.equal(h.game.lastMove, null);
+  assert.equal(h.timers.size, 0);
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(h.game.historyStack.length, 1);
+  assert.equal(h.timers.size, 1);
+});
+
+for (const phase of ['during', 'after']) {
+  test(`undo ${phase} an AI capture chain restores scores, board and human turn`, async () => {
+    const h = await harness();
+    const fixture = chainFixture(h.game);
+    h.game.board = fixture.board;
+    const before = JSON.stringify(h.game.board);
+    const initialAIScore = h.game.board.score[0];
+    h.game.executeMove(fixture.move);
+    h.fire();
+    h.fire();
+    assert.ok(h.game.board.score[0] >= initialAIScore + 2);
+    assert.equal(h.game.player, 0);
+    if (phase === 'after') {
+      let limit = 200;
+      while (h.game.player === 0 && !h.game.board.isGameOver() && limit-- > 0) h.fire();
+      assert.equal(h.game.player, 1);
+      assert.ok(limit > 0);
+    }
+    const stale = [...h.timers.values()];
+    h.game.renderer.particles.push({ life: 1 });
+    h.game.undo();
+    stale.forEach(callback => callback());
+    assert.equal(JSON.stringify(h.game.board), before);
+    assert.equal(h.game.player, 1);
+    assert.equal(h.game.historyStack.length, 0);
+    assert.equal(h.game.renderer.particles.length, 0);
+    assert.equal(h.timers.size, 0);
+    assert.equal(h.game.ui.p1Score.textContent, h.game.board.score[1]);
+    assert.equal(h.game.ui.p2Score.textContent, h.game.board.score[0]);
+  });
+}
+
+test('PvP undo removes one move and restores the prior highlight', async () => {
+  const h = await harness();
+  h.game.start(6, 'pvp', 'normal');
+  const first = nonScoringMove(h.game.board);
+  h.game.executeMove(first);
+  const before = JSON.stringify(h.game.board);
+  h.game.executeMove(nonScoringMove(h.game.board, 0));
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(JSON.stringify(h.game.lastMove), JSON.stringify(first));
+  assert.equal(h.game.player, 0);
+  assert.equal(h.game.historyStack.length, 1);
+  h.game.undo();
+  assert.equal(h.game.lastMove, null);
+  assert.equal(h.game.historyStack.length, 0);
+  h.game.undo();
+  assert.equal(h.game.historyStack.length, 0);
+});
+
+test('human extra turn undo preserves earlier captures', async () => {
+  const h = await harness();
+  const fixture = chainFixture(h.game);
+  h.game.board = fixture.board;
+  h.game.board.makeMove(fixture.move.t, fixture.move.r, fixture.move.c, 0);
+  h.game.executeMove(scoringMove(h.game.board, 1));
+  assert.equal(h.game.player, 1);
+  const before = JSON.stringify(h.game.board);
+  const lastMove = JSON.stringify(h.game.lastMove);
+  h.game.executeMove(scoringMove(h.game.board, 1));
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(JSON.stringify(h.game.lastMove), lastMove);
+  assert.equal(h.game.player, 1);
+  assert.equal(h.game.historyStack.length, 1);
+});
+
+test('replaying an occupied edge does not create a phantom undo entry', async () => {
+  const h = await harness();
+  const move = nonScoringMove(h.game.board);
+  h.game.executeMove(move);
+  const before = JSON.stringify(h.game.board);
+  h.game.executeMove(move);
+  assert.equal(h.game.historyStack.length, 1);
+  assert.equal(JSON.stringify(h.game.board), before);
+});
+
+test('undo cannot reopen a stopped or completed game', async () => {
+  const h = await harness();
+  h.game.executeMove(nonScoringMove(h.game.board));
+  h.game.stop();
+  const before = JSON.stringify(h.game.board);
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(h.game.gameOver, true);
+  scheduleFinish(h.game);
+  h.fire();
+  h.game.undo();
+  assert.equal(h.game.board.isGameOver(), true);
+  assert.equal(h.getElement('overlay').classList.contains('flex'), true);
 });
