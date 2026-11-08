@@ -16,8 +16,12 @@ optional monetization phase after the core experience is validated.
 - Step 6: coordinate native/visibility/page lifecycle events; pause game actions,
   frames and audio, save progress, and resume at most one AI/result action.
   Android Back closes help/result first, then saves to menu, then exits Android.
-- Next: integrated review and physical Android validation of steps 1–6, followed
-  by mobile layout and turn-status improvements.
+- Step 7: align Capacitor with the existing production Android ID, provide a
+  separately installable `com.rombmaster.game.test` debug APK with a distinct
+  launcher label, and document local build and real-device checks in
+  `docs/ANDROID-TEST-BUILD.md`. No release package is generated here.
+- Next: run integrated checks and physical Android validation of steps 1–7,
+  followed by mobile layout and turn-status improvements.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch
 apps during an AI capture chain and the result delay; reopen after OS process
