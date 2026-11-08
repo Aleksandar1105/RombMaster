@@ -601,3 +601,34 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 /* Career Undo allowance is visible, but does not consume extra board width. */
 .undo-control { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .undo-counter { color: #cbd5e1; font-size: 0.69rem; font-weight: 700; line-height: 1.2; }
+
+
+/* Guided lesson: the diagram is illustrative and never changes game state. */
+#help-modal { overflow-y: auto; }
+#help-modal .help-content { max-height: calc(100dvh - 40px); overflow-y: auto; gap: 12px; }
+.tutorial-count { margin: 0; font-size: 0.75rem; letter-spacing: 0.12em; color: #93c5fd; font-weight: 800; }
+.help-content #tutorial-title { margin: 0; }
+.tutorial-demo {
+  width: 100%; min-height: 175px; border-radius: 18px;
+  background: rgba(15, 23, 42, 0.68); display: flex; justify-content: center;
+  align-items: center; overflow: hidden;
+}
+.tutorial-demo svg { max-width: 100%; height: 170px; }
+.tutorial-cell { fill: rgba(59, 130, 246, 0.12); }
+.tutorial-edge { fill: none; stroke: #f8fafc; stroke-width: 6; stroke-linecap: round; }
+.tutorial-pending { fill: none; stroke: #94a3b8; stroke-width: 4; stroke-dasharray: 5 8; }
+.tutorial-capture { display: none; fill: none; stroke: #fbbf24; stroke-width: 9; stroke-linecap: round; }
+.tutorial-dot { fill: #94a3b8; }
+.tutorial-cross { display: none; fill: #ef4444; font: 800 60px Montserrat, sans-serif; }
+.tutorial-demo[data-phase="line"] .tutorial-pending { stroke: #fbbf24; stroke-width: 8; stroke-dasharray: none; }
+.tutorial-demo[data-phase="capture"] .tutorial-pending,
+.tutorial-demo[data-phase="again"] .tutorial-pending { display: none; }
+.tutorial-demo[data-phase="capture"] .tutorial-capture,
+.tutorial-demo[data-phase="again"] .tutorial-capture,
+.tutorial-demo[data-phase="capture"] .tutorial-cross,
+.tutorial-demo[data-phase="again"] .tutorial-cross { display: block; }
+.help-content #tutorial-step-title { color: #f8fafc; font-size: 1rem; margin: 0; line-height: 1.4; }
+.help-content #tutorial-step-text { font-size: 0.87rem; line-height: 1.5; margin: 0; color: #cbd5e1; }
+.tutorial-actions { display: flex; gap: 10px; }
+.tutorial-actions > button { flex: 1; margin: 0; min-height: 46px; padding: 10px; font-size: 0.9rem; }
+#closeHelpBtn { color: #cbd5e1; }
