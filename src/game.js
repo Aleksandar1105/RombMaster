@@ -134,6 +134,8 @@ export const Game = {
     document.getElementById('overlay').classList.remove('flex');
     const reward = document.getElementById('career-reward');
     if (reward) { reward.hidden = true; reward.textContent = ''; }
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
 
     this.player = CONSTANTS.X;
     this.gameOver = false;
@@ -310,10 +312,15 @@ export const Game = {
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     const reward = document.getElementById('career-reward');
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
     if (reward && this.settings.careerLevel) {
       const outcome = this.careerOutcome || { status: 'unavailable' };
       reward.hidden = false;
       if (outcome.status === 'ready') {
+        if (nextButton && outcome.victory && outcome.profile.unlockedLevel > this.settings.careerLevel) {
+          nextButton.hidden = false;
+        }
         reward.textContent = outcome.victory
           ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
           : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
@@ -424,6 +431,8 @@ export const Game = {
     this.lastMove = state.lastMove;
     this.gameOver = false;
     document.getElementById('overlay').classList.remove('flex');
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
     this.showBoard();
     this.saveLocal(); // Also migrates validated legacy data to the compact format.
     if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
