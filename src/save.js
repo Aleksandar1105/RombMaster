@@ -1,5 +1,6 @@
 import { Board } from './board.js';
 import { CONSTANTS } from './constants.js';
+import { careerLevel } from './profile.js';
 
 export const SAVE_KEY = 'rhombus_save';
 
@@ -7,7 +8,15 @@ function settingsOf(value) {
   if (!value || ![4, 6, 8].includes(value.size) ||
       !['ai', 'pvp'].includes(value.mode) ||
       !['easy', 'normal', 'hard'].includes(value.diff)) throw new Error('Invalid settings');
-  return { size: value.size, mode: value.mode, diff: value.diff };
+  const settings = { size: value.size, mode: value.mode, diff: value.diff };
+  if (value.careerLevel !== undefined) {
+    const config = careerLevel(value.careerLevel);
+    if (settings.mode !== 'ai' || settings.size !== config.size || settings.diff !== config.diff) {
+      throw new Error('Career level does not match saved game settings');
+    }
+    settings.careerLevel = config.level;
+  }
+  return settings;
 }
 
 function sameBoard(actual, expected) {

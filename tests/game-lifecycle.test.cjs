@@ -645,3 +645,49 @@ test('turn banner reports PvP players and earned extra turns', async () => {
   assert.equal(h.game.board.score[h.game.player], scoreBefore + 1);
   assert.notEqual(JSON.stringify(h.game.board), before);
 });
+
+
+test('career reward is saved on the finishing move before delayed result', async () => {
+  const h = await harness();
+  assert.equal(h.game.start(4, 'ai', 'easy', 1), true);
+  while (h.game.board.getFreeMoves().length > 1) {
+    const move = h.game.board.getFreeMoves()[0];
+    h.game.board.makeMove(move.t, move.r, move.c, 1);
+  }
+  h.game.player = 1;
+  h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  const profile = JSON.parse(h.storage.get('rombmaster_profile_v1'));
+  assert.equal(profile.unlockedLevel, 2);
+  assert.equal(profile.stats.played, 1);
+  // The delayed overlay must never award the same match a second time.
+  h.fire();
+  const after = JSON.parse(h.storage.get('rombmaster_profile_v1'));
+  assert.equal(after.stats.played, 1);
+  assert.equal(h.getElement('nextCareerBtn').hidden, false);
+});
+
+test('locked career levels cannot be started directly', async () => {
+  const h = await harness();
+  const boardBefore = JSON.stringify(h.game.board);
+  assert.equal(h.game.start(6, 'ai', 'normal', 11), false);
+  assert.equal(JSON.stringify(h.game.board), boardBefore);
+  assert.equal(h.game.settings.careerLevel, undefined);
+});
+
+
+test('committed career win cannot be undone in the result delay', async () => {
+  const h = await harness();
+  h.game.start(4, 'ai', 'easy', 1);
+  while (h.game.board.getFreeMoves().length > 1) {
+    const move = h.game.board.getFreeMoves()[0];
+    h.game.board.makeMove(move.t, move.r, move.c, 1);
+  }
+  h.game.player = 1;
+  h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  const finalBoard = JSON.stringify(h.game.board);
+  const savedProfile = h.storage.get('rombmaster_profile_v1');
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), finalBoard);
+  assert.equal(h.storage.get('rombmaster_profile_v1'), savedProfile);
+  assert.equal(h.game.ui.undoBtn.classList.contains('disabled'), true);
+});

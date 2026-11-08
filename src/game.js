@@ -5,6 +5,7 @@ import { Board } from './board.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
+import { ProfileStore, careerLevel } from './profile.js';
 
 const audio = new AudioController();
 
@@ -21,6 +22,7 @@ export const Game = {
   lastMove: null,
   historyStack: [],
   moveLog: [],
+  careerOutcome: null,
   saveFailed: false,
   paused: false,
   inactiveSources: new Set(),
@@ -119,16 +121,27 @@ export const Game = {
     });
   },
 
-  start(size, mode, diff) {
+  start(size, mode, diff, career = null) {
+    if (career !== null) {
+      const stage = careerLevel(career);
+      if (mode !== 'ai' || size !== stage.size || diff !== stage.diff) return false;
+      const state = ProfileStore.read();
+      if (!['ready', 'empty'].includes(state.status) || career > state.profile.unlockedLevel) return false;
+    }
     this.stop();
     audio.init();
-    this.settings = { size, mode, diff };
+    this.settings = career === null ? { size, mode, diff } : { size, mode, diff, careerLevel: career };
     document.getElementById('overlay').classList.remove('flex');
+    const reward = document.getElementById('career-reward');
+    if (reward) { reward.hidden = true; reward.textContent = ''; }
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
 
     this.player = CONSTANTS.X;
     this.gameOver = false;
     this.historyStack = [];
     this.moveLog = [];
+    this.careerOutcome = null;
     this.lastMove = null;
 
     // 1. Креирај логика
@@ -136,6 +149,7 @@ export const Game = {
 
     this.showBoard();
     this.saveLocal();
+    return true;
   },
 
   showBoard() {
@@ -230,6 +244,13 @@ export const Game = {
     this.updateUI();
 
     if (this.board.isGameOver()) {
+      // Store career progress synchronously at the final move, not after the
+      // delayed result animation, so background termination loses no reward.
+      if (this.settings.careerLevel && this.careerOutcome === null) {
+        this.careerOutcome = ProfileStore.recordCareer(
+          this.settings.careerLevel, this.board.score[CONSTANTS.X], this.board.score[CONSTANTS.O]
+        );
+      }
       this.scheduleAction(() => this.endGame(), 500);
       return;
     }
@@ -253,7 +274,10 @@ export const Game = {
   },
 
   undo() {
-    if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking) return;
+    // A finished Career match is committed when the last move awards progress.
+    // Prevent an Undo during the brief result delay from reopening that match.
+    if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking ||
+        (this.settings.careerLevel && this.board?.isGameOver())) return;
     // In AI mode, restore the decision before the latest human move,
     // including every extra move earned by the computer afterwards.
     let index = this.historyStack.length - 1;
@@ -290,6 +314,21 @@ export const Game = {
           : 'Draw';
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
+    const reward = document.getElementById('career-reward');
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
+    if (reward && this.settings.careerLevel) {
+      const outcome = this.careerOutcome || { status: 'unavailable' };
+      reward.hidden = false;
+      if (outcome.status === 'ready') {
+        if (nextButton && outcome.victory && outcome.profile.unlockedLevel > this.settings.careerLevel) {
+          nextButton.hidden = false;
+        }
+        reward.textContent = outcome.victory
+          ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
+          : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
+      } else reward.textContent = 'Career progress could not be saved. Your game result is still shown.';
+    } else if (reward) { reward.hidden = true; reward.textContent = ''; }
     document.getElementById('overlay').classList.add('flex');
     this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
@@ -342,7 +381,8 @@ export const Game = {
       this.ui.p2Card.classList.add('active');
     }
 
-    if (this.historyStack.length > 0)
+    if (this.historyStack.length > 0 &&
+        !(this.settings.careerLevel && this.board.isGameOver()))
       this.ui.undoBtn.classList.remove('disabled');
     else this.ui.undoBtn.classList.add('disabled');
   },
@@ -391,9 +431,12 @@ export const Game = {
     this.settings = state.settings;
     this.historyStack = state.history;
     this.moveLog = state.moves;
+    this.careerOutcome = null;
     this.lastMove = state.lastMove;
     this.gameOver = false;
     document.getElementById('overlay').classList.remove('flex');
+    const nextButton = document.getElementById('nextCareerBtn');
+    if (nextButton) nextButton.hidden = true;
     this.showBoard();
     this.saveLocal(); // Also migrates validated legacy data to the compact format.
     if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
