@@ -54,18 +54,13 @@ export const Game = {
       if (this.board) this.renderer.resize(this.ui.viewGame, this.board.S);
     });
 
-    const handleInput = (x, y) => this.processInput(x, y);
-    canvasEl.addEventListener('mousedown', (e) =>
-      handleInput(e.clientX, e.clientY),
-    );
-    canvasEl.addEventListener(
-      'touchstart',
-      (e) => {
-        e.preventDefault();
-        handleInput(e.touches[0].clientX, e.touches[0].clientY);
-      },
-      { passive: false },
-    );
+    // One input path for mouse, touch and pen. Ignore secondary contacts
+    // and non-primary buttons; compatibility mouse events have no listener.
+    canvasEl.addEventListener('pointerdown', (e) => {
+      if (!e.isPrimary || e.button !== 0) return;
+      e.preventDefault();
+      this.processInput(e.clientX, e.clientY);
+    });
   },
 
   start(size, mode, diff) {
