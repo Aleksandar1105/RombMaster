@@ -632,15 +632,16 @@ test('turn banner reports PvP players and earned extra turns', async () => {
   // An earned extra turn is detected from the previous snapshot's score
   // and player; the banner must not change any gameplay state.
   const before = JSON.stringify(h.game.board);
+  const scoreBefore = h.game.board.score[h.game.player];
   h.game.historyStack.push({
     player: h.game.player,
-    score: [0, 0],
+    score: [...h.game.board.score],
   });
   h.game.board.score[h.game.player] += 1;
   h.game.updateTurnStatus();
   assert.equal(h.getElement('turn-label').textContent, 'Player 2 gets another turn');
   assert.ok(h.getElement('turn-hint').textContent.includes('captured'));
   assert.equal(h.game.player, 0);
-  assert.equal(h.game.board.score[0], 1);
+  assert.equal(h.game.board.score[h.game.player], scoreBefore + 1);
   assert.notEqual(JSON.stringify(h.game.board), before);
 });
