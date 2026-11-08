@@ -311,7 +311,7 @@ export const Game = {
     const extraTurn = last && last.player === this.player &&
       this.board.score[this.player] > last.score[this.player];
 
-    banner.dataset.player = this.player === CONSTANTS.X ? 'one' : 'two';
+    if (banner.dataset) banner.dataset.player = this.player === CONSTANTS.X ? 'one' : 'two';
     if (this.paused) {
       label.textContent = 'Game paused';
       hint.textContent = 'Return to continue playing';
