@@ -215,8 +215,14 @@ export const ProfileStore = {
         ? Math.min(CAREER_LEVEL_COUNT, level + 1) : profile.unlockedLevel,
     };
     const saved = persist(updated);
-    return saved.status === 'ready'
-      ? { ...saved, earnedXP, awardedStars, victory: playerScore > computerScore, level: config.level }
-      : saved;
+    if (saved.status !== 'ready') return saved;
+    const earnedBefore = new Set(careerSummary(profile).achievements
+      .filter(item => item.earned).map(item => item.id));
+    const newAchievements = careerSummary(updated).achievements
+      .filter(item => item.earned && !earnedBefore.has(item.id));
+    return {
+      ...saved, earnedXP, awardedStars, newAchievements,
+      victory: playerScore > computerScore, level: config.level,
+    };
   },
 };
