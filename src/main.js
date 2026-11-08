@@ -123,7 +123,7 @@ el('undoBtn').onclick = () => Game.undo();
 el('restartBtn').onclick = () => {
     if (Game.historyStack.length && !window.confirm('Restart this game and discard its progress?')) return;
     const settings = Game.settings;
-    Game.start(settings.size, settings.mode, settings.diff);
+    Game.start(settings.size, settings.mode, settings.diff, settings.careerLevel ?? null);
 };
 el('menuBtn').onclick = () => {
     Game.saveLocal();
@@ -140,7 +140,18 @@ el('againBtn').onclick = () => {
     el('overlay').classList.remove('flex');
     // 2. Рестартирај ја играта со истите подесувања
     const settings = Game.settings;
-    Game.start(settings.size, settings.mode, settings.diff);
+    Game.start(settings.size, settings.mode, settings.diff, settings.careerLevel ?? null);
+};
+
+el('nextCareerBtn').onclick = () => {
+    const current = Game.settings.careerLevel;
+    if (!current) return;
+    const state = ProfileStore.read();
+    if (state.status !== 'ready' || state.profile.unlockedLevel <= current) return;
+    const next = careerLevel(current + 1);
+    if (Game.start(next.size, 'ai', next.diff, next.level)) {
+        careerSelect.value = String(next.level);
+    }
 };
 
 // Копче "Main Menu" (од прозорецот за победа)
