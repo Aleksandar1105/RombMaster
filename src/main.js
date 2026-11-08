@@ -85,12 +85,22 @@ el('backMenuBtn').onclick = () => {
 el('helpBtn').onclick = () => el('help-modal').classList.add('flex');
 el('closeHelpBtn').onclick = () => el('help-modal').classList.remove('flex');
 
-// Native Back Button Handling
-Native.onBack(({ canGoBack }) => {
-    if (!ui.viewGame.classList.contains('hidden')) {
+// Visibility and native state may arrive in either order. Both must be active
+// before gameplay resumes, so duplicate events cannot queue extra AI responses.
+document.addEventListener('visibilitychange', () => Game.setActive('visibility', !document.hidden));
+window.addEventListener('pagehide', () => Game.setActive('page', false));
+window.addEventListener('pageshow', () => Game.setActive('page', true));
+Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
+Game.setActive('visibility', !document.hidden);
+
+Native.onBack(() => {
+    if (el('help-modal').classList.contains('flex')) {
+        el('closeHelpBtn').click();
+    } else if (el('overlay').classList.contains('flex')) {
+        el('overlay').classList.remove('flex');
+    } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
     } else {
-        // Exit app if on main menu (Android default behavior for last screen)
-        // navigator.app.exitApp(); implied by not handling it
+        Native.exit();
     }
 });

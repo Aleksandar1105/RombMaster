@@ -6,6 +6,9 @@ const vm = require('node:vm');
 
 async function boot({ storage = new Map(), autoStart = true, confirm = () => true } = {}) {
   const elements = new Map();
+  const events = new Map();
+  const nativeEvents = {};
+  let exits = 0;
   function el(id) {
     if (elements.has(id)) return elements.get(id);
     const listeners = new Map(), classes = new Set();
@@ -25,16 +28,17 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
   }
   const context = vm.createContext({
     console,
-    window: { devicePixelRatio: 1, addEventListener() {}, confirm },
-    document: { getElementById: el, querySelectorAll: () => [] },
+    window: { devicePixelRatio: 1, addEventListener(type, callback) { events.set(type, callback); }, confirm },
+    document: { hidden: false, getElementById: el, querySelectorAll: () => [],
+      addEventListener(type, callback) { events.set(type, callback); } },
     localStorage: { getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     requestAnimationFrame() { return 1; }, cancelAnimationFrame() {}, setTimeout: () => 1, clearTimeout() {},
   });
   const modules = new Map();
   const stubs = {
-    'native.js': { Native: { init() {}, vibrate() {}, onBack() {} } },
-    'audio.js': { AudioController: class { init() {} move() {} score() {} win() {} } },
+    'native.js': { Native: { init() {}, vibrate() {}, onBack(callback) { nativeEvents.back = callback; }, onStateChange(callback) { nativeEvents.state = callback; }, exit() { exits++; } } },
+    'audio.js': { AudioController: class { init() {} move() {} score() {} win() {} pause() {} resume() {} } },
     'renderer.js': { Renderer: class {
       constructor(canvas) { this.canvas = canvas; this.CELL = 40; this.offX = 0; this.offY = 0; this.particles = []; }
       resize() {} spawnParticles() {}
@@ -61,7 +65,7 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     clientX: (move.c + (move.t === 'h' ? 0.5 : 0)) * 40,
     clientY: (move.r + (move.t === 'v' ? 0.5 : 0)) * 40,
   };
-  return { game, el, event, storage, canvas: el('canvas') };
+  return { game, el, event, storage, events, nativeEvents, context, get exits() { return exits; }, canvas: el('canvas') };
 }
 
 for (const pointerType of ['mouse', 'touch', 'pen']) {
@@ -145,4 +149,44 @@ test('Continue after reload uses saved settings for restart and rematch', async 
   assert.equal(h.game.historyStack.length, 0);
   h.el('againBtn').click();
   assert.equal(h.game.settings.size, 8);
+});
+
+test('Back closes help first, then saves to menu, then requests Android exit', async () => {
+  const h = await boot();
+  h.canvas.dispatch('pointerdown', h.event);
+  h.el('help-modal').classList.add('flex');
+  h.nativeEvents.back();
+  assert.equal(h.el('help-modal').classList.contains('flex'), false);
+  assert.equal(h.game.gameOver, false);
+  assert.equal(h.exits, 0);
+  h.nativeEvents.back();
+  assert.equal(h.game.gameOver, true);
+  assert.equal(h.el('continueBtn').hidden, false);
+  assert.equal(h.exits, 0);
+  h.nativeEvents.back();
+  assert.equal(h.exits, 1);
+});
+
+test('Back closes result without leaving a blocking overlay on the menu', async () => {
+  const h = await boot();
+  h.el('overlay').classList.add('flex');
+  h.nativeEvents.back();
+  assert.equal(h.el('overlay').classList.contains('flex'), false);
+  assert.equal(h.el('view-game').classList.contains('hidden'), false);
+  h.nativeEvents.back();
+  assert.equal(h.el('view-game').classList.contains('hidden'), true);
+});
+
+test('native, visibility and page events all feed the same pause controller', async () => {
+  const h = await boot();
+  h.nativeEvents.state({ isActive: false });
+  h.context.document.hidden = true;
+  h.events.get('visibilitychange')();
+  h.events.get('pagehide')();
+  h.nativeEvents.state({ isActive: true });
+  h.context.document.hidden = false;
+  h.events.get('visibilitychange')();
+  assert.equal(h.game.paused, true);
+  h.events.get('pageshow')();
+  assert.equal(h.game.paused, false);
 });

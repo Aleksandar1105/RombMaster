@@ -22,6 +22,32 @@ export const Game = {
   historyStack: [],
   moveLog: [],
   saveFailed: false,
+  paused: false,
+  inactiveSources: new Set(),
+
+  setActive(source, isActive) {
+    if (isActive) this.inactiveSources.delete(source);
+    else this.inactiveSources.add(source);
+    const paused = this.inactiveSources.size > 0;
+    if (paused === this.paused) return;
+    this.paused = paused;
+    if (paused) {
+      this.saveLocal();
+      this.cancelPendingAction();
+      this.cancelAnimation();
+      audio.pause();
+      return;
+    }
+    if (!this.board || this.ui.viewGame.classList.contains('hidden')) return;
+    audio.resume();
+    this.renderer.resize(this.ui.viewGame, this.board.S);
+    this.requestRender();
+    if (this.gameOver) return;
+    if (this.board.isGameOver()) this.scheduleAction(() => this.endGame(), 500);
+    else if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
+      this.scheduleAction(() => this.runAI(), 500);
+    }
+  },
   pendingTimer: null,
   timerGeneration: 0,
   animationFrame: null,
@@ -34,7 +60,7 @@ export const Game = {
   },
 
   requestRender() {
-    if (this.animationFrame !== null || !this.board ||
+    if (this.paused || this.animationFrame !== null || !this.board ||
         this.ui.viewGame.classList.contains('hidden')) return;
     const generation = this.animationGeneration;
     this.animationFrame = requestAnimationFrame(() => {
@@ -52,9 +78,10 @@ export const Game = {
 
   scheduleAction(callback, delay) {
     this.cancelPendingAction();
+    if (this.paused) return;
     const generation = this.timerGeneration;
     this.pendingTimer = setTimeout(() => {
-      if (generation !== this.timerGeneration || this.gameOver) return;
+      if (generation !== this.timerGeneration || this.gameOver || this.paused) return;
       this.pendingTimer = null;
       callback();
     }, delay);
@@ -63,6 +90,7 @@ export const Game = {
   stop() {
     this.cancelPendingAction();
     this.cancelAnimation();
+    audio.pause();
     this.aiThinking = false;
     this.gameOver = true;
   },
@@ -109,6 +137,7 @@ export const Game = {
   },
 
   showBoard() {
+    if (this.paused) audio.pause();
     // 2. Исчисти партикли
     this.renderer.particles = [];
 
@@ -130,7 +159,7 @@ export const Game = {
 
   processInput(clientX, clientY) {
     if (
-      this.gameOver ||
+      this.gameOver || this.paused ||
       this.aiThinking ||
       (this.settings.mode === 'ai' && this.player === CONSTANTS.O)
     )
@@ -168,7 +197,7 @@ export const Game = {
   },
 
   executeMove(move) {
-    if (this.gameOver) return;
+    if (this.gameOver || this.paused) return;
     const snapshot = {
       boardState: this.board.clone(),
       player: this.player,
@@ -210,7 +239,7 @@ export const Game = {
   },
 
   runAI() {
-    if (this.gameOver || this.settings.mode !== 'ai' ||
+    if (this.gameOver || this.paused || this.settings.mode !== 'ai' ||
         this.player !== CONSTANTS.O || this.aiThinking) return;
     this.aiThinking = true;
     try {
@@ -222,7 +251,7 @@ export const Game = {
   },
 
   undo() {
-    if (this.gameOver || this.historyStack.length === 0 || this.aiThinking) return;
+    if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking) return;
     // In AI mode, restore the decision before the latest human move,
     // including every extra move earned by the computer afterwards.
     let index = this.historyStack.length - 1;
@@ -245,7 +274,7 @@ export const Game = {
   },
 
   endGame() {
-    if (this.gameOver || !this.board.isGameOver()) return;
+    if (this.gameOver || this.paused || !this.board.isGameOver()) return;
     this.cancelPendingAction();
     this.gameOver = true;
     audio.win();
@@ -280,7 +309,7 @@ export const Game = {
   },
 
   loop() {
-    if (this.ui.viewGame.classList.contains('hidden')) return;
+    if (this.paused || this.ui.viewGame.classList.contains('hidden')) return;
     // Safety check: Ако canvas е 0 (на пример при ротација на екран), пробај resize пак
     if (this.renderer.CELL <= 0)
       this.renderer.resize(this.ui.viewGame, this.board.S);

@@ -46,7 +46,7 @@ async function harness({ storage = new Map(), autoStart = true } = {}) {
     } else if (path.basename(filename) === 'audio.js') {
       module = new vm.SyntheticModule(['AudioController'], function () {
         this.setExport('AudioController', class {
-          init() {} move() {} score() {} win() {}
+          init() {} move() {} score() {} win() {} pause() {} resume() {}
         });
       }, { context, identifier: filename });
     } else {
@@ -521,4 +521,83 @@ test('empty storage offers no Continue and a new game saves immediately', async 
   assert.equal(saved.status, 'ready');
   assert.equal(saved.state.settings.size, 8);
   assert.equal(saved.state.moves.length, 0);
+});
+
+test('backgrounding saves and cancels AI/frames; duplicate resumes queue only one response', async () => {
+  const h = await harness();
+  h.game.executeMove(nonScoringMove(h.game.board));
+  const before = JSON.stringify(h.game.board);
+  const stale = [...h.timers.values()][0];
+  h.game.setActive('native', false);
+  h.game.setActive('visibility', false);
+  assert.equal(h.game.paused, true);
+  assert.equal(h.timers.size, 0);
+  assert.equal(h.frames.size, 0);
+  stale();
+  h.game.runAI();
+  h.game.executeMove(h.game.board.getFreeMoves()[0]);
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(JSON.stringify(h.save.SaveStore.read().state.board), before);
+  h.game.setActive('native', true);
+  assert.equal(h.game.paused, true);
+  assert.equal(h.timers.size, 0);
+  h.game.setActive('visibility', true);
+  h.game.setActive('native', true);
+  h.game.setActive('visibility', true);
+  assert.equal(h.game.paused, false);
+  assert.equal(h.timers.size, 1);
+  assert.equal(h.frames.size, 1);
+  h.fire();
+  assert.equal(h.game.historyStack.length, 2);
+});
+
+test('human turn resumes without an unsolicited AI move', async () => {
+  const h = await harness();
+  h.game.setActive('visibility', false);
+  h.game.setActive('visibility', true);
+  assert.equal(h.game.player, 1);
+  assert.equal(h.timers.size, 0);
+  assert.equal(h.frames.size, 1);
+});
+
+test('pending game result is deferred until foreground and displayed once', async () => {
+  const h = await harness();
+  scheduleFinish(h.game);
+  const stale = [...h.timers.values()][0];
+  h.game.setActive('native', false);
+  stale();
+  assert.equal(h.getElement('overlay').classList.contains('flex'), false);
+  h.game.setActive('native', true);
+  h.game.setActive('native', true);
+  assert.equal(h.timers.size, 1);
+  h.fire();
+  assert.equal(h.getElement('overlay').classList.contains('flex'), true);
+  assert.equal(h.game.gameOver, true);
+});
+
+test('foregrounding the menu does not restart the abandoned board', async () => {
+  const h = await harness();
+  h.game.executeMove(nonScoringMove(h.game.board));
+  h.game.stop();
+  h.game.ui.viewGame.classList.add('hidden');
+  const saved = h.storage.get('rhombus_save');
+  h.game.setActive('native', false);
+  h.game.setActive('native', true);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.timers.size, 0);
+  assert.equal(h.storage.get('rhombus_save'), saved);
+});
+
+test('restoring a saved AI turn while hidden waits until foreground', async () => {
+  const h = await harness();
+  h.game.executeMove(nonScoringMove(h.game.board));
+  const restored = await harness({ storage: h.storage, autoStart: false });
+  restored.game.setActive('visibility', false);
+  assert.equal(restored.game.resume(), true);
+  assert.equal(restored.frames.size, 0);
+  assert.equal(restored.timers.size, 0);
+  restored.game.setActive('visibility', true);
+  assert.equal(restored.frames.size, 1);
+  assert.equal(restored.timers.size, 1);
 });
