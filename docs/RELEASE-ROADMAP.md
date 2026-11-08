@@ -26,8 +26,13 @@ optional monetization phase after the core experience is validated.
 - Step 9: guest-first local profile, name, XP, stars, win statistics and
   30-stage offline career campaign; preserve Quick AI and local PvP. Existing
   three AI tiers are reused until deeper AI progression is built.
-- Next: execute integrated tests, review saved-career interactions and Android
-  behavior, then refine touch targets and add a first-play tutorial.
+- Step 10: scale AI decision quality across the 30 Career levels using
+  capture awareness, increasingly defensive play, and bounded lookahead.
+  Career Undo is limited to one last-human-decision rewind per match,
+  persisted across Continue; Quick AI and local PvP remain repeatable.
+- Next: execute integrated tests, benchmark AI search on Android,
+  review Career save/Undo interactions, then refine touch targets and
+  add a first-play tutorial.
   See `docs/CAREER-AND-MULTIPLAYER.md` for online matchmaking plans.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch

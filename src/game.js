@@ -23,6 +23,7 @@ export const Game = {
   historyStack: [],
   moveLog: [],
   careerOutcome: null,
+  careerUndosUsed: 0,
   saveFailed: false,
   paused: false,
   inactiveSources: new Set(),
@@ -142,6 +143,7 @@ export const Game = {
     this.historyStack = [];
     this.moveLog = [];
     this.careerOutcome = null;
+    this.careerUndosUsed = 0;
     this.lastMove = null;
 
     // 1. Креирај логика
@@ -266,7 +268,7 @@ export const Game = {
         this.player !== CONSTANTS.O || this.aiThinking) return;
     this.aiThinking = true;
     try {
-      const move = AI.getBestMove(this.board, this.settings.diff);
+      const move = AI.getBestMove(this.board, this.settings.diff, this.settings.careerLevel ?? null);
       if (move) this.executeMove(move);
     } finally {
       this.aiThinking = false;
@@ -277,7 +279,7 @@ export const Game = {
     // A finished Career match is committed when the last move awards progress.
     // Prevent an Undo during the brief result delay from reopening that match.
     if (this.gameOver || this.paused || this.historyStack.length === 0 || this.aiThinking ||
-        (this.settings.careerLevel && this.board?.isGameOver())) return;
+        (this.settings.careerLevel && (this.board?.isGameOver() || this.careerUndosUsed >= 1))) return;
     // In AI mode, restore the decision before the latest human move,
     // including every extra move earned by the computer afterwards.
     let index = this.historyStack.length - 1;
@@ -289,6 +291,7 @@ export const Game = {
     const s = this.historyStack[index];
     this.historyStack.length = index;
     this.moveLog.length = index;
+    if (this.settings.careerLevel) this.careerUndosUsed++;
     this.board = s.boardState;
     this.player = s.player;
     this.board.score = s.score;
@@ -382,9 +385,23 @@ export const Game = {
     }
 
     if (this.historyStack.length > 0 &&
-        !(this.settings.careerLevel && this.board.isGameOver()))
+        !(this.settings.careerLevel && (this.board.isGameOver() || this.careerUndosUsed >= 1)))
       this.ui.undoBtn.classList.remove('disabled');
     else this.ui.undoBtn.classList.add('disabled');
+    const counter = document.getElementById('undo-counter');
+    if (counter) {
+      counter.hidden = !this.settings.careerLevel;
+      if (this.settings.careerLevel)
+        counter.textContent = `Undo ${Math.max(0, 1 - this.careerUndosUsed)}/1`;
+    }
+    if (this.ui.undoBtn && this.settings.careerLevel) {
+      const remaining = Math.max(0, 1 - this.careerUndosUsed);
+      this.ui.undoBtn.title = `Career Undo: ${remaining}/1 remaining`;
+      this.ui.undoBtn.setAttribute?.('aria-label', `Undo last human decision; ${remaining} of 1 remaining`);
+    } else if (this.ui.undoBtn) {
+      this.ui.undoBtn.title = 'Undo last move';
+      this.ui.undoBtn.setAttribute?.('aria-label', 'Undo last move');
+    }
   },
 
   loop() {
@@ -432,6 +449,7 @@ export const Game = {
     this.historyStack = state.history;
     this.moveLog = state.moves;
     this.careerOutcome = null;
+    this.careerUndosUsed = state.careerUndosUsed || 0;
     this.lastMove = state.lastMove;
     this.gameOver = false;
     document.getElementById('overlay').classList.remove('flex');
@@ -447,7 +465,7 @@ export const Game = {
 
   saveLocal() {
     if (this.gameOver || !this.board) return;
-    const saved = SaveStore.write(this.settings, this.moveLog);
+    const saved = SaveStore.write(this.settings, this.moveLog, this.careerUndosUsed);
     this.saveFailed = !saved;
     this.setSaveStatus(saved ? '' : 'Could not save your latest move. Keep the game open to avoid losing progress.');
   },

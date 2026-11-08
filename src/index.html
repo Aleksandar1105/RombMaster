@@ -139,7 +139,10 @@
 
             <p id="game-save-status" class="save-status" role="status" hidden></p>
             <div id="controls">
-                <button id="undoBtn" class="btn-icon disabled" title="Undo" aria-label="Undo last move">↩</button>
+                <div class="undo-control">
+                    <button id="undoBtn" class="btn-icon disabled" title="Undo" aria-label="Undo last move">↩</button>
+                    <span id="undo-counter" class="undo-counter" hidden>Undo 1/1</span>
+                </div>
                 <button id="restartBtn" class="btn-icon" title="Restart" aria-label="Restart game">↻</button>
                 <button id="menuBtn" class="btn-icon" title="Menu" aria-label="Return to menu">🏠</button>
             </div>
