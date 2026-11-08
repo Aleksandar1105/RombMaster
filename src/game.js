@@ -5,6 +5,7 @@ import { Board } from './board.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
+import { ProfileStore, careerLevel } from './profile.js';
 
 const audio = new AudioController();
 
@@ -119,11 +120,19 @@ export const Game = {
     });
   },
 
-  start(size, mode, diff) {
+  start(size, mode, diff, career = null) {
+    if (career !== null) {
+      const stage = careerLevel(career);
+      if (mode !== 'ai' || size !== stage.size || diff !== stage.diff) return false;
+      const state = ProfileStore.read();
+      if (!['ready', 'empty'].includes(state.status) || career > state.profile.unlockedLevel) return false;
+    }
     this.stop();
     audio.init();
-    this.settings = { size, mode, diff };
+    this.settings = career === null ? { size, mode, diff } : { size, mode, diff, careerLevel: career };
     document.getElementById('overlay').classList.remove('flex');
+    const reward = document.getElementById('career-reward');
+    if (reward) { reward.hidden = true; reward.textContent = ''; }
 
     this.player = CONSTANTS.X;
     this.gameOver = false;
@@ -136,6 +145,7 @@ export const Game = {
 
     this.showBoard();
     this.saveLocal();
+    return true;
   },
 
   showBoard() {
@@ -290,6 +300,16 @@ export const Game = {
           : 'Draw';
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
+    const reward = document.getElementById('career-reward');
+    if (reward && this.settings.careerLevel) {
+      const outcome = ProfileStore.recordCareer(this.settings.careerLevel, s[CONSTANTS.X], s[CONSTANTS.O]);
+      reward.hidden = false;
+      if (outcome.status === 'ready') {
+        reward.textContent = outcome.victory
+          ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
+          : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
+      } else reward.textContent = 'Career progress could not be saved. Your game result is still shown.';
+    } else if (reward) { reward.hidden = true; reward.textContent = ''; }
     document.getElementById('overlay').classList.add('flex');
     this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
