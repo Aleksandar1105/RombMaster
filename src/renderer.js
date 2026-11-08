@@ -41,7 +41,7 @@ export class Renderer {
     this.offY = (size - gridPx) / 2;
   }
 
-  draw(board, lastMove) {
+  draw(board, lastMove, previewMove = null) {
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.fillStyle = CONSTANTS.COLORS.bg;
@@ -107,6 +107,24 @@ export class Renderer {
     
     for (let r=0; r<board.D; r++) for (let c=0; c<board.S; c++) if(!board.h[r][c] && board.active(r,c) && board.active(r-1,c)) drawLine(r, c, 'h', true);
     for (let r=0; r<board.S; r++) for (let c=0; c<board.D; c++) if(!board.v[r][c] && board.active(r,c) && board.active(r,c-1)) drawLine(r, c, 'v', true);
+
+    // Preview hovered line without changing the Board; never render a played
+    // line as a new suggested move.
+    if (previewMove && board.getFreeMoves().some(m =>
+      m.t === previewMove.t && m.r === previewMove.r && m.c === previewMove.c)) {
+      const x1 = dx(previewMove.c), y1 = dy(previewMove.r);
+      const x2 = previewMove.t === 'h' ? dx(previewMove.c + 1) : x1;
+      const y2 = previewMove.t === 'v' ? dy(previewMove.r + 1) : y1;
+      this.ctx.save();
+      this.ctx.beginPath();
+      this.ctx.moveTo(x1, y1);
+      this.ctx.lineTo(x2, y2);
+      this.ctx.strokeStyle = '#fbbf24';
+      this.ctx.lineWidth = Math.max(5, this.CELL * 0.14);
+      this.ctx.lineCap = 'round';
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
 
     // Dots
     this.ctx.fillStyle = "#64748b"; 

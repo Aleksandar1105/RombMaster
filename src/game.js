@@ -6,6 +6,7 @@ import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
 import { ProfileStore, careerLevel } from './profile.js';
+import { nearestLegalLine } from './input.js';
 
 const audio = new AudioController();
 
@@ -20,6 +21,7 @@ export const Game = {
   gameOver: false,
   aiThinking: false,
   lastMove: null,
+  hoverMove: null,
   historyStack: [],
   moveLog: [],
   careerOutcome: null,
@@ -38,6 +40,7 @@ export const Game = {
       this.saveLocal();
       this.cancelPendingAction();
       this.cancelAnimation();
+      this.hoverMove = null;
       audio.pause();
       if (this.board) this.updateUI();
       return;
@@ -95,6 +98,7 @@ export const Game = {
   stop() {
     this.cancelPendingAction();
     this.cancelAnimation();
+    this.hoverMove = null;
     audio.pause();
     this.aiThinking = false;
     this.gameOver = true;
@@ -118,8 +122,27 @@ export const Game = {
     canvasEl.addEventListener('pointerdown', (e) => {
       if (!e.isPrimary || e.button !== 0) return;
       e.preventDefault();
+      this.hoverMove = null;
       this.processInput(e.clientX, e.clientY);
     });
+    // Hover is informative only; no move is committed until pointerdown.
+    canvasEl.addEventListener('pointermove', (e) => {
+      if (!e.isPrimary || !['mouse', 'pen'].includes(e.pointerType) ||
+          e.buttons) return;
+      const move = this.canHumanMove() ? this.findLine(e.clientX, e.clientY) : null;
+      if (JSON.stringify(move) !== JSON.stringify(this.hoverMove)) {
+        this.hoverMove = move;
+        this.requestRender();
+      }
+    });
+    for (const event of ['pointerleave', 'pointercancel']) {
+      canvasEl.addEventListener(event, () => {
+        if (this.hoverMove) {
+          this.hoverMove = null;
+          this.requestRender();
+        }
+      });
+    }
   },
 
   start(size, mode, diff, career = null) {
@@ -145,6 +168,7 @@ export const Game = {
     this.careerOutcome = null;
     this.careerUndosUsed = 0;
     this.lastMove = null;
+    this.hoverMove = null;
 
     // 1. Креирај логика
     this.board = new Board(size);
@@ -175,42 +199,26 @@ export const Game = {
     this.requestRender();
   },
 
-  processInput(clientX, clientY) {
-    if (
-      this.gameOver || this.paused ||
-      this.aiThinking ||
-      (this.settings.mode === 'ai' && this.player === CONSTANTS.O)
-    )
-      return;
+  canHumanMove() {
+    return !!this.board && !this.gameOver && !this.paused && !this.aiThinking &&
+      !(this.settings.mode === 'ai' && this.player === CONSTANTS.O) &&
+      !this.ui.viewGame.classList.contains('hidden');
+  },
 
+  findLine(clientX, clientY) {
+    if (!this.board || !this.renderer.canvas) return null;
     const rect = this.renderer.canvas.getBoundingClientRect();
-    const scaleX =
-      this.renderer.canvas.width / rect.width / (window.devicePixelRatio || 1);
-    const scaleY =
-      this.renderer.canvas.height /
-      rect.height /
-      (window.devicePixelRatio || 1);
-    const cx = (clientX - rect.left) * scaleX;
-    const cy = (clientY - rect.top) * scaleY;
+    if (!rect.width || !rect.height) return null;
+    const dpr = window.devicePixelRatio || 1;
+    const x = (clientX - rect.left) * this.renderer.canvas.width / rect.width / dpr;
+    const y = (clientY - rect.top) * this.renderer.canvas.height / rect.height / dpr;
+    return nearestLegalLine(this.board, this.renderer.CELL,
+      this.renderer.offX, this.renderer.offY, x, y);
+  },
 
-    const dx = (i) => this.renderer.offX + i * this.renderer.CELL;
-    const dy = (j) => this.renderer.offY + j * this.renderer.CELL;
-    const CELL = this.renderer.CELL;
-
-    let best = null,
-      minDist = CELL * 0.6;
-    const moves = this.board.getFreeMoves();
-
-    moves.forEach((m) => {
-      const px = m.t === 'h' ? dx(m.c) + CELL / 2 : dx(m.c);
-      const py = m.t === 'h' ? dy(m.r) : dy(m.r) + CELL / 2;
-      const dist = Math.hypot(cx - px, cy - py);
-      if (dist < minDist) {
-        minDist = dist;
-        best = m;
-      }
-    });
-
+  processInput(clientX, clientY) {
+    if (!this.canHumanMove()) return;
+    const best = this.findLine(clientX, clientY);
     if (best) this.executeMove(best);
   },
 
@@ -229,6 +237,7 @@ export const Game = {
     this.moveLog.push({ t: move.t, r: move.r, c: move.c });
 
     this.lastMove = move;
+    this.hoverMove = null;
     Native.vibrate('light');
 
     if (res.points > 0) {
@@ -410,7 +419,7 @@ export const Game = {
     if (this.renderer.CELL <= 0)
       this.renderer.resize(this.ui.viewGame, this.board.S);
 
-    this.renderer.draw(this.board, this.lastMove);
+    this.renderer.draw(this.board, this.lastMove, this.canHumanMove() ? this.hoverMove : null);
 
     if (!this.gameOver || this.renderer.particles.length > 0)
       this.requestRender();

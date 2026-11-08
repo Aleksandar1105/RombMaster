@@ -162,14 +162,29 @@
     </div>
 
     <div id="help-modal">
-        <div class="glass-panel help-content">
-            <h3>How to Play</h3>
-            <ul>
-                <li>Tap between two dots to connect them.</li>
-                <li>Close a <strong>square</strong> to get a point + extra turn.</li>
-                <li>Most squares wins!</li>
-            </ul>
-            <button id="closeHelpBtn" class="btn-primary full-width">Got it!</button>
+        <div class="glass-panel help-content" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+            <p class="tutorial-count" id="tutorial-count">Step 1 of 4</p>
+            <h3 id="tutorial-title">How to Play</h3>
+            <div class="tutorial-demo" id="tutorial-demo" data-phase="start" aria-hidden="true">
+                <svg viewBox="0 0 200 170" width="200" height="170">
+                    <rect class="tutorial-cell" x="42" y="27" width="116" height="116" rx="10"/>
+                    <path class="tutorial-edge" d="M42 27 H158 M42 27 V143 M42 143 H158"/>
+                    <path class="tutorial-pending" d="M158 27 V143"/>
+                    <path class="tutorial-capture" d="M158 27 V143"/>
+                    <circle class="tutorial-dot" cx="42" cy="27" r="7"/>
+                    <circle class="tutorial-dot" cx="158" cy="27" r="7"/>
+                    <circle class="tutorial-dot" cx="42" cy="143" r="7"/>
+                    <circle class="tutorial-dot" cx="158" cy="143" r="7"/>
+                    <text class="tutorial-cross" x="100" y="101" text-anchor="middle">X</text>
+                </svg>
+            </div>
+            <h4 id="tutorial-step-title">Start with a 2–2 score</h4>
+            <p id="tutorial-step-text">Four starter squares are already owned.</p>
+            <div class="tutorial-actions">
+                <button id="tutorial-back" type="button" class="btn-secondary" hidden>Previous</button>
+                <button id="tutorial-next" type="button" class="btn-primary">Next</button>
+            </div>
+            <button id="closeHelpBtn" class="text-btn full-width" type="button">Close tutorial</button>
         </div>
     </div>
 
