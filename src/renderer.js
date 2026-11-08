@@ -11,36 +11,26 @@ export class Renderer {
   }
 
   resize(viewElement, boardS) {
-    // 1. БРИШЕЊЕ НА СТИЛОВИ: Ги тргаме фиксните димензии за момент
-    // за да не сметаат на layout-от.
-    this.canvas.style.width = '';
-    this.canvas.style.height = '';
+    // Use the available game panel, rather than guessing a fixed amount of
+    // vertical space. This leaves room for the score, turn banner and buttons
+    // on short phones and allows scrolling in landscape.
+    const width = viewElement.clientWidth || window.innerWidth;
+    const height = viewElement.clientHeight || window.innerHeight;
+    const measure = selector => {
+      const el = viewElement.querySelector?.(selector);
+      return el?.getBoundingClientRect?.().height || 0;
+    };
+    const reserved = measure('#scoreboard') + measure('#turn-status') +
+      measure('#controls') + measure('#game-save-status') + 100;
+    const availableWidth = Math.max(120, width - 48);
+    const availableHeight = Math.max(160, height - reserved);
+    // Upper bound keeps the board usable on tablets without gigantic controls.
+    const size = Math.max(120, Math.floor(Math.min(availableWidth, availableHeight, 520)));
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
 
-    // 2. МЕРЕЊЕ НА ЕКРАНОТ (WINDOW):
-    // Наместо да го мериме viewElement (кој може да се растегне),
-    // ги земаме директните димензии на прозорецот/екранот.
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    // 3. ПРЕСМЕТКА НА ПРОСТОР:
-    // padding: 40px (20px лево + 20px десно од .view класата во CSS)
-    const padding = 40; 
-    
-    const isDesktop = w > 800;
-    // Desktop: 220px за UI, Mobile: 140px (малку повеќе safety space)
-    const uiSpace = isDesktop ? 220 : 140; 
-
-    const mw = w - padding;
-    let mh = h - uiSpace;
-    if (mh < 200) mh = 200;
-
-    const size = Math.floor(Math.min(mw, mh));
-    const dpr = window.devicePixelRatio || 1;
-
-    // 4. ПРИМЕНА НА ДИМЕНЗИИ:
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.canvas.width = size * dpr;
-    this.canvas.height = size * dpr;
+    this.canvas.width = Math.round(size * dpr);
+    this.canvas.height = Math.round(size * dpr);
     this.canvas.style.width = `${size}px`;
     this.canvas.style.height = `${size}px`;
     this.ctx.scale(dpr, dpr);
