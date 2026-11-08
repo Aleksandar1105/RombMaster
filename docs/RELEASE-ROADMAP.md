@@ -13,7 +13,18 @@ optional monetization phase after the core experience is validated.
   cancel stale frames and permit a one-off repaint of a completed board.
 - Step 5: save versioned move logs, reconstruct validated boards and undo history,
   offer Continue, migrate valid legacy snapshots and report storage failures.
-- Next: handle app background/resume, Android Back and interruptions consistently.
+- Step 6: coordinate native/visibility/page lifecycle events; pause game actions,
+  frames and audio, save progress, and resume at most one AI/result action.
+  Android Back closes help/result first, then saves to menu, then exits Android.
+- Next: integrated review and physical Android validation of steps 1–6, followed
+  by mobile layout and turn-status improvements.
+
+Physical-device checks for step 6: lock/unlock during human and AI turns; switch
+apps during an AI capture chain and the result delay; reopen after OS process
+termination; press Back in help, result, game and menu. Confirm no hidden moves,
+duplicate responses, delayed sounds, lost saves or blocked exit. Automated tests
+stub platform events and cannot prove device behavior. If Android kills the
+process, restoration uses Continue rather than resuming an in-memory timer.
 
 Gate: regression tests and web build pass; actual Android play tests still required.
 Draft pull requests and successful builds are not release approval.
