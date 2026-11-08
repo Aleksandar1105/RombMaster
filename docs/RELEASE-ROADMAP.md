@@ -38,9 +38,12 @@ optional monetization phase after the core experience is validated.
   a derived set of seven achievements, and success-result announcements for
   newly earned milestones. Preserve older version-1 local profiles with safe
   defaults; do not add accounts or online leaderboards.
+- Step 13: optional offline Daily Brain Challenge with three deterministic
+  tactical exercises, immediate explanatory feedback, independent daily
+  progress and one modest completion reward. No paid retries or pressure loops.
 - Next: execute integrated tests and Android on-device checks across all
-  draft changes, then add sound/vibration preferences and research private
-  online matches.
+  draft changes; then refine UI feedback, sound/vibration preferences,
+  and research private online matches.
   See `docs/CAREER-AND-MULTIPLAYER.md` for online matchmaking plans.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch

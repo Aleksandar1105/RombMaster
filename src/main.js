@@ -3,6 +3,10 @@ import { Game } from './game.js';
 import { Native } from './native.js';
 import { ProfileStore, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
+import { Renderer } from './renderer.js';
+import { nearestLegalLine } from './input.js';
+import { createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
+import { DailyProgress } from './daily-progress.js';
 
 // Elements
 const el = id => document.getElementById(id);
@@ -233,6 +237,136 @@ el('tutorial-back').onclick = () => {
 };
 el('closeHelpBtn').onclick = () => el('help-modal').classList.remove('flex');
 
+// Daily practice is entirely independent of the currently saved match.
+// One deterministic challenge set per device-local date. No timer or FOMO gate.
+const dailyCanvas = el('daily-canvas');
+const dailyRenderer = new Renderer(dailyCanvas);
+let dailyPuzzle = null;
+let dailyDate = null;
+let dailySolved = false;
+const dailyModal = el('daily-modal');
+dailyModal.hidden = true; // Explicit initial state, including minimal DOM test harnesses.
+const dailyNext = el('daily-next-btn');
+const dailyFeedback = el('daily-feedback');
+const dailyStatusMessage = status => ({
+    invalid: 'Saved daily progress could not be read. It was preserved.',
+    unavailable: 'Daily progress storage is unavailable. Nothing was changed.',
+    'clock-changed': 'Device date changed backwards. Restore the date to continue.',
+})[status] || 'Daily challenge unavailable.';
+
+const refreshDailyMenu = () => {
+    const state = DailyProgress.read(localDateKey());
+    if (state.status !== 'ready') {
+        el('daily-menu-status').textContent = dailyStatusMessage(state.status);
+        el('daily-open-btn').disabled = true;
+        return;
+    }
+    el('daily-open-btn').disabled = false;
+    el('daily-points').textContent = `${state.progress.brainPoints} Brain Points`;
+    el('daily-menu-status').textContent = state.progress.solved === 3
+        ? 'Completed today! Come back whenever you like.'
+        : `${state.progress.solved} of 3 tactics completed today`;
+};
+
+const drawDaily = () => {
+    if (!dailyPuzzle) return;
+    const width = Math.min(window.innerWidth - 20, 420);
+    dailyRenderer.resize({
+        clientWidth: width, clientHeight: Math.max(400, Math.min(window.innerHeight, 640)),
+        querySelector: () => null,
+    }, dailyPuzzle.board.S);
+    dailyRenderer.draw(dailyPuzzle.board, null);
+};
+
+const closeDaily = () => {
+    dailyModal.hidden = true;
+    dailyPuzzle = null;
+    dailySolved = false;
+    refreshDailyMenu();
+};
+
+const showDaily = () => {
+    const state = DailyProgress.read(dailyDate);
+    if (state.status !== 'ready') {
+        dailyPuzzle = null;
+        el('daily-step').textContent = 'Progress unavailable';
+        el('daily-title').textContent = 'Daily Brain Challenge';
+        el('daily-instruction').textContent = dailyStatusMessage(state.status);
+        dailyCanvas.hidden = true;
+        dailyNext.hidden = true;
+        return;
+    }
+    const index = state.progress.solved;
+    dailySolved = false;
+    dailyNext.hidden = true;
+    dailyFeedback.textContent = '';
+    dailyCanvas.hidden = index === 3;
+    if (index === 3) {
+        dailyPuzzle = null;
+        el('daily-step').textContent = 'All 3 challenges complete';
+        el('daily-title').textContent = 'Daily workout complete!';
+        el('daily-instruction').textContent = 'Well played! You earned 30 Brain Points. Your next workout is optional.';
+        return;
+    }
+    dailyPuzzle = createDailyPuzzle(dailyDate, index);
+    el('daily-step').textContent = `Challenge ${index + 1} of 3`;
+    el('daily-title').textContent = dailyPuzzle.title;
+    el('daily-instruction').textContent = dailyPuzzle.instruction;
+    drawDaily();
+};
+
+el('daily-open-btn').onclick = () => {
+    dailyDate = localDateKey();
+    dailyModal.hidden = false;
+    showDaily();
+};
+el('daily-close-btn').onclick = closeDaily;
+dailyNext.onclick = () => {
+    if (!dailySolved) return;
+    showDaily();
+};
+dailyCanvas.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0 || !dailyPuzzle ||
+        dailySolved || dailyModal.hidden) return;
+    event.preventDefault();
+    const rect = dailyCanvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const cssWidth = Number.parseFloat(dailyCanvas.style.width);
+    const cssHeight = Number.parseFloat(dailyCanvas.style.height);
+    if (!Number.isFinite(cssWidth) || !Number.isFinite(cssHeight)) return;
+    const x = (event.clientX - rect.left) * cssWidth / rect.width;
+    const y = (event.clientY - rect.top) * cssHeight / rect.height;
+    const move = nearestLegalLine(dailyPuzzle.board, dailyRenderer.CELL,
+        dailyRenderer.offX, dailyRenderer.offY, x, y);
+    if (!move) {
+        dailyFeedback.textContent = 'Tap closer to the middle of a dotted line.';
+        return;
+    }
+    const check = evaluateDailyMove(dailyPuzzle, move);
+    if (!check.correct) {
+        dailyFeedback.textContent = dailyPuzzle.retry;
+        return;
+    }
+    const progress = DailyProgress.recordSolved(dailyDate,
+        DailyProgress.read(dailyDate).progress?.solved);
+    if (progress.status !== 'ready') {
+        dailyFeedback.textContent = dailyStatusMessage(progress.status);
+        return;
+    }
+    dailySolved = true;
+    dailyPuzzle.board.makeMove(move.t, move.r, move.c, 1);
+    dailyRenderer.draw(dailyPuzzle.board, move);
+    dailyFeedback.textContent = dailyPuzzle.success +
+        (progress.progress.solved === 3 ? ' +30 Brain Points for today!' : '');
+    dailyNext.textContent = progress.progress.solved === 3 ? 'See Your Result' : 'Next Challenge';
+    dailyNext.hidden = false;
+    refreshDailyMenu();
+});
+window.addEventListener('resize', () => {
+    if (!dailyModal.hidden && dailyPuzzle) drawDaily();
+});
+refreshDailyMenu();
+
 // Visibility and native state may arrive in either order. Both must be active
 // before gameplay resumes, so duplicate events cannot queue extra AI responses.
 document.addEventListener('visibilitychange', () => Game.setActive('visibility', !document.hidden));
@@ -242,7 +376,9 @@ Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
-    if (el('help-modal').classList.contains('flex')) {
+    if (!dailyModal.hidden) {
+        closeDaily();
+    } else if (el('help-modal').classList.contains('flex')) {
         el('closeHelpBtn').click();
     } else if (el('overlay').classList.contains('flex')) {
         el('overlay').classList.remove('flex');

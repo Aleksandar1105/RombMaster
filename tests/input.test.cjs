@@ -41,7 +41,7 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     'audio.js': { AudioController: class { init() {} move() {} score() {} win() {} pause() {} resume() {} } },
     'renderer.js': { Renderer: class {
       constructor(canvas) { this.canvas = canvas; this.CELL = 40; this.offX = 0; this.offY = 0; this.particles = []; }
-      resize() {} spawnParticles() {}
+      resize() {} spawnParticles() {} draw() {}
     } },
     'style.css': {},
   };
@@ -244,4 +244,19 @@ test('statistics from local Career can be displayed without network or a login',
   assert.equal(h.el('stat-win-rate').textContent, '67%');
   assert.equal(h.el('stat-stars').textContent, '3 / 90');
   assert.equal(h.el('achievement-count').textContent, '1 / 7');
+});
+
+
+test('daily practice can be opened and dismissed without replacing a saved match', async () => {
+  const h = await boot();
+  const initialBoard = JSON.stringify(h.game.board);
+  const save = h.storage.get('rhombus_save');
+  h.el('daily-open-btn').click();
+  assert.equal(h.el('daily-modal').hidden, false);
+  assert.equal(h.el('daily-step').textContent, 'Challenge 1 of 3');
+  h.nativeEvents.back();
+  assert.equal(h.el('daily-modal').hidden, true);
+  assert.equal(h.exits, 0);
+  assert.equal(JSON.stringify(h.game.board), initialBoard);
+  assert.equal(h.storage.get('rhombus_save'), save);
 });
