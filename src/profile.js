@@ -3,6 +3,53 @@
 export const PROFILE_KEY = 'rombmaster_profile_v1';
 export const CAREER_LEVEL_COUNT = 30;
 
+// Preset avatars need no photo uploads, personal information or accounts.
+export const PLAYER_AVATARS = Object.freeze([
+  { id: 'spark', icon: '✨', label: 'Spark' },
+  { id: 'fox', icon: '🦊', label: 'Fox' },
+  { id: 'robot', icon: '🤖', label: 'Robot' },
+  { id: 'rocket', icon: '🚀', label: 'Rocket' },
+  { id: 'dragon', icon: '🐉', label: 'Dragon' },
+  { id: 'shield', icon: '🛡️', label: 'Shield' },
+]);
+
+// Achievements are derived from validated Career stats; never trust claims
+// submitted by a client for future ranked/online leaderboards.
+export const ACHIEVEMENTS = Object.freeze([
+  { id: 'first-win', title: 'First Victory', description: 'Win 1 Career match' },
+  { id: 'five-wins', title: 'On a Roll', description: 'Win 5 Career matches' },
+  { id: 'streak-three', title: 'Hat Trick', description: 'Win 3 Career matches consecutively' },
+  { id: 'ten-stars', title: 'Star Collector', description: 'Earn 10 Career stars' },
+  { id: 'strategist', title: 'Strategist', description: 'Unlock Career level 11' },
+  { id: 'master', title: 'Master', description: 'Unlock Career level 21' },
+  { id: 'champion', title: 'Champion', description: 'Clear Career level 30' },
+]);
+
+export function careerSummary(profile) {
+  const totalStars = Object.values(profile.stars || {})
+    .reduce((sum, value) => sum + value, 0);
+  const clearedLevels = Object.keys(profile.stars || {}).length;
+  const { played, wins, draws, losses, bestStreak = 0, streak = 0 } = profile.stats;
+  const winRate = played ? Math.round(100 * wins / played) : 0;
+  const unlocked = {
+    'first-win': wins >= 1,
+    'five-wins': wins >= 5,
+    'streak-three': bestStreak >= 3,
+    'ten-stars': totalStars >= 10,
+    strategist: profile.unlockedLevel >= 11,
+    master: profile.unlockedLevel >= 21,
+    champion: (profile.stars[30] || 0) >= 1,
+  };
+  const achievements = ACHIEVEMENTS.map(({ id, title, description }) => ({
+    id, title, description, earned: Boolean(unlocked[id]),
+  }));
+  return {
+    played, wins, draws, losses, winRate, totalStars, clearedLevels,
+    bestStreak, streak, achievements,
+    earnedAchievements: achievements.filter(item => item.earned).length,
+  };
+}
+
 export function careerLevel(level) {
   if (!Number.isInteger(level) || level < 1 || level > CAREER_LEVEL_COUNT) {
     throw new Error('Invalid career level');
@@ -18,10 +65,11 @@ export function freshProfile(name = 'Player') {
   return {
     version: 1,
     name,
+    avatar: 'spark',
     xp: 0,
     unlockedLevel: 1,
     stars: {},
-    stats: { played: 0, wins: 0, draws: 0, losses: 0 },
+    stats: { played: 0, wins: 0, draws: 0, losses: 0, streak: 0, bestStreak: 0 },
   };
 }
 
@@ -57,12 +105,21 @@ function parseProfile(raw) {
     stars[level] = value;
   }
   const { played, wins, draws, losses } = data.stats;
-  if (![played, wins, draws, losses].every(validCounter) ||
-      played !== wins + draws + losses) throw new Error('Invalid game stats');
+  // v1 profiles written before step 12 have no avatar/streak fields. Give
+  // them safe defaults without resetting wins, XP, unlocked stages or stars.
+  const avatar = data.avatar === undefined ? 'spark' : data.avatar;
+  const streak = data.stats.streak === undefined ? 0 : data.stats.streak;
+  const bestStreak = data.stats.bestStreak === undefined ? 0 : data.stats.bestStreak;
+  if (![played, wins, draws, losses, streak, bestStreak].every(validCounter) ||
+      played !== wins + draws + losses ||
+      streak > bestStreak || bestStreak > wins ||
+      !PLAYER_AVATARS.some(item => item.id === avatar)) {
+    throw new Error('Invalid game stats or avatar');
+  }
   return {
-    version: 1, name: data.name, xp: data.xp,
+    version: 1, name: data.name, avatar, xp: data.xp,
     unlockedLevel: data.unlockedLevel, stars,
-    stats: { played, wins, draws, losses },
+    stats: { played, wins, draws, losses, streak, bestStreak },
   };
 }
 
@@ -95,6 +152,16 @@ export const ProfileStore = {
     return persist({ ...current.profile, name });
   },
 
+  saveAvatar(avatarId) {
+    if (typeof avatarId !== 'string' ||
+        !PLAYER_AVATARS.some(item => item.id === avatarId)) {
+      return { status: 'bad-avatar' };
+    }
+    const current = this.read();
+    if (current.status === 'invalid' || current.status === 'unavailable') return current;
+    return persist({ ...current.profile, avatar: avatarId });
+  },
+
   reset(name = 'Player') {
     // Only call after the UI has explicitly confirmed replacing invalid data.
     try { return persist(freshProfile(cleanPlayerName(name))); }
@@ -112,11 +179,15 @@ export const ProfileStore = {
 
     const profile = current.profile;
     const stats = { ...profile.stats, played: profile.stats.played + 1 };
+    // Keep v1 counters consistent even on devices with very old profiles.
+    if (!validCounter(stats.played)) return { status: 'limit' };
     const stars = { ...profile.stars };
     let earnedXP = 0;
     let awardedStars = 0;
     if (playerScore > computerScore) {
       stats.wins++;
+      stats.streak++;
+      stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
       const margin = (playerScore - computerScore) / Math.max(1, playerScore + computerScore);
       awardedStars = margin >= 0.4 ? 3 : margin >= 0.2 ? 2 : 1;
       const oldStars = stars[level] || 0;
@@ -126,8 +197,14 @@ export const ProfileStore = {
       }
     } else if (playerScore === computerScore) {
       stats.draws++;
+      stats.streak = 0;
     } else {
       stats.losses++;
+      stats.streak = 0;
+    }
+    if (![stats.wins, stats.draws, stats.losses, stats.streak, stats.bestStreak]
+      .every(validCounter) || !validCounter(profile.xp + earnedXP)) {
+      return { status: 'limit' };
     }
     const updated = {
       ...profile,
