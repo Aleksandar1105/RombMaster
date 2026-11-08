@@ -691,3 +691,46 @@ test('committed career win cannot be undone in the result delay', async () => {
   assert.equal(h.storage.get('rombmaster_profile_v1'), savedProfile);
   assert.equal(h.game.ui.undoBtn.classList.contains('disabled'), true);
 });
+
+
+test('Career has one Undo, and exhausted allowance is persisted on reload', async () => {
+  const h = await harness();
+  assert.equal(h.game.start(4, 'ai', 'easy', 1), true);
+  const first = nonScoringMove(h.game.board);
+  h.game.executeMove(first);
+  h.game.undo();
+  assert.equal(h.game.careerUndosUsed, 1);
+  assert.equal(h.game.historyStack.length, 0);
+  assert.equal(h.game.ui.undoBtn.classList.contains('disabled'), true);
+  const raw = JSON.parse(h.storage.get('rhombus_save'));
+  assert.equal(raw.careerUndosUsed, 1);
+  const another = await harness({ storage: h.storage, autoStart: false });
+  assert.equal(another.game.resume(), true);
+  assert.equal(another.game.careerUndosUsed, 1);
+  another.game.executeMove(nonScoringMove(another.game.board));
+  const before = JSON.stringify(another.game.board);
+  another.game.undo();
+  assert.equal(JSON.stringify(another.game.board), before);
+});
+
+test('Career Restart grants a new one-Undo allowance in a new match', async () => {
+  const h = await harness();
+  h.game.start(4, 'ai', 'easy', 1);
+  h.game.executeMove(nonScoringMove(h.game.board));
+  h.game.undo();
+  assert.equal(h.game.careerUndosUsed, 1);
+  h.game.start(4, 'ai', 'easy', 1);
+  assert.equal(h.game.careerUndosUsed, 0);
+});
+
+test('Quick PvP keeps sequential Undo without a Career allowance', async () => {
+  const h = await harness();
+  h.game.start(4, 'pvp', 'normal');
+  h.game.executeMove(nonScoringMove(h.game.board));
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(h.game.historyStack.length, 2);
+  h.game.undo();
+  h.game.undo();
+  assert.equal(h.game.historyStack.length, 0);
+  assert.equal(h.game.careerUndosUsed, 0);
+});
