@@ -632,3 +632,94 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 .tutorial-actions { display: flex; gap: 10px; }
 .tutorial-actions > button { flex: 1; margin: 0; min-height: 46px; padding: 10px; font-size: 0.9rem; }
 #closeHelpBtn { color: #cbd5e1; }
+
+
+/* Step 12: local-only avatar and career analytics. */
+.profile-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-avatar-preview {
+  width: 48px; height: 48px;
+  flex: 0 0 48px;
+  display: grid; place-items: center;
+  font-size: 1.7rem;
+  border: 1px solid #64748b;
+  border-radius: 14px;
+  background: rgba(15,23,42,.9);
+}
+.profile-avatar-label { margin: 0; flex: 0 0 auto; }
+#profile-avatar {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #475569;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f8fafc;
+  font: inherit;
+  padding: 8px;
+}
+.profile-stats {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(15,23,42,.5);
+}
+.profile-stats summary {
+  cursor: pointer;
+  font-size: .83rem;
+  font-weight: 750;
+  color: #f8fafc;
+  min-height: 28px;
+}
+.profile-stats[open] summary { margin-bottom: 12px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 7px;
+}
+.stats-grid > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255,255,255,.06);
+}
+.stats-grid span { color: #cbd5e1; font-size: .71rem; line-height: 1.4; }
+.stats-grid strong { color: #f8fafc; font-size: 1.12rem; font-variant-numeric: tabular-nums; }
+.achievements-title {
+  display: flex;
+  justify-content: space-between;
+  font-size: .9rem;
+  color: #f8fafc;
+  margin: 18px 0 8px;
+}
+.achievements-title span { color: #93c5fd; font-size: .78rem; }
+.achievement-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.achievement-list li {
+  font-size: .75rem;
+  line-height: 1.45;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.06);
+}
+.achievement-list .locked { color: #94a3b8; }
+.achievement-list .earned {
+  background: rgba(251,191,36,.12);
+  color: #fde68a;
+}
+.career-stats-note { font-size: .72rem; color: #94a3b8; margin: 10px 0 0; }
+.career-reward { white-space: pre-line; }
