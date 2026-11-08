@@ -36,9 +36,9 @@ el('startBtn').onclick = () => Game.start(size, mode, diff);
 el('undoBtn').onclick = () => Game.undo();
 el('restartBtn').onclick = () => Game.start(size, mode, diff);
 el('menuBtn').onclick = () => {
+    Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
     ui.viewMenu.classList.remove('hidden'); ui.viewMenu.classList.add('active-view');
-    Game.gameOver = true;
 };
 
 // Копче "Play Again"

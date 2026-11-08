@@ -19,6 +19,30 @@ export const Game = {
   aiThinking: false,
   lastMove: null,
   historyStack: [],
+  pendingTimer: null,
+  timerGeneration: 0,
+
+  cancelPendingAction() {
+    this.timerGeneration++;
+    if (this.pendingTimer !== null) clearTimeout(this.pendingTimer);
+    this.pendingTimer = null;
+  },
+
+  scheduleAction(callback, delay) {
+    this.cancelPendingAction();
+    const generation = this.timerGeneration;
+    this.pendingTimer = setTimeout(() => {
+      if (generation !== this.timerGeneration || this.gameOver) return;
+      this.pendingTimer = null;
+      callback();
+    }, delay);
+  },
+
+  stop() {
+    this.cancelPendingAction();
+    this.aiThinking = false;
+    this.gameOver = true;
+  },
 
   init(canvasEl, uiRefs) {
     this.ui = uiRefs;
@@ -45,6 +69,7 @@ export const Game = {
   },
 
   start(size, mode, diff) {
+    this.stop();
     audio.init();
     this.settings = { size, mode, diff };
     document.getElementById('overlay').classList.remove('flex');
@@ -117,6 +142,7 @@ export const Game = {
   },
 
   executeMove(move) {
+    if (this.gameOver) return;
     this.historyStack.push({
       boardState: this.board.clone(),
       player: this.player,
@@ -144,27 +170,31 @@ export const Game = {
     this.updateUI();
 
     if (this.board.isGameOver()) {
-      setTimeout(() => this.endGame(), 500);
+      this.scheduleAction(() => this.endGame(), 500);
       return;
     }
 
     if (this.settings.mode === 'ai' && this.player === CONSTANTS.O) {
       const delay = 500 + Math.random() * 500;
-      setTimeout(() => this.runAI(), delay);
+      this.scheduleAction(() => this.runAI(), delay);
     }
   },
 
   runAI() {
+    if (this.gameOver || this.settings.mode !== 'ai' ||
+        this.player !== CONSTANTS.O || this.aiThinking) return;
     this.aiThinking = true;
-    const move = AI.getBestMove(this.board, this.settings.diff);
-    if (move) {
-      this.executeMove(move);
+    try {
+      const move = AI.getBestMove(this.board, this.settings.diff);
+      if (move) this.executeMove(move);
+    } finally {
+      this.aiThinking = false;
     }
-    this.aiThinking = false;
   },
 
   undo() {
     if (this.historyStack.length === 0 || this.aiThinking) return;
+    this.cancelPendingAction();
     const s = this.historyStack.pop();
     this.board = s.boardState;
     this.player = s.player;
@@ -175,6 +205,8 @@ export const Game = {
   },
 
   endGame() {
+    if (this.gameOver || !this.board.isGameOver()) return;
+    this.cancelPendingAction();
     this.gameOver = true;
     audio.win();
     Native.vibrate('heavy');
@@ -230,3 +262,4 @@ export const Game = {
     localStorage.setItem('rhombus_save', JSON.stringify(state));
   },
 };
+

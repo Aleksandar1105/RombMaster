@@ -3,6 +3,7 @@
   "version": "4.0.0",
   "description": "Rhombus Master Sonic Edition",
   "scripts": {
+    "test": "node --experimental-vm-modules --test tests/*.test.cjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -23,3 +24,4 @@
     "vite": "^4.0.0"
   }
 }
+
