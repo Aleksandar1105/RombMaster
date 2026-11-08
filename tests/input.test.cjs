@@ -190,3 +190,31 @@ test('native, visibility and page events all feed the same pause controller', as
   h.events.get('pageshow')();
   assert.equal(h.game.paused, false);
 });
+
+
+test('hover previews a legal line without committing it and clears on leave', async () => {
+  const h = await boot();
+  const before = JSON.stringify(h.game.board);
+  h.canvas.dispatch('pointermove', { ...h.event, buttons: 0 });
+  assert.deepEqual(JSON.parse(JSON.stringify(h.game.hoverMove)), h.game.board.getFreeMoves()[0]);
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(h.game.historyStack.length, 0);
+  h.canvas.dispatch('pointerleave', {});
+  assert.equal(h.game.hoverMove, null);
+});
+
+test('help tutorial moves between steps without changing match or save', async () => {
+  const h = await boot();
+  const beforeBoard = JSON.stringify(h.game.board);
+  const beforeSave = h.storage.get('rhombus_save');
+  h.el('helpBtn').click();
+  assert.equal(h.el('tutorial-count').textContent, 'Step 1 of 4');
+  h.el('tutorial-next').click();
+  assert.equal(h.el('tutorial-count').textContent, 'Step 2 of 4');
+  h.el('tutorial-back').click();
+  assert.equal(h.el('tutorial-count').textContent, 'Step 1 of 4');
+  for (let i = 0; i < 4; i++) h.el('tutorial-next').click();
+  assert.equal(h.el('help-modal').classList.contains('flex'), false);
+  assert.equal(JSON.stringify(h.game.board), beforeBoard);
+  assert.equal(h.storage.get('rhombus_save'), beforeSave);
+});
