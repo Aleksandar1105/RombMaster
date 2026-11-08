@@ -388,6 +388,14 @@ export const Game = {
         !(this.settings.careerLevel && (this.board.isGameOver() || this.careerUndosUsed >= 1)))
       this.ui.undoBtn.classList.remove('disabled');
     else this.ui.undoBtn.classList.add('disabled');
+    if (this.ui.undoBtn && this.settings.careerLevel) {
+      const remaining = Math.max(0, 1 - this.careerUndosUsed);
+      this.ui.undoBtn.title = `Career Undo: ${remaining}/1 remaining`;
+      this.ui.undoBtn.setAttribute?.('aria-label', `Undo last human decision; ${remaining} of 1 remaining`);
+    } else if (this.ui.undoBtn) {
+      this.ui.undoBtn.title = 'Undo last move';
+      this.ui.undoBtn.setAttribute?.('aria-label', 'Undo last move');
+    }
   },
 
   loop() {
