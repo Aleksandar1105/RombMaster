@@ -22,6 +22,7 @@ export const Game = {
   lastMove: null,
   historyStack: [],
   moveLog: [],
+  careerOutcome: null,
   saveFailed: false,
   paused: false,
   inactiveSources: new Set(),
@@ -138,6 +139,7 @@ export const Game = {
     this.gameOver = false;
     this.historyStack = [];
     this.moveLog = [];
+    this.careerOutcome = null;
     this.lastMove = null;
 
     // 1. Креирај логика
@@ -240,6 +242,13 @@ export const Game = {
     this.updateUI();
 
     if (this.board.isGameOver()) {
+      // Store career progress synchronously at the final move, not after the
+      // delayed result animation, so background termination loses no reward.
+      if (this.settings.careerLevel && this.careerOutcome === null) {
+        this.careerOutcome = ProfileStore.recordCareer(
+          this.settings.careerLevel, this.board.score[CONSTANTS.X], this.board.score[CONSTANTS.O]
+        );
+      }
       this.scheduleAction(() => this.endGame(), 500);
       return;
     }
@@ -302,7 +311,7 @@ export const Game = {
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     const reward = document.getElementById('career-reward');
     if (reward && this.settings.careerLevel) {
-      const outcome = ProfileStore.recordCareer(this.settings.careerLevel, s[CONSTANTS.X], s[CONSTANTS.O]);
+      const outcome = this.careerOutcome || { status: 'unavailable' };
       reward.hidden = false;
       if (outcome.status === 'ready') {
         reward.textContent = outcome.victory
@@ -411,6 +420,7 @@ export const Game = {
     this.settings = state.settings;
     this.historyStack = state.history;
     this.moveLog = state.moves;
+    this.careerOutcome = null;
     this.lastMove = state.lastMove;
     this.gameOver = false;
     document.getElementById('overlay').classList.remove('flex');
