@@ -340,7 +340,7 @@ export const Game = {
           ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
           : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
         if (outcome.newAchievements?.length) {
-          reward.textContent += '\\nAchievement unlocked: ' +
+          reward.textContent += '\nAchievement unlocked: ' +
             outcome.newAchievements.map(item => item.title).join(', ');
         }
       } else reward.textContent = 'Career progress could not be saved. Your game result is still shown.';
