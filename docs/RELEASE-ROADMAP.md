@@ -34,9 +34,13 @@ optional monetization phase after the core experience is validated.
   taps, mouse/pen hover previews the next line, and Help opens an optional
   four-step illustrated tutorial explaining initial 2–2 ownership, line
   placement, captures and extra turns. Tutorial actions cannot alter saves.
-- Next: execute integrated tests, benchmark AI on Android and test different
-  finger sizes and screens, then add sound/vibration preferences and
-  achievements.
+- Step 12: optional preset-avatar choice and expandable Career statistics,
+  a derived set of seven achievements, and success-result announcements for
+  newly earned milestones. Preserve older version-1 local profiles with safe
+  defaults; do not add accounts or online leaderboards.
+- Next: execute integrated tests and Android on-device checks across all
+  draft changes, then add sound/vibration preferences and research private
+  online matches.
   See `docs/CAREER-AND-MULTIPLAYER.md` for online matchmaking plans.
 
 Physical-device checks for step 6: lock/unlock during human and AI turns; switch
