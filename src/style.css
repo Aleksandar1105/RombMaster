@@ -723,3 +723,58 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 }
 .career-stats-note { font-size: .72rem; color: #94a3b8; margin: 10px 0 0; }
 .career-reward { white-space: pre-line; }
+
+
+/* Daily Brain Challenge: compact, optional, no countdowns or pressure. */
+.daily-panel {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  border-radius: 18px;
+  border: 1px solid rgba(147,197,253,.32);
+  background: linear-gradient(140deg,rgba(30,58,95,.65),rgba(15,23,42,.8));
+}
+.daily-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: .85rem;
+}
+.daily-heading span { color: #fbbf24; font-size: .75rem; font-weight: 700; }
+.daily-panel p { color: #cbd5e1; font-size: .78rem; margin: 0; line-height: 1.45; }
+.daily-panel .btn-primary { font-size: .94rem; padding: 14px; margin: 3px 0 0; }
+.daily-panel .btn-primary:disabled { opacity: .5; }
+.daily-modal {
+  position: fixed; inset: 0; z-index: 150;
+  padding: max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  background: rgba(2,6,23,.94);
+}
+.daily-modal[hidden] { display: none !important; }
+.daily-content {
+  width: 100%;
+  max-width: 430px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  gap: 12px;
+  padding: 18px;
+}
+.daily-content h2 { color: #f8fafc; margin: 0; font-size: 1.45rem; line-height: 1.15; }
+.daily-content p { margin: 0; line-height: 1.45; }
+.daily-step { color: #93c5fd; font-size: .74rem; font-weight: 800; text-transform: uppercase; }
+#daily-instruction { font-size: .89rem; color: #cbd5e1; }
+.daily-canvas-shell { width: 100%; display: flex; justify-content: center; overflow: hidden; }
+#daily-canvas { border-radius: 18px; max-width: 100%; touch-action: none; }
+#daily-feedback { min-height: 36px; font-size: .83rem; font-weight: 650; color: #fbbf24; }
+.daily-actions { display: flex; gap: 10px; }
+.daily-actions button { flex: 1; margin: 0; padding: 12px; font-size: .87rem; }
+@media (max-height: 570px) {
+  .daily-modal { align-items: flex-start; }
+  .daily-content { padding: 12px; max-height: none; }
+}
