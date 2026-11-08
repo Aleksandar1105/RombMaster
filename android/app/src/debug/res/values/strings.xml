@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Distinct launcher label for the debug-only applicationId (.test). -->
+    <string name="app_name">RombMaster Test</string>
+    <string name="title_activity_main">RombMaster Test</string>
+</resources>
