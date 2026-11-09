@@ -123,9 +123,118 @@ function parseProfile(raw) {
   };
 }
 
+// Guest-first local save slots. The original keys remain untouched for 'guest';
+// additional players use their own namespaced Career, match and Daily keys.
+export const PLAYER_SLOTS_KEY = 'rombmaster_player_slots_v1';
+export const MAX_LOCAL_PLAYERS = 4;
+const DEFAULT_SLOTS = () => ({
+  version: 1, activeId: 'guest', nextId: 1, slots: ['guest'],
+});
+const SLOT_ID = /^slot-([1-9][0-9]{0,3})$/;
+const SCOPED_KEYS = [PROFILE_KEY, 'rhombus_save', 'rombmaster_daily_progress_v1'];
+const scopedKey = (base, id) => id === 'guest' ? base : `${base}:${id}`;
+
+function parseSlotIndex(raw) {
+  if (typeof raw !== 'string' || raw.length > 2000) throw Error('Invalid slot index size');
+  const record = JSON.parse(raw);
+  if (!record || record.version !== 1 ||
+      !Array.isArray(record.slots) || record.slots.length < 1 ||
+      record.slots.length > MAX_LOCAL_PLAYERS || record.slots[0] !== 'guest' ||
+      !Number.isInteger(record.nextId) || record.nextId < 1 || record.nextId > 10000 ||
+      !record.slots.includes(record.activeId)) throw Error('Invalid slot index');
+  let greatest = 0;
+  const unique = new Set();
+  for (const id of record.slots) {
+    if (typeof id !== 'string' || unique.has(id)) throw Error('Duplicate slot');
+    unique.add(id);
+    if (id === 'guest') continue;
+    const match = SLOT_ID.exec(id);
+    if (!match) throw Error('Invalid slot ID');
+    greatest = Math.max(greatest, Number(match[1]));
+  }
+  if (record.nextId <= greatest) throw Error('Invalid next slot ID');
+  return { version: 1, activeId: record.activeId, nextId: record.nextId, slots: record.slots };
+}
+
+export const LocalSlots = {
+  read() {
+    try {
+      const raw = localStorage.getItem(PLAYER_SLOTS_KEY);
+      return { status: 'ready', index: raw === null ? DEFAULT_SLOTS() : parseSlotIndex(raw) };
+    } catch (error) {
+      // Missing permissions and corrupted data both block writes, not silently reset.
+      const status = error instanceof SyntaxError || error?.message?.startsWith('Invalid') ||
+        error?.message === 'Duplicate slot' ? 'invalid' : 'unavailable';
+      return { status };
+    }
+  },
+
+  storageKey(base, id = null) {
+    if (!SCOPED_KEYS.includes(base)) return null;
+    const result = this.read();
+    if (result.status !== 'ready') return null;
+    const chosen = id ?? result.index.activeId;
+    return result.index.slots.includes(chosen) ? scopedKey(base, chosen) : null;
+  },
+
+  createPlayer(rawName) {
+    let name;
+    try { name = cleanPlayerName(rawName); }
+    catch { return { status: 'bad-name' }; }
+    const result = this.read();
+    if (result.status !== 'ready') return result;
+    const index = result.index;
+    if (index.slots.length >= MAX_LOCAL_PLAYERS) return { status: 'limit' };
+
+    // Reject duplicate labels; do not mistake changing an avatar for a new slot.
+    for (const id of index.slots) {
+      const existing = ProfileStore.readSlot(id);
+      if (['invalid', 'unavailable'].includes(existing.status)) return existing;
+      if (existing.profile.name.toLocaleLowerCase() === name.toLocaleLowerCase()) {
+        return { status: 'duplicate-name' };
+      }
+    }
+
+    try {
+      // Never reuse an orphaned key left by an interrupted earlier creation.
+      let nextId = index.nextId;
+      let id;
+      for (; nextId < 10000; nextId++) {
+        id = `slot-${nextId}`;
+        if (SCOPED_KEYS.every(base => localStorage.getItem(scopedKey(base, id)) === null)) break;
+      }
+      if (nextId >= 10000) return { status: 'limit' };
+      localStorage.setItem(scopedKey(PROFILE_KEY, id), JSON.stringify(freshProfile(name)));
+      localStorage.setItem(PLAYER_SLOTS_KEY, JSON.stringify({
+        ...index, slots: [...index.slots, id], nextId: nextId + 1, activeId: id,
+      }));
+      return { status: 'ready', activeId: id };
+    } catch {
+      // An orphan may remain, but no existing profile or game is overwritten.
+      return { status: 'unavailable' };
+    }
+  },
+
+  switchTo(id) {
+    const result = this.read();
+    if (result.status !== 'ready') return result;
+    const index = result.index;
+    if (typeof id !== 'string' || !index.slots.includes(id)) return { status: 'not-found' };
+    const profile = ProfileStore.readSlot(id);
+    if (profile.status === 'invalid' || profile.status === 'unavailable') return profile;
+    if (id === index.activeId) return { status: 'ready', activeId: id };
+    try {
+      localStorage.setItem(PLAYER_SLOTS_KEY, JSON.stringify({ ...index, activeId: id }));
+      return { status: 'ready', activeId: id };
+    } catch { return { status: 'unavailable' }; }
+  },
+};
+
 function persist(profile) {
   try {
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    const key = LocalSlots.storageKey(PROFILE_KEY);
+    if (!key) return { status: 'unavailable' };
+    localStorage.setItem(key, JSON.stringify(profile));
     return { status: 'ready', profile };
   } catch {
     return { status: 'unavailable' };
@@ -134,10 +243,22 @@ function persist(profile) {
 
 export const ProfileStore = {
   read() {
+    return this.readSlot();
+  },
+
+  readSlot(id = null) {
+    const slots = LocalSlots.read();
+    if (slots.status !== 'ready') return slots;
+    const key = LocalSlots.storageKey(PROFILE_KEY, id);
+    if (!key) return { status: 'not-found' };
     let raw;
-    try { raw = localStorage.getItem(PROFILE_KEY); }
+    try { raw = localStorage.getItem(key); }
     catch { return { status: 'unavailable' }; }
-    if (raw === null) return { status: 'empty', profile: freshProfile() };
+    if (raw === null) {
+      // A registered non-guest slot must not silently become a new profile.
+      return key === PROFILE_KEY
+        ? { status: 'empty', profile: freshProfile() } : { status: 'invalid' };
+    }
     try { return { status: 'ready', profile: parseProfile(raw) }; }
     catch { return { status: 'invalid' }; }
   },
