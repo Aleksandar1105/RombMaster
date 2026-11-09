@@ -416,7 +416,9 @@ Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
-    if (!dailyModal.hidden) {
+    if (!careerResetModal.hidden) {
+        closeCareerReset();
+    } else if (!dailyModal.hidden) {
         closeDaily();
     } else if (el('help-modal').classList.contains('flex')) {
         el('closeHelpBtn').click();
