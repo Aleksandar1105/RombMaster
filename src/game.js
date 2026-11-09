@@ -6,7 +6,7 @@ import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
 import { ProfileStore, careerLevel } from './profile.js';
-import { nearestLegalLine } from './input.js';
+import { nearestLegalLine, canvasPoint } from './input.js';
 
 const audio = new AudioController();
 
@@ -207,13 +207,10 @@ export const Game = {
 
   findLine(clientX, clientY) {
     if (!this.board || !this.renderer.canvas) return null;
-    const rect = this.renderer.canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return null;
-    const dpr = window.devicePixelRatio || 1;
-    const x = (clientX - rect.left) * this.renderer.canvas.width / rect.width / dpr;
-    const y = (clientY - rect.top) * this.renderer.canvas.height / rect.height / dpr;
+    const point = canvasPoint(this.renderer.canvas, clientX, clientY);
+    if (!point) return null;
     return nearestLegalLine(this.board, this.renderer.CELL,
-      this.renderer.offX, this.renderer.offY, x, y);
+      this.renderer.offX, this.renderer.offY, point.x, point.y);
   },
 
   processInput(clientX, clientY) {

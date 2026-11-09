@@ -196,7 +196,11 @@ test('hover previews a legal line without committing it and clears on leave', as
   const h = await boot();
   const before = JSON.stringify(h.game.board);
   h.canvas.dispatch('pointermove', { ...h.event, buttons: 0 });
-  assert.deepEqual(JSON.parse(JSON.stringify(h.game.hoverMove)), h.game.board.getFreeMoves()[0]);
+  // The application runs inside a separate VM context in this harness.
+  // Normalize BOTH moves to plain JSON before strict structural comparison;
+  // otherwise identical coordinates fail due to cross-realm prototypes.
+  const normalize = move => JSON.parse(JSON.stringify(move));
+  assert.deepStrictEqual(normalize(h.game.hoverMove), normalize(h.game.board.getFreeMoves()[0]));
   assert.equal(JSON.stringify(h.game.board), before);
   assert.equal(h.game.historyStack.length, 0);
   h.canvas.dispatch('pointerleave', {});
