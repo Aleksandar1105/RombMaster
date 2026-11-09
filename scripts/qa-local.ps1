@@ -5,7 +5,8 @@ param(
     [switch]$WebOnly,
     [switch]$InstallDebug,
     [string]$DeviceSerial = "",
-    [string]$JdkHome = ""
+    [string]$JdkHome = "",
+    [string]$SdkPath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -136,6 +137,70 @@ function Select-BuildJdk {
     Record "PASS: using JDK $($chosen.Version) at $($chosen.Home) (this PowerShell process only)"
 }
 
+# Gradle requires an Android SDK location. Discover it from this machine
+# without writing local.properties or changing persistent Windows settings.
+function Select-AndroidSdk {
+    $propertiesFile = Join-Path $root "android\local.properties"
+    if (Test-Path -LiteralPath $propertiesFile) {
+        if ($SdkPath) {
+            throw "Both android\local.properties and -SdkPath were supplied. Remove the conflict manually; the script will not overwrite local.properties."
+        }
+        Record "NOTICE: android\local.properties already exists. Leaving the SDK configuration unchanged."
+        return
+    }
+
+    $candidates = New-Object System.Collections.Generic.List[string]
+    if ($SdkPath) {
+        $candidates.Add($SdkPath)
+    } else {
+        if ($env:ANDROID_HOME) { $candidates.Add($env:ANDROID_HOME) }
+        if ($env:ANDROID_SDK_ROOT) { $candidates.Add($env:ANDROID_SDK_ROOT) }
+        if ($env:LOCALAPPDATA) {
+            $candidates.Add((Join-Path $env:LOCALAPPDATA "Android\Sdk"))
+        }
+        if ($env:USERPROFILE) {
+            $candidates.Add((Join-Path $env:USERPROFILE "AppData\Local\Android\Sdk"))
+        }
+    }
+
+    $seen = @{}
+    foreach ($candidate in $candidates) {
+        if (-not $candidate) { continue }
+        $location = [Environment]::ExpandEnvironmentVariables($candidate).Trim().Trim('"')
+        if (-not (Test-Path -LiteralPath $location -PathType Container)) {
+            Record "SKIP missing Android SDK candidate: $location"
+            continue
+        }
+        $resolved = (Resolve-Path -LiteralPath $location).Path.TrimEnd([char[]]@('\', '/'))
+        if ($seen.ContainsKey($resolved)) { continue }
+        $seen[$resolved] = $true
+
+        $markers = @("platforms", "platform-tools", "build-tools", "cmdline-tools", "tools")
+        $isSdk = $false
+        foreach ($marker in $markers) {
+            if (Test-Path -LiteralPath (Join-Path $resolved $marker) -PathType Container) {
+                $isSdk = $true
+                break
+            }
+        }
+        if (-not $isSdk) {
+            Record "SKIP Android SDK candidate without SDK components: $resolved"
+            continue
+        }
+
+        $env:ANDROID_HOME = $resolved
+        $env:ANDROID_SDK_ROOT = $resolved
+        Record "PASS: Android SDK found at $resolved (this PowerShell process only)"
+        $platformJar = Join-Path $resolved "platforms\android-33\android.jar"
+        if (-not (Test-Path -LiteralPath $platformJar)) {
+            Record "NOTICE: Android SDK Platform 33 is not installed here. If Gradle cannot download it, open Android Studio SDK Manager and install Android API 33 (and build tools)."
+        }
+        return
+    }
+
+    throw "Android SDK location not found. Open Android Studio > Tools > SDK Manager, install Android SDK Platform 33 and SDK Build-Tools, then rerun. For a non-default location use -SdkPath 'C:\Actual\Android\Sdk'. No global Windows settings were changed."
+}
+
 Push-Location $root
 try {
     Require-Command "git"
@@ -169,6 +234,7 @@ try {
     if (-not $WebOnly) {
         Require-Command "npx.cmd"
         Select-BuildJdk
+        Select-AndroidSdk
         Run-Step "capacitor-sync" { & npx.cmd --no-install cap sync android }
 
         Push-Location (Join-Path $root "android")
