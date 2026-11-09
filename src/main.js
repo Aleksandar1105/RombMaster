@@ -4,7 +4,7 @@ import { Native } from './native.js';
 import { ProfileStore, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
-import { nearestLegalLine } from './input.js';
+import { nearestLegalLine, canvasPoint } from './input.js';
 import { createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
 
@@ -329,15 +329,10 @@ dailyCanvas.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0 || !dailyPuzzle ||
         dailySolved || dailyModal.hidden) return;
     event.preventDefault();
-    const rect = dailyCanvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    const cssWidth = Number.parseFloat(dailyCanvas.style.width);
-    const cssHeight = Number.parseFloat(dailyCanvas.style.height);
-    if (!Number.isFinite(cssWidth) || !Number.isFinite(cssHeight)) return;
-    const x = (event.clientX - rect.left) * cssWidth / rect.width;
-    const y = (event.clientY - rect.top) * cssHeight / rect.height;
+    const point = canvasPoint(dailyCanvas, event.clientX, event.clientY);
+    if (!point) return;
     const move = nearestLegalLine(dailyPuzzle.board, dailyRenderer.CELL,
-        dailyRenderer.offX, dailyRenderer.offY, x, y);
+        dailyRenderer.offX, dailyRenderer.offY, point.x, point.y);
     if (!move) {
         dailyFeedback.textContent = 'Tap closer to the middle of a dotted line.';
         return;
