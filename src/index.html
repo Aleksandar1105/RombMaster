@@ -223,6 +223,19 @@
         </div>
     </div>
 
+    <!-- Local-only destructive action. No system confirm popup. -->
+    <div id="career-reset-modal" class="career-reset-modal" hidden>
+        <div class="glass-panel career-reset-content" role="alertdialog" aria-modal="true"
+             aria-labelledby="career-reset-title" aria-describedby="career-reset-description">
+            <h2 id="career-reset-title">Reset Career Progress?</h2>
+            <p id="career-reset-description">Your Career levels, XP, stars, statistics and achievements will return to the beginning. Your nickname, avatar, Quick Play/PvP saves and Daily Brain Challenge remain unchanged. This cannot be undone.</p>
+            <div class="career-reset-actions">
+                <button id="career-reset-cancel" type="button" class="btn-secondary">Keep Progress</button>
+                <button id="career-reset-confirm" type="button" class="btn-primary">Reset Career</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Isolated practice board; never modifies an active match or Career save. -->
     <div id="daily-modal" class="daily-modal" hidden>
         <div class="glass-panel daily-content" role="dialog" aria-modal="true"
