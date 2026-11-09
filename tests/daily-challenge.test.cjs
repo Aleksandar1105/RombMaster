@@ -94,3 +94,31 @@ test('corrupted daily data is never overwritten without recovery', async () => {
   assert.equal(h.storage.get('rombmaster_daily_progress_v1'), original);
   assert.equal(h.daily.validDateKey('2026-02-30'), false);
 });
+
+test('daily points and puzzle progress stay independent for each local player', async () => {
+  const h = await harness();
+  const date = '2026-11-09';
+  const profile = new vm.SourceTextModule(
+    fs.readFileSync(path.join(__dirname, '..', 'src', 'profile.js'), 'utf8'),
+    { context: vm.createContext({ localStorage: {
+      getItem: key => h.storage.get(key) ?? null,
+      setItem: (key, value) => h.storage.set(key, value),
+      removeItem: key => h.storage.delete(key),
+    } }) }
+  );
+  await profile.link(() => { throw Error('No profile imports expected'); });
+  await profile.evaluate();
+  const slots = profile.namespace.LocalSlots;
+  assert.equal(h.progress.recordSolved(date, 0).status, 'ready');
+  assert.equal(slots.createPlayer('Lina').status, 'ready');
+  assert.equal(h.progress.read(date).progress.solved, 0);
+  for (let i = 0; i < 3; i++) {
+    assert.equal(h.progress.recordSolved(date, i).status, 'ready');
+  }
+  assert.equal(h.progress.read(date).progress.brainPoints, 30);
+  assert.equal(slots.switchTo('guest').status, 'ready');
+  assert.equal(h.progress.read(date).progress.solved, 1);
+  assert.equal(h.progress.read(date).progress.brainPoints, 0);
+  assert.equal(slots.switchTo('slot-1').status, 'ready');
+  assert.equal(h.progress.read(date).progress.solved, 3);
+});

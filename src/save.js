@@ -1,6 +1,6 @@
 import { Board } from './board.js';
 import { CONSTANTS } from './constants.js';
-import { careerLevel } from './profile.js';
+import { careerLevel, LocalSlots } from './profile.js';
 
 export const SAVE_KEY = 'rhombus_save';
 
@@ -83,7 +83,7 @@ export function decodeSave(raw) {
 export const SaveStore = {
   read() {
     let raw;
-    try { raw = localStorage.getItem(SAVE_KEY); }
+    try { raw = localStorage.getItem(LocalSlots.storageKey(SAVE_KEY) ?? (() => { throw Error('Slots unavailable'); })()); }
     catch { return { status: 'unavailable' }; }
     if (raw === null) return { status: 'empty' };
     try {
@@ -100,12 +100,12 @@ export const SaveStore = {
     try {
       const data = { version: 1, settings, moves };
       if (settings.careerLevel) data.careerUndosUsed = careerUndosUsed;
-      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      localStorage.setItem(LocalSlots.storageKey(SAVE_KEY) ?? (() => { throw Error('Slots unavailable'); })(), JSON.stringify(data));
       return true;
     } catch { return false; }
   },
   clear() {
-    try { localStorage.removeItem(SAVE_KEY); return true; }
+    try { localStorage.removeItem(LocalSlots.storageKey(SAVE_KEY) ?? (() => { throw Error('Slots unavailable'); })()); return true; }
     catch { return false; }
   },
 };

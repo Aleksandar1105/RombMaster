@@ -37,7 +37,8 @@ export const Game = {
     if (paused === this.paused) return;
     this.paused = paused;
     if (paused) {
-      this.saveLocal();
+      // Never copy a stopped prior player's board into the newly active slot.
+      if (this.board && !this.ui.viewGame.classList.contains('hidden') && !this.gameOver) this.saveLocal();
       this.cancelPendingAction();
       this.cancelAnimation();
       this.hoverMove = null;

@@ -1,7 +1,7 @@
 import './style.css';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
+import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
@@ -87,6 +87,79 @@ const refreshCareer = () => {
         `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
     profileFeedback.textContent = '';
 };
+// Keep DOM names escaped: profile names are user-controlled plain text.
+const htmlText = str => String(str).replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+})[char]);
+const localPlayerSelect = el('local-player-select');
+const localPlayerFeedback = el('local-player-feedback');
+const newLocalPlayerName = el('new-local-player-name');
+const refreshPlayerChooser = () => {
+    const slots = LocalSlots.read();
+    if (slots.status !== 'ready') {
+        localPlayerFeedback.textContent = 'Local player data cannot be read. No profiles were changed.';
+        localPlayerSelect.disabled = true;
+        el('create-local-player-btn').disabled = true;
+        return;
+    }
+    localPlayerSelect.disabled = false;
+    el('create-local-player-btn').disabled = slots.index.slots.length >= 4;
+    localPlayerSelect.innerHTML = slots.index.slots.map(id => {
+        const p = ProfileStore.readSlot(id);
+        const label = p.status === 'ready' || p.status === 'empty'
+            ? p.profile.name : 'Unreadable player';
+        return `<option value="${id}">${htmlText(label)}${id === 'guest' ? ' (Guest)' : ''}</option>`;
+    }).join('');
+    localPlayerSelect.value = slots.index.activeId;
+};
+const updateActivePlayerView = () => {
+    Game.stop();
+    // A stopped board from the previous player must not be autosaved under
+    // the newly selected player on background/pause lifecycle events.
+    Game.board = null;
+    Game.refreshSavedGame();
+    careerSelect.value = '1';
+    refreshPlayerChooser();
+    refreshCareer();
+    refreshDailyMenu();
+};
+localPlayerSelect.onchange = () => {
+    const original = LocalSlots.read();
+    if (original.status !== 'ready' || !ui.viewGame.classList.contains('hidden') ||
+        !dailyModal.hidden) {
+        refreshPlayerChooser();
+        localPlayerFeedback.textContent = 'Return to the menu and close challenges before switching.';
+        return;
+    }
+    const result = LocalSlots.switchTo(localPlayerSelect.value);
+    if (result.status !== 'ready') {
+        refreshPlayerChooser();
+        localPlayerFeedback.textContent = 'Could not switch player. Existing data was left untouched.';
+        return;
+    }
+    updateActivePlayerView();
+    localPlayerFeedback.textContent = 'Switched to the selected local player.';
+};
+el('create-local-player-btn').onclick = () => {
+    if (!ui.viewGame.classList.contains('hidden') || !dailyModal.hidden) {
+        localPlayerFeedback.textContent = 'Close the current game or challenge before creating a player.';
+        return;
+    }
+    const result = LocalSlots.createPlayer(newLocalPlayerName.value);
+    if (result.status !== 'ready') {
+        localPlayerFeedback.textContent = ({
+            'bad-name': 'Enter a player name of 1–18 characters.',
+            limit: 'Maximum of four local players reached.',
+            'duplicate-name': 'Choose a different player name.',
+            invalid: 'Existing player data could not be read and was preserved.',
+        })[result.status] || 'Unable to add player; existing data was preserved.';
+        return;
+    }
+    newLocalPlayerName.value = '';
+    updateActivePlayerView();
+    localPlayerFeedback.textContent = 'New local player created with separate progress.';
+};
+refreshPlayerChooser();
 refreshCareer();
 
 // The explicit in-game confirmation protects against accidental Career data loss.

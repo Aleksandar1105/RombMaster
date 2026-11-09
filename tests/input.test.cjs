@@ -317,3 +317,64 @@ test('Android Back cancels styled Career reset without changing profile', async 
   assert.equal(h.storage.get('rombmaster_profile_v1'), before);
   assert.equal(h.exits, 0);
 });
+
+test('multiple local players keep match saves and Career progress independent', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('profile-name').value = 'Veteran';
+  h.el('save-profile-btn').click();
+  h.game.start(6, 'pvp', 'normal');
+  h.el('menuBtn').click();
+  const guestSave = h.storage.get('rhombus_save');
+  const guestProfile = h.storage.get('rombmaster_profile_v1');
+
+  h.el('new-local-player-name').value = 'Lina';
+  h.el('create-local-player-btn').click();
+  assert.equal(h.el('local-player-select').value, 'slot-1');
+  assert.equal(h.el('profile-name').value, 'Lina');
+  assert.equal(h.el('career-progress').textContent, 'Level 1 / 30');
+  assert.equal(h.el('continueBtn').hidden, true);
+  h.game.start(4, 'pvp', 'normal');
+  h.el('menuBtn').click();
+  const linaSave = h.storage.get('rhombus_save:slot-1');
+  assert.ok(linaSave);
+
+  h.el('local-player-select').value = 'guest';
+  h.el('local-player-select').onchange();
+  assert.equal(h.el('profile-name').value, 'Veteran');
+  assert.equal(h.el('continueBtn').hidden, false);
+  assert.equal(h.storage.get('rhombus_save'), guestSave);
+  assert.equal(h.storage.get('rombmaster_profile_v1'), guestProfile);
+  h.el('local-player-select').value = 'slot-1';
+  h.el('local-player-select').onchange();
+  assert.equal(h.storage.get('rhombus_save:slot-1'), linaSave);
+  assert.equal(h.el('continueBtn').hidden, false);
+});
+
+test('new player names are escaped in the player selector', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('new-local-player-name').value = '<img src=x>';
+  h.el('create-local-player-btn').click();
+  assert.match(h.el('local-player-select').innerHTML, /&lt;img src=x&gt;/);
+  assert.doesNotMatch(h.el('local-player-select').innerHTML, /<img/);
+});
+
+test('creating local players does not overwrite existing guest daily progress', async () => {
+  const h = await boot({ autoStart: false });
+  h.storage.set('rombmaster_daily_progress_v1', '{"guest":"unchanged"}');
+  h.el('new-local-player-name').value = 'Mila';
+  h.el('create-local-player-btn').click();
+  assert.equal(h.storage.get('rombmaster_daily_progress_v1'), '{"guest":"unchanged"}');
+  assert.equal(h.storage.get('rombmaster_daily_progress_v1:slot-1'), undefined);
+  assert.equal(h.el('daily-open-btn').disabled, false);
+});
+
+test('malformed player registry blocks new player creation without mutation', async () => {
+  const storage = new Map([['rombmaster_player_slots_v1', '{broken']]);
+  const h = await boot({ storage, autoStart: false });
+  assert.equal(h.el('create-local-player-btn').disabled, true);
+  const before = storage.get('rombmaster_player_slots_v1');
+  h.el('new-local-player-name').value = 'Mila';
+  h.el('create-local-player-btn').click();
+  assert.equal(storage.get('rombmaster_player_slots_v1'), before);
+  assert.equal(storage.has('rombmaster_profile_v1:slot-1'), false);
+});
