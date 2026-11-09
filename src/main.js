@@ -44,6 +44,7 @@ const refreshCareer = () => {
     }
     const p = state.profile;
     el('career-start-btn').disabled = false;
+    el('reset-career-btn').disabled = false;
     profileName.value = p.name;
     avatarSelect.value = p.avatar;
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
