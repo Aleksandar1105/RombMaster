@@ -93,6 +93,7 @@ refreshCareer();
 // A saved Career match must be resolved first, so it cannot later re-award
 // progression to a reset profile. Unknown saves are never destroyed.
 const careerResetModal = el('career-reset-modal');
+careerResetModal.hidden = true;
 const closeCareerReset = () => { careerResetModal.hidden = true; };
 el('reset-career-btn').onclick = () => {
     const profile = ProfileStore.read();
