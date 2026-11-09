@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Rhombus Master</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/index-c698122d.js"></script>
-  <link rel="stylesheet" href="/assets/index-8a4aea61.css">
+  <script type="module" crossorigin src="/assets/index-0c6f72a4.js"></script>
+  <link rel="stylesheet" href="/assets/index-6fcca838.css">
 </head>
 
 <body>
@@ -83,6 +83,58 @@
                         <button data-diff="hard">Master</button>
                     </div>
                 </div>
+                <section class="career-panel" aria-label="Player profile and career">
+                    <div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <div class="profile-name-row">
+                        <input id="profile-name" type="text" maxlength="32" placeholder="Player name"
+                            aria-label="Your player name" autocomplete="nickname">
+                        <button id="save-profile-btn" type="button" class="btn-secondary">Save</button>
+                    </div>
+                    <div class="profile-avatar-row">
+                        <span id="profile-avatar-preview" class="profile-avatar-preview" aria-hidden="true">✨</span>
+                        <label for="profile-avatar" class="profile-avatar-label">Avatar</label>
+                        <select id="profile-avatar" aria-label="Choose a player avatar">
+                            <option value="spark">✨ Spark</option>
+                            <option value="fox">🦊 Fox</option>
+                            <option value="robot">🤖 Robot</option>
+                            <option value="rocket">🚀 Rocket</option>
+                            <option value="dragon">🐉 Dragon</option>
+                            <option value="shield">🛡️ Shield</option>
+                        </select>
+                    </div>
+                    <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
+                    <details id="player-stats" class="profile-stats">
+                        <summary>Career statistics &amp; achievements</summary>
+                        <div class="stats-grid">
+                            <div><span>Career matches</span><strong id="stat-played">0</strong></div>
+                            <div><span>Wins</span><strong id="stat-wins">0</strong></div>
+                            <div><span>Draws</span><strong id="stat-draws">0</strong></div>
+                            <div><span>Losses</span><strong id="stat-losses">0</strong></div>
+                            <div><span>Win rate</span><strong id="stat-win-rate">0%</strong></div>
+                            <div><span>Best win streak</span><strong id="stat-best-streak">0</strong></div>
+                            <div><span>Levels cleared</span><strong id="stat-cleared">0 / 30</strong></div>
+                            <div><span>Stars earned</span><strong id="stat-stars">0 / 90</strong></div>
+                        </div>
+                        <h3 class="achievements-title">Achievements <span id="achievement-count">0 / 7</span></h3>
+                        <ul id="achievement-list" class="achievement-list" aria-label="Career achievements"></ul>
+                        <p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
+                    </details>
+                    <div class="career-heading">
+                        <span>CAREER MODE</span>
+                        <span id="career-progress">Level 1 / 30</span>
+                    </div>
+                    <label class="career-select-label" for="career-level">Choose unlocked level</label>
+                    <select id="career-level" aria-label="Unlocked career level"></select>
+                    <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
+                    <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
+                    <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                </section>
+                <section class="daily-panel" aria-label="Daily brain challenge">
+                    <div class="daily-heading"><strong>🧠 Daily Brain Challenge</strong><span id="daily-points">0 Brain Points</span></div>
+                    <p>Three quick tactics: capture, defend, and find the double capture.</p>
+                    <p id="daily-menu-status" role="status">A fresh challenge each day. No pressure to maintain a streak.</p>
+                    <button id="daily-open-btn" type="button" class="btn-primary">Train Your Brain</button>
+                </section>
                 <button id="continueBtn" class="btn-primary" hidden>Continue</button>
                 <p id="save-status" class="save-status" role="status" hidden></p>
                 <button id="startBtn" class="btn-primary">Play Now</button>
@@ -112,15 +164,23 @@
                 </div>
             </div>
 
+            <div id="turn-status" class="turn-status" data-player="one" role="status" aria-live="polite" aria-atomic="true">
+                <span id="turn-label" class="turn-label">Your turn</span>
+                <span id="turn-hint" class="turn-hint">Connect two dots to draw a line</span>
+            </div>
+
             <div id="canvas-wrapper">
                 <canvas id="canvas"></canvas>
             </div>
 
             <p id="game-save-status" class="save-status" role="status" hidden></p>
             <div id="controls">
-                <button id="undoBtn" class="btn-icon disabled" title="Undo">↩</button>
-                <button id="restartBtn" class="btn-icon" title="Restart">↻</button>
-                <button id="menuBtn" class="btn-icon" title="Menu">🏠</button>
+                <div class="undo-control">
+                    <button id="undoBtn" class="btn-icon disabled" title="Undo" aria-label="Undo last move">↩</button>
+                    <span id="undo-counter" class="undo-counter" hidden>Undo 1/1</span>
+                </div>
+                <button id="restartBtn" class="btn-icon" title="Restart" aria-label="Restart game">↻</button>
+                <button id="menuBtn" class="btn-icon" title="Menu" aria-label="Return to menu">🏠</button>
             </div>
         </div>
     </div>
@@ -130,20 +190,54 @@
         <div class="glass-panel center-panel">
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
+            <p id="career-reward" class="career-reward" hidden></p>
+            <button id="nextCareerBtn" class="btn-primary full-width" hidden>Next Level</button>
             <button id="againBtn" class="btn-primary full-width">Play Again</button>
             <button id="backMenuBtn" class="btn-secondary full-width">Main Menu</button>
         </div>
     </div>
 
     <div id="help-modal">
-        <div class="glass-panel help-content">
-            <h3>How to Play</h3>
-            <ul>
-                <li>Tap between two dots to connect them.</li>
-                <li>Close a <strong>square</strong> to get a point + extra turn.</li>
-                <li>Most squares wins!</li>
-            </ul>
-            <button id="closeHelpBtn" class="btn-primary full-width">Got it!</button>
+        <div class="glass-panel help-content" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+            <p class="tutorial-count" id="tutorial-count">Step 1 of 4</p>
+            <h3 id="tutorial-title">How to Play</h3>
+            <div class="tutorial-demo" id="tutorial-demo" data-phase="start" aria-hidden="true">
+                <svg viewBox="0 0 200 170" width="200" height="170">
+                    <rect class="tutorial-cell" x="42" y="27" width="116" height="116" rx="10"/>
+                    <path class="tutorial-edge" d="M42 27 H158 M42 27 V143 M42 143 H158"/>
+                    <path class="tutorial-pending" d="M158 27 V143"/>
+                    <path class="tutorial-capture" d="M158 27 V143"/>
+                    <circle class="tutorial-dot" cx="42" cy="27" r="7"/>
+                    <circle class="tutorial-dot" cx="158" cy="27" r="7"/>
+                    <circle class="tutorial-dot" cx="42" cy="143" r="7"/>
+                    <circle class="tutorial-dot" cx="158" cy="143" r="7"/>
+                    <text class="tutorial-cross" x="100" y="101" text-anchor="middle">X</text>
+                </svg>
+            </div>
+            <h4 id="tutorial-step-title">Start with a 2–2 score</h4>
+            <p id="tutorial-step-text">Four starter squares are already owned.</p>
+            <div class="tutorial-actions">
+                <button id="tutorial-back" type="button" class="btn-secondary" hidden>Previous</button>
+                <button id="tutorial-next" type="button" class="btn-primary">Next</button>
+            </div>
+            <button id="closeHelpBtn" class="text-btn full-width" type="button">Close tutorial</button>
+        </div>
+    </div>
+
+    <!-- Isolated practice board; never modifies an active match or Career save. -->
+    <div id="daily-modal" class="daily-modal" hidden>
+        <div class="glass-panel daily-content" role="dialog" aria-modal="true"
+             aria-labelledby="daily-title">
+            <p id="daily-step" class="daily-step">Challenge 1 of 3</p>
+            <h2 id="daily-title">Daily Brain Challenge</h2>
+            <p id="daily-instruction">Find a tactical move.</p>
+            <div class="daily-canvas-shell"><canvas id="daily-canvas"
+                 aria-label="Daily tactical board. Tap a dotted line to select it."></canvas></div>
+            <p id="daily-feedback" role="status" aria-live="polite"></p>
+            <div class="daily-actions">
+                <button id="daily-next-btn" type="button" class="btn-primary" hidden>Next Challenge</button>
+                <button id="daily-close-btn" type="button" class="btn-secondary">Back to Menu</button>
+            </div>
         </div>
     </div>
 
@@ -151,3 +245,4 @@
 </body>
 
 </html>
+
