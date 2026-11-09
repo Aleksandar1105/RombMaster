@@ -49,9 +49,11 @@ function Run-Step([string]$name, [scriptblock]$action) {
 
 # Read Java version through .NET Process, because Java reports -version on
 # stderr and Windows PowerShell 5.1 treats redirected native stderr as errors.
-function Get-JdkVersion([string]$home) {
-    $javaExe = Join-Path $home "bin\java.exe"
-    $javacExe = Join-Path $home "bin\javac.exe"
+function Get-JdkVersion([string]$jdkPath) {
+    # $HOME is a read-only automatic variable in Windows PowerShell 5.1.
+    # A parameter named $home throws before this function can run.
+    $javaExe = Join-Path $jdkPath "bin\java.exe"
+    $javacExe = Join-Path $jdkPath "bin\javac.exe"
     if (-not (Test-Path -LiteralPath $javaExe) -or
         -not (Test-Path -LiteralPath $javacExe)) { return $null }
 
@@ -75,7 +77,7 @@ function Get-JdkVersion([string]$home) {
         $parts = $match.Groups[1].Value -split '[._]'
         $major = [int]$parts[0]
         if ($major -eq 1 -and $parts.Length -gt 1) { $major = [int]$parts[1] }
-        return [pscustomobject]@{ Home = $home; Major = $major; Version = $match.Groups[1].Value }
+        return [pscustomobject]@{ Home = $jdkPath; Major = $major; Version = $match.Groups[1].Value }
     } finally {
         $p.Dispose()
     }
@@ -121,7 +123,7 @@ function Select-BuildJdk {
                 }
             }
         } catch {
-            Record "SKIP invalid Java candidate: $resolved"
+            Record "SKIP invalid Java candidate: $resolved ($($_.Exception.Message))"
         }
     }
     if ($found.Count -eq 0) {
