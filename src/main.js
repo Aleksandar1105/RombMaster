@@ -39,6 +39,7 @@ const refreshCareer = () => {
             ? 'Profile data could not be read. Reset only if you want to replace it.'
             : 'Profile storage is unavailable. Career progress cannot be saved.';
         el('career-start-btn').disabled = true;
+        el('reset-career-btn').disabled = true;
         return;
     }
     const p = state.profile;
