@@ -598,6 +598,33 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   .profile-name-row { flex-wrap: wrap; }
 }
 
+/* Confirm destructive Career reset inside the game's visual language. */
+.career-reset-trigger {
+  width: 100%;
+  margin-top: 2px;
+  min-height: 44px;
+  border-color: rgba(248, 113, 113, .55);
+  color: #fecaca;
+}
+.career-reset-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  background: rgba(2, 6, 23, .93);
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+}
+.career-reset-modal[hidden] { display: none !important; }
+.career-reset-content { max-width: 420px; gap: 14px; }
+.career-reset-content h2 { margin: 0; font-size: 1.4rem; color: #f8fafc; }
+.career-reset-content p { margin: 0; font-size: .88rem; line-height: 1.55; color: #cbd5e1; }
+.career-reset-actions { display: flex; gap: 10px; }
+.career-reset-actions button { flex: 1; margin: 0; min-height: 48px; font-size: .82rem; padding: 12px 8px; }
+.career-reset-actions .btn-primary { background: linear-gradient(135deg, #b91c1c, #ef4444); box-shadow: none; }
+
 /* Career Undo allowance is visible, but does not consume extra board width. */
 .undo-control { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .undo-counter { color: #cbd5e1; font-size: 0.69rem; font-weight: 700; line-height: 1.2; }

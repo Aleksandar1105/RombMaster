@@ -162,6 +162,16 @@ export const ProfileStore = {
     return persist({ ...current.profile, avatar: avatarId });
   },
 
+  resetCareer() {
+    // Intentionally preserve the local nickname and cosmetic avatar.
+    // Never silently replace corrupt or unsupported profile data.
+    const current = this.read();
+    if (current.status === 'invalid' || current.status === 'unavailable') return current;
+    const next = freshProfile(current.profile.name);
+    next.avatar = current.profile.avatar;
+    return persist(next);
+  },
+
   reset(name = 'Player') {
     // Only call after the UI has explicitly confirmed replacing invalid data.
     try { return persist(freshProfile(cleanPlayerName(name))); }

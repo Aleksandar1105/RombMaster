@@ -39,10 +39,12 @@ const refreshCareer = () => {
             ? 'Profile data could not be read. Reset only if you want to replace it.'
             : 'Profile storage is unavailable. Career progress cannot be saved.';
         el('career-start-btn').disabled = true;
+        el('reset-career-btn').disabled = true;
         return;
     }
     const p = state.profile;
     el('career-start-btn').disabled = false;
+    el('reset-career-btn').disabled = false;
     profileName.value = p.name;
     avatarSelect.value = p.avatar;
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
@@ -86,6 +88,50 @@ const refreshCareer = () => {
     profileFeedback.textContent = '';
 };
 refreshCareer();
+
+// The explicit in-game confirmation protects against accidental Career data loss.
+// A saved Career match must be resolved first, so it cannot later re-award
+// progression to a reset profile. Unknown saves are never destroyed.
+const careerResetModal = el('career-reset-modal');
+careerResetModal.hidden = true;
+const closeCareerReset = () => { careerResetModal.hidden = true; };
+el('reset-career-btn').onclick = () => {
+    const profile = ProfileStore.read();
+    if (!['empty', 'ready'].includes(profile.status)) {
+        profileFeedback.textContent = 'Career reset is unavailable while profile data cannot be read.';
+        return;
+    }
+    const saved = Game.refreshSavedGame();
+    if (saved.status === 'invalid' || saved.status === 'unavailable' ||
+        (['ready', 'finished'].includes(saved.status) && saved.state.settings.careerLevel)) {
+        profileFeedback.textContent =
+            'Resolve the saved Career game or unreadable save before resetting Career progress.';
+        return;
+    }
+    careerResetModal.hidden = false;
+    el('career-reset-cancel').focus?.();
+};
+el('career-reset-cancel').onclick = closeCareerReset;
+el('career-reset-confirm').onclick = () => {
+    // Revalidate the save immediately before writing to avoid stale UI state.
+    const saved = Game.refreshSavedGame();
+    if (saved.status === 'invalid' || saved.status === 'unavailable' ||
+        (['ready', 'finished'].includes(saved.status) && saved.state.settings.careerLevel)) {
+        closeCareerReset();
+        profileFeedback.textContent = 'Reset stopped: saved Career game must be resolved first.';
+        return;
+    }
+    const result = ProfileStore.resetCareer();
+    closeCareerReset();
+    if (result.status !== 'ready') {
+        profileFeedback.textContent = 'Reset failed. Existing progress was preserved where possible.';
+        return;
+    }
+    // Choose the newly unlocked first stage and repaint local-only statistics.
+    careerSelect.value = '1';
+    refreshCareer();
+    profileFeedback.textContent = 'Career restarted at Level 1. Name, avatar and other modes were kept.';
+};
 el('save-profile-btn').onclick = () => {
     const state = ProfileStore.saveName(profileName.value);
     if (state.status === 'bad-name') {
@@ -371,7 +417,9 @@ Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
-    if (!dailyModal.hidden) {
+    if (!careerResetModal.hidden) {
+        closeCareerReset();
+    } else if (!dailyModal.hidden) {
         closeDaily();
     } else if (el('help-modal').classList.contains('flex')) {
         el('closeHelpBtn').click();

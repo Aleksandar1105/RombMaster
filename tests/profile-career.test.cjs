@@ -87,6 +87,34 @@ test('bad names and tampered profiles cannot overwrite stored progress', async (
   assert.equal(h.storage.get(h.PROFILE_KEY), before);
 });
 
+test('resetCareer returns to level one but preserves name, avatar and other storage keys', async () => {
+  const h = await profileHarness();
+  h.ProfileStore.saveName('Pilot');
+  h.ProfileStore.saveAvatar('fox');
+  h.ProfileStore.recordCareer(1, 9, 1);
+  h.storage.set('rhombus_save', 'quick-match-marker');
+  h.storage.set('rombmaster_daily_progress_v1', 'daily-marker');
+  const result = h.ProfileStore.resetCareer();
+  assert.equal(result.status, 'ready');
+  assert.equal(result.profile.name, 'Pilot');
+  assert.equal(result.profile.avatar, 'fox');
+  assert.equal(result.profile.unlockedLevel, 1);
+  assert.equal(result.profile.xp, 0);
+  assert.equal(result.profile.stats.played, 0);
+  assert.equal(h.careerSummary(result.profile).earnedAchievements, 0);
+  assert.equal(Object.keys(result.profile.stars).length, 0);
+  assert.equal(h.storage.get('rhombus_save'), 'quick-match-marker');
+  assert.equal(h.storage.get('rombmaster_daily_progress_v1'), 'daily-marker');
+});
+
+test('resetCareer refuses invalid data instead of destroying it', async () => {
+  const h = await profileHarness();
+  h.storage.set(h.PROFILE_KEY, '{broken');
+  const prior = h.storage.get(h.PROFILE_KEY);
+  assert.equal(h.ProfileStore.resetCareer().status, 'invalid');
+  assert.equal(h.storage.get(h.PROFILE_KEY), prior);
+});
+
 test('profile rejects inconsistent records', async () => {
   const h = await profileHarness();
   h.ProfileStore.saveName('Hero');
