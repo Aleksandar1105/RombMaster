@@ -264,3 +264,56 @@ test('daily practice can be opened and dismissed without replacing a saved match
   assert.equal(JSON.stringify(h.game.board), initialBoard);
   assert.equal(h.storage.get('rhombus_save'), save);
 });
+
+test('Career reset requires a styled confirmation and preserves Quick and Daily saves', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('profile-name').value = 'Pilot';
+  h.el('save-profile-btn').click();
+  h.el('profile-avatar').value = 'fox';
+  h.el('profile-avatar').onchange();
+  const quick = 'quick-save-sentinel';
+  // Use a valid quick match save instead of an arbitrary malformed value.
+  h.game.start(6, 'pvp', 'normal');
+  h.el('menuBtn').click();
+  const quickSave = h.storage.get('rhombus_save');
+  h.storage.set('rombmaster_daily_progress_v1', 'daily-sentinel');
+  h.el('reset-career-btn').click();
+  assert.equal(h.el('career-reset-modal').hidden, false);
+  h.el('career-reset-cancel').click();
+  assert.equal(h.el('career-reset-modal').hidden, true);
+  h.el('reset-career-btn').click();
+  h.el('career-reset-confirm').click();
+  const profile = JSON.parse(h.storage.get('rombmaster_profile_v1'));
+  assert.equal(profile.name, 'Pilot');
+  assert.equal(profile.avatar, 'fox');
+  assert.equal(profile.unlockedLevel, 1);
+  assert.equal(profile.xp, 0);
+  assert.equal(h.storage.get('rhombus_save'), quickSave);
+  assert.equal(h.storage.get('rombmaster_daily_progress_v1'), 'daily-sentinel');
+});
+
+test('Career reset is blocked by unfinished saved Career and malformed saves', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('career-start-btn').click();
+  h.el('menuBtn').click();
+  const savedCareer = h.storage.get('rhombus_save');
+  h.el('reset-career-btn').click();
+  assert.equal(h.el('career-reset-modal').hidden, true);
+  assert.equal(h.storage.get('rhombus_save'), savedCareer);
+  assert.match(h.el('profile-feedback').textContent, /saved Career game/);
+  h.storage.set('rhombus_save', '{bad save');
+  h.el('reset-career-btn').click();
+  assert.equal(h.el('career-reset-modal').hidden, true);
+});
+
+test('Android Back cancels styled Career reset without changing profile', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('save-profile-btn').click();
+  const before = h.storage.get('rombmaster_profile_v1');
+  h.el('reset-career-btn').click();
+  assert.equal(h.el('career-reset-modal').hidden, false);
+  h.nativeEvents.back();
+  assert.equal(h.el('career-reset-modal').hidden, true);
+  assert.equal(h.storage.get('rombmaster_profile_v1'), before);
+  assert.equal(h.exits, 0);
+});
