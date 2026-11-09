@@ -39,6 +39,26 @@ This runs `npm ci`, `npm test` and `npm run build`. Any failure
 **stops** the procedure. Review the corresponding `qa-logs\*.log` and
 `qa-summary-*.txt`. Do not proceed to the Android install after failure.
 
+## Java/JDK preflight
+
+For Android Gradle Plugin 8.0, use **JDK 17** (preferred). Windows may
+still have Java 8 on PATH, which is not sufficient. The QA script now
+checks JAVA_HOME, Android Studio's bundled JDK (`jbr`), common JDK
+installation folders and PATH. It selects a compatible JDK **only in
+its own PowerShell process**, without uninstalling or reconfiguring
+system Java.
+
+If it reports no usable JDK, install a trusted JDK 17 distribution and
+run the same script with an explicit JDK directory:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\qa-local.ps1 -JdkHome 'C:\Program Files\Eclipse Adoptium\jdk-17'
+```
+
+Use the actual directory containing `bin\java.exe` and
+`bin\javac.exe`. The example location is not guaranteed to exist.
+Do not install APK until `gradle-assemble-debug` passes.
+
 ## Stage B — generate test Android APK, still do not install
 
 ```powershell
