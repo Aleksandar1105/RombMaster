@@ -1,5 +1,5 @@
-# RombMaster QA preflight — runs locally on Windows, never starts GitHub Actions.
-# Use a clean, disposable clone of chore/step-14-qa-android-preflight.
+# RombMaster QA preflight - runs locally on Windows, never starts GitHub Actions.
+# Use a clean, disposable clone of fix/step-15-input-scale-stability.
 [CmdletBinding()]
 param(
     [switch]$WebOnly,
@@ -119,7 +119,7 @@ try {
 
     Record "FINAL STATUS: completed requested QA stages."
 } catch {
-    Record "FINAL STATUS: STOPPED — $($_.Exception.Message)"
+    Record "FINAL STATUS: STOPPED - $($_.Exception.Message)"
     throw
 } finally {
     $results | Set-Content -LiteralPath $summaryFile -Encoding UTF8
