@@ -243,3 +243,50 @@ test('invalid avatars and impossible streaks never silently overwrite stored dat
   assert.equal(h.ProfileStore.read().status, 'invalid');
   assert.equal(h.ProfileStore.saveName('New Name').status, 'invalid');
 });
+
+test('guest legacy profile stays on original key when a new local player is created', async () => {
+  const h = await profileHarness();
+  h.ProfileStore.saveName('Veteran');
+  h.ProfileStore.saveAvatar('fox');
+  h.ProfileStore.recordCareer(1, 9, 1);
+  const guestData = h.storage.get(h.PROFILE_KEY);
+  const created = h.LocalSlots.createPlayer('Lina');
+  assert.equal(created.status, 'ready');
+  assert.equal(created.activeId, 'slot-1');
+  assert.equal(h.ProfileStore.read().profile.name, 'Lina');
+  assert.equal(h.ProfileStore.read().profile.xp, 0);
+  assert.equal(h.ProfileStore.recordCareer(1, 10, 2).status, 'ready');
+  assert.equal(h.LocalSlots.switchTo('guest').status, 'ready');
+  assert.equal(h.ProfileStore.read().profile.name, 'Veteran');
+  assert.equal(h.storage.get(h.PROFILE_KEY), guestData);
+  assert.equal(h.ProfileStore.read().profile.unlockedLevel, 2);
+  assert.equal(h.LocalSlots.switchTo('slot-1').status, 'ready');
+  assert.equal(h.ProfileStore.read().profile.name, 'Lina');
+  assert.equal(h.ProfileStore.read().profile.unlockedLevel, 2);
+});
+
+test('local slots reject duplicate names, invalid IDs and a fifth player', async () => {
+  const h = await profileHarness();
+  assert.equal(h.LocalSlots.createPlayer('Lina').status, 'ready');
+  assert.equal(h.LocalSlots.createPlayer('lina').status, 'duplicate-name');
+  assert.equal(h.LocalSlots.switchTo('slot-999').status, 'not-found');
+  assert.equal(h.LocalSlots.createPlayer('Mila').status, 'ready');
+  assert.equal(h.LocalSlots.createPlayer('Alex').status, 'ready');
+  assert.equal(h.LocalSlots.createPlayer('Fifth').status, 'limit');
+  assert.equal(h.LocalSlots.read().index.slots.length, 4);
+});
+
+test('corrupt slot index and missing registered slot data are never silently overwritten', async () => {
+  const h = await profileHarness();
+  h.storage.set(h.PLAYER_SLOTS_KEY, '{"version":2}');
+  const badIndex = h.storage.get(h.PLAYER_SLOTS_KEY);
+  assert.equal(h.LocalSlots.read().status, 'invalid');
+  assert.equal(h.LocalSlots.createPlayer('New').status, 'invalid');
+  assert.equal(h.storage.get(h.PLAYER_SLOTS_KEY), badIndex);
+  h.storage.delete(h.PLAYER_SLOTS_KEY);
+  assert.equal(h.LocalSlots.createPlayer('Lina').status, 'ready');
+  h.storage.delete(`${h.PROFILE_KEY}:slot-1`);
+  assert.equal(h.LocalSlots.switchTo('guest').status, 'ready');
+  assert.equal(h.LocalSlots.switchTo('slot-1').status, 'invalid');
+  assert.equal(h.LocalSlots.read().index.activeId, 'guest');
+});
