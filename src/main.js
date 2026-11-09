@@ -7,6 +7,7 @@ import { Renderer } from './renderer.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
+import { createConfirmationController } from './confirmation.js';
 
 // Elements
 const el = id => document.getElementById(id);
@@ -21,6 +22,32 @@ const ui = {
 // Init
 Game.init(el('canvas'), ui);
 Game.refreshSavedGame();
+
+// A single custom confirmation overlays the game/menu and suspends any active
+// AI timer until the user chooses; no browser-native confirm dialogs.
+const confirmDialog = createConfirmationController({
+    modal: el('confirm-dialog'),
+    title: el('confirm-dialog-title'),
+    message: el('confirm-dialog-message'),
+    acceptButton: el('confirm-dialog-accept'),
+    cancelButton: el('confirm-dialog-cancel'),
+    documentRef: document,
+    onVisibilityChange: open => Game.setActive('confirmation', !open),
+});
+const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
+    const saved = Game.refreshSavedGame();
+    // Treat unreadable storage as an explicit stop, not permission to erase.
+    if (saved.status === 'unavailable') {
+        Game.setSaveStatus('Saved-game storage is unavailable. Nothing was replaced.');
+        return;
+    }
+    if (['ready', 'invalid', 'finished'].includes(saved.status)) {
+        confirmDialog.open({
+            heading, detail, confirmLabel: 'Replace Game',
+            onConfirm, focusReturn: sourceButton,
+        });
+    } else onConfirm();
+};
 
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
@@ -238,12 +265,19 @@ el('career-start-btn').onclick = () => {
         careerStatus.textContent = 'This career level is not available.';
         return;
     }
-    const saved = Game.refreshSavedGame();
-    if (['ready', 'invalid'].includes(saved.status) &&
-        !window.confirm('Start Career and replace the saved game?')) return;
-    const stage = careerLevel(level);
-    careerStatus.textContent = Game.start(stage.size, 'ai', stage.diff, level)
-        ? '' : 'Could not start career level.';
+    const activeId = LocalSlots.read().index?.activeId;
+    const startCareer = () => {
+        if (LocalSlots.read().index?.activeId !== activeId) return;
+        const updated = ProfileStore.read();
+        if (!['ready', 'empty'].includes(updated.status) || level > updated.profile.unlockedLevel) {
+            careerStatus.textContent = 'Career level is no longer available.';
+            return;
+        }
+        const stage = careerLevel(level);
+        careerStatus.textContent = Game.start(stage.size, 'ai', stage.diff, level)
+            ? '' : 'Could not start career level.';
+    };
+    askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, el('career-start-btn'));
 };
 
 // Inputs
@@ -264,10 +298,13 @@ setupGroup("[data-ai]", b => {
 setupGroup("[data-diff]", b => diff = b.dataset.diff);
 
 el('startBtn').onclick = () => {
-    const saved = Game.refreshSavedGame();
-    if (['ready', 'invalid'].includes(saved.status) &&
-        !window.confirm('Start a new game and replace the saved game?')) return;
-    Game.start(size, mode, diff);
+    const requested = { size, mode, diff };
+    const activeId = LocalSlots.read().index?.activeId;
+    const startNew = () => {
+        if (LocalSlots.read().index?.activeId !== activeId) return;
+        Game.start(requested.size, requested.mode, requested.diff);
+    };
+    askBeforeReplacing('Start New Game?', 'Your currently saved match for this player will be replaced. Career XP and Daily Brain Points stay safe.', startNew, el('startBtn'));
 };
 el('continueBtn').onclick = () => {
     if (!Game.resume()) return;
@@ -283,9 +320,19 @@ el('continueBtn').onclick = () => {
 };
 el('undoBtn').onclick = () => Game.undo();
 el('restartBtn').onclick = () => {
-    if (Game.historyStack.length && !window.confirm('Restart this game and discard its progress?')) return;
-    const settings = Game.settings;
-    Game.start(settings.size, settings.mode, settings.diff, settings.careerLevel ?? null);
+    const settings = { ...Game.settings };
+    const activeId = LocalSlots.read().index?.activeId;
+    const restart = () => {
+        if (LocalSlots.read().index?.activeId !== activeId) return;
+        Game.start(settings.size, settings.mode, settings.diff, settings.careerLevel ?? null);
+    };
+    if (Game.historyStack.length) {
+        confirmDialog.open({
+            heading: 'Restart This Game?',
+            detail: 'All moves in this unfinished match will be lost. Your earned Career progress and Daily Brain Points will stay safe.',
+            confirmLabel: 'Restart Game', onConfirm: restart, focusReturn: el('restartBtn'),
+        });
+    } else restart();
 };
 el('menuBtn').onclick = () => {
     Game.saveLocal();
@@ -490,7 +537,9 @@ Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
-    if (!careerResetModal.hidden) {
+    if (confirmDialog.isOpen()) {
+        confirmDialog.close();
+    } else if (!careerResetModal.hidden) {
         closeCareerReset();
     } else if (!dailyModal.hidden) {
         closeDaily();
