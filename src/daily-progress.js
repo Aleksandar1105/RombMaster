@@ -1,4 +1,5 @@
 import { validDateKey } from './daily-challenge.js';
+import { LocalSlots } from './profile.js';
 
 export const DAILY_PROGRESS_KEY = 'rombmaster_daily_progress_v1';
 
@@ -30,7 +31,7 @@ export const DailyProgress = {
   read(date) {
     if (!validDateKey(date)) return { status: 'invalid-date' };
     let raw;
-    try { raw = localStorage.getItem(DAILY_PROGRESS_KEY); }
+    try { raw = localStorage.getItem(LocalSlots.storageKey(DAILY_PROGRESS_KEY) ?? (() => { throw Error('Slots unavailable'); })()); }
     catch { return { status: 'unavailable' }; }
     if (raw === null) return { status: 'ready', progress: fresh(date) };
     try {
@@ -59,7 +60,7 @@ export const DailyProgress = {
       return { status: 'limit' };
     }
     try {
-      localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(next));
+      localStorage.setItem(LocalSlots.storageKey(DAILY_PROGRESS_KEY) ?? (() => { throw Error('Slots unavailable'); })(), JSON.stringify(next));
       return { status: 'ready', progress: next };
     } catch { return { status: 'unavailable' }; }
   },
