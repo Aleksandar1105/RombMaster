@@ -1,1 +1,4 @@
 node_modules/
+
+# Local QA output; never push device logs or test artifacts
+qa-logs/
