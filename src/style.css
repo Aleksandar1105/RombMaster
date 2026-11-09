@@ -805,3 +805,20 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   .daily-modal { align-items: flex-start; }
   .daily-content { padding: 12px; max-height: none; }
 }
+
+/* Step 17: guest-first local player slots. */
+.local-player-toolbar { display: flex; flex-direction: column; gap: 8px; }
+.local-player-toolbar > label { margin: 0; font-size: .7rem; }
+#local-player-select, #new-local-player-name {
+  background: #0f172a; border: 1px solid #475569; border-radius: 12px;
+  color: #f8fafc; font: inherit; padding: 10px 12px; min-width: 0;
+  min-height: 44px;
+}
+#local-player-select { width: 100%; }
+.local-player-add { display: flex; align-items: center; gap: 8px; }
+#new-local-player-name { flex: 1; width: 100%; }
+.local-player-add .btn-secondary { margin: 0; padding: 10px; min-height: 44px; }
+@media (max-width: 360px) {
+  .local-player-add { flex-wrap: wrap; }
+  .local-player-add .btn-secondary { width: 100%; }
+}
