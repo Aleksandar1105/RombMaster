@@ -196,7 +196,8 @@ test('hover previews a legal line without committing it and clears on leave', as
   const h = await boot();
   const before = JSON.stringify(h.game.board);
   h.canvas.dispatch('pointermove', { ...h.event, buttons: 0 });
-  assert.deepEqual(JSON.parse(JSON.stringify(h.game.hoverMove)), h.game.board.getFreeMoves()[0]);
+  // Compare move fields in this realm; Board returns objects from the VM context.
+  assert.deepEqual({ ...h.game.hoverMove }, { ...h.game.board.getFreeMoves()[0] });
   assert.equal(JSON.stringify(h.game.board), before);
   assert.equal(h.game.historyStack.length, 0);
   h.canvas.dispatch('pointerleave', {});
@@ -260,3 +261,4 @@ test('daily practice can be opened and dismissed without replacing a saved match
   assert.equal(JSON.stringify(h.game.board), initialBoard);
   assert.equal(h.storage.get('rhombus_save'), save);
 });
+

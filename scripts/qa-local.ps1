@@ -1,5 +1,5 @@
 # RombMaster QA preflight — runs locally on Windows, never starts GitHub Actions.
-# Use a clean, disposable clone of chore/step-14-qa-android-preflight.
+# Use a clean, disposable clone of fix/step-15-verified-qa.
 [CmdletBinding()]
 param(
     [switch]$WebOnly,
@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$expectedBranch = "chore/step-14-qa-android-preflight"
+$expectedBranch = "fix/step-15-verified-qa"
 $logDir = Join-Path $root "qa-logs"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
@@ -126,3 +126,4 @@ try {
     Pop-Location
     Write-Host "QA summary: $summaryFile"
 }
+
