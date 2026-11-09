@@ -125,12 +125,19 @@ test('menu and Continue retain the game, and a declined new game preserves the s
   assert.equal(h.game.gameOver, true);
   assert.equal(h.el('continueBtn').hidden, false);
   h.el('startBtn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  assert.equal(h.storage.get('rhombus_save'), raw);
+  h.el('confirm-dialog-cancel').click();
+  assert.equal(h.el('confirm-dialog').hidden, true);
   assert.equal(h.storage.get('rhombus_save'), raw);
   assert.equal(h.game.gameOver, true);
   h.el('continueBtn').click();
   assert.equal(h.game.gameOver, false);
   assert.equal(JSON.stringify(h.game.board), board);
   h.el('restartBtn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog').hidden, true);
   assert.equal(JSON.stringify(h.game.board), board);
 });
 
@@ -143,6 +150,8 @@ test('Continue after reload uses saved settings for restart and rematch', async 
   h.el('continueBtn').click();
   assert.equal(h.game.settings.size, 8);
   h.el('restartBtn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  h.el('confirm-dialog-accept').click();
   assert.equal(h.game.settings.size, 8);
   assert.equal(h.game.settings.mode, 'pvp');
   assert.equal(h.game.settings.diff, 'hard');
@@ -377,4 +386,61 @@ test('malformed player registry blocks new player creation without mutation', as
   h.el('create-local-player-btn').click();
   assert.equal(storage.get('rombmaster_player_slots_v1'), before);
   assert.equal(storage.has('rombmaster_profile_v1:slot-1'), false);
+});
+
+test('new game confirmation keeps original save on Android Back and replaces it once on accept', async () => {
+  const h = await boot();
+  h.canvas.dispatch('pointerdown', h.event);
+  const saved = h.storage.get('rhombus_save');
+  const originalBoard = JSON.stringify(h.game.board);
+  h.el('menuBtn').click();
+  h.el('startBtn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  assert.equal(h.el('confirm-dialog-title').textContent, 'Start New Game?');
+  h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  assert.equal(h.storage.get('rhombus_save'), saved);
+  assert.equal(h.exits, 0);
+  h.el('startBtn').click();
+  h.el('confirm-dialog-accept').click();
+  assert.equal(h.game.gameOver, false);
+  assert.notEqual(JSON.stringify(h.game.board), originalBoard);
+  assert.equal(h.game.moveLog.length, 0);
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  const newSave = h.storage.get('rhombus_save');
+  h.el('confirm-dialog-accept').click();
+  assert.equal(h.storage.get('rhombus_save'), newSave);
+});
+
+test('Career confirmation does not erase the saved Quick match when canceled', async () => {
+  const h = await boot({ autoStart: false });
+  h.game.start(6, 'pvp', 'normal');
+  h.el('menuBtn').click();
+  const quickSave = h.storage.get('rhombus_save');
+  h.el('career-start-btn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  assert.equal(h.el('confirm-dialog-title').textContent, 'Start Career?');
+  h.el('confirm-dialog-cancel').click();
+  assert.equal(h.storage.get('rhombus_save'), quickSave);
+  assert.equal(h.el('confirm-dialog').hidden, true);
+});
+
+test('Restart confirmation pauses active game, cancels with Back and commits only on accept', async () => {
+  const h = await boot();
+  h.canvas.dispatch('pointerdown', h.event);
+  const before = JSON.stringify(h.game.board);
+  const saveBefore = h.storage.get('rhombus_save');
+  h.el('restartBtn').click();
+  assert.equal(h.el('confirm-dialog').hidden, false);
+  assert.equal(h.game.paused, true);
+  h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  assert.equal(h.game.paused, false);
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(h.storage.get('rhombus_save'), saveBefore);
+  h.el('restartBtn').click();
+  h.el('confirm-dialog-accept').click();
+  assert.equal(h.game.historyStack.length, 0);
+  assert.equal(h.game.paused, false);
+  assert.equal(h.el('confirm-dialog').hidden, true);
 });
