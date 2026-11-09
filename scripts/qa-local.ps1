@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$expectedBranch = "chore/step-14-qa-android-preflight"
+$expectedBranch = "fix/step-15-input-scale-stability"
 $logDir = Join-Path $root "qa-logs"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
