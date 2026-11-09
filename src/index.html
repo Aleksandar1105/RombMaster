@@ -83,6 +83,16 @@
                 </div>
                 <section class="career-panel" aria-label="Player profile and career">
                     <div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <div class="local-player-toolbar">
+                        <label for="local-player-select">Active local player</label>
+                        <select id="local-player-select" aria-label="Switch local player"></select>
+                        <div class="local-player-add">
+                            <input id="new-local-player-name" type="text" maxlength="18"
+                                placeholder="New player name" aria-label="New local player name" autocomplete="off">
+                            <button id="create-local-player-btn" type="button" class="btn-secondary">Add Player</button>
+                        </div>
+                        <p id="local-player-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
+                    </div>
                     <div class="profile-name-row">
                         <input id="profile-name" type="text" maxlength="32" placeholder="Player name"
                             aria-label="Your player name" autocomplete="nickname">
