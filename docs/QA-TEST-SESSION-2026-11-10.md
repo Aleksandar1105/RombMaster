@@ -1,8 +1,8 @@
 # RombMaster — local QA / test session (10 November 2026)
 
-**Target:** `chore/step-14-qa-android-preflight`, which is stacked on
+**Target:** `fix/step-15-input-scale-stability`, which is stacked on
 `feat/step-13-daily-brain-challenge`. This branch contains all proposed
-steps 1–13 plus the local preflight script, **without merging any Draft PR
+steps 1–13, the input-coordinate fix, and the local preflight script, **without merging any Draft PR
 into `main`**.
 
 ## Preparation — Windows 11
@@ -13,7 +13,7 @@ Open **PowerShell** and create a **separate fresh clone** in a test folder:
 ```powershell
 New-Item -ItemType Directory -Path 'C:\RombMaster-QA' -Force | Out-Null
 Set-Location 'C:\RombMaster-QA'
-git clone --branch chore/step-14-qa-android-preflight --single-branch https://github.com/Aleksandar1105/RombMaster.git RombMaster-Test
+git clone --branch fix/step-15-input-scale-stability --single-branch https://github.com/Aleksandar1105/RombMaster.git RombMaster-Test
 Set-Location '.\RombMaster-Test'
 git status --short
 ```
