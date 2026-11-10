@@ -12,6 +12,8 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
   function el(id) {
     if (elements.has(id)) return elements.get(id);
     const listeners = new Map(), classes = new Set();
+    // Match src/index.html: the game view is hidden while the menu is open.
+    if (id === 'view-game') classes.add('hidden');
     const element = {
       style: {}, textContent: '', width: 400, height: 400,
       getBoundingClientRect: () => ({ left: 0, top: 0, width: 400, height: 400 }),
@@ -363,6 +365,8 @@ test('new player names are escaped in the player selector', async () => {
   const h = await boot({ autoStart: false });
   h.el('new-local-player-name').value = '<img src=x>';
   h.el('create-local-player-btn').click();
+  assert.equal(h.el('local-player-select').value, 'slot-1');
+  assert.equal(JSON.parse(h.storage.get('rombmaster_profile_v1:slot-1')).name, '<img src=x>');
   assert.match(h.el('local-player-select').innerHTML, /&lt;img src=x&gt;/);
   assert.doesNotMatch(h.el('local-player-select').innerHTML, /<img/);
 });
@@ -372,6 +376,8 @@ test('creating local players does not overwrite existing guest daily progress', 
   h.storage.set('rombmaster_daily_progress_v1', '{"guest":"unchanged"}');
   h.el('new-local-player-name').value = 'Mila';
   h.el('create-local-player-btn').click();
+  assert.equal(h.el('local-player-select').value, 'slot-1');
+  assert.equal(JSON.parse(h.storage.get('rombmaster_profile_v1:slot-1')).name, 'Mila');
   assert.equal(h.storage.get('rombmaster_daily_progress_v1'), '{"guest":"unchanged"}');
   assert.equal(h.storage.get('rombmaster_daily_progress_v1:slot-1'), undefined);
   assert.equal(h.el('daily-open-btn').disabled, false);
@@ -443,4 +449,14 @@ test('Restart confirmation pauses active game, cancels with Back and commits onl
   assert.equal(h.game.historyStack.length, 0);
   assert.equal(h.game.paused, false);
   assert.equal(h.el('confirm-dialog').hidden, true);
+});
+
+test('creating a player during an active game is blocked without storage changes', async () => {
+  const h = await boot();
+  const before = [...h.storage.entries()];
+  h.el('new-local-player-name').value = 'Lina';
+  h.el('create-local-player-btn').click();
+  assert.match(h.el('local-player-feedback').textContent, /Close the current game/);
+  assert.deepEqual([...h.storage.entries()], before);
+  assert.equal(h.storage.has('rombmaster_profile_v1:slot-1'), false);
 });
