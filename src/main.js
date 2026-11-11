@@ -189,6 +189,42 @@ el('create-local-player-btn').onclick = () => {
 refreshPlayerChooser();
 refreshCareer();
 
+// Offline-only player comfort settings. Storage failures never block gameplay.
+const soundToggle = el('sound-toggle');
+const hapticsToggle = el('haptics-toggle');
+const comfortStatus = el('comfort-status');
+const comfortKey = 'rombmaster.comfort.v1';
+const readComfort = () => {
+    try {
+        const stored = localStorage.getItem(comfortKey);
+        if (!stored) return { sound: true, haptics: true };
+        const parsed = JSON.parse(stored);
+        return {
+            sound: typeof parsed.sound === 'boolean' ? parsed.sound : true,
+            haptics: typeof parsed.haptics === 'boolean' ? parsed.haptics : true,
+        };
+    } catch {
+        comfortStatus.textContent = 'Preferences are using defaults on this device.';
+        return { sound: true, haptics: true };
+    }
+};
+const setComfort = (settings, persist = false) => {
+    soundToggle.checked = settings.sound;
+    hapticsToggle.checked = settings.haptics;
+    Game.setSoundEnabled(settings.sound);
+    Native.setHapticsEnabled(settings.haptics);
+    if (!persist) return;
+    try {
+        localStorage.setItem(comfortKey, JSON.stringify(settings));
+        comfortStatus.textContent = '';
+    } catch {
+        comfortStatus.textContent = 'The setting works for this session but could not be saved.';
+    }
+};
+setComfort(readComfort());
+soundToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
+hapticsToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
+
 // The explicit in-game confirmation protects against accidental Career data loss.
 // A saved Career match must be resolved first, so it cannot later re-award
 // progression to a reset profile. Unknown saves are never destroyed.
