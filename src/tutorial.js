@@ -11,7 +11,7 @@ export const TUTORIAL_STEPS = Object.freeze([
   },
   {
     title: 'Complete a square',
-    text: 'The player who closes the fourth side captures that square and earns one point.',
+    text: 'The player who closes the fourth side earns one point and plays again if a line remains. A move without a capture passes the turn.',
     diagram: 'capture',
   },
   {

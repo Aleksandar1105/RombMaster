@@ -654,6 +654,14 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 .tutorial-demo[data-phase="again"] .tutorial-capture,
 .tutorial-demo[data-phase="capture"] .tutorial-cross,
 .tutorial-demo[data-phase="again"] .tutorial-cross { display: block; }
+.tutorial-demo[data-phase="won"] .tutorial-pending { display: none; }
+.tutorial-demo[data-phase="won"] .tutorial-capture,
+.tutorial-demo[data-phase="won"] .tutorial-cross { display: block; }
+.tutorial-demo[data-phase="won"] .tutorial-cell { fill: #713548; }
+@media (prefers-reduced-motion: no-preference) {
+  .tutorial-demo[data-phase="won"] .tutorial-cell { animation: capture-cell 240ms ease-out; }
+  @keyframes capture-cell { from { opacity: 0.2; } to { opacity: 1; } }
+}
 .help-content #tutorial-step-title { color: #f8fafc; font-size: 1rem; margin: 0; line-height: 1.4; }
 .help-content #tutorial-step-text { font-size: 0.87rem; line-height: 1.5; margin: 0; color: #cbd5e1; }
 .tutorial-actions { display: flex; gap: 10px; }

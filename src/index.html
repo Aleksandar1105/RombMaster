@@ -25,6 +25,7 @@
                     <div>
                             <h1 class="home-title">ROMB<span>MASTER</span></h1>
                         <p class="home-tagline">Connect lines to capture cells. Capture the most to win.</p>
+                        <button id="helpBtn" class="text-btn home-help" type="button">How to play</button>
                     </div>
                 </header>
                 <div class="home-actions">
@@ -141,7 +142,7 @@
                         <p id="comfort-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     </div>
                 </details>
-                <button id="helpBtn" class="text-btn home-help" type="button">? How to play</button>
+
                 <p class="home-footnote">Play offline · Progress stays on your device</p>
             </div>
         </div>
@@ -217,7 +218,8 @@
                 </svg>
             </div>
             <h4 id="tutorial-step-title">Start with a 2–2 score</h4>
-            <p id="tutorial-step-text">Four starter squares are already owned.</p>
+            <button id="tutorial-play" class="btn-secondary" type="button" hidden>Draw the fourth side</button>
+            <p id="tutorial-step-text" aria-live="polite">Four starter squares are already owned.</p>
             <div class="tutorial-actions">
                 <button id="tutorial-back" type="button" class="btn-secondary" hidden>Previous</button>
                 <button id="tutorial-next" type="button" class="btn-primary">Next</button>
