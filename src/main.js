@@ -409,18 +409,34 @@ el('backMenuBtn').onclick = () => {
 
 // Self-contained tutorial: no Board moves, career XP or save data are modified.
 let tutorialIndex = 0;
+let practiceWon = false;
 const updateTutorial = () => {
     const step = tutorialStep(tutorialIndex);
     el('tutorial-count').textContent = `Step ${tutorialIndex + 1} of ${TUTORIAL_STEPS.length}`;
     el('tutorial-step-title').textContent = step.title;
     el('tutorial-step-text').textContent = step.text;
     const diagram = el('tutorial-demo');
-    if (diagram.dataset) diagram.dataset.phase = step.diagram;
+    const practice = step.diagram === 'again';
+    if (diagram.dataset) diagram.dataset.phase = practice ? (practiceWon ? 'won' : 'start') : step.diagram;
+    el('tutorial-play').hidden = !practice || practiceWon;
+    if (practice) {
+        el('tutorial-step-title').textContent = practiceWon ? 'You won 3–2!' : 'One square left. The score is 2–2.';
+        el('tutorial-step-text').textContent = practiceWon
+            ? 'You closed the final square and earned the deciding point.'
+            : 'Play the last dotted side to capture the square.';
+    }
     el('tutorial-back').hidden = tutorialIndex === 0;
     el('tutorial-next').textContent =
         tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Finish' : 'Next';
 };
+el('tutorial-play').onclick = () => {
+    if (tutorialStep(tutorialIndex).diagram !== 'again' || practiceWon) return;
+    practiceWon = true;
+    updateTutorial();
+    el('tutorial-next').focus?.();
+};
 el('helpBtn').onclick = () => {
+    practiceWon = false;
     tutorialIndex = 0;
     updateTutorial();
     el('help-modal').classList.add('flex');
@@ -433,6 +449,7 @@ el('tutorial-next').onclick = () => {
 };
 el('tutorial-back').onclick = () => {
     if (tutorialIndex > 0) {
+        practiceWon = false;
         tutorialIndex--;
         updateTutorial();
     }

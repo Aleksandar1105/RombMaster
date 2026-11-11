@@ -474,3 +474,19 @@ test('sound and vibration choices persist independently after reopening the menu
   second.el('sound-toggle').onchange();
   assert.deepEqual(JSON.parse(first.storage.get('rombmaster.comfort.v1')), { sound: false, haptics: false });
 });
+
+test('guided capture teaches the winning point without replacing the saved game', async () => {
+  const h = await boot();
+  const before = [...h.storage.entries()];
+  h.el('helpBtn').click();
+  for (let i = 0; i < 3; i++) h.el('tutorial-next').click();
+  assert.equal(h.el('tutorial-play').hidden, false);
+  h.el('tutorial-play').click();
+  assert.equal(h.el('tutorial-step-title').textContent, 'You won 3–2!');
+  assert.equal(h.el('tutorial-play').hidden, true);
+  h.el('tutorial-next').click();
+  h.el('helpBtn').click();
+  for (let i = 0; i < 3; i++) h.el('tutorial-next').click();
+  assert.equal(h.el('tutorial-play').hidden, false);
+  assert.deepEqual([...h.storage.entries()], before);
+});
