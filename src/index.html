@@ -134,6 +134,14 @@
                     <button id="reset-career-btn" type="button" class="btn-secondary career-reset-trigger">Reset Career Progress</button>
                     </div>
                 </details>
+                <details id="comfort-settings" class="home-drawer">
+                    <summary>Sound &amp; feedback <small>Audio · Vibration</small></summary>
+                    <div class="home-drawer-content comfort-options">
+                        <label class="comfort-toggle"><span>Game sounds</span><input id="sound-toggle" type="checkbox" checked aria-label="Enable game sounds"></label>
+                        <label class="comfort-toggle"><span>Haptic feedback</span><input id="haptics-toggle" type="checkbox" checked aria-label="Enable vibration feedback"></label>
+                        <p id="comfort-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                    </div>
+                </details>
                 <button id="helpBtn" class="text-btn home-help" type="button">? How to play</button>
                 <p class="home-footnote">Play offline · Progress stays on your device</p>
             </div>
