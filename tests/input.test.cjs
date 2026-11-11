@@ -39,7 +39,7 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
   });
   const modules = new Map();
   const stubs = {
-    'native.js': { Native: { init() {}, vibrate() {}, onBack(callback) { nativeEvents.back = callback; }, onStateChange(callback) { nativeEvents.state = callback; }, exit() { exits++; } } },
+    'native.js': { Native: { init() {}, vibrate() {}, setHapticsEnabled(enabled) { nativeEvents.hapticsEnabled = enabled; }, onBack(callback) { nativeEvents.back = callback; }, onStateChange(callback) { nativeEvents.state = callback; }, exit() { exits++; } } },
     'audio.js': { AudioController: class { init() {} move() {} score() {} win() {} pause() {} resume() {} } },
     'renderer.js': { Renderer: class {
       constructor(canvas) { this.canvas = canvas; this.CELL = 40; this.offX = 0; this.offY = 0; this.particles = []; }
@@ -459,4 +459,18 @@ test('creating a player during an active game is blocked without storage changes
   assert.match(h.el('local-player-feedback').textContent, /Close the current game/);
   assert.deepEqual([...h.storage.entries()], before);
   assert.equal(h.storage.has('rombmaster_profile_v1:slot-1'), false);
+});
+
+
+test('sound and vibration choices persist independently after reopening the menu', async () => {
+  const first = await boot({ autoStart: false });
+  first.el('haptics-toggle').checked = false;
+  first.el('haptics-toggle').onchange();
+  assert.equal(first.nativeEvents.hapticsEnabled, false);
+  const second = await boot({ autoStart: false, storage: first.storage });
+  assert.equal(second.el('sound-toggle').checked, true);
+  assert.equal(second.nativeEvents.hapticsEnabled, false);
+  second.el('sound-toggle').checked = false;
+  second.el('sound-toggle').onchange();
+  assert.deepEqual(JSON.parse(first.storage.get('rombmaster.comfort.v1')), { sound: false, haptics: false });
 });

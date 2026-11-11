@@ -105,6 +105,8 @@ export const Game = {
     this.gameOver = true;
   },
 
+  setSoundEnabled(enabled) { audio.enabled = Boolean(enabled); },
+
   init(canvasEl, uiRefs) {
     this.ui = uiRefs;
     this.renderer = new Renderer(canvasEl);

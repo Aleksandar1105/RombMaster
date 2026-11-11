@@ -1,5 +1,5 @@
 # RombMaster QA preflight - runs locally on Windows, never starts GitHub Actions.
-# Use a clean, disposable clone of fix/step-15-input-scale-stability.
+# Use a clean, disposable clone of feat/step-21-player-comfort-qa.
 [CmdletBinding()]
 param(
     [switch]$WebOnly,
@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$expectedBranch = "fix/step-15-input-scale-stability"
+$expectedBranch = "feat/step-21-player-comfort-qa"
 $logDir = Join-Path $root "qa-logs"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"

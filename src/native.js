@@ -4,14 +4,17 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 
 export const Native = {
+  hapticsEnabled: true,
+  setHapticsEnabled(enabled) { this.hapticsEnabled = Boolean(enabled); },
   async init() {
     try {
       await StatusBar.setStyle({ style: Style.Dark });
-      await StatusBar.setBackgroundColor({ color: '#0f172a' });
+      await StatusBar.setBackgroundColor({ color: '#080F21' });
     } catch (e) { console.log('Web environment'); }
   },
 
   async vibrate(type = 'light') {
+    if (!this.hapticsEnabled) return;
     try {
       if (type === 'heavy') await Haptics.impact({ style: ImpactStyle.Heavy });
       else if (type === 'medium') await Haptics.impact({ style: ImpactStyle.Medium });

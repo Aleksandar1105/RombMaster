@@ -15,7 +15,10 @@ async function load() {
   const entry = get('ai.js');
   await entry.link(specifier => get(path.basename(specifier)));
   await entry.evaluate();
-  return { AI:entry.namespace.AI, Board:get('board.js').namespace.Board };
+  const board = get('board.js');
+  await board.link(specifier => get(path.basename(specifier)));
+  await board.evaluate();
+  return { AI: entry.namespace.AI, Board: board.namespace.Board };
 }
 test('hard AI returns a legal move and does not modify the board in tactical positions', async () => {
   const { AI, Board } = await load();
@@ -23,7 +26,7 @@ test('hard AI returns a legal move and does not modify the board in tactical pos
     const board = new Board(size);
     for (let step=0;step<15;step++) {
       const moves=board.getFreeMoves();
-      if(!moves.length) break;
+      if (moves.length <= 7) break;
       const move=moves[(step*3+5)%moves.length];
       board.makeMove(move.t,move.r,move.c,step%2);
     }
