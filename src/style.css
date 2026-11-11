@@ -918,3 +918,17 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #view-menu summary:focus-visible, #view-menu button:focus-visible, #view-menu select:focus-visible, #view-menu input:focus-visible { outline:3px solid #F6C86A; outline-offset:3px; }
 @media (max-width:360px) { #view-menu { padding-inline:7px; } #view-menu > .home-shell { padding:13px; gap:10px; } .home-mark { width:70px; } .home-quick,.home-career,.home-daily { padding:11px; } }
 @media (prefers-reduced-motion:reduce) { #view-menu .btn-primary::after { transition:none; } }
+
+/* Step 21: predictable comfort controls, no additional navigation screens. */
+.comfort-options { gap: 10px; }
+.comfort-toggle {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:9px 4px; min-height:48px; margin:0; letter-spacing:0;
+  text-transform:none; font-size:.88rem; color:#E2E8F0; cursor:pointer;
+}
+.comfort-toggle input { width:23px; height:23px; accent-color:#22D3EE; cursor:pointer; }
+.home-drawer[open] { overflow:visible; }
+@media (prefers-reduced-motion:reduce) {
+  .pop-effect { animation:none; }
+  #view-menu .home-mark { filter:none; }
+}
