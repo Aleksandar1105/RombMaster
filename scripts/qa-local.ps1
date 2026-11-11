@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$expectedBranch = "fix/step-15-input-scale-stability"
+$expectedBranch = "feat/step-21-player-comfort-qa"
 $logDir = Join-Path $root "qa-logs"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
