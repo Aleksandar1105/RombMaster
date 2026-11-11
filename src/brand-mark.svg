@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#1B3569"/><stop offset="1" stop-color="#080F21"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="6" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="512" height="512" rx="96" fill="url(#bg)"/><path d="M256 62 450 256 256 450 62 256Z" fill="#10264A" stroke="#4069A5" stroke-width="9"/>
+<path d="M256 62 62 256 256 450" fill="none" stroke="#22D3EE" stroke-width="21" stroke-linejoin="round"/><path d="M256 450 450 256 256 62" fill="none" stroke="#FB7185" stroke-width="21" stroke-linejoin="round"/>
+<path d="M159 159 353 353M353 159 159 353M256 62V450M62 256H450" stroke="#B4C9E3" stroke-width="12" opacity=".76"/>
+<path d="M159 159 256 256 159 353 62 256Z" fill="#22D3EE" opacity=".86"/><path d="M256 256 353 353 256 450 159 353Z" fill="#FB7185" opacity=".89"/>
+<path d="M159 159 256 256 159 353 62 256Z" fill="none" stroke="#67E8F9" stroke-width="8" filter="url(#glow)"/>
+<g fill="#F8FAFC" stroke="#7FA6CB" stroke-width="4"><circle cx="256" cy="62" r="17"/><circle cx="62" cy="256" r="17"/><circle cx="450" cy="256" r="17"/><circle cx="256" cy="450" r="17"/><circle cx="159" cy="159" r="15"/><circle cx="353" cy="159" r="15"/><circle cx="159" cy="353" r="15"/><circle cx="353" cy="353" r="15"/><circle cx="256" cy="256" r="15"/></g></svg>
