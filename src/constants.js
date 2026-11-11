@@ -4,12 +4,12 @@ export const CONSTANTS = {
   COLORS: {
     lineActive: '#94a3b8',        // Сива (достапно)
     linePlayed: '#f8fafc',        // Бела (одиграно)
-    x: '#ef4444',                 // Црвена
-    o: '#3b82f6',                 // Сина
-    xDim: 'rgba(239, 68, 68, 0.15)',
-    oDim: 'rgba(59, 130, 246, 0.15)',
-    lastMove: '#00ffcc',          // Неонски сјај
-    glow: '#00ffcc',
-    bg: '#1e293b'
+    x: '#FB7185',                 // Црвена
+    o: '#22D3EE',                 // Сина
+    xDim: 'rgba(251, 113, 133, 0.17)',
+    oDim: 'rgba(34, 211, 238, 0.17)',
+    lastMove: '#F6C86A',          // Неонски сјај
+    glow: '#F6C86A',
+    bg: '#101B34'
   }
 };
