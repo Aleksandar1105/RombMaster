@@ -1,5 +1,5 @@
 # RombMaster QA preflight - runs locally on Windows, never starts GitHub Actions.
-# Use a clean, disposable clone of fix/step-15-input-scale-stability.
+# Use a clean, disposable clone of feat/step-21-player-comfort-qa.
 [CmdletBinding()]
 param(
     [switch]$WebOnly,
