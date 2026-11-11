@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Rhombus Master</title>
+    <title>RombMaster — Strategic Board Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
@@ -17,47 +17,47 @@
     </div>
 
     <div id="app">
-        <!-- MENU VIEW -->
+        <!-- MENU VIEW: prominent core actions, advanced choices on demand -->
         <div id="view-menu" class="view active-view">
-            <!-- <h1>RHOMBUS<br><span>MASTER</span></h1> -->
-            <div class="logo-container">
-                <svg width="180" height="180" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="glow-red-ui" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="10" result="coloredBlur" />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                        <filter id="glow-blue-ui" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="10" result="coloredBlur" />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    <g transform="translate(256, 256)">
-                        <!-- Left Side (Red) -->
-                        <path d="M0 -140 L-140 0 L0 140" fill="none" stroke="#ef4444" stroke-width="28"
-                            stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-red-ui)" />
-                        <!-- Right Side (Blue) -->
-                        <path d="M0 -140 L140 0 L0 140" fill="none" stroke="#3b82f6" stroke-width="28"
-                            stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-blue-ui)" />
-                        <!-- Dots -->
-                        <circle cx="-140" cy="0" r="18" fill="#ef4444" filter="url(#glow-red-ui)" />
-                        <circle cx="140" cy="0" r="18" fill="#3b82f6" filter="url(#glow-blue-ui)" />
-                        <circle cx="0" cy="140" r="18" fill="#ffffff" />
-                        <!-- Spark -->
-                        <path d="M0 -160 L15 -140 L0 -120 L-15 -140 Z" fill="#ffffff" filter="url(#glow-blue-ui)">
-                            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
-                        </path>
-                    </g>
-                </svg>
-                <h1 class="logo-text">RHOMBUS<br><span>MASTER</span></h1>
-            </div>
-            <div class="glass-panel">
+            <div class="glass-panel home-shell">
+                <header class="home-hero">
+                    <img src="./brand-mark.svg" class="home-mark" alt="" aria-hidden="true">
+                    <div>
+                        <p class="home-kicker">THINK AHEAD. OWN THE BOARD.</p>
+                        <h1 class="home-title">ROMB<span>MASTER</span></h1>
+                        <p class="home-tagline">Connect. Capture. Outsmart.</p>
+                    </div>
+                </header>
+                <div class="home-actions">
+                    <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →</button>
+                    <p id="save-status" class="save-status" role="status" hidden></p>
+                    <section class="home-quick" aria-label="Quick Play">
+                        <div class="home-card-head"><strong>QUICK PLAY</strong><span class="home-chip">Offline · No sign-in</span></div>
+                        <p>Jump straight into a match. You can customize the rules below.</p>
+                        <button id="startBtn" class="btn-primary home-play" type="button">▶ Play now</button>
+                    </section>
+                    <section class="career-panel home-career" aria-label="Career mode">
+                    <div class="career-heading">
+                        <span>CAREER MODE</span>
+                        <span id="career-progress">Level 1 / 30</span>
+                    </div>
+                    <label class="career-select-label" for="career-level">Choose unlocked level</label>
+                    <select id="career-level" aria-label="Unlocked career level"></select>
+                    <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
+                    <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
+                    <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                    
+                    </section>
+                <section class="daily-panel home-daily" aria-label="Daily brain challenge">
+                    <div class="daily-heading"><strong>🧠 Daily Brain Challenge</strong><span id="daily-points">0 Brain Points</span></div>
+                    <p>Three quick tactics: capture, defend, and find the double capture.</p>
+                    <p id="daily-menu-status" role="status">A fresh challenge each day. No pressure to maintain a streak.</p>
+                    <button id="daily-open-btn" type="button" class="btn-primary">Train Your Brain</button>
+                </section>
+                </div>
+                <details id="quick-settings" class="home-drawer">
+                    <summary>Quick Play settings <small>Board · Opponent · AI</small></summary>
+                    <div class="home-drawer-content">
                 <div>
                     <label>Board Size</label>
                     <div class="btn-group">
@@ -81,7 +81,11 @@
                         <button data-diff="hard">Master</button>
                     </div>
                 </div>
-                <section class="career-panel" aria-label="Player profile and career">
+                    </div>
+                </details>
+                <details id="player-settings" class="home-drawer">
+                    <summary>Player profile <small>Local · Stats · Achievements</small></summary>
+                    <div class="home-drawer-content">
                     <div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
                     <div class="local-player-toolbar">
                         <label for="local-player-select">Active local player</label>
@@ -127,29 +131,11 @@
                         <ul id="achievement-list" class="achievement-list" aria-label="Career achievements"></ul>
                         <p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
                     </details>
-                    <div class="career-heading">
-                        <span>CAREER MODE</span>
-                        <span id="career-progress">Level 1 / 30</span>
-                    </div>
-                    <label class="career-select-label" for="career-level">Choose unlocked level</label>
-                    <select id="career-level" aria-label="Unlocked career level"></select>
-                    <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
-                    <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
-                    <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     <button id="reset-career-btn" type="button" class="btn-secondary career-reset-trigger">Reset Career Progress</button>
-                </section>
-                <section class="daily-panel" aria-label="Daily brain challenge">
-                    <div class="daily-heading"><strong>🧠 Daily Brain Challenge</strong><span id="daily-points">0 Brain Points</span></div>
-                    <p>Three quick tactics: capture, defend, and find the double capture.</p>
-                    <p id="daily-menu-status" role="status">A fresh challenge each day. No pressure to maintain a streak.</p>
-                    <button id="daily-open-btn" type="button" class="btn-primary">Train Your Brain</button>
-                </section>
-                <button id="continueBtn" class="btn-primary" hidden>Continue</button>
-                <p id="save-status" class="save-status" role="status" hidden></p>
-                <button id="startBtn" class="btn-primary">Play Now</button>
-                <div style="text-align:center; margin-top:-10px;">
-                    <button id="helpBtn" class="text-btn">How to play?</button>
-                </div>
+                    </div>
+                </details>
+                <button id="helpBtn" class="text-btn home-help" type="button">? How to play</button>
+                <p class="home-footnote">Play offline · Progress stays on your device</p>
             </div>
         </div>
 
