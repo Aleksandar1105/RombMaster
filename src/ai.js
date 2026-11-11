@@ -15,6 +15,85 @@ function captureOpportunities(board) {
   return count;
 }
 
+
+/* Deep-endgame solver for small remaining boards. Uses exact turn transitions:
+   completing a cell keeps the mover's turn. Never mutates the live board. */
+function solveSmallEndgame(board, player, maxNodes = 6000) {
+  const free = board.getFreeMoves();
+  if (!free.length || free.length > 9) return null;
+  const cache = new Map();
+  let visited = 0, exhausted = false;
+  const key = (state, who) =>
+    who + ':' + state.score.join(',') + ':' +
+    state.h.map(row => row.map(Number).join('')).join('') + ':' +
+    state.v.map(row => row.map(Number).join('')).join('');
+
+  const value = (state, who) => {
+    const moves = state.getFreeMoves();
+    if (!moves.length) return state.score[CONSTANTS.O] - state.score[CONSTANTS.X];
+    const k = key(state, who);
+    if (cache.has(k)) return cache.get(k);
+    if (++visited > maxNodes) { exhausted = true; return 0; }
+    let best = who === CONSTANTS.O ? -Infinity : Infinity;
+    for (const move of moves) {
+      const next = state.clone();
+      const made = next.makeMove(move.t, move.r, move.c, who);
+      const result = value(next, made.points > 0 ? who : 1 - who);
+      if (exhausted) return 0;
+      best = who === CONSTANTS.O ? Math.max(best, result) : Math.min(best, result);
+    }
+    cache.set(k, best);
+    return best;
+  };
+
+  let chosen = null, top = player === CONSTANTS.O ? -Infinity : Infinity;
+  // A deterministic tie-break prefers immediate captures.
+  for (const move of free) {
+    const next = board.clone();
+    const made = next.makeMove(move.t, move.r, move.c, player);
+    const score = value(next, made.points > 0 ? player : 1 - player);
+    if (exhausted) return null; // fall back rather than claim an exact solution
+    if (chosen === null ||
+        (player === CONSTANTS.O && score > top) ||
+        (player === CONSTANTS.X && score < top)) {
+      chosen = move;
+      top = score;
+    }
+  }
+  return chosen;
+}
+
+/* When forced to open a chain, limit how many cells we hand over.
+   This is a bounded approximation, not an assertion of perfect play. */
+function immediateCaptureRun(board, player, maxSteps = 20) {
+  const copy = board.clone();
+  let total = 0;
+  for (let step = 0; step < maxSteps; step++) {
+    let selected = null, bestPoints = 0;
+    for (const move of copy.getFreeMoves()) {
+      const simulation = copy.clone();
+      const result = simulation.makeMove(move.t, move.r, move.c, player);
+      if (result.points > bestPoints) { selected = move; bestPoints = result.points; }
+    }
+    if (!selected) break;
+    copy.makeMove(selected.t, selected.r, selected.c, player);
+    total += bestPoints;
+  }
+  return total;
+}
+
+function chooseLeastCostlyOpening(board, ordered) {
+  const noCapture = ordered.filter(item => item.points === 0);
+  if (!noCapture.length || noCapture.some(item => item.exposed === 0)) return null;
+  // The opponent is able to capture immediately from every available opening.
+  let winner = null, leastCost = Infinity;
+  for (const item of noCapture) {
+    const cost = immediateCaptureRun(item.next, CONSTANTS.X);
+    if (cost < leastCost) { leastCost = cost; winner = item; }
+  }
+  return winner?.move || null;
+}
+
 function shuffle(items, random) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -102,6 +181,12 @@ export const AI = {
     const moves = board.getFreeMoves();
     if (!moves.length) return null;
     const strength = aiStrength(difficulty, careerLevel);
+    // Advanced opponents can calculate exact outcomes near the end rather than
+    // automatically taking an attractive but strategically losing chain.
+    if (difficulty === 'hard' && strength.depth >= 2 && moves.length <= 9) {
+      const endgame = solveSmallEndgame(board, CONSTANTS.O);
+      if (endgame) return endgame;
+    }
     if (difficulty === 'easy') {
       // Gentle, increasingly opportunistic AI for the early career stages.
       if (random() < strength.captureChance) {
@@ -119,6 +204,13 @@ export const AI = {
     // Extra moves from captured squares are usually strongest. Preserve this
     // rule even at low search depths so the computer cannot throw away points.
     if (bestCapture.points > 0) return bestCapture.move;
+
+    // Once all safe lines are gone, sacrifice the smallest available chain
+    // rather than picking a random edge with no strategic understanding.
+    if (strength.safeChance > 0 && ordered.every(item => item.exposed > 0)) {
+      const smallestSacrifice = chooseLeastCostlyOpening(board, ordered);
+      if (smallestSacrifice) return smallestSacrifice;
+    }
 
     if (random() >= strength.safeChance) {
       return moves[Math.min(moves.length - 1, Math.floor(random() * moves.length))];
