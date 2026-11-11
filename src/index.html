@@ -20,23 +20,30 @@
         <!-- MENU VIEW: prominent core actions, advanced choices on demand -->
         <div id="view-menu" class="view active-view">
             <div class="glass-panel home-shell">
+                <div id="home-hub">
                 <header class="home-hero">
-                    <img src="./brand-neon.webp" class="home-mark" alt="" aria-hidden="true">
-                    <div>
-                            <h1 class="home-title">ROMB<span>MASTER</span></h1>
-                        <p class="home-tagline">Connect lines to capture cells. Capture the most to win.</p>
-                        <button id="helpBtn" class="text-btn home-help" type="button">How to play</button>
-                    </div>
+                    <img src="./brand-neon.webp" class="home-mark" alt="">
+                    <div><h1 class="home-title">ROMB<span>MASTER</span></h1>
+                    <button id="helpBtn" class="text-btn home-help" type="button">How to play</button></div>
                 </header>
                 <div class="home-actions">
                     <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →</button>
-                    <p id="save-status" class="save-status" role="status" hidden></p>
-                    <section class="home-quick" aria-label="Quick Play">
-                        <div class="home-card-head"><strong>QUICK PLAY</strong><span class="home-chip">Offline · No sign-in</span></div>
-                        <p>Jump straight into a match. You can customize the rules below.</p>
-                        <button id="startBtn" class="btn-primary home-play" type="button">▶ Play now</button>
-                    </section>
-                    <section class="career-panel home-career" aria-label="Career mode">
+                    <button id="startBtn" class="btn-primary home-play" type="button">▶ Quick Play</button>
+                    <div class="mode-grid">
+                    <button type="button" data-page="career-page" class="nav-tile"><strong>Career</strong><small id="home-level"></small></button>
+                    <button id="daily-open-btn" class="nav-tile" type="button"><strong>Daily Challenge</strong><small id="daily-menu-status"></small><small id="daily-points"></small></button>
+                    </div>
+                    <nav class="home-links" aria-label="Game settings">
+                    <button type="button" data-page="quick-settings" class="nav-tile"><strong>Game setup</strong></button>
+                        <button type="button" data-page="player-settings" class="nav-tile"><strong>Profile</strong></button>
+                        <button type="button" data-page="comfort-settings" class="nav-tile"><strong>Sound</strong></button>
+                    </nav>
+                </div>
+                </div>
+                <div id="menu-page" hidden>
+                    <button type="button" id="page-back" class="btn-secondary">← Home</button>
+                    <h2 id="page-title"></h2>
+                    <section id="career-page" hidden class="career-panel home-career" aria-label="Career mode">
                     <div class="career-heading">
                         <span>CAREER MODE</span>
                         <span id="career-progress">Level 1 / 30</span>
@@ -48,15 +55,7 @@
                     <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     
                     </section>
-                <section class="daily-panel home-daily" aria-label="Daily brain challenge">
-                    <div class="daily-heading"><strong>🧠 Daily Brain Challenge</strong><span id="daily-points">0 Brain Points</span></div>
-                    <p>Three quick tactics: capture, defend, and find the double capture.</p>
-                    <p id="daily-menu-status" role="status">A fresh challenge each day. No pressure to maintain a streak.</p>
-                    <button id="daily-open-btn" type="button" class="btn-primary">Train Your Brain</button>
-                </section>
-                </div>
-                <details id="quick-settings" class="home-drawer">
-                    <summary>Quick Play settings <small>Board · Opponent · AI</small></summary>
+                <section id="quick-settings" class="home-drawer" hidden>
                     <div class="home-drawer-content">
                 <div>
                     <label>Board Size</label>
@@ -82,9 +81,8 @@
                     </div>
                 </div>
                     </div>
-                </details>
-                <details id="player-settings" class="home-drawer">
-                    <summary>Player profile <small>Local · Stats · Achievements</small></summary>
+                </section>
+                <section id="player-settings" class="home-drawer" hidden>
                     <div class="home-drawer-content">
                     <div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
                     <div class="local-player-toolbar">
@@ -133,27 +131,28 @@
                     </details>
                     <button id="reset-career-btn" type="button" class="btn-secondary career-reset-trigger">Reset Career Progress</button>
                     </div>
-                </details>
-                <details id="comfort-settings" class="home-drawer">
-                    <summary>Sound &amp; feedback <small>Audio · Vibration</small></summary>
+                </section>
+                <section id="comfort-settings" class="home-drawer" hidden>
                     <div class="home-drawer-content comfort-options">
                         <label class="comfort-toggle"><span>Game sounds</span><input id="sound-toggle" type="checkbox" checked aria-label="Enable game sounds"></label>
                         <label class="comfort-toggle"><span>Haptic feedback</span><input id="haptics-toggle" type="checkbox" checked aria-label="Enable vibration feedback"></label>
                         <p id="comfort-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     </div>
-                </details>
+                </section>
 
-                <p class="home-footnote">Play offline · Progress stays on your device</p>
+                </div>
+                <p id="save-status" class="save-status" role="status" hidden></p>
             </div>
         </div>
 
         <!-- GAME VIEW -->
         <div id="view-game" class="view hidden">
+            <div id="match-mode"></div>
             <div id="scoreboard">
                 <div class="player-card" id="p1-card" style="border-left: 4px solid var(--accent)">
                     <span class="badge badge-x"></span>
                     <div class="score-meta">
-                        <span class="p-label" style="color:var(--accent)">Player 1</span>
+                        <span id="p1-name" class="p-label" style="color:var(--accent)">Player 1</span>
                         <span class="score-num" id="p1-score">0</span>
                     </div>
                 </div>
@@ -161,7 +160,7 @@
                     style="border-right: 4px solid var(--primary); flex-direction: row-reverse;">
                     <span class="badge badge-o"></span>
                     <div class="score-meta" style="align-items:flex-end">
-                        <span class="p-label" style="color:var(--primary)">Player 2</span>
+                        <span id="p2-name" class="p-label" style="color:var(--primary)">Player 2</span>
                         <span class="score-num" id="p2-score">0</span>
                     </div>
                 </div>
@@ -179,11 +178,11 @@
             <p id="game-save-status" class="save-status" role="status" hidden></p>
             <div id="controls">
                 <div class="undo-control">
-                    <button id="undoBtn" class="btn-icon disabled" title="Undo" aria-label="Undo last move">↩</button>
+                    <button id="undoBtn" class="btn-icon disabled" title="Undo" aria-label="Undo last move"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5 3 11l6 6 M4 11h10a6 6 0 0 1 6 6"/></svg><span>Undo</span></button>
                     <span id="undo-counter" class="undo-counter" hidden>Undo 1/1</span>
                 </div>
-                <button id="restartBtn" class="btn-icon" title="Restart" aria-label="Restart game">↻</button>
-                <button id="menuBtn" class="btn-icon" title="Menu" aria-label="Return to menu">🏠</button>
+                <button id="restartBtn" class="btn-icon" title="Restart" aria-label="Restart game"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5v6h6 M4.5 10a8 8 0 1 1 1 7"/></svg><span>Restart</span></button>
+                <button id="menuBtn" class="btn-icon" title="Menu" aria-label="Return to menu"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 11 12 3l10 8 M5 10v11h5v-7h4v7h5V10"/></svg><span>Home</span></button>
             </div>
         </div>
     </div>

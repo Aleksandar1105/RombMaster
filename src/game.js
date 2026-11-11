@@ -182,6 +182,17 @@ export const Game = {
   },
 
   showBoard() {
+    const aiMatch = this.settings.mode === 'ai';
+    const playerName = aiMatch ? ProfileStore.read().profile?.name || 'You' : 'Player 1';
+    this.firstPlayerName = playerName;
+    const setLabel = (id, value) => {
+      const item = document.getElementById(id);
+      if (item) item.textContent = value;
+    };
+    setLabel('p1-name', playerName + ' · X');
+    setLabel('p2-name', (aiMatch ? 'Computer' : 'Player 2') + ' · O');
+    setLabel('match-mode', this.settings.careerLevel
+      ? 'Career · Level ' + this.settings.careerLevel + ' / 30' : 'Quick Play');
     if (this.paused) audio.pause();
     // 2. Исчисти партикли
     this.renderer.particles = [];
@@ -360,7 +371,7 @@ export const Game = {
 
     const isComputer = this.settings.mode === 'ai' && this.player === CONSTANTS.O;
     const currentName = this.player === CONSTANTS.X
-      ? 'Player 1'
+      ? this.firstPlayerName
       : isComputer ? 'Computer' : 'Player 2';
     const last = this.historyStack[this.historyStack.length - 1];
     const extraTurn = last && last.player === this.player &&
@@ -375,7 +386,7 @@ export const Game = {
       hint.textContent = 'View the final score';
     } else if (isComputer) {
       label.textContent = extraTurn ? 'Computer gets another turn' : 'Computer thinking…';
-      hint.textContent = 'Your turn is next';
+      hint.textContent = extraTurn ? 'Square captured · Computer plays again' : 'Choosing a line';
     } else if (extraTurn) {
       label.textContent = currentName + ' gets another turn';
       hint.textContent = 'You captured a square — play again';

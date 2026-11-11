@@ -940,3 +940,53 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   .pop-effect { animation:none; }
   #view-menu .home-mark { filter:none; }
 }
+
+#view-menu > .home-shell {
+  margin-block: auto;
+  background: radial-gradient(ellipse at top left, #203b59, transparent 68%), #101b32;
+}
+#home-hub, #menu-page { width: 100%; }
+#home-hub .home-hero { margin-bottom: clamp(14px, 4vh, 32px); }
+#home-hub .home-mark { width: clamp(64px, 20vmin, 105px); }
+.mode-grid, .home-links { display: grid; gap: 8px; }
+.mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.nav-tile {
+  display: grid; align-content: center; justify-items: start; gap: 5px;
+  color: #effaff; background: linear-gradient(135deg, #203956, #172641);
+  border: 1px solid #47617d; border-radius: 15px; padding: 12px;
+  font: inherit; text-align: left; min-height: 44px; cursor: pointer;
+}
+.mode-grid .nav-tile { min-height: 85px; border-top: 3px solid #63deee; }
+.mode-grid .nav-tile:last-child { border-top-color: #f4c76d; }
+.nav-tile small { font-size: .7rem; color: #c4d4e7; }
+.home-links .nav-tile { justify-items: center; padding: 8px 3px; font-size: .78rem; }
+#menu-page > h2 { margin: 18px 0; font-size: 1.5rem; }
+#menu-page .home-drawer-content { padding: 14px; }
+#match-mode { color: #f7d080; font-weight: 800; font-size: .82rem; letter-spacing: .06em; }
+.score-meta { min-width: 0; }
+.p-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#controls .btn-icon {
+  width: 78px; height: 54px; display: inline-flex; flex-direction: column; gap: 3px;
+  align-items: center; justify-content: center; font-family: inherit;
+  background: linear-gradient(155deg,#2a405e,#14243d); color: #cff9ff;
+  border: 1px solid #486883; box-shadow: inset 0 1px rgba(255,255,255,.12), 0 3px 0 #080f20;
+}
+#controls .btn-icon span { font: 700 .67rem Montserrat,sans-serif; }
+#controls .btn-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#controls #restartBtn { color: #ffdc96; }
+#controls .btn-icon:active, .nav-tile:active { transform: translateY(2px); }
+@keyframes section-enter { from { opacity: .45; transform: translateY(6px); } }
+@keyframes turn-enter { from { box-shadow: 0 0 16px currentColor; } }
+@media (prefers-reduced-motion: no-preference) {
+  #home-hub:not([hidden]), #menu-page:not([hidden]) { animation: section-enter .22s ease-out; }
+  #scoreboard .player-card.active { animation: turn-enter .35s ease-out; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  #view-menu > .home-shell { max-width: 760px; width: 100%; padding: 10px 15px; }
+  #home-hub { display: grid; grid-template-columns: 1fr 2fr; align-items: center; gap: 15px; }
+  #home-hub .home-hero { flex-direction: column; margin: 0; }
+  #home-hub .home-actions { gap: 5px; }
+  .mode-grid .nav-tile { min-height: 54px; padding: 5px 9px; }
+}
+#view-menu [hidden] { display: none; }

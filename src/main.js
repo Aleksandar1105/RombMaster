@@ -49,6 +49,34 @@ const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
     } else onConfirm();
 };
 
+const menuPages = {
+    'career-page': 'Career',
+    'quick-settings': 'Quick Play settings',
+    'player-settings': 'Player profile',
+    'comfort-settings': 'Sound & feedback',
+};
+let pageTrigger = null;
+function showHome() {
+    el('menu-page').hidden = true;
+    el('home-hub').hidden = false;
+    ui.viewMenu.scrollTop = 0;
+    pageTrigger?.focus();
+    pageTrigger = null;
+}
+document.querySelectorAll('[data-page]').forEach(button => {
+    button.onclick = () => {
+        pageTrigger = button;
+        const selected = button.dataset.page;
+        for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
+        el('page-title').textContent = menuPages[selected];
+        el('home-hub').hidden = true;
+        el('menu-page').hidden = false;
+        ui.viewMenu.scrollTop = 0;
+        el('page-back').focus();
+    };
+});
+el('page-back').onclick = showHome;
+
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
 const profileFeedback = el('profile-feedback');
@@ -101,7 +129,7 @@ const refreshCareer = () => {
         }
     }
     careerXP.textContent = `${p.xp} XP`;
-    careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
+    el('home-level').textContent = careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
     const selected = Number(careerSelect.value) || p.unlockedLevel;
     careerSelect.innerHTML = Array.from({ length: p.unlockedLevel }, (_, i) => {
         const n = i + 1;
@@ -371,6 +399,7 @@ el('restartBtn').onclick = () => {
     } else restart();
 };
 el('menuBtn').onclick = () => {
+    showHome();
     Game.saveLocal();
     Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
@@ -483,8 +512,8 @@ const refreshDailyMenu = () => {
     el('daily-open-btn').disabled = false;
     el('daily-points').textContent = `${state.progress.brainPoints} Brain Points`;
     el('daily-menu-status').textContent = state.progress.solved === 3
-        ? 'Completed today! Come back whenever you like.'
-        : `${state.progress.solved} of 3 tactics completed today`;
+        ? 'View today’s result →'
+        : `${state.progress.solved} of 3 complete`;
 };
 
 const drawDaily = () => {
@@ -524,7 +553,7 @@ const showDaily = () => {
         dailyPuzzle = null;
         el('daily-step').textContent = 'All 3 challenges complete';
         el('daily-title').textContent = 'Daily workout complete!';
-        el('daily-instruction').textContent = 'Well played! You earned 30 Brain Points. Your next workout is optional.';
+        el('daily-instruction').textContent = `+30 Brain Points today · ${state.progress.brainPoints} total`;
         return;
     }
     dailyPuzzle = createDailyPuzzle(dailyDate, index);
@@ -602,6 +631,8 @@ Native.onBack(() => {
         el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
+    } else if (pageTrigger) {
+        showHome();
     } else {
         Native.exit();
     }
