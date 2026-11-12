@@ -287,19 +287,23 @@ label {
   backdrop-filter: blur(10px);
 }
 
-/* Specific styling for P1 and P2 active states (Neon Glow) */
-#p1-card.active {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.6);
-  transform: scale(1.08);
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+/* Keep the current player's card illuminated throughout their turn. */
+#p1-card { --turn-color: #ff829b; --turn-fill: #703246; }
+#p2-card { --turn-color: #68efff; --turn-fill: #16536a; }
+#scoreboard .player-card.active {
+  background: linear-gradient(120deg, var(--turn-fill), #192a40);
+  border-color: var(--turn-color);
+  box-shadow: inset 0 0 0 2px var(--turn-color), 0 0 14px var(--turn-fill);
 }
-
-#p2-card.active {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.6);
-  transform: scale(1.08);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+.player-card.active .score-num::after {
+  content: 'TURN'; display: inline-block; vertical-align: middle;
+  font: 800 .6rem Montserrat, sans-serif; letter-spacing: .04em;
+  margin-left: 6px; padding: 3px 5px; border-radius: 5px;
+  color: #0a1829; background: var(--turn-color);
+}
+#quick-summary { display: block; font-size: .68rem; font-weight: 600; margin-top: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  #scoreboard .player-card { transition: none; }
 }
 
 .score-meta {
@@ -977,7 +981,7 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #controls #restartBtn { color: #ffdc96; }
 #controls .btn-icon:active, .nav-tile:active { transform: translateY(2px); }
 @keyframes section-enter { from { opacity: .45; transform: translateY(6px); } }
-@keyframes turn-enter { from { box-shadow: 0 0 16px currentColor; } }
+@keyframes turn-enter { from { box-shadow: inset 0 0 0 3px #fff, 0 0 20px var(--turn-color); } }
 @media (prefers-reduced-motion: no-preference) {
   #home-hub:not([hidden]), #menu-page:not([hidden]) { animation: section-enter .22s ease-out; }
   #scoreboard .player-card.active { animation: turn-enter .35s ease-out; }

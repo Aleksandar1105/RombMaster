@@ -22,12 +22,13 @@ export function createConfirmationController({
     return true;
   }
 
-  function open({ heading, detail, confirmLabel = 'Confirm', onConfirm, focusReturn = null }) {
+  function open({ heading, detail, confirmLabel = 'Confirm', cancelLabel = 'Keep Playing', onConfirm, focusReturn = null }) {
     if (isOpen()) return false;
     if (typeof onConfirm !== 'function') throw new Error('Missing confirmation action');
     title.textContent = String(heading);
     message.textContent = String(detail);
     acceptButton.textContent = String(confirmLabel);
+    cancelButton.textContent = String(cancelLabel);
     pending = onConfirm;
     restoreFocus = focusReturn ?? documentRef.activeElement ?? null;
     modal.hidden = false;

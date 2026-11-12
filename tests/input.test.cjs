@@ -162,7 +162,7 @@ test('Continue after reload uses saved settings for restart and rematch', async 
   assert.equal(h.game.settings.size, 8);
 });
 
-test('Back closes help first, then saves to menu, then requests Android exit', async () => {
+test('Back closes help first, then saves to menu, then confirms Android exit from home', async () => {
   const h = await boot();
   h.canvas.dispatch('pointerdown', h.event);
   h.el('help-modal').classList.add('flex');
@@ -175,6 +175,16 @@ test('Back closes help first, then saves to menu, then requests Android exit', a
   assert.equal(h.el('continueBtn').hidden, false);
   assert.equal(h.exits, 0);
   h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog-title').textContent, 'Exit RombMaster?');
+  assert.equal(h.exits, 0);
+  h.el('confirm-dialog-cancel').click();
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  h.nativeEvents.back();
+  h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  assert.equal(h.exits, 0);
+  h.nativeEvents.back();
+  h.el('confirm-dialog-accept').click();
   assert.equal(h.exits, 1);
 });
 

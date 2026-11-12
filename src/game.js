@@ -400,7 +400,10 @@ export const Game = {
     this.updateTurnStatus();
     this.ui.p1Score.textContent = this.board.score[CONSTANTS.X];
     this.ui.p2Score.textContent = this.board.score[CONSTANTS.O];
-    if (this.player === CONSTANTS.X) {
+    if (this.gameOver || this.board.isGameOver()) {
+      this.ui.p1Card.classList.remove('active');
+      this.ui.p2Card.classList.remove('active');
+    } else if (this.player === CONSTANTS.X) {
       this.ui.p1Card.classList.add('active');
       this.ui.p2Card.classList.remove('active');
     } else {

@@ -349,10 +349,17 @@ const setupGroup = (sel, cb) => {
     document.querySelectorAll(sel).forEach(b => b.onclick = () => {
         document.querySelectorAll(sel).forEach(x => x.classList.remove("selected"));
         b.classList.add("selected"); cb(b);
+        refreshQuickSummary();
     });
 };
 
 let size = 6, mode = 'ai', diff = 'normal';
+function refreshQuickSummary() {
+    const board = { 4: 'Small', 6: 'Classic', 8: 'Large' }[size];
+    const difficulty = { easy: 'Casual', normal: 'Smart', hard: 'Master' }[diff];
+    el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
+}
+refreshQuickSummary();
 setupGroup("[data-size]", b => size = +b.dataset.size);
 setupGroup("[data-ai]", b => {
     mode = b.dataset.ai;
@@ -373,6 +380,7 @@ el('startBtn').onclick = () => {
 el('continueBtn').onclick = () => {
     if (!Game.resume()) return;
     ({ size, mode, diff } = Game.settings);
+    refreshQuickSummary();
     for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
         document.querySelectorAll(`[data-${key}]`).forEach(button => {
             if (button.dataset[key] === String(value)) button.classList.add('selected');
@@ -634,6 +642,11 @@ Native.onBack(() => {
     } else if (pageTrigger) {
         showHome();
     } else {
-        Native.exit();
+        confirmDialog.open({
+            heading: 'Exit RombMaster?',
+            detail: 'Close the game and return to your phone?',
+            confirmLabel: 'Yes, exit', cancelLabel: 'No, stay',
+            onConfirm: () => Native.exit(),
+        });
     }
 });
