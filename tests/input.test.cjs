@@ -492,7 +492,7 @@ test('guided capture teaches the winning point without replacing the saved game'
   for (let i = 0; i < 3; i++) h.el('tutorial-next').click();
   assert.equal(h.el('tutorial-play').hidden, false);
   h.el('tutorial-play').click();
-  assert.equal(h.el('tutorial-step-title').textContent, 'You won 3–2!');
+  assert.equal(h.el('tutorial-step-title').textContent, 'You won 1–0!');
   assert.equal(h.el('tutorial-play').hidden, true);
   h.el('tutorial-next').click();
   h.el('helpBtn').click();

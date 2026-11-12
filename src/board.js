@@ -7,7 +7,6 @@ export class Board {
 
   init(size) {
     this.R = Math.floor(size / 2);
-    if (size == 4) this.R = 2; if (size == 6) this.R = 3; if (size == 8) this.R = 4;
     this.S = 2 * this.R + 1;
     this.C = this.R;
     this.D = this.S + 1;
@@ -43,7 +42,7 @@ export class Board {
     [{r:0,c:m,p:CONSTANTS.X}, {r:this.S-1,c:m,p:CONSTANTS.X}, 
      {r:m,c:0,p:CONSTANTS.O}, {r:m,c:this.S-1,p:CONSTANTS.O}].forEach(({r, c, p}) => {
       if (this.active(r, c)) {
-        this.owner[r][c] = p; this.score[p]++;
+        this.owner[r][c] = p;
         this.h[r][c] = this.h[r+1][c] = true;
         this.v[r][c] = this.v[r][c+1] = true;
       }

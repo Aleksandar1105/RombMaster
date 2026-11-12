@@ -355,7 +355,7 @@ const setupGroup = (sel, cb) => {
 
 let size = 6, mode = 'ai', diff = 'normal';
 function refreshQuickSummary() {
-    const board = { 4: 'Small', 6: 'Classic', 8: 'Large' }[size];
+    const board = { 4: 'Small', 6: 'Classic', 8: 'Large', 10: 'Grand' }[size];
     const difficulty = { easy: 'Casual', normal: 'Smart', hard: 'Master' }[diff];
     el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
 }
@@ -457,7 +457,7 @@ const updateTutorial = () => {
     if (diagram.dataset) diagram.dataset.phase = practice ? (practiceWon ? 'won' : 'start') : step.diagram;
     el('tutorial-play').hidden = !practice || practiceWon;
     if (practice) {
-        el('tutorial-step-title').textContent = practiceWon ? 'You won 3–2!' : 'One square left. The score is 2–2.';
+        el('tutorial-step-title').textContent = practiceWon ? 'You won 1–0!' : 'One square left. The score is 0–0.';
         el('tutorial-step-text').textContent = practiceWon
             ? 'You closed the final square and earned the deciding point.'
             : 'Play the last dotted side to capture the square.';

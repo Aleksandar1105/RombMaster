@@ -5,7 +5,7 @@ import { careerLevel, LocalSlots } from './profile.js';
 export const SAVE_KEY = 'rhombus_save';
 
 function settingsOf(value) {
-  if (!value || ![4, 6, 8].includes(value.size) ||
+  if (!value || ![4, 6, 8, 10].includes(value.size) ||
       !['ai', 'pvp'].includes(value.mode) ||
       !['easy', 'normal', 'hard'].includes(value.diff)) throw new Error('Invalid settings');
   const settings = { size: value.size, mode: value.mode, diff: value.diff };
@@ -46,6 +46,9 @@ function replay(settings, moves) {
 // from legal moves. Never attach untrusted JSON to a Board prototype.
 function migrateLegacy(data, settings) {
   const board = new Board(settings.size);
+  // Historical snapshots counted the two starting cells per player.
+  // Validate them under their original rules, then replay earned points.
+  board.score = [2, 2];
   if (!Array.isArray(data.history) || data.history.length > board.getFreeMoves().length) throw new Error('Invalid history');
   let player = CONSTANTS.X;
   const moves = [];

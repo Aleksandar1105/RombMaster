@@ -397,10 +397,12 @@ test('hidden game drops its queued frame without drawing', async () => {
   assert.equal(h.frames.size, 0);
 });
 
-for (const size of [4, 6, 8]) {
+for (const size of [4, 6, 8, 10]) {
   test(`reload restores size ${size}, scores, turn, highlight and working Undo`, async () => {
     const first = await harness();
     first.game.start(size, 'pvp', 'hard');
+    assert.deepEqual(Array.from(first.game.board.score), [0, 0]);
+    assert.equal(first.game.board.owner.flat().filter(x => x !== null).length, 4);
     for (let i = 0; i < 5; i++) first.game.executeMove(first.game.board.getFreeMoves()[0]);
     const before = JSON.stringify(first.game.board);
     const history = JSON.stringify(first.game.historyStack);
@@ -446,8 +448,13 @@ test('validated legacy snapshots migrate with undo history intact', async () => 
   h.game.start(6, 'pvp', 'normal');
   for (let i = 0; i < 5; i++) h.game.executeMove(h.game.board.getFreeMoves()[0]);
   const expected = JSON.stringify(h.game.board);
-  h.storage.set('rhombus_save', JSON.stringify({ board: h.game.board,
+  const legacy = JSON.parse(JSON.stringify({ board: h.game.board,
     player: h.game.player, settings: h.game.settings, history: h.game.historyStack }));
+  for (const scores of [legacy.board.score, ...legacy.history.flatMap(s => [s.score, s.boardState.score])]) {
+    scores[0] += 2;
+    scores[1] += 2;
+  }
+  h.storage.set('rhombus_save', JSON.stringify(legacy));
   const restored = await harness({ storage: h.storage, autoStart: false });
   assert.equal(restored.game.resume(), true);
   assert.equal(JSON.stringify(restored.game.board), expected);

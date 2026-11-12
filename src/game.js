@@ -5,7 +5,7 @@ import { Board } from './board.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
-import { ProfileStore, careerLevel } from './profile.js';
+import { ProfileStore, careerLevel, threeStarTarget } from './profile.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 
 const audio = new AudioController();
@@ -191,8 +191,7 @@ export const Game = {
     };
     setLabel('p1-name', playerName + ' · X');
     setLabel('p2-name', (aiMatch ? 'Computer' : 'Player 2') + ' · O');
-    setLabel('match-mode', this.settings.careerLevel
-      ? 'Career · Level ' + this.settings.careerLevel + ' / 30' : 'Quick Play');
+    this.updateUI();
     if (this.paused) audio.pause();
     // 2. Исчисти партикли
     this.renderer.particles = [];
@@ -207,7 +206,6 @@ export const Game = {
     // Бидејќи renderer.js сега користи window.innerWidth, не мора да чекаме!
     // Веднаш ги поставуваме точните димензии пред прелистувачот да нацрта следен фрејм.
     this.renderer.resize(this.ui.viewGame, this.board.S);
-    this.updateUI();
 
     // 5. Стартувај ја јамката веднаш
     this.requestRender();
@@ -397,6 +395,18 @@ export const Game = {
   },
 
   updateUI() {
+    const modeLabel = document.getElementById('match-mode');
+    if (modeLabel) {
+      const level = this.settings.careerLevel;
+      if (level) {
+        const radius = this.board.R;
+        const playableCells = 1 + 2 * radius * (radius + 1) - 4;
+        const target = threeStarTarget(playableCells);
+        const earned = this.board.score[CONSTANTS.X];
+        const goal = earned >= target ? '★★★ secured' : '3-star goal: ' + earned + '/' + target;
+        modeLabel.textContent = 'Career · Level ' + level + ' / 30 · ' + goal;
+      } else modeLabel.textContent = 'Quick Play';
+    }
     this.updateTurnStatus();
     this.ui.p1Score.textContent = this.board.score[CONSTANTS.X];
     this.ui.p2Score.textContent = this.board.score[CONSTANTS.O];

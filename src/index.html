@@ -23,12 +23,14 @@
                 <div id="home-hub">
                 <header class="home-hero">
                     <img src="./brand-neon.webp" class="home-mark" alt="">
-                    <div><h1 class="home-title">ROMB<span>MASTER</span></h1>
-                    <button id="helpBtn" class="text-btn home-help" type="button">How to play</button></div>
+                    <div><h1 class="home-title">ROMB<span>MASTER</span></h1></div>
+                    <button id="helpBtn" class="text-btn home-help" type="button">How to play</button>
                 </header>
                 <div class="home-actions">
+                    <div class="play-row">
                     <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →</button>
                     <button id="startBtn" class="btn-primary home-play" type="button">▶ Quick Play <small id="quick-summary"></small></button>
+                    </div>
                     <div class="mode-grid">
                     <button type="button" data-page="career-page" class="nav-tile"><strong>Career</strong><small id="home-level"></small></button>
                     <button id="daily-open-btn" class="nav-tile" type="button"><strong>Daily Challenge</strong><small id="daily-menu-status"></small><small id="daily-points"></small></button>
@@ -63,6 +65,7 @@
                         <button data-size="4">Small</button>
                         <button data-size="6" class="selected">Classic</button>
                         <button data-size="8">Large</button>
+                        <button data-size="10">Grand</button>
                     </div>
                 </div>
                 <div>
@@ -216,7 +219,7 @@
                     <text class="tutorial-cross" x="100" y="101" text-anchor="middle">X</text>
                 </svg>
             </div>
-            <h4 id="tutorial-step-title">Start with a 2–2 score</h4>
+            <h4 id="tutorial-step-title">Start with a 0–0 score</h4>
             <button id="tutorial-play" class="btn-secondary" type="button" hidden>Draw the fourth side</button>
             <p id="tutorial-step-text" aria-live="polite">Four starter squares are already owned.</p>
             <div class="tutorial-actions">

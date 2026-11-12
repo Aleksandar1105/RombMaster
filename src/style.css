@@ -994,3 +994,23 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   .mode-grid .nav-tile { min-height: 54px; padding: 5px 9px; }
 }
 #view-menu [hidden] { display: none; }
+
+#view-menu .home-help {
+  margin-left: auto; padding: 8px 12px; border-radius: 12px;
+  background: #223d57; border: 1px solid #689db6;
+  color: #e4faff; font-weight: 700;
+}
+.play-row { display: flex; gap: 8px; }
+.play-row > button { flex: 1; min-width: 0; }
+.mode-grid [data-page="career-page"] {
+  background: linear-gradient(130deg,#46325e,#271e40); border-color: #a987d9;
+}
+.mode-grid #daily-open-btn {
+  background: linear-gradient(130deg,#504022,#30281f); border-color: #d4ab63;
+}
+#match-mode { text-align: center; }
+@media (max-width: 360px) {
+  #home-hub .home-hero { gap: 8px; }
+  #home-hub .home-mark { width: 54px; }
+  #view-menu .home-help { padding-inline: 8px; }
+}
