@@ -122,3 +122,35 @@ test('daily points and puzzle progress stay independent for each local player', 
   assert.equal(slots.switchTo('slot-1').status, 'ready');
   assert.equal(h.progress.read(date).progress.solved, 3);
 });
+
+test('duel has a winning line against best replies and a losing or drawing alternative', async () => {
+  const { daily } = await harness();
+  const options = new Set();
+  for (let day = 1; day <= 12; day++) {
+    const date = '2026-11-' + String(day).padStart(2, '0');
+    const puzzle = daily.createDailyPuzzle(date, 2);
+    assert.equal(puzzle.type, 'duel');
+    options.add(puzzle.difficulty);
+    const board = puzzle.board;
+    assert.deepEqual(Array.from(board.score), [0, 0]);
+    assert.ok(board.getFreeMoves().some(move => !daily.evaluateDailyMove(puzzle, move).correct));
+    let player = 1;
+    while (!board.isGameOver()) {
+      const move = daily.duelReply(board);
+      if (!board.makeMove(move.t, move.r, move.c, player).points) player = 1 - player;
+    }
+    assert.ok(board.score[1] > board.score[0], date);
+  }
+  assert.equal(options.size, 2);
+});
+
+test('extra practice rotates tasks without changing the daily set or its reward', async () => {
+  const h = await harness();
+  const day = '2026-11-13';
+  const types = new Set();
+  for (let round = 0; round < 8; round++) {
+    for (let i = 0; i < 3; i++) types.add(h.daily.createDailyPuzzle(day, i, round).type);
+  }
+  assert.equal(types.size, 5);
+  assert.equal(h.progress.read(day).progress.brainPoints, 0);
+});

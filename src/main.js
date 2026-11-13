@@ -6,7 +6,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } 
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
-import { createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
+import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
 import { createConfirmationController } from './confirmation.js';
 
@@ -518,6 +518,10 @@ const dailyRenderer = new Renderer(dailyCanvas);
 let dailyPuzzle = null;
 let dailyDate = null;
 let dailySolved = false;
+let practiceRound = 0;
+let practiceIndex = 0;
+let dailyIndex = 0;
+let duelLost = false;
 const dailyModal = el('daily-modal');
 dailyModal.hidden = true; // Explicit initial state, including minimal DOM test harnesses.
 const dailyNext = el('daily-next-btn');
@@ -574,7 +578,9 @@ const showDaily = () => {
         dailyNext.hidden = true;
         return;
     }
-    const index = state.progress.solved;
+    const index = practiceRound ? practiceIndex : state.progress.solved;
+    dailyIndex = index;
+    duelLost = false;
     dailySolved = false;
     dailyNext.hidden = true;
     dailyFeedback.textContent = '';
@@ -583,29 +589,38 @@ const showDaily = () => {
         dailyPuzzle = null;
         el('daily-step').textContent = 'All 3 challenges complete';
         el('daily-title').textContent = 'Daily workout complete!';
-        el('daily-instruction').textContent = `+30 Brain Points today · ${state.progress.brainPoints} total`;
+        el('daily-instruction').textContent = practiceRound ? 'Practice complete. Play a fresh set whenever you like.' :
+            `+30 Brain Points today · ${state.progress.brainPoints} total`;
+        dailyNext.hidden = false;
+        dailyNext.textContent = 'New practice set';
         return;
     }
-    dailyPuzzle = createDailyPuzzle(dailyDate, index);
+    dailyPuzzle = createDailyPuzzle(dailyDate, index, practiceRound);
     el('daily-step').textContent = `Challenge ${index + 1} of 3`;
     el('daily-title').textContent = dailyPuzzle.title;
-    el('daily-instruction').textContent = dailyPuzzle.instruction;
+    if (practiceRound) el('daily-step').textContent = `Practice · ${index + 1} of 3`;
+    el('daily-instruction').textContent = dailyPuzzle.difficulty + ' · ' + dailyPuzzle.instruction;
     drawDaily();
 };
 
 el('daily-open-btn').onclick = () => {
+    practiceRound = 0;
     dailyDate = localDateKey();
     dailyModal.hidden = false;
     showDaily();
 };
 el('daily-close-btn').onclick = closeDaily;
 dailyNext.onclick = () => {
-    if (!dailySolved) return;
+    if (dailyIndex === 3) {
+        practiceRound = practiceRound ? practiceRound + 1 : 1 + Math.floor(Math.random() * 1000000);
+        practiceIndex = 0;
+    } else if (!dailySolved && !duelLost) return;
+    else if (dailySolved && practiceRound) practiceIndex++;
     showDaily();
 };
 dailyCanvas.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0 || !dailyPuzzle ||
-        dailySolved || dailyModal.hidden) return;
+        dailySolved || duelLost || dailyModal.hidden) return;
     event.preventDefault();
     const point = canvasPoint(dailyCanvas, event.clientX, event.clientY);
     if (!point) return;
@@ -615,23 +630,50 @@ dailyCanvas.addEventListener('pointerdown', event => {
         dailyFeedback.textContent = 'Tap closer to the middle of a dotted line.';
         return;
     }
-    const check = evaluateDailyMove(dailyPuzzle, move);
-    if (!check.correct) {
-        dailyFeedback.textContent = dailyPuzzle.retry;
-        return;
+    const board = dailyPuzzle.board;
+    if (dailyPuzzle.type === 'duel') {
+        const human = board.makeMove(move.t, move.r, move.c, 1);
+        let lastMove = move;
+        if (!human.points) {
+            while (!board.isGameOver()) {
+                lastMove = duelReply(board);
+                if (!board.makeMove(lastMove.t, lastMove.r, lastMove.c, 0).points) break;
+            }
+        }
+        dailyRenderer.draw(board, lastMove);
+        const score = `You ${board.score[1]} · Computer ${board.score[0]}`;
+        if (!board.isGameOver()) {
+            dailyFeedback.textContent = score + (human.points ? ' · Capture! Play again.' : ' · Your turn.');
+            return;
+        }
+        if (board.score[1] <= board.score[0]) {
+            duelLost = true;
+            dailyFeedback.textContent = score + ' · ' + dailyPuzzle.retry;
+            dailyNext.textContent = 'Retry duel';
+            dailyNext.hidden = false;
+            return;
+        }
+        dailyFeedback.textContent = score + ' · ' + dailyPuzzle.success;
+    } else {
+        if (!evaluateDailyMove(dailyPuzzle, move).correct) {
+            dailyFeedback.textContent = dailyPuzzle.retry;
+            return;
+        }
+        board.makeMove(move.t, move.r, move.c, 1);
+        dailyRenderer.draw(board, move);
+        dailyFeedback.textContent = dailyPuzzle.success;
     }
-    const progress = DailyProgress.recordSolved(dailyDate,
-        DailyProgress.read(dailyDate).progress?.solved);
-    if (progress.status !== 'ready') {
-        dailyFeedback.textContent = dailyStatusMessage(progress.status);
-        return;
+    if (!practiceRound) {
+        const progress = DailyProgress.recordSolved(dailyDate, dailyIndex);
+        if (progress.status !== 'ready') {
+            showDaily();
+            dailyFeedback.textContent = dailyStatusMessage(progress.status);
+            return;
+        }
+        if (dailyIndex === 2) dailyFeedback.textContent += ' +30 Brain Points for today!';
     }
     dailySolved = true;
-    dailyPuzzle.board.makeMove(move.t, move.r, move.c, 1);
-    dailyRenderer.draw(dailyPuzzle.board, move);
-    dailyFeedback.textContent = dailyPuzzle.success +
-        (progress.progress.solved === 3 ? ' +30 Brain Points for today!' : '');
-    dailyNext.textContent = progress.progress.solved === 3 ? 'See Your Result' : 'Next Challenge';
+    dailyNext.textContent = dailyIndex === 2 ? 'See Your Result' : 'Next Challenge';
     dailyNext.hidden = false;
     refreshDailyMenu();
 });
