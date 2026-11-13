@@ -1084,3 +1084,61 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   #home-hub .home-links .hub-glyph { width: clamp(24px,5.7vh,55px); height: auto; }
   #home-hub .home-links strong { font-size: clamp(.75rem,3.4vw,1rem); }
 }
+
+/* Portrait artwork is split at row boundaries so actions can independently
+   disappear, receive focus, and show the current player's progress. */
+@media (orientation: portrait) {
+  #view-menu:has(#home-hub:not([hidden])) {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: #041325;
+  }
+  #view-menu .home-shell:has(#home-hub:not([hidden])) { gap: 0; }
+  #home-hub:not([hidden]) {
+    grid-template-rows: minmax(132px,498fr) minmax(350px,1278fr);
+    gap: 0; max-height: 1125px; margin-block: auto;
+  }
+  #home-hub .home-hero { display: block; position: relative; background: url('./home-art/hero.webp') center / 100% 100%; }
+  #home-hub .home-hero::before { content: none; }
+  #home-hub .home-hero > div, #home-hub .home-mark, #home-hub .opening-mini,
+  #home-hub .hub-glyph, #home-hub .nav-tile strong {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  }
+  #home-hub .home-actions { grid-template-rows: minmax(74px,267fr) minmax(142px,501fr) minmax(118px,510fr); gap: 0; }
+  #home-hub .play-row, #home-hub .mode-grid, #home-hub .home-links { gap: 0; }
+  #home-hub .mode-grid { grid-template-columns: 430fr 422fr; }
+  #home-hub button {
+    position: relative; padding: 0; margin: 0; min-width: 0; min-height: 0; border: 0;
+    border-radius: 0; box-shadow: none; clip-path: none; background-color: transparent;
+    color: transparent; text-shadow: none;
+  }
+  #home-hub button:focus-visible { outline: 3px solid #fff; outline-offset: -5px; }
+  #home-hub button:active { filter: brightness(1.18); transform: none; }
+  #home-hub .home-hero .home-help {
+    position: absolute; right: 3%; bottom: 3%; width: 65%; height: 38%;
+    background: transparent; border: 0; color: transparent;
+  }
+  #home-hub .play-row button, #home-hub .mode-grid button { display: block; background-size: 100% 100%; background-position: center; }
+  #home-hub button[hidden] { display: none; }
+  #home-hub .play-row button::after { content: none; }
+  #home-hub .home-continue { flex: 420; background-image: url('./home-art/continue.webp'); }
+  #home-hub .home-play { flex: 432; background-image: url('./home-art/quick.webp'); }
+  #home-hub .play-row:has(.home-continue[hidden]) { justify-content: center; background: #041325; }
+  #home-hub .home-continue[hidden] + .home-play { flex: 0 1 64%; }
+  #home-hub .mode-grid [data-page="career-page"] { background-image: url('./home-art/career.webp'); }
+  #home-hub .mode-grid #daily-open-btn { background-image: url('./home-art/daily.webp'); }
+  #home-hub .home-links { background: url('./home-art/dock.webp') center / 100% 100%; }
+  #home-hub .home-links button { background: transparent; border: 0; box-shadow: none; margin-block: 10% 32%; }
+  #home-hub .play-row small, #home-hub .mode-grid small {
+    position: absolute; left: 6%; right: 6%; margin: 0; transform: translateY(-50%);
+    text-align: center; line-height: 1.15; font-size: clamp(.67rem,3.55vw,1.12rem);
+    color: #f2ecff; font-weight: 500; overflow-wrap: anywhere;
+  }
+  #home-hub .play-row small { top: 67%; color: #101e30; font-weight: 650; }
+  #home-hub #home-level { top: 81%; }
+  #home-hub #daily-menu-status { top: 69%; color: #fff1cf; }
+  #home-hub #daily-points { top: 81%; color: #fff1cf; }
+  #home-hub #daily-diamonds { position: absolute; left: 0; right: 0; top: 22%; transform: translateY(-50%);
+    justify-content: center; gap: clamp(12px,4vw,22px); height: auto; }
+  #home-hub #daily-diamonds i { width: clamp(13px,4.7vw,23px); height: clamp(13px,4.7vw,23px); border: 2px solid #fff1c6; border-radius: 0; }
+  #home-hub #daily-diamonds .earned { background: conic-gradient(#fff79a,#ffd857,#ffab18,#ffe65f,#fff79a); box-shadow: 0 0 10px #ffba42; }
+}
