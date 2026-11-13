@@ -1014,3 +1014,31 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   #home-hub .home-mark { width: 54px; }
   #view-menu .home-help { padding-inline: 8px; }
 }
+
+.profile-avatar-preview.neon-fox {
+  border: 2px solid #63f8ff; background: radial-gradient(circle, #492b73, #101636);
+  box-shadow: 0 0 12px #42d9ec77, inset 0 0 7px #fb718555; text-shadow: 0 0 5px #ffc4ea;
+}
+/* Home previews mirror the actual Career position and daily progress. */
+.opening-mini { width: 42px; height: 42px; }
+#nextCareerBtn .opening-mini { vertical-align: middle; margin-right: 12px; }
+#continue-summary { display: block; font-size: .72rem; }
+#daily-diamonds { display: flex; align-items: center; gap: 8px; height: 42px; }
+#daily-diamonds i { width: 10px; height: 10px; transform: rotate(45deg); border: 1.5px solid #f3c977; border-radius: 2px; }
+#daily-diamonds .earned { background: #ffd477; box-shadow: 0 0 7px #ffca6555; }
+#home-hub .home-hero { position: relative; isolation: isolate; }
+#home-hub .home-hero::before { content: ''; position: absolute; z-index: -1; inset: 0 30% 0 0; pointer-events: none; opacity: .23;
+  background: repeating-linear-gradient(45deg, transparent 0 21px, #68baca55 22px, transparent 23px),
+              repeating-linear-gradient(-45deg, transparent 0 21px, #68baca55 22px, transparent 23px);
+  mask-image: linear-gradient(90deg, #000, transparent); }
+@media (min-width: 361px) and (orientation: portrait) {
+  #home-hub .home-mark { width: clamp(80px, 23vmin, 112px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #home-hub .home-hero::before { animation: connect-lines .55s ease-out both; }
+  @keyframes connect-lines { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+}
+@media (max-height: 510px) {
+  .opening-mini { width: 27px; height: 27px; }
+  #daily-diamonds { height: 27px; }
+}

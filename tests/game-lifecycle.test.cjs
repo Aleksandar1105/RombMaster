@@ -741,3 +741,47 @@ test('Quick PvP keeps sequential Undo without a Career allowance', async () => {
   assert.equal(h.game.historyStack.length, 0);
   assert.equal(h.game.careerUndosUsed, 0);
 });
+
+test('chapter openings replay after scoring, and Undo removes a double capture goal', async () => {
+  const h = await harness({ autoStart: false });
+  for (let level = 1; level <= 5; level++) {
+    // Unlock levels through the same progress store used by a completed match.
+    if (level > 1) {
+      const p = JSON.parse(h.storage.get('rombmaster_profile_v1') || 'null');
+      assert.ok(p && p.unlockedLevel >= level);
+    }
+    assert.equal(h.game.start(4, 'ai', 'easy', level), true);
+    assert.deepEqual(Array.from(h.game.board.score), [0, 0]);
+    if (level === 3) {
+      h.game.executeMove({ t: 'v', r: 1, c: 2 });
+      assert.equal(h.game.doubleCaptureGoal(), true);
+      assert.equal(h.game.resume(), true);
+      assert.equal(h.game.doubleCaptureGoal(), true);
+      h.game.undo();
+      assert.equal(h.game.doubleCaptureGoal(), false);
+      assert.equal(h.game.board.score[1], 0);
+    }
+    // Complete with legal moves, selecting scoring moves for X when available.
+    while (!h.game.board.isGameOver()) {
+      const board = h.game.board;
+      const legal = board.getFreeMoves();
+      const points = m => board.clone().makeMove(m.t, m.r, m.c, h.game.player).points;
+      legal.sort((a, b) => (h.game.player === 1 ? 1 : -1) * (points(b) - points(a)));
+      h.game.executeMove(legal[0]);
+    }
+    assert.equal(h.game.careerOutcome.victory, true);
+    if (level === 3) assert.equal(h.game.careerOutcome.awardedStars, 3);
+    if (level === 5) assert.equal(h.game.careerOutcome.foxUnlocked, true);
+  }
+});
+
+test('pre-chapter saved level 1 keeps its original board and first playable edge', async () => {
+  const h = await harness({ autoStart: false });
+  const raw = JSON.stringify({version: 1, settings: {size: 4, mode: 'ai', diff: 'easy', careerLevel: 1},
+    moves: [{t: 'h', r: 2, c: 1}]});
+  const state = h.save.decodeSave(raw);
+  assert.equal(state.settings.openingVersion, undefined);
+  assert.equal(state.history[0].boardState.h[2][1], false);
+  assert.equal(state.board.h[2][1], true);
+  assert.equal(state.player, 0);
+});
