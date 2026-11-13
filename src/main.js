@@ -1,4 +1,5 @@
 import './style.css';
+import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
 import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
@@ -67,6 +68,13 @@ document.querySelectorAll('[data-page]').forEach(button => {
     button.onclick = () => {
         pageTrigger = button;
         const selected = button.dataset.page;
+        if (selected === 'career-page') {
+            const profile = ProfileStore.read().profile;
+            if (profile) {
+                careerSelect.value = String(profile.unlockedLevel);
+                careerSelect.onchange();
+            }
+        }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         el('page-title').textContent = menuPages[selected];
         el('home-hub').hidden = true;
@@ -101,7 +109,14 @@ const refreshCareer = () => {
     el('career-start-btn').disabled = false;
     el('reset-career-btn').disabled = false;
     profileName.value = p.name;
+    const fox = avatarSelect.querySelector?.('[value="neon-fox"]');
+    if (fox) {
+        fox.disabled = !p.neonFoxUnlocked;
+        fox.textContent = fox.disabled ? '🔒 Neon Fox · Win level 5' : '🦊 Neon Fox';
+    }
     avatarSelect.value = p.avatar;
+    if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
+    else avatarPreview.classList.remove('neon-fox');
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
     const summary = careerSummary(p);
     for (const [id, value] of Object.entries({
@@ -129,17 +144,20 @@ const refreshCareer = () => {
         }
     }
     careerXP.textContent = `${p.xp} XP`;
-    el('home-level').textContent = careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
+    careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
+    const mission = missionFor(p.unlockedLevel);
+    el('home-level').textContent = mission ? `Level ${p.unlockedLevel} · ${mission.title}` : careerProgress.textContent;
+    drawOpening(el('home-opening'), careerLevel(p.unlockedLevel));
     const selected = Number(careerSelect.value) || p.unlockedLevel;
     careerSelect.innerHTML = Array.from({ length: p.unlockedLevel }, (_, i) => {
         const n = i + 1;
         const stars = p.stars[n] ? ` · ${'★'.repeat(p.stars[n])}` : '';
-        return `<option value="${n}">Level ${n}${stars}</option>`;
+        return `<option value="${n}">Level ${n}${missionFor(n) ? " · " + missionFor(n).title : ""}${stars}</option>`;
     }).join('');
     careerSelect.value = String(Math.min(selected, p.unlockedLevel));
     const stage = careerLevel(Number(careerSelect.value));
     careerDescription.textContent =
-        `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
+        missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
     profileFeedback.textContent = '';
 };
 // Keep DOM names escaped: profile names are user-controlled plain text.
@@ -319,7 +337,7 @@ avatarSelect.onchange = () => {
 careerSelect.onchange = () => {
     const stage = careerLevel(Number(careerSelect.value));
     careerDescription.textContent =
-        `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
+        missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
 };
 el('career-start-btn').onclick = () => {
     const level = Number(careerSelect.value);
@@ -512,6 +530,10 @@ const dailyStatusMessage = status => ({
 
 const refreshDailyMenu = () => {
     const state = DailyProgress.read(localDateKey());
+    const diamonds = el('daily-diamonds').children || [];
+    for (let i = 0; i < diamonds.length; i++) {
+        diamonds[i].classList.toggle('earned', state.status === 'ready' && i < state.progress.solved);
+    }
     if (state.status !== 'ready') {
         el('daily-menu-status').textContent = dailyStatusMessage(state.status);
         el('daily-open-btn').disabled = true;

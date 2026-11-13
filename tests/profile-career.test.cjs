@@ -168,6 +168,8 @@ test('avatar settings are restricted to known presets', async () => {
     assert.equal(h.ProfileStore.saveAvatar(avatar).status, 'bad-avatar');
     assert.equal(h.storage.get(h.PROFILE_KEY), original);
   }
+  assert.equal(h.ProfileStore.saveAvatar('neon-fox').status, 'locked');
+  for (let level = 1; level <= 5; level++) h.ProfileStore.recordCareer(level, 7, 2);
   for (const preset of h.PLAYER_AVATARS) {
     assert.equal(h.ProfileStore.saveAvatar(preset.id).status, 'ready');
     assert.equal(h.ProfileStore.read().profile.avatar, preset.id);

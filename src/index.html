@@ -28,12 +28,12 @@
                 </header>
                 <div class="home-actions">
                     <div class="play-row">
-                    <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →</button>
+                    <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →<small id="continue-summary"></small></button>
                     <button id="startBtn" class="btn-primary home-play" type="button">▶ Quick Play <small id="quick-summary"></small></button>
                     </div>
                     <div class="mode-grid">
-                    <button type="button" data-page="career-page" class="nav-tile"><strong>Career</strong><small id="home-level"></small></button>
-                    <button id="daily-open-btn" class="nav-tile" type="button"><strong>Daily Challenge</strong><small id="daily-menu-status"></small><small id="daily-points"></small></button>
+                    <button type="button" data-page="career-page" class="nav-tile"><canvas id="home-opening" class="opening-mini" width="96" height="96" aria-hidden="true"></canvas><strong>Career</strong><small id="home-level"></small></button>
+                    <button id="daily-open-btn" class="nav-tile" type="button"><span id="daily-diamonds" aria-hidden="true"><i></i><i></i><i></i></span><strong>Daily Challenge</strong><small id="daily-menu-status"></small><small id="daily-points"></small></button>
                     </div>
                     <nav class="home-links" aria-label="Game settings">
                     <button type="button" data-page="quick-settings" class="nav-tile"><strong>Game setup</strong></button>
@@ -108,6 +108,7 @@
                         <label for="profile-avatar" class="profile-avatar-label">Avatar</label>
                         <select id="profile-avatar" aria-label="Choose a player avatar">
                             <option value="spark">✨ Spark</option>
+                            <option value="neon-fox" disabled>🔒 Neon Fox · Win level 5</option>
                             <option value="fox">🦊 Fox</option>
                             <option value="robot">🤖 Robot</option>
                             <option value="rocket">🚀 Rocket</option>
@@ -196,7 +197,7 @@
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
             <p id="career-reward" class="career-reward" hidden></p>
-            <button id="nextCareerBtn" class="btn-primary full-width" hidden>Next Level</button>
+            <button id="nextCareerBtn" class="btn-primary full-width" hidden><canvas id="next-opening" class="opening-mini" width="96" height="96" aria-hidden="true"></canvas><span id="next-career-title">Next Level</span></button>
             <button id="againBtn" class="btn-primary full-width">Play Again</button>
             <button id="backMenuBtn" class="btn-secondary full-width">Main Menu</button>
         </div>
