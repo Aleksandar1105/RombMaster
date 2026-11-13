@@ -1042,3 +1042,45 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   .opening-mini { width: 27px; height: 27px; }
   #daily-diamonds { height: 27px; }
 }
+
+/* Faceted home controls share the geometry and colours of the board. */
+#home-hub { --facet: polygon(9px 0,calc(100% - 9px) 0,100% 9px,100% calc(100% - 9px),calc(100% - 9px) 100%,9px 100%,0 calc(100% - 9px),0 9px); }
+#home-hub button {
+  clip-path: var(--facet); border-radius: 0;
+  box-shadow: inset 0 2px #ffffff48, inset 0 -3px #08122150;
+}
+#home-hub button:focus-visible { outline: 3px solid white; outline-offset: -6px; }
+#home-hub .hub-glyph { width: 2em; height: 2em; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.65; filter: drop-shadow(0 0 4px currentColor); }
+#home-hub .home-help { display: inline-flex; align-items: center; justify-content: center; gap: .65em; color: #c5f8ff; border-color: #57cfea; background: linear-gradient(145deg,#154459,#0b1c32); }
+#home-hub .home-links button { color: #65def9; background: linear-gradient(145deg,#104658,#0b1d32 80%); border-color: currentColor; }
+#home-hub .home-links button:nth-child(2) { color: #c298ff; background: linear-gradient(145deg,#412a62,#191a32 80%); }
+#home-hub .home-links button:nth-child(3) { color: #64e6d7; background: linear-gradient(145deg,#124d4c,#0c2031 80%); }
+#home-hub .home-links strong { color: #f2f7ff; text-align: center; }
+#home-hub .home-continue { background: linear-gradient(135deg,#ffe593,#ffbf48 74%,#ffdb77); }
+#home-hub .home-play { background: linear-gradient(135deg,#8bf7ff,#18d8ed 74%,#65f0ff); }
+@media (orientation: portrait) {
+  #view-menu .home-shell:has(#home-hub:not([hidden])) {
+    padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent;
+    display: flex; flex-direction: column; align-items: stretch; flex: 1 0 auto; max-width: 540px; width: 100%;
+  }
+  #home-hub:not([hidden]) {
+    flex: 1; display: grid; grid-template-rows: minmax(min-content,1fr) minmax(min-content,2.2fr);
+    gap: clamp(10px,2vh,22px); width: 100%;
+  }
+  #home-hub .home-hero { display: grid; grid-template-columns: 40% 1fr; grid-template-rows: 1fr auto; align-items: center; justify-items: center; margin: 0; gap: 6px; }
+  #home-hub .home-mark { width: min(100%,19vh); border-radius: 20%; }
+  #home-hub .home-title { font-size: clamp(2.4rem,10vw,4rem); }
+  #home-hub .home-hero::before { inset: 0; }
+  #home-hub .home-help { grid-column: 1/-1; justify-self: end; margin: 0; padding: 6px 18px; }
+  #home-hub .home-actions { display: grid; grid-template-rows: minmax(64px,.75fr) minmax(108px,1.45fr) minmax(62px,.85fr); gap: clamp(8px,1.7vh,18px); }
+  #home-hub .play-row button { padding: 8px; font-size: clamp(.98rem,4.4vw,1.4rem); line-height: 1.2; }
+  #home-hub .play-row small { display: block; margin-top: 4px; font-size: .73em; }
+  #home-hub .mode-grid button { justify-items: center; align-content: center; gap: clamp(4px,1vh,10px); padding: 8px; text-align: center; }
+  #home-hub .mode-grid strong { font-size: clamp(1.05rem,5vw,1.55rem); }
+  #home-hub .mode-grid small { font-size: clamp(.7rem,3.1vw,.95rem); }
+  #home-hub .opening-mini { width: clamp(36px,9vh,86px); height: auto; }
+  #home-hub #daily-diamonds { height: clamp(32px,6vh,60px); gap: 12px; }
+  #home-hub #daily-diamonds i { width: 15px; height: 15px; }
+  #home-hub .home-links .hub-glyph { width: clamp(24px,5.7vh,55px); height: auto; }
+  #home-hub .home-links strong { font-size: clamp(.75rem,3.4vw,1rem); }
+}
