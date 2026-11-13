@@ -378,7 +378,7 @@ el('startBtn').onclick = () => {
     askBeforeReplacing('Start New Game?', 'Your currently saved match for this player will be replaced. Career XP and Daily Brain Points stay safe.', startNew, el('startBtn'));
 };
 el('continueBtn').onclick = () => {
-    if (!Game.resume()) return;
+    if (!Game.resume() || Game.settings.careerLevel != null) return;
     ({ size, mode, diff } = Game.settings);
     refreshQuickSummary();
     for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
