@@ -76,6 +76,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
             }
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
+        if (selected === 'quick-settings') refreshSetupPreview();
         el('page-title').textContent = menuPages[selected];
         el('home-hub').hidden = true;
         el('menu-page').hidden = false;
@@ -95,6 +96,31 @@ const careerDescription = el('career-description');
 const careerStatus = el('career-status');
 const avatarSelect = el('profile-avatar');
 const avatarPreview = el('profile-avatar-preview');
+function renderRoute(profile, selected) {
+    const route = el('chapter-route');
+    const first = Math.floor((selected - 1) / 5) * 5 + 1;
+    const nodes = [];
+    for (let level = first; level < first + 5; level++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.disabled = level > profile.unlockedLevel;
+        button.setAttribute('aria-pressed', String(level === selected));
+        const number = document.createElement('b');
+        number.textContent = level;
+        const title = document.createElement('span');
+        title.textContent = missionFor(level)?.title ?? 'Level ' + level;
+        const stars = document.createElement('small');
+        stars.textContent = '★'.repeat(profile.stars[level] || 0);
+        button.append(number, title, stars);
+        button.onclick = () => {
+            careerSelect.value = String(level);
+            careerSelect.onchange();
+            route.querySelector('[aria-pressed="true"]')?.focus();
+        };
+        nodes.push(button);
+    }
+    route.replaceChildren(...nodes);
+}
 const refreshCareer = () => {
     const state = ProfileStore.read();
     if (state.status === 'invalid' || state.status === 'unavailable') {
@@ -118,6 +144,9 @@ const refreshCareer = () => {
     if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
     else avatarPreview.classList.remove('neon-fox');
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
+    el('identity-name').textContent = p.name;
+    el('identity-art').dataset.avatar = p.avatar;
+    el('identity-art').textContent = ['robot','spark','fox','neon-fox'].includes(p.avatar) ? '' : avatarPreview.textContent;
     const summary = careerSummary(p);
     for (const [id, value] of Object.entries({
         'stat-played': summary.played,
@@ -158,6 +187,8 @@ const refreshCareer = () => {
     const stage = careerLevel(Number(careerSelect.value));
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
+    drawOpening(el('mission-preview'), stage);
+    renderRoute(p, stage.level);
     profileFeedback.textContent = '';
 };
 // Keep DOM names escaped: profile names are user-controlled plain text.
@@ -336,6 +367,9 @@ avatarSelect.onchange = () => {
 };
 careerSelect.onchange = () => {
     const stage = careerLevel(Number(careerSelect.value));
+    drawOpening(el('mission-preview'), stage);
+    const profile = ProfileStore.read().profile;
+    if (profile) renderRoute(profile, stage.level);
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
 };
@@ -378,7 +412,10 @@ function refreshQuickSummary() {
     el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
 }
 refreshQuickSummary();
-setupGroup("[data-size]", b => size = +b.dataset.size);
+const refreshSetupPreview = () => drawOpening(el('setup-preview'), { size });
+setupGroup("[data-size]", b => { size = +b.dataset.size; refreshSetupPreview(); });
+el('setup-play').onclick = () => el('startBtn').click();
+refreshSetupPreview();
 setupGroup("[data-ai]", b => {
     mode = b.dataset.ai;
     el('difficulty-wrapper').style.opacity = mode === 'pvp' ? '0.3' : '1';
@@ -714,3 +751,4 @@ Native.onBack(() => {
         });
     }
 });
+

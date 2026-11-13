@@ -162,6 +162,12 @@ export const Game = {
     const reward = document.getElementById('career-reward');
     if (reward) { reward.hidden = true; reward.textContent = ''; }
     const nextButton = document.getElementById('nextCareerBtn');
+    const stars = document.getElementById('result-stars');
+    if (stars) {
+      const earned = this.careerOutcome?.awardedStars || 0;
+      stars.hidden = !this.settings.careerLevel || !this.careerOutcome?.victory;
+      stars.textContent = '★'.repeat(earned);
+    }
     if (nextButton) nextButton.hidden = true;
 
     this.player = CONSTANTS.X;
@@ -533,3 +539,4 @@ export const Game = {
     this.setSaveStatus(saved ? '' : 'Could not save your latest move. Keep the game open to avoid losing progress.');
   },
 };
+

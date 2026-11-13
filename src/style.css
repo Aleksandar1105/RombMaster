@@ -1142,3 +1142,93 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   #home-hub #daily-diamonds i { width: clamp(13px,4.7vw,23px); height: clamp(13px,4.7vw,23px); border: 2px solid #fff1c6; border-radius: 0; }
   #home-hub #daily-diamonds .earned { background: conic-gradient(#fff79a,#ffd857,#ffab18,#ffe65f,#fff79a); box-shadow: 0 0 10px #ffba42; }
 }
+
+/* Shared cut-glass materials. The inset facets leave text and hit targets live. */
+:root {
+  --teal: #4fe8f4; --violet: #cc8aff; --gold: #ffd277; --coral: #ff758a;
+  --gem: var(--teal);
+  --cut: polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);
+  --night: radial-gradient(ellipse at 0 0,#134261 0,transparent 52%),linear-gradient(145deg,#081c32,#050b1b 68%,#221638);
+}
+#view-game, #view-menu:has(#menu-page:not([hidden])) { background: var(--night); }
+#view-menu .home-shell:has(#menu-page:not([hidden])) { background: transparent; border: 0; box-shadow: none; padding: 4px; }
+#menu-page { position: relative; padding-block: 12px; }
+.section-brand { display:block; width: min(52%,184px); margin:0 auto 10px; mix-blend-mode:screen; }
+#menu-page #page-back { position:absolute; top:15px; left:0; padding:7px; min-height:40px; font-size:.78rem; }
+#menu-page > h2 { text-align:center; font-size:clamp(1.6rem,7vw,2.4rem); margin:14px 0 20px; letter-spacing:-.04em; }
+#menu-page section, #help-modal .help-content, #overlay .center-panel,
+#daily-modal .daily-content,.game-confirm-content,.career-reset-content {
+  color:#f4faff; border:1px solid color-mix(in srgb,var(--gem) 60%,#122238);
+  border-radius:10px; background:linear-gradient(137deg,color-mix(in srgb,var(--gem) 17%,#081526),#081426 26%,#081226 77%,color-mix(in srgb,var(--gem) 16%,#071322));
+  box-shadow:inset 0 2px 0 color-mix(in srgb,var(--gem) 75%,transparent), inset 0 -2px 0 color-mix(in srgb,var(--gem) 50%,transparent),0 12px 40px #0006;
+}
+#menu-page section { overflow:visible; }
+#career-page,#player-settings,#overlay .center-panel { --gem:var(--violet); }
+#daily-modal .daily-content,.game-confirm-content,.career-reset-content { --gem:var(--gold); }
+#menu-page button,#controls .btn-icon,#overlay button,#help-modal button,#daily-modal button,.game-confirm-actions button,.career-reset-actions button,
+#scoreboard .player-card,#view-game #turn-status {
+  position:relative; isolation:isolate; clip-path:var(--cut); border:0; border-radius:0;
+  color:#f4fbff; background:linear-gradient(135deg,var(--gem),#fff 13%,var(--gem) 19%,#162941 49%,var(--gem) 86%,#e1faff);
+}
+#menu-page button::before,#controls .btn-icon::before,#overlay button::before,#help-modal button::before,#daily-modal button::before,.game-confirm-actions button::before,.career-reset-actions button::before,
+#scoreboard .player-card::before,#view-game #turn-status::before {
+  content:""; position:absolute; inset:2px; z-index:-1; pointer-events:none; clip-path:var(--cut);
+  background:linear-gradient(135deg,#ffffff28 0 10%,transparent 10% 86%,#ffffff12 86%),linear-gradient(152deg,color-mix(in srgb,var(--gem) 35%,#061322),#081526 62%,color-mix(in srgb,var(--gem) 24%,#061322));
+  box-shadow:inset 0 1px 4px var(--gem);
+}
+#menu-page button:focus-visible,#controls button:focus-visible { outline-offset:-5px; }
+#menu-page .btn-group { padding:3px; gap:4px; }
+#menu-page .btn-group button { padding-inline:4px; font-size:.83rem; }
+#menu-page .btn-group button.selected,#chapter-route [aria-pressed="true"],#career-start-btn,#daily-next-btn,#tutorial-next,#nextCareerBtn { --gem:var(--gold); }
+#menu-page .btn-group button.selected::before { background:linear-gradient(145deg,#fff2b6,#ffc557 70%,#ec9b21); }
+#menu-page .btn-group button.selected { color:#1e1b2a; }
+#menu-page #chapter-route { display:grid; gap:5px; margin-bottom:12px; }
+#chapter-route button { display:flex; align-items:center; gap:12px; padding:7px 14px; font:700 .86rem var(--font-main); text-align:left; min-height:36px; }
+#chapter-route b { width:25px; line-height:25px; text-align:center; color:#fff; background:#733ea3; border-radius:5px; }
+#chapter-route small { margin-left:auto; color:var(--gold); }
+#chapter-route button:disabled { opacity:.58; }
+#mission-preview,#setup-preview { align-self:center; display:block; margin:8px auto; width:min(31vw,128px); height:auto; }
+.identity-banner { display:flex; justify-content:center; align-items:center; gap:20px; font-size:1.75rem; }
+#identity-art { width:80px; height:75px; display:grid; place-items:center; background:center / contain no-repeat; }
+#identity-art[data-avatar="robot"] { background-image:url('./neon/robot.webp'); }
+#identity-art[data-avatar="spark"] { background-image:url('./neon/spark.webp'); }
+#identity-art:is([data-avatar="fox"],[data-avatar="neon-fox"]) { background-image:url('./neon/fox.webp'); }
+.speaker-art { width:100%; max-height:205px; object-fit:contain; mix-blend-mode:screen; }
+.comfort-options .comfort-toggle { background:#092c42; border:1px solid #32a5be; padding:14px; border-radius:8px; }
+.comfort-toggle input[type="checkbox"] { appearance:none; position:relative; width:56px; height:29px; border:1px solid #8496ab; background:#253649; border-radius:20px; cursor:pointer; }
+.comfort-toggle input::after { content:""; position:absolute; left:3px; top:3px; width:21px; height:21px; border-radius:50%; background:linear-gradient(135deg,#fff,#8899aa 55%,#495b76); }
+.comfort-toggle input:checked { background:#096274; border-color:var(--teal); }
+.comfort-toggle input:checked::after { left:30px; background:linear-gradient(135deg,#fff,#53ffff 45%,#0eaabd); }
+#view-game { justify-content:safe center; }
+#view-game #match-mode { color:#e4bcff; text-align:center; }
+#scoreboard #p1-card,#view-game #turn-status { --gem:var(--coral); }
+#scoreboard #p2-card,#view-game #turn-status[data-player="two"] { --gem:var(--teal); }
+#scoreboard .player-card { border:none!important; min-height:60px; padding:9px 14px; }
+#scoreboard .player-card:not(.active) { filter:saturate(.6) brightness(.78); }
+#scoreboard .player-card.active::before,#view-game #turn-status::before {
+  background:linear-gradient(135deg,#ffffff29 0 9%,transparent 9% 90%,#ffffff1a 90%),linear-gradient(140deg,color-mix(in srgb,var(--gem) 52%,#071222),#112039 68%);
+  box-shadow:inset 0 0 12px var(--gem);
+}
+#scoreboard .badge { width:auto; height:auto; transform:none; border:0; box-shadow:none; background:none; font:900 1.85rem/1 sans-serif; color:var(--gem); text-shadow:0 0 9px var(--gem); }
+.badge-x::after { content:"×"; } .badge-o::after { content:"○"; }
+#canvas-wrapper { background:#071729; border:1px solid #31516e; border-radius:10px; }
+#controls #undoBtn { --gem:var(--violet); } #controls #restartBtn { --gem:var(--gold); }
+#controls .btn-icon { width:clamp(70px,22vw,94px); height:62px; }
+#controls .btn-icon svg { width:25px; height:25px; stroke:var(--gem); filter:drop-shadow(0 0 3px var(--gem)); }
+#controls .btn-icon span { font-size:.78rem; color:#fff; }
+.game-confirm-icon { background: url('./neon/warning.webp') center/contain no-repeat; border:none; color:transparent; }
+.game-confirm-actions #confirm-dialog-accept,#career-reset-confirm { --gem:var(--coral); }
+#help-modal .tutorial-demo { background:#061729; border:1px solid #38728b; }
+#overlay #result-score { font-size:2.4rem; color:#fff; font-weight:800; }
+#overlay .career-reward { color:#ffde88; white-space:pre-line; }
+#overlay .center-panel:has(#nextCareerBtn:not([hidden]))::before { content:"◆"; color:#ffe999; font-size:2.2rem; text-shadow:0 0 18px #f5aa39; }
+@media (max-height:600px) { #view-game { justify-content:flex-start; } .speaker-art { max-height:120px; } }
+@media (orientation:portrait) {
+  #home-hub .home-links button:nth-child(n) { background:transparent; }
+  #home-hub .play-row button { font-size:0; color:transparent; }
+}
+#menu-page #career-start-btn { color:#fff; }
+#view-game::before { content:""; width:126px; height:40px; flex:none; background:url('./neon/brand.webp') center/contain no-repeat; }
+@media(max-height:680px) { #view-game::before { display:none; } }
+#overlay .center-panel:has(#nextCareerBtn:not([hidden]))::before { content:none; }
+#result-stars { letter-spacing:.14em; font-size:2.4rem; color:#ffcf54; text-shadow:0 0 14px #d98121; }

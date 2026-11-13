@@ -51,21 +51,37 @@ export class Renderer {
     const dx = i => this.offX + i * this.CELL;
     const dy = j => this.offY + j * this.CELL;
 
-    this.updateParticles();
+    
 
     // Owners
     for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
       if (board.active(r, c) && board.owner[r][c] != null) {
         const owner = board.owner[r][c];
-        const pad = this.CELL * 0.15;
-        this.ctx.fillStyle = owner === CONSTANTS.X ? CONSTANTS.COLORS.xDim : CONSTANTS.COLORS.oDim;
-        this.roundRect(dx(c)+pad, dy(r)+pad, this.CELL-pad*2, this.CELL-pad*2, 8); 
-        this.ctx.fill();
-        
-        this.ctx.fillStyle = owner === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
-        this.ctx.font = `800 ${this.CELL * 0.5}px Montserrat`; 
-        this.ctx.textAlign = "center"; this.ctx.textBaseline = "middle";
-        this.ctx.fillText(owner === CONSTANTS.X ? "X" : "O", dx(c) + this.CELL/2, dy(r) + this.CELL/2 + 2);
+        const x = dx(c), y = dy(r), size = this.CELL;
+        const rgb = owner === CONSTANTS.X ? '255,68,95' : '0,224,224';
+        const fill = this.ctx.createLinearGradient(x, y, x + size, y + size);
+        fill.addColorStop(0, 'rgba(' + rgb + ',.70)');
+        fill.addColorStop(.48, 'rgba(' + rgb + ',.28)');
+        fill.addColorStop(1, 'rgba(' + rgb + ',.58)');
+        this.ctx.fillStyle = fill;
+        this.ctx.fillRect(x, y, size, size);
+        this.ctx.save();
+        this.ctx.translate(x + size / 2, y + size / 2);
+        this.ctx.strokeStyle = owner === CONSTANTS.X ? '#ffbdc7' : '#adffff';
+        this.ctx.shadowColor = 'rgb(' + rgb + ')';
+        this.ctx.shadowBlur = Math.min(10, size / 4);
+        this.ctx.lineWidth = Math.max(2, size * .078);
+        this.ctx.lineCap = 'round';
+        this.ctx.beginPath();
+        const arm = size * .19;
+        if (owner === CONSTANTS.X) {
+          this.ctx.moveTo(-arm,-arm); this.ctx.lineTo(arm,arm);
+          this.ctx.moveTo(arm,-arm); this.ctx.lineTo(-arm,arm);
+        } else {
+          this.ctx.arc(0, 0, size * .24, 0, Math.PI * 2);
+        }
+        this.ctx.stroke();
+        this.ctx.restore();
       }
     }
 
@@ -126,8 +142,10 @@ export class Renderer {
       this.ctx.restore();
     }
 
+    this.updateParticles();
+
     // Dots
-    this.ctx.fillStyle = "#64748b"; 
+    this.ctx.fillStyle = "#a5c5df"; 
     const dotR = Math.max(3, this.CELL / 12);
     for (let r=0; r<=board.S; r++) for (let c=0; c<=board.S; c++) {
       if (board.active(r,c) || board.active(r-1,c) || board.active(r,c-1) || board.active(r-1,c-1)) {

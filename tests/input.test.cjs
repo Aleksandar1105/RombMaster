@@ -15,7 +15,9 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     // Match src/index.html: the game view is hidden while the menu is open.
     if (id === 'view-game') classes.add('hidden');
     const element = {
-      style: {}, textContent: '', width: 400, height: 400,
+      style: {}, dataset: {}, children: [], setAttribute(key,value) { this[key] = value; },
+      append(...nodes) { this.children.push(...nodes); }, replaceChildren(...nodes) { this.children = nodes; },
+      textContent: '', width: 400, height: 400,
       getBoundingClientRect: () => ({ left: 0, top: 0, width: 400, height: 400 }),
       classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x) },
       addEventListener(type, fn) {
@@ -31,7 +33,7 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
   const context = vm.createContext({
     console,
     window: { devicePixelRatio: 1, addEventListener(type, callback) { events.set(type, callback); }, confirm },
-    document: { hidden: false, getElementById: el, querySelectorAll: () => [],
+    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el, querySelectorAll: () => [],
       addEventListener(type, callback) { events.set(type, callback); } },
     localStorage: { getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
@@ -500,3 +502,4 @@ test('guided capture teaches the winning point without replacing the saved game'
   assert.equal(h.el('tutorial-play').hidden, false);
   assert.deepEqual([...h.storage.entries()], before);
 });
+
