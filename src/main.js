@@ -158,6 +158,16 @@ function showSkinPreview() {
     const unlocked = unlockedSkin(skin.id,profile,daily);
     const canvas = el('skin-preview');
     el('skin-preview-name').textContent = skin.name;
+    const stage = el('skin-stage');
+    stage.dataset.previewSkin = skin.id;
+    if (stage.style.setProperty) {
+        for (const [name,value] of Object.entries({
+            '--skin-bg':skin.colors.bg,'--skin-x':skin.colors.x,'--skin-o':skin.colors.o,
+            '--skin-accent':skin.accent,'--skin-ink':skin.id === 'white' ? '#182334' : '#f8fafc',
+            '--skin-panel':skin.id === 'white' ? '#ffffff' : skin.colors.bg,
+            '--skin-gold':skin.colors.lastMove,
+        })) stage.style.setProperty(name,value);
+    }
     el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
     el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : 'Locked';
     el('skin-status').textContent = skin.condition;

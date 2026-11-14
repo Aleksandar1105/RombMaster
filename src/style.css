@@ -1357,3 +1357,60 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 :root[data-skin]:not([data-skin="neon"]) #controls .btn-icon svg { stroke:var(--skin-ink); }
 :root[data-skin]:not([data-skin="neon"]) .arena-brand { filter:drop-shadow(0 0 4px var(--skin-accent)); }
 :root[data-skin="white"] :is(#view-game .undo-counter,#view-game .save-status) { color:#182334; }
+
+/* Distinct material treatments for each cosmetic palette. No image downloads. */
+:root[data-skin="royal"], #skin-stage[data-preview-skin="royal"] {
+  --arena-surface:radial-gradient(ellipse at 50% 5%,#4b391d,#17130d 65%);
+  --arena-face:linear-gradient(135deg,#5b4526,#221b10 32%,#17130d 68%,#534124);
+  --arena-radius:4px; --arena-border:#c7a55d;
+}
+:root[data-skin="cyber"], #skin-stage[data-preview-skin="cyber"] {
+  --arena-surface:repeating-linear-gradient(0deg,#9568ff0d 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,#9568ff0d 0 1px,transparent 1px 28px),radial-gradient(ellipse at top,#351548,#180b28 70%);
+  --arena-face:linear-gradient(130deg,#3a164b,#180b28 55%,#31205c);
+  --arena-radius:0px; --arena-border:#9568ff;
+}
+:root[data-skin="ice"], #skin-stage[data-preview-skin="ice"] {
+  --arena-surface:linear-gradient(130deg,#61280e55,transparent 42%,#24699466),#111d2c;
+  --arena-face:linear-gradient(140deg,#38526a,#111d2c 45%,#233b50);
+  --arena-radius:5px; --arena-border:#789cb7;
+}
+:root[data-skin="wood"], #skin-stage[data-preview-skin="wood"] {
+  --arena-surface:repeating-linear-gradient(11deg,#39261c 0 6px,#3e2a20 7px 9px,#39261c 10px 15px);
+  --arena-face:linear-gradient(145deg,#765237,#39261c 52%,#4d3425);
+  --arena-radius:12px; --arena-border:#ad8051;
+}
+:root[data-skin="white"], #skin-stage[data-preview-skin="white"] {
+  --arena-surface:linear-gradient(135deg,#fff,#e7ebf0);
+  --arena-face:#fff; --arena-radius:10px; --arena-border:#aeb9c8;
+}
+#skin-stage[data-preview-skin="neon"] { --arena-surface:radial-gradient(ellipse at top,#18354c,#071729); --arena-face:#132239; --arena-radius:10px; --arena-border:#506d86; }
+#skin-stage { width:100%; padding:12px 8px; border:1px solid var(--arena-border); border-radius:12px; background:var(--arena-surface); color:var(--skin-ink,#f8fafc); display:grid; justify-items:center; gap:8px; }
+#skin-stage h3 { margin:2px 0; color:inherit; }
+#skin-stage .skin-sample-score,#skin-stage .skin-sample-controls { display:flex; width:100%; gap:6px; justify-content:center; }
+#skin-stage .skin-sample-score span,#skin-stage .skin-sample-controls span { flex:1; display:flex; align-items:center; justify-content:center; gap:5px; padding:7px 3px; min-width:0; border:1px solid var(--arena-border); border-radius:var(--arena-radius); background:var(--arena-face); color:var(--skin-ink,#f8fafc); font-size:.72rem; }
+#skin-stage .skin-sample-score span:first-child {border-color:var(--skin-x); color:var(--skin-x);}
+#skin-stage .skin-sample-score span:last-child {border-color:var(--skin-o); color:var(--skin-o);}
+#skin-stage .skin-sample-score b {font-size:1.1rem;}
+#skin-stage #skin-preview {width:min(66vw,29vh,245px);}
+:root[data-skin]:not([data-skin="neon"]) :is(#view-game,#view-menu,#overlay,#view-menu:has(#career-page:not([hidden]))) { background:var(--arena-surface); }
+:root[data-skin]:not([data-skin="neon"]) :is(#menu-page section,#help-modal .help-content,#daily-modal .daily-content,.game-confirm-content,.career-reset-content,#overlay .up-next,.mission-detail,#overlay .result-actions) { background:var(--arena-face); color:var(--skin-ink); border-color:var(--arena-border); box-shadow:none; border-radius:var(--arena-radius); }
+:root[data-skin]:not([data-skin="neon"]) :is(#menu-page button,#overlay button,#help-modal button,#daily-modal button,.game-confirm-actions button,.career-reset-actions button,#controls .btn-icon,#scoreboard .player-card,#view-game #turn-status) { background:var(--arena-face); color:var(--skin-ink); border:1px solid var(--arena-border); border-radius:var(--arena-radius); clip-path:none; box-shadow:none; }
+:root[data-skin]:not([data-skin="neon"]) :is(#menu-page button,#overlay button,#help-modal button,#daily-modal button,.game-confirm-actions button,.career-reset-actions button)::before { display:none; }
+:root[data-skin]:not([data-skin="neon"]) :is(#menu-page button.selected,#chapter-route button[aria-pressed="true"]) { outline:2px solid var(--skin-accent); outline-offset:-2px; }
+:root[data-skin]:not([data-skin="neon"]) :is(#overlay #result-score,#chapter-label,#view-game #match-mode,#chapter-route b) { background:var(--arena-face); color:var(--skin-ink); border-color:var(--arena-border); }
+:root[data-skin]:not([data-skin="neon"]) :is(#overlay #career-reward,#overlay #next-clue,#career-description,#chapter-route small) { color:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) #view-menu .home-shell:has(#home-hub:not([hidden])) { background:transparent; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-hero { background:none; display:grid; grid-template-columns:32% 1fr; align-items:center; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-hero > div,
+:root[data-skin]:not([data-skin="neon"]) #home-hub :is(.home-mark,.opening-mini,.hub-glyph,.nav-tile strong) { display:revert; opacity:1; visibility:visible; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-title { font-size:clamp(1.2rem,5vw,2.8rem); color:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-title span { color:var(--skin-o); }
+:root[data-skin]:not([data-skin="neon"]) #home-hub :is(.home-links,.play-row) { background:none; gap:6px; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-actions { gap:8px; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub button:not([hidden]) { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:var(--arena-face); color:var(--skin-ink); border:1px solid var(--arena-border); border-radius:var(--arena-radius); clip-path:none; font-size:.93rem; margin:0; }
+:root[data-skin]:not([data-skin="neon"]) #home-hub .nav-tile strong { font-size:.9rem; color:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) #home-hub :is(.play-row small,.mode-grid small,#daily-diamonds) { position:static; color:var(--skin-ink); transform:none; }
+:root[data-skin="white"] :is(#menu-page label,#menu-page h2,#menu-page h3,#menu-page .profile-feedback,#menu-page .p-label,#daily-modal p,#help-modal p,.game-confirm-content p,.career-reset-content p) { color:#182334; }
+:root[data-skin="white"] :is(#menu-page input,#menu-page select) { background:#fff; color:#182334; border-color:#aeb9c8; }
+:root[data-skin="cyber"] :is(#controls .btn-icon,#skin-stage .skin-sample-controls span) { border-radius:0; }
+@media (prefers-reduced-motion:reduce) { #skin-stage * { animation:none!important; transition:none!important; } }

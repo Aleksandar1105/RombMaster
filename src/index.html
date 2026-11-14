@@ -96,8 +96,12 @@
                     <div class="home-drawer-content skin-collection">
                         <p>Preview an arena. Skins never change the rules or difficulty.</p>
                         <div id="skin-options" class="skin-options" aria-label="Choose a skin"></div>
-                        <h3 id="skin-preview-name">Neon Arena</h3>
-                        <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
+                        <div id="skin-stage" class="skin-stage" data-preview-skin="neon">
+                            <h3 id="skin-preview-name">Neon Arena</h3>
+                            <div class="skin-sample-score" aria-hidden="true"><span>YOU · X <b>3</b></span><span>AI · O <b>2</b></span></div>
+                            <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
+                            <div class="skin-sample-controls" aria-hidden="true"><span>↶ Undo</span><span>↻ Restart</span><span>⌂ Home</span></div>
+                        </div>
                         <button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
                         <p id="skin-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     </div>

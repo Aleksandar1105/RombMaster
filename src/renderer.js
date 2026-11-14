@@ -69,19 +69,14 @@ export class Renderer {
           this.roundRect(x + inset, y + inset, size - 2 * inset, size - 2 * inset, size * .14);
           this.ctx.fill();
         } else {
-        const fill = this.ctx.createLinearGradient(x, y, x + size, y + size);
-        fill.addColorStop(0, color + '59');
-        fill.addColorStop(.48, color + '2b');
-        fill.addColorStop(1, color + '47');
-        this.ctx.fillStyle = fill;
-        this.ctx.fillRect(x, y, size, size);
+          this.paintCapture(skin, x, y, size, color);
         }
         this.ctx.save();
         this.ctx.translate(x + size / 2, y + size / 2);
         this.ctx.strokeStyle = color;
         this.ctx.shadowColor = color;
-        this.ctx.shadowBlur = skin.fill === 'inset' || skin.id === 'white' ? 0 : Math.min(10, size / 4);
-        this.ctx.lineWidth = Math.max(2, size * (skin.fill === 'inset' ? .105 : .078));
+        this.ctx.shadowBlur = Math.min(skin.finish.glow, size / 4);
+        this.ctx.lineWidth = Math.max(2, size * skin.finish.symbolWeight);
         this.ctx.lineCap = 'round';
         this.ctx.beginPath();
         const arm = size * .19;
@@ -140,7 +135,7 @@ export class Renderer {
                 return;
             }
             this.ctx.shadowColor = isLast ? colors.glow : color;
-            this.ctx.shadowBlur = isLast ? 10 : owner != null ? 3 : 0;
+            this.ctx.shadowBlur = isLast ? (skin.id === 'white' || skin.id === 'wood' ? 0 : 10) : owner != null ? Math.min(3, skin.finish.glow) : 0;
             this.ctx.stroke();
             this.ctx.shadowBlur = 0;
         }
@@ -183,14 +178,67 @@ export class Renderer {
     }
   }
 
+  // Painted details stay within the captured square. The shared-edge pass
+  // below still paints exactly one centered line, regardless of texture.
+  paintCapture(skin, x, y, size, color) {
+    const ctx = this.ctx;
+    const material = skin.finish.material;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, size, size);
+    ctx.clip();
+    if (material === 'matte') {
+      ctx.fillStyle = color + '16';
+      ctx.fillRect(x, y, size, size);
+    } else {
+      const g = ctx.createLinearGradient(x, y, x + size, y + size);
+      const stops = material === 'metal' ? [[0,'60'],[.22,'28'],[.46,'50'],[.54,'20'],[1,'55']] :
+        material === 'crystal' ? [[0,'62'],[.4,'26'],[.68,'52'],[1,'24']] :
+        material === 'grain' ? [[0,'38'],[.5,'20'],[1,'50']] :
+        [[0,'52'],[.5,'20'],[1,'48']];
+      for (const [at,alpha] of stops) g.addColorStop(at,color + alpha);
+      ctx.fillStyle = g;
+      ctx.fillRect(x,y,size,size);
+      ctx.lineWidth = Math.max(.5,size*.012);
+      ctx.strokeStyle = color + '32';
+      ctx.fillStyle = color + '16';
+      // Sparse, deterministic accents; no per-frame randomness or external art.
+      if (material === 'grain') {
+        for (let i=1;i<=4;i++) {
+          const yy=y+size*(i/5);
+          ctx.beginPath(); ctx.moveTo(x,yy);
+          ctx.bezierCurveTo(x+size*.3,yy-size*.07,x+size*.65,yy+size*.06,x+size,yy);
+          ctx.stroke();
+        }
+      } else if (material === 'crystal') {
+        ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+size*.43,y);
+        ctx.lineTo(x,y+size*.54); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(x+size,y+size); ctx.lineTo(x+size*.68,y+size);
+        ctx.lineTo(x+size,y+size*.48); ctx.closePath(); ctx.fill();
+      } else if (material === 'circuit') {
+        const a=size*.1, b=size*.27;
+        ctx.beginPath(); ctx.moveTo(x+a,y+b); ctx.lineTo(x+a,y+a);
+        ctx.lineTo(x+b,y+a); ctx.moveTo(x+size-b,y+size-a);
+        ctx.lineTo(x+size-a,y+size-a); ctx.lineTo(x+size-a,y+size-b);
+        ctx.stroke();
+      } else if (material === 'metal') {
+        ctx.beginPath(); ctx.moveTo(x+size*.12,y+size*.22);
+        ctx.lineTo(x+size*.22,y+size*.12); ctx.lineTo(x+size*.78,y+size*.12);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
   spawnParticles(r, c, player) {
-    const colors = (this.skin || activeSkin()).colors;
+    const skin = this.skin || activeSkin();
+    const colors = skin.colors;
     const dx = i => this.offX + i * this.CELL;
     const dy = j => this.offY + j * this.CELL;
     const px = dx(c) + this.CELL/2, py = dy(r) + this.CELL/2;
     const color = player === CONSTANTS.X ? colors.x : colors.o;
     
-    for(let i=0; i<15; i++) {
+    for(let i=0; i<skin.finish.particles; i++) {
         this.particles.push({
             x:px, y:py, color: color,
             vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10,

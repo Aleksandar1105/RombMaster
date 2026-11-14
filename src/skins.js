@@ -9,8 +9,17 @@ const items = [
   ['wood','Classic Wood','Win 25 Career games','#39261c','#ffcc8b','#8adbc6','#dbc4a7','#ad8051','#ffe09b','#f0dcc4','full'],
   ['white','Minimal White','Reach Career Level 5','#f4f5f7','#b72b52','#17679a','#667587','#65758b','#946100','#536274','full'],
 ];
+// Surface finish, symbol weight and lighting are cosmetic only.
+const finishes = Object.freeze({
+  neon: Object.freeze({material:'inset', symbolWeight:.105, glow:0, frame:'round', particles:15}),
+  royal: Object.freeze({material:'metal', symbolWeight:.086, glow:4, frame:'bevel', particles:18}),
+  cyber: Object.freeze({material:'circuit', symbolWeight:.079, glow:8, frame:'angular', particles:20}),
+  ice: Object.freeze({material:'crystal', symbolWeight:.085, glow:5, frame:'bevel', particles:16}),
+  wood: Object.freeze({material:'grain', symbolWeight:.095, glow:0, frame:'round', particles:10}),
+  white: Object.freeze({material:'matte', symbolWeight:.085, glow:0, frame:'round', particles:8}),
+});
 export const SKINS = Object.freeze(items.map(([id,name,condition,bg,x,o,dot,accent,lastMove,linePlayed,fill]) =>
-  Object.freeze({id,name,condition,fill,accent, colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed,glow:lastMove,lineActive:dot})})));
+  Object.freeze({id,name,condition,fill,accent, finish:finishes[id], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed,glow:lastMove,lineActive:dot})})));
 export const getSkin = id => SKINS.find(s => s.id === id) || SKINS[0];
 let current = SKINS[0];
 export const activeSkin = () => current;
