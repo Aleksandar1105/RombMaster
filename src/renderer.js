@@ -111,13 +111,21 @@ export class Renderer {
             this.ctx.strokeStyle = isLast ? CONSTANTS.COLORS.lastMove : CONSTANTS.COLORS.linePlayed;
             if (owner != null) this.ctx.strokeStyle = color;
             if (before != null && after != null && before !== after) {
-                // Across the stroke, each cell keeps its own half of the border.
-                const halfX = type === 'v' ? width / 2 : 0;
-                const halfY = type === 'h' ? width / 2 : 0;
-                const split = this.ctx.createLinearGradient(x1 - halfX, y1 - halfY, x1 + halfX, y1 + halfY);
-                split.addColorStop(.5, color);
-                split.addColorStop(.5, after === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o);
-                this.ctx.strokeStyle = split;
+                // Keep a full stroke inside each cell, separated by a narrow dark seam.
+                const band = Math.min(2.4, Math.max(1.5, this.CELL * .04));
+                const offset = band / 2 + .55;
+                this.ctx.lineWidth = band;
+                this.ctx.shadowBlur = 0;
+                for (const [side, player] of [[-1, before], [1, after]]) {
+                    const ox = type === 'v' ? side * offset : 0;
+                    const oy = type === 'h' ? side * offset : 0;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x1 + ox, y1 + oy);
+                    this.ctx.lineTo(x2 + ox, y2 + oy);
+                    this.ctx.strokeStyle = player === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+                    this.ctx.stroke();
+                }
+                return;
             }
             this.ctx.shadowColor = isLast ? CONSTANTS.COLORS.glow : color;
             this.ctx.shadowBlur = isLast ? 10 : owner != null ? 3 : 0;
