@@ -231,7 +231,20 @@ function renderSkinCatalog() {
         };
         const symbols = part('skin-card-symbols','');
         symbols.setAttribute('aria-hidden','true');
-        symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
+        const sample = document.createElement('canvas');
+        sample.width=144; sample.height=72;
+        if (sample.getContext?.('2d')) {
+            const iconRenderer=new Renderer(sample,skin);
+            const ctx=iconRenderer.ctx;
+            ctx.fillStyle=skin.colors.bg;
+            ctx.fillRect(0,0,144,72);
+            for(const [owner,x] of [[1,4],[0,76]]) {
+                const color=owner===1?skin.colors.x:skin.colors.o;
+                iconRenderer.paintCapture(skin,x,4,64,color);
+                iconRenderer.drawSymbol(skin,owner,x+32,36,64);
+            }
+            symbols.append(sample);
+        } else symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
         button.append(part('skin-card-rarity',skin.catalog.rarity),
             part('skin-card-name',skin.name),symbols,
             part('skin-card-description',skin.catalog.description),
