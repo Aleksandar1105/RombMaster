@@ -233,6 +233,20 @@
         </div>
     </div>
 
+    <!-- Shared accessible in-game confirmation for new game, Career and restart. -->
+    <div id="confirm-dialog" class="game-confirm-modal" hidden>
+        <div class="glass-panel game-confirm-content" role="alertdialog" aria-modal="true"
+             aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-message">
+            <span class="game-confirm-icon" aria-hidden="true">⚠</span>
+            <h2 id="confirm-dialog-title">Confirm action</h2>
+            <p id="confirm-dialog-message">Continue with this action?</p>
+            <div class="game-confirm-actions">
+                <button id="confirm-dialog-cancel" type="button" class="btn-secondary">Keep Playing</button>
+                <button id="confirm-dialog-accept" type="button" class="btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Local-only destructive action. No system confirm popup. -->
     <div id="career-reset-modal" class="career-reset-modal" hidden>
         <div class="glass-panel career-reset-content" role="alertdialog" aria-modal="true"
