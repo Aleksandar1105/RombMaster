@@ -54,9 +54,11 @@
                     <span id="career-progress" class="career-progress"></span>
                     <div id="chapter-route" aria-label="Career missions"></div>
                     <input id="career-level" type="hidden" value="1">
+                    <div class="mission-detail">
                     <canvas id="mission-preview" width="300" height="300" aria-label="Selected opening"></canvas>
                     <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
                     <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
+                    </div>
                     <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     
                     </section>
@@ -156,6 +158,7 @@
 
         <!-- GAME VIEW -->
         <div id="view-game" class="view hidden">
+            <div class="arena-brand" aria-label="RombMaster"></div>
             <div id="match-mode"></div>
             <div id="scoreboard">
                 <div class="player-card" id="p1-card" style="border-left: 4px solid var(--accent)">
@@ -199,6 +202,7 @@
     <!-- MODALS -->
     <div id="overlay">
         <div class="glass-panel center-panel">
+            <div class="arena-brand" aria-label="RombMaster"></div>
             <span id="result-stars" aria-hidden="true" hidden></span>
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
@@ -206,8 +210,8 @@
             <section class="up-next">
                 <small id="next-level-label"></small>
                 <h3 id="next-career-title"></h3>
-                <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
                 <p id="next-clue"></p>
+                <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
                 <button id="nextCareerBtn" class="btn-primary full-width" hidden>Play next level</button>
             </section>
             <div class="result-actions">
