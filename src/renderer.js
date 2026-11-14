@@ -119,7 +119,9 @@ export class Renderer {
             if (before != null && after != null && before !== after) {
                 // One centered stroke; interpolate across its width, not along its length.
                 // The negative side belongs to the top/left cell, the positive to bottom/right.
-                const half = width / 2;
+                // Keep the shared boundary exactly one logical pixel at every board size.
+                this.ctx.lineWidth = 1;
+                const half = this.ctx.lineWidth / 2;
                 const gx = type === 'v' ? half : 0;
                 const gy = type === 'h' ? half : 0;
                 const beforeColor = before === CONSTANTS.X ? colors.x : colors.o;
