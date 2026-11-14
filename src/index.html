@@ -92,7 +92,18 @@
                     <button id="setup-play" type="button" class="btn-primary">▶ Play</button>
                     </div>
                 </section>
+                <section id="skin-page" class="home-drawer" hidden>
+                    <div class="home-drawer-content skin-collection">
+                        <p>Preview an arena. Skins never change the rules or difficulty.</p>
+                        <div id="skin-options" class="skin-options" aria-label="Choose a skin"></div>
+                        <h3 id="skin-preview-name">Neon Arena</h3>
+                        <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
+                        <button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
+                        <p id="skin-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                    </div>
+                </section>
                 <section id="player-settings" class="home-drawer" hidden>
+                    <button type="button" data-page="skin-page" class="btn-secondary">Skin Collection</button>
                     <div class="home-drawer-content">
                     <div class="identity-banner"><span id="identity-art" aria-hidden="true"></span><strong id="identity-name"></strong></div><div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
                     <div class="local-player-toolbar">

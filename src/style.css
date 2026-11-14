@@ -1330,3 +1330,30 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #controls .btn-icon span,#controls .btn-icon svg {opacity:0}
 #overlay .result-actions button {min-height:clamp(44px,6.9vh,64px)}
 #chapter-route button:focus {outline-offset:-3px}
+
+/* Cosmetic collection and arena palettes. Original Neon art remains the default. */
+#skin-page .skin-collection { display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center; }
+#skin-page .skin-options { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+#skin-page .skin-options button { min-height:48px; padding:8px; border:2px solid; border-radius:8px; clip-path:none; font-size:.85rem; }
+#skin-page .skin-options button::before { display:none; }
+#skin-page .skin-options button[aria-pressed="true"] { outline:2px solid var(--skin-gold,#f6c86a); outline-offset:2px; }
+#skin-preview { width:min(70vw,34vh,280px); height:auto; background:transparent; border-radius:12px; }
+#skin-equip { width:100%; min-height:44px; }
+#skin-equip:disabled { opacity:.58; }
+#player-settings > [data-page="skin-page"] { width:100%; min-height:42px; margin:8px 0; }
+:root[data-skin]:not([data-skin="neon"]) { --primary:var(--skin-o); --accent:var(--skin-x); --text:var(--skin-ink); --bg-dark:var(--skin-bg); --bg-panel:var(--skin-panel); --teal:var(--skin-o); --coral:var(--skin-x); --gold:var(--skin-gold); --violet:var(--skin-accent); }
+:root[data-skin]:not([data-skin="neon"]) :is(#view-game,#overlay,#view-menu,#view-menu:has(#career-page:not([hidden]))) { background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--skin-bg) 88%,var(--skin-accent)),var(--skin-bg) 75%); color:var(--skin-ink); }
+:root[data-skin="wood"] #view-game { background:repeating-linear-gradient(11deg,#39261c 0 6px,#3e2a20 7px 9px,#39261c 10px 15px); }
+:root[data-skin]:not([data-skin="neon"]) #scoreboard #p1-card { --gem:var(--skin-x); }
+:root[data-skin]:not([data-skin="neon"]) #scoreboard #p2-card { --gem:var(--skin-o); }
+:root[data-skin]:not([data-skin="neon"]) #view-game #turn-status { --gem:var(--skin-accent); }
+:root[data-skin]:not([data-skin="neon"]) :is(#scoreboard .player-card,#view-game #turn-status,#controls .btn-icon) { border:1px solid var(--gem)!important; border-radius:10px; clip-path:none; background:color-mix(in srgb,var(--skin-panel) 89%,var(--gem)); color:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) :is(#scoreboard .player-card,#view-game #turn-status)::before { display:none; }
+:root[data-skin]:not([data-skin="neon"]) #scoreboard .player-card.active { box-shadow:0 0 10px var(--gem); }
+:root[data-skin]:not([data-skin="neon"]) :is(#scoreboard .p-label,#scoreboard .score-num,#view-game .turn-label,#controls .btn-icon span) { color:var(--skin-ink)!important; }
+:root[data-skin]:not([data-skin="neon"]) #view-game #match-mode { background:color-mix(in srgb,var(--skin-panel) 85%,var(--skin-accent)); color:var(--skin-ink); box-shadow:inset 0 -2px var(--skin-accent); }
+:root[data-skin]:not([data-skin="neon"]) #view-game #match-mode::first-line { color:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) #controls .btn-icon :is(span,svg) { opacity:1; }
+:root[data-skin]:not([data-skin="neon"]) #controls .btn-icon svg { stroke:var(--skin-ink); }
+:root[data-skin]:not([data-skin="neon"]) .arena-brand { filter:drop-shadow(0 0 4px var(--skin-accent)); }
+:root[data-skin="white"] :is(#view-game .undo-counter,#view-game .save-status) { color:#182334; }

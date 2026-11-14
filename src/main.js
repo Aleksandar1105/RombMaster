@@ -5,6 +5,8 @@ import { Native } from './native.js';
 import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
+import { Board } from './board.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -55,6 +57,7 @@ const menuPages = {
     'quick-settings': 'Quick Play settings',
     'player-settings': 'Player profile',
     'comfort-settings': 'Sound & feedback',
+    'skin-page': 'Skin Collection',
 };
 let pageTrigger = null;
 function showHome() {
@@ -77,6 +80,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if (selected === 'quick-settings') refreshSetupPreview();
+        if (selected === 'skin-page') openSkins();
         el('page-title').textContent = menuPages[selected];
         el('home-hub').hidden = true;
         el('menu-page').hidden = false;
@@ -125,7 +129,85 @@ function renderRoute(profile, selected) {
     }
     route.replaceChildren(...nodes);
 }
+// Read preferences from the current local slot, independent of saved matches.
+const skinState = () => {
+    const state = ProfileStore.read();
+    return { profile: state.profile, daily: DailyProgress.read(localDateKey()).progress,
+        key: LocalSlots.storageKey(SKIN_KEY) };
+};
+function applySkin(id) {
+    const skin = setActiveSkin(id);
+    const root = document.documentElement;
+    if (!root) return; // headless input tests
+    root.dataset.skin = skin.id;
+    for (const [name,value] of Object.entries({
+        '--skin-bg': skin.colors.bg, '--skin-x': skin.colors.x, '--skin-o': skin.colors.o,
+        '--skin-accent': skin.accent, '--skin-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
+        '--skin-panel': skin.id === 'white' ? '#ffffff' : skin.colors.bg,
+        '--skin-gold': skin.colors.lastMove,
+    })) root.style.setProperty(name,value);
+}
+function syncSkin() {
+    const {profile,daily,key} = skinState();
+    applySkin(readSkin(localStorage,key,profile,daily));
+}
+let previewSkinId = 'neon';
+function showSkinPreview() {
+    const skin = getSkin(previewSkinId);
+    const {profile,daily} = skinState();
+    const unlocked = unlockedSkin(skin.id,profile,daily);
+    const canvas = el('skin-preview');
+    el('skin-preview-name').textContent = skin.name;
+    el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
+    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : 'Locked';
+    el('skin-status').textContent = skin.condition;
+    if (canvas?.getContext?.('2d')) {
+        const board = new Board(4);
+        // A read-only sample with both orientations of contrasting shared edges.
+        for (const [r,c,p] of [[1,2,1],[2,2,0],[2,3,1]]) {
+            board.owner[r][c] = p;
+            board.h[r][c] = board.h[r+1][c] = board.v[r][c] = board.v[r][c+1] = true;
+        }
+        const renderer = new Renderer(canvas,skin);
+        renderer.CELL = (canvas.width - 16) / board.S;
+        renderer.offX = renderer.offY = 8;
+        renderer.draw(board,null);
+    }
+    for (const button of el('skin-options').children) {
+        button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
+    }
+}
+function openSkins() {
+    const {profile,daily} = skinState();
+    previewSkinId = activeSkin().id;
+    const buttons = SKINS.map(skin => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.skinId = skin.id;
+        button.textContent = skin.name + (unlockedSkin(skin.id,profile,daily) ? '' : ' · Locked');
+        button.style.background = skin.colors.bg;
+        button.style.color = skin.id === 'white' ? '#182334' : skin.colors.x;
+        button.style.borderColor = skin.colors.o;
+        button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); };
+        return button;
+    });
+    el('skin-options').replaceChildren(...buttons);
+    showSkinPreview();
+}
+el('skin-equip').onclick = () => {
+    const {profile,daily,key} = skinState();
+    const result = saveSkin(localStorage,key,previewSkinId,profile,daily);
+    if (result !== 'ready') {
+        el('skin-status').textContent = result === 'locked' ? 'This skin is locked.' : 'Could not save skin. Previous selection preserved.';
+        return;
+    }
+    applySkin(previewSkinId);
+    showSkinPreview();
+    refreshCareer();
+    el('skin-status').textContent = 'Equipped for this local player.';
+};
 const refreshCareer = () => {
+    syncSkin();
     const state = ProfileStore.read();
     if (state.status === 'invalid' || state.status === 'unavailable') {
         profileFeedback.textContent = state.status === 'invalid'

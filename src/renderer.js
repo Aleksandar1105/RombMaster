@@ -1,7 +1,9 @@
 import { CONSTANTS } from './constants.js';
+import { activeSkin } from './skins.js';
 
 export class Renderer {
-  constructor(canvas) {
+  constructor(canvas, skin = null) {
+    this.skin = skin;
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d", { alpha: false });
     this.particles = [];
@@ -42,9 +44,11 @@ export class Renderer {
   }
 
   draw(board, lastMove, previewMove = null) {
+    const skin = this.skin || activeSkin();
+    const colors = skin.colors;
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.fillStyle = CONSTANTS.COLORS.bg;
+    this.ctx.fillStyle = colors.bg;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.restore();
 
@@ -58,19 +62,26 @@ export class Renderer {
       if (board.active(r, c) && board.owner[r][c] != null) {
         const owner = board.owner[r][c];
         const x = dx(c), y = dy(r), size = this.CELL;
-        const color = owner === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+        const color = owner === CONSTANTS.X ? colors.x : colors.o;
+        if (skin.fill === 'inset') {
+          const inset = size * .15;
+          this.ctx.fillStyle = color + '2b';
+          this.roundRect(x + inset, y + inset, size - 2 * inset, size - 2 * inset, size * .14);
+          this.ctx.fill();
+        } else {
         const fill = this.ctx.createLinearGradient(x, y, x + size, y + size);
         fill.addColorStop(0, color + '59');
         fill.addColorStop(.48, color + '2b');
         fill.addColorStop(1, color + '47');
         this.ctx.fillStyle = fill;
         this.ctx.fillRect(x, y, size, size);
+        }
         this.ctx.save();
         this.ctx.translate(x + size / 2, y + size / 2);
         this.ctx.strokeStyle = color;
         this.ctx.shadowColor = color;
-        this.ctx.shadowBlur = Math.min(10, size / 4);
-        this.ctx.lineWidth = Math.max(2, size * .078);
+        this.ctx.shadowBlur = skin.fill === 'inset' || skin.id === 'white' ? 0 : Math.min(10, size / 4);
+        this.ctx.lineWidth = Math.max(2, size * (skin.fill === 'inset' ? .105 : .078));
         this.ctx.lineCap = 'round';
         this.ctx.beginPath();
         const arm = size * .19;
@@ -94,7 +105,7 @@ export class Renderer {
         this.ctx.moveTo(x1, y1); this.ctx.lineTo(x2, y2);
 
         if (isGhost) {
-            this.ctx.strokeStyle = CONSTANTS.COLORS.lineActive;
+            this.ctx.strokeStyle = colors.lineActive;
             this.ctx.lineWidth = 1;
             this.ctx.setLineDash([1.5, Math.min(5, this.CELL / 5)]);
             this.ctx.stroke();
@@ -104,11 +115,11 @@ export class Renderer {
             const before = type === 'h' ? board.owner[r - 1]?.[c] : board.owner[r]?.[c - 1];
             const after = board.owner[r]?.[c];
             const owner = before ?? after;
-            const color = owner === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+            const color = owner === CONSTANTS.X ? colors.x : colors.o;
             const width = Math.max(.85, Math.min(1.6, this.CELL * .045));
             this.ctx.lineWidth = width;
             this.ctx.lineCap = "round";
-            this.ctx.strokeStyle = isLast ? CONSTANTS.COLORS.lastMove : CONSTANTS.COLORS.linePlayed;
+            this.ctx.strokeStyle = isLast ? colors.lastMove : colors.linePlayed;
             if (owner != null) this.ctx.strokeStyle = color;
             if (before != null && after != null && before !== after) {
                 // One centered stroke; interpolate across its width, not along its length.
@@ -116,8 +127,8 @@ export class Renderer {
                 const half = width / 2;
                 const gx = type === 'v' ? half : 0;
                 const gy = type === 'h' ? half : 0;
-                const beforeColor = before === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
-                const afterColor = after === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+                const beforeColor = before === CONSTANTS.X ? colors.x : colors.o;
+                const afterColor = after === CONSTANTS.X ? colors.x : colors.o;
                 const edge = this.ctx.createLinearGradient(x1 - gx, y1 - gy, x1 + gx, y1 + gy);
                 edge.addColorStop(0, beforeColor);
                 edge.addColorStop(.35, beforeColor);
@@ -128,7 +139,7 @@ export class Renderer {
                 this.ctx.stroke();
                 return;
             }
-            this.ctx.shadowColor = isLast ? CONSTANTS.COLORS.glow : color;
+            this.ctx.shadowColor = isLast ? colors.glow : color;
             this.ctx.shadowBlur = isLast ? 10 : owner != null ? 3 : 0;
             this.ctx.stroke();
             this.ctx.shadowBlur = 0;
@@ -153,7 +164,7 @@ export class Renderer {
       this.ctx.beginPath();
       this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x2, y2);
-      this.ctx.strokeStyle = '#fbbf24';
+      this.ctx.strokeStyle = colors.lastMove;
       this.ctx.lineWidth = Math.max(5, this.CELL * 0.14);
       this.ctx.lineCap = 'round';
       this.ctx.stroke();
@@ -163,7 +174,7 @@ export class Renderer {
     this.updateParticles();
 
     // Dots
-    this.ctx.fillStyle = "#a5c5df"; 
+    this.ctx.fillStyle = colors.dot; 
     const dotR = Math.max(1.4, Math.min(4, this.CELL * .065));
     for (let r=0; r<=board.S; r++) for (let c=0; c<=board.S; c++) {
       if (board.active(r,c) || board.active(r-1,c) || board.active(r,c-1) || board.active(r-1,c-1)) {
@@ -173,10 +184,11 @@ export class Renderer {
   }
 
   spawnParticles(r, c, player) {
+    const colors = (this.skin || activeSkin()).colors;
     const dx = i => this.offX + i * this.CELL;
     const dy = j => this.offY + j * this.CELL;
     const px = dx(c) + this.CELL/2, py = dy(r) + this.CELL/2;
-    const color = player === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+    const color = player === CONSTANTS.X ? colors.x : colors.o;
     
     for(let i=0; i<15; i++) {
         this.particles.push({
