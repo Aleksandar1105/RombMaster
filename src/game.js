@@ -1,7 +1,7 @@
 import { Native } from './native.js';
 import { AudioController } from './audio.js';
 import { CONSTANTS } from './constants.js';
-import { Board } from './board.js';
+import { missionFor, startingBoard, drawOpening } from './career-missions.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
@@ -174,7 +174,8 @@ export const Game = {
     this.hoverMove = null;
 
     // 1. Креирај логика
-    this.board = new Board(size);
+    if (missionFor(career)) this.settings.openingVersion = 1;
+    this.board = startingBoard(this.settings);
 
     this.showBoard();
     this.saveLocal();
@@ -190,7 +191,8 @@ export const Game = {
       if (item) item.textContent = value;
     };
     setLabel('p1-name', playerName + ' · X');
-    setLabel('p2-name', (aiMatch ? 'Computer' : 'Player 2') + ' · O');
+    this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : 'Computer';
+    setLabel('p2-name', (aiMatch ? this.rivalName : 'Player 2') + ' · O');
     this.updateUI();
     if (this.paused) audio.pause();
     // 2. Исчисти партикли
@@ -268,7 +270,7 @@ export const Game = {
       // delayed result animation, so background termination loses no reward.
       if (this.settings.careerLevel && this.careerOutcome === null) {
         this.careerOutcome = ProfileStore.recordCareer(
-          this.settings.careerLevel, this.board.score[CONSTANTS.X], this.board.score[CONSTANTS.O]
+          this.settings.careerLevel, this.board.score[CONSTANTS.X], this.board.score[CONSTANTS.O], this.doubleCaptureGoal()
         );
       }
       this.scheduleAction(() => this.endGame(), 500);
@@ -343,11 +345,16 @@ export const Game = {
       reward.hidden = false;
       if (outcome.status === 'ready') {
         if (nextButton && outcome.victory && outcome.profile.unlockedLevel > this.settings.careerLevel) {
+          const stage = careerLevel(this.settings.careerLevel + 1);
+          const title = document.getElementById('next-career-title');
+          if (title) title.textContent = 'Next · ' + (missionFor(stage.level)?.title ?? 'Level ' + stage.level);
+          drawOpening(document.getElementById('next-opening'), stage);
           nextButton.hidden = false;
         }
         reward.textContent = outcome.victory
           ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
           : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
+        if (outcome.foxUnlocked) reward.textContent += '\nAvatar unlocked: Neon Fox';
         if (outcome.newAchievements?.length) {
           reward.textContent += '\nAchievement unlocked: ' +
             outcome.newAchievements.map(item => item.title).join(', ');
@@ -383,7 +390,7 @@ export const Game = {
       label.textContent = 'Round complete';
       hint.textContent = 'View the final score';
     } else if (isComputer) {
-      label.textContent = extraTurn ? 'Computer gets another turn' : 'Computer thinking…';
+      label.textContent = extraTurn ? this.rivalName + ' gets another turn' : this.rivalName + ' thinking…';
       hint.textContent = extraTurn ? 'Square captured · Computer plays again' : 'Choosing a line';
     } else if (extraTurn) {
       label.textContent = currentName + ' gets another turn';
@@ -392,6 +399,14 @@ export const Game = {
       label.textContent = this.settings.mode === 'ai' ? 'Your turn' : currentName + "'s turn";
       hint.textContent = 'Tap between two dots to draw a line';
     }
+  },
+
+  doubleCaptureGoal() {
+    if (!this.settings.openingVersion || this.settings.careerLevel !== 3) return null;
+    return this.historyStack.some((turn, index) => {
+      const after = this.historyStack[index + 1]?.score ?? this.board.score;
+      return turn.player === CONSTANTS.X && after[CONSTANTS.X] - turn.score[CONSTANTS.X] === 2;
+    });
   },
 
   updateUI() {
@@ -404,7 +419,10 @@ export const Game = {
         const target = threeStarTarget(playableCells);
         const earned = this.board.score[CONSTANTS.X];
         const goal = earned >= target ? '★★★ secured' : '3-star goal: ' + earned + '/' + target;
-        modeLabel.textContent = 'Career · Level ' + level + ' / 30 · ' + goal;
+        const mission = this.settings.openingVersion && missionFor(level);
+        const double = this.doubleCaptureGoal();
+        const progress = double === null ? goal : double ? 'Double capture ✓' : 'Goal: double capture';
+        modeLabel.textContent = 'Career · Level ' + level + ' / 30 · ' + (mission ? mission.title + ' · ' : '') + progress;
       } else modeLabel.textContent = 'Quick Play';
     }
     this.updateTurnStatus();
@@ -464,6 +482,14 @@ export const Game = {
     const saved = SaveStore.read();
     const button = document.getElementById('continueBtn');
     if (button) button.hidden = saved.status !== 'ready';
+    const detail = document.getElementById('continue-summary');
+    if (detail) {
+      const state = saved.state;
+      detail.textContent = saved.status === 'ready'
+        ? (state.settings.careerLevel ? 'Career · L' + state.settings.careerLevel : 'Quick Play') +
+          ' · ' + state.board.score[CONSTANTS.X] + '–' + state.board.score[CONSTANTS.O]
+        : '';
+    }
     const messages = {
       invalid: 'The saved game could not be loaded. You can start a new game.',
       unavailable: 'Saving is unavailable. Progress may be lost when you close the game.',

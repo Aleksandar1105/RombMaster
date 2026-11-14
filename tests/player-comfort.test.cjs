@@ -21,8 +21,8 @@ test('comfort preferences have accessible controls and preserve offline play', (
   assert.match(native,/if \(!this\.hapticsEnabled\) return/);
 });
 
-test('local QA only runs on the guided first win branch', () => {
-  assert.match(preflight,/\$expectedBranch = "feat\/guided-first-win"/);
+test('local QA only runs on the Career chapter branch', () => {
+  assert.match(preflight,/\$expectedBranch = "feat\/career-opening-chapter"/);
   assert.match(preflight,/npm-ci/);
   assert.match(preflight,/node-tests/);
   assert.match(preflight,/vite-web-build/);

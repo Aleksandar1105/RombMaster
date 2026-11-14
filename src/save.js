@@ -1,3 +1,4 @@
+import { missionFor, startingBoard } from './career-missions.js';
 import { Board } from './board.js';
 import { CONSTANTS } from './constants.js';
 import { careerLevel, LocalSlots } from './profile.js';
@@ -16,6 +17,10 @@ function settingsOf(value) {
     }
     settings.careerLevel = config.level;
   }
+  if (value.openingVersion !== undefined) {
+    if (value.openingVersion !== 1 || !missionFor(settings.careerLevel)) throw Error('Unknown Career opening');
+    settings.openingVersion = 1;
+  }
   return settings;
 }
 
@@ -25,7 +30,7 @@ function sameBoard(actual, expected) {
 }
 
 function replay(settings, moves) {
-  const board = new Board(settings.size);
+  const board = startingBoard(settings);
   if (!Array.isArray(moves) || moves.length > board.getFreeMoves().length) throw new Error('Invalid move count');
   let player = CONSTANTS.X, lastMove = null;
   const history = [], cleanMoves = [];

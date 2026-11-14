@@ -6,6 +6,7 @@ export const CAREER_LEVEL_COUNT = 30;
 // Preset avatars need no photo uploads, personal information or accounts.
 export const PLAYER_AVATARS = Object.freeze([
   { id: 'spark', icon: '✨', label: 'Spark' },
+  { id: 'neon-fox', icon: '🦊', label: 'Neon Fox' },
   { id: 'fox', icon: '🦊', label: 'Fox' },
   { id: 'robot', icon: '🤖', label: 'Robot' },
   { id: 'rocket', icon: '🚀', label: 'Rocket' },
@@ -123,6 +124,7 @@ function parseProfile(raw) {
   return {
     version: 1, name: data.name, avatar, xp: data.xp,
     unlockedLevel: data.unlockedLevel, stars,
+    neonFoxUnlocked: data.neonFoxUnlocked === true || Boolean(stars[5]) || avatar === 'neon-fox',
     stats: { played, wins, draws, losses, streak, bestStreak },
   };
 }
@@ -284,6 +286,9 @@ export const ProfileStore = {
     }
     const current = this.read();
     if (current.status === 'invalid' || current.status === 'unavailable') return current;
+    if (avatarId === 'neon-fox' && !current.profile.neonFoxUnlocked) {
+      return { status: 'locked' };
+    }
     return persist({ ...current.profile, avatar: avatarId });
   },
 
@@ -294,6 +299,7 @@ export const ProfileStore = {
     if (current.status === 'invalid' || current.status === 'unavailable') return current;
     const next = freshProfile(current.profile.name);
     next.avatar = current.profile.avatar;
+    next.neonFoxUnlocked = Boolean(current.profile.neonFoxUnlocked);
     return persist(next);
   },
 
@@ -303,7 +309,7 @@ export const ProfileStore = {
     catch { return { status: 'bad-name' }; }
   },
 
-  recordCareer(level, playerScore, computerScore) {
+  recordCareer(level, playerScore, computerScore, doubleCapture = null) {
     let config;
     try { config = careerLevel(level); }
     catch { return { status: 'invalid-level' }; }
@@ -325,6 +331,9 @@ export const ProfileStore = {
       stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
       const margin = (playerScore - computerScore) / Math.max(1, playerScore + computerScore);
       awardedStars = playerScore >= threeStarTarget(playerScore + computerScore) ? 3 : margin >= 0.2 ? 2 : 1;
+      if (level === 3 && doubleCapture !== null) {
+        awardedStars = doubleCapture ? 3 : Math.min(awardedStars, 2);
+      }
       const oldStars = stars[level] || 0;
       if (awardedStars > oldStars) {
         earnedXP = (awardedStars - oldStars) * 50 + (oldStars === 0 ? 50 : 0);
@@ -357,6 +366,7 @@ export const ProfileStore = {
       .filter(item => item.earned && !earnedBefore.has(item.id));
     return {
       ...saved, earnedXP, awardedStars, newAchievements,
+      foxUnlocked: level === 5 && !profile.neonFoxUnlocked && Boolean(stars[5]),
       victory: playerScore > computerScore, level: config.level,
     };
   },

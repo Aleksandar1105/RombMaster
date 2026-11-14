@@ -1,5 +1,5 @@
 # RombMaster QA preflight - runs locally on Windows, never starts GitHub Actions.
-# Use a clean, disposable clone of feat/guided-first-win.
+# Use a clean, disposable clone of feat/career-opening-chapter.
 [CmdletBinding()]
 param(
     [switch]$WebOnly,
@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$expectedBranch = "feat/guided-first-win"
+$expectedBranch = "feat/career-opening-chapter"
 $logDir = Join-Path $root "qa-logs"
 New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
