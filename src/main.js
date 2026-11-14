@@ -6,7 +6,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } 
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -57,7 +57,7 @@ const menuPages = {
     'quick-settings': 'Quick Play settings',
     'player-settings': 'Player profile',
     'comfort-settings': 'Sound & feedback',
-    'skin-page': 'Skin Collection',
+    'skin-page': 'Skin Store',
 };
 let pageTrigger = null;
 function showHome() {
@@ -154,6 +154,7 @@ function syncSkin() {
     applySkin(readSkin(localStorage,key,profile,daily));
 }
 let previewSkinId = 'neon';
+let collectionOnly = false;
 let skinPreviewFrame = null;
 let skinPreviewRenderer = null;
 let skinPreviewBoard = null;
@@ -183,8 +184,9 @@ function showSkinPreview() {
         })) stage.style.setProperty(name,value);
     }
     el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
-    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : 'Locked';
+    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : skin.id === 'royal' ? 'Coming soon' : 'Locked';
     el('skin-status').textContent = skin.condition;
+    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect;
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
         // A read-only sample with both orientations of contrasting shared edges.
@@ -203,23 +205,50 @@ function showSkinPreview() {
         button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
     }
 }
-function openSkins() {
+function renderSkinCatalog() {
     const {profile,daily} = skinState();
-    previewSkinId = activeSkin().id;
-    const buttons = SKINS.map(skin => {
+    const entries = skinCatalog(profile,daily,activeSkin().id,collectionOnly);
+    const owned = skinCatalog(profile,daily,activeSkin().id,true);
+    el('skin-owned-count').textContent = owned.length + ' / ' + SKINS.length + ' skins unlocked';
+    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly));
+    el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
+    el('page-title').textContent = collectionOnly ? 'My Collection' : 'Skin Store';
+    if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = activeSkin().id;
+    const buttons = entries.map(({skin,status}) => {
         const button = document.createElement('button');
         button.type = 'button';
+        button.className = 'skin-card';
         button.dataset.skinId = skin.id;
-        button.textContent = skin.name + (unlockedSkin(skin.id,profile,daily) ? '' : ' · Locked');
-        button.style.background = skin.colors.bg;
-        button.style.color = skin.id === 'white' ? '#182334' : skin.colors.x;
-        button.style.borderColor = skin.colors.o;
-        button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); };
+        button.style.setProperty('--card-x',skin.colors.x);
+        button.style.setProperty('--card-o',skin.colors.o);
+        button.style.setProperty('--card-accent',skin.accent);
+        button.setAttribute('aria-label',skin.name + ', ' + skin.catalog.rarity + ', ' + status + ', preview');
+        const part = (className,value) => {
+            const node = document.createElement('span');
+            node.className = className;
+            node.textContent = value;
+            return node;
+        };
+        const symbols = part('skin-card-symbols','');
+        symbols.setAttribute('aria-hidden','true');
+        symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
+        button.append(part('skin-card-rarity',skin.catalog.rarity),
+            part('skin-card-name',skin.name),symbols,
+            part('skin-card-description',skin.catalog.description),
+            part('skin-card-status',status + ' · Preview'));
+        button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); el('skin-preview-name').scrollIntoView?.({block:'nearest'}); };
         return button;
     });
     el('skin-options').replaceChildren(...buttons);
     showSkinPreview();
 }
+function openSkins() {
+    collectionOnly = false;
+    previewSkinId = activeSkin().id;
+    renderSkinCatalog();
+}
+el('skin-tab-store').onclick = () => { collectionOnly = false; renderSkinCatalog(); };
+el('skin-tab-collection').onclick = () => { collectionOnly = true; renderSkinCatalog(); };
 el('skin-effect-preview').onclick = () => {
     if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
     if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
@@ -244,8 +273,8 @@ el('skin-equip').onclick = () => {
         return;
     }
     applySkin(previewSkinId);
-    showSkinPreview();
     refreshCareer();
+    renderSkinCatalog();
     el('skin-status').textContent = 'Equipped for this local player.';
 };
 const refreshCareer = () => {
