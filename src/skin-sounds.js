@@ -8,4 +8,9 @@ const themes = {
   wood: {move:[[170,'triangle',.045,.065,0]],capture:[[205,'triangle',.065,.075,0],[310,'triangle',.09,.06,60]],win:[[196,'triangle',.09,.07,0],[247,'triangle',.09,.065,100],[294,'triangle',.11,.065,200],[392,'sine',.19,.06,300]]},
   white: {move:[[420,'sine',.045,.032,0]],capture:[[660,'sine',.09,.045,0],[880,'sine',.12,.04,70]],win:[[523,'sine',.10,.04,0],[659,'sine',.10,.04,100],[784,'sine',.16,.045,200]]},
 };
-export const soundCue = (id, event) => (themes[id] || themes.neon)[event] || [];
+const seasonalTones = {"frozen-christmas":440,"golden-dragon":494,"spring-blossom":523,"summer-paradise":587,"autumn-kingdom":659,"halloween-curse":392,"midnight-gold":784};
+export const soundCue = (id, event) => {
+  const f=seasonalTones[id];
+  if(f) return ({move:[[f,'sine',.08,.035,0]],capture:[[f,'triangle',.12,.055,0],[f*1.5,'sine',.18,.045,85]],win:[[f,'triangle',.14,.05,0],[f*1.25,'triangle',.14,.05,110],[f*1.5,'sine',.22,.05,220]]})[event] || [];
+  return (themes[id] || themes.neon)[event] || [];
+};

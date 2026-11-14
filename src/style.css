@@ -1596,3 +1596,14 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 @keyframes skin-halo-ice {from{opacity:.8;transform:scaleX(.7)}to{opacity:0;transform:scaleX(1.1)}}
 @keyframes skin-halo-wood {from{opacity:.8;transform:translateY(8px)}to{opacity:0;transform:translateY(-8px)}}
 @keyframes skin-halo-white {from{opacity:.65;transform:scale(.75)}to{opacity:0;transform:scale(1.15)}}
+
+/* Seasonal store: preview-only, local bundled art. */
+#skin-page .skin-store-tabs {grid-template-columns:repeat(3,minmax(0,1fr));}
+#skin-page .skin-store-tabs button {overflow-wrap:anywhere;}
+#skin-stage[data-preview-skin="frozen-christmas"], #skin-page .skin-card[data-skin-id="frozen-christmas"] {--theme-art:url('./skin-art/frozen-christmas.svg');--arena-surface:radial-gradient(ellipse at top,#b3e3fe33,#092336 72%);--arena-face:#092336;--arena-border:#b3e3fe;--arena-radius:9px;}
+#skin-stage[data-preview-skin="golden-dragon"], #skin-page .skin-card[data-skin-id="golden-dragon"] {--theme-art:url('./skin-art/golden-dragon.svg');--arena-surface:radial-gradient(ellipse at top,#eaa24a33,#30100f 72%);--arena-face:#30100f;--arena-border:#eaa24a;--arena-radius:9px;}
+#skin-stage[data-preview-skin="spring-blossom"], #skin-page .skin-card[data-skin-id="spring-blossom"] {--theme-art:url('./skin-art/spring-blossom.svg');--arena-surface:radial-gradient(ellipse at top,#efaad333,#222938 72%);--arena-face:#222938;--arena-border:#efaad3;--arena-radius:9px;}
+#skin-stage[data-preview-skin="summer-paradise"], #skin-page .skin-card[data-skin-id="summer-paradise"] {--theme-art:url('./skin-art/summer-paradise.svg');--arena-surface:radial-gradient(ellipse at top,#61d9e733,#073039 72%);--arena-face:#073039;--arena-border:#61d9e7;--arena-radius:9px;}
+#skin-stage[data-preview-skin="autumn-kingdom"], #skin-page .skin-card[data-skin-id="autumn-kingdom"] {--theme-art:url('./skin-art/autumn-kingdom.svg');--arena-surface:radial-gradient(ellipse at top,#e7aa6433,#34221b 72%);--arena-face:#34221b;--arena-border:#e7aa64;--arena-radius:9px;}
+#skin-stage[data-preview-skin="halloween-curse"], #skin-page .skin-card[data-skin-id="halloween-curse"] {--theme-art:url('./skin-art/halloween-curse.svg');--arena-surface:radial-gradient(ellipse at top,#ab78e933,#21102c 72%);--arena-face:#21102c;--arena-border:#ab78e9;--arena-radius:9px;}
+#skin-stage[data-preview-skin="midnight-gold"], #skin-page .skin-card[data-skin-id="midnight-gold"] {--theme-art:url('./skin-art/midnight-gold.svg');--arena-surface:radial-gradient(ellipse at top,#dfb76a33,#161820 72%);--arena-face:#161820;--arena-border:#dfb76a;--arena-radius:9px;}

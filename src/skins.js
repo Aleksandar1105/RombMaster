@@ -29,10 +29,153 @@ const catalog = Object.freeze({
 });
 export const SKINS = Object.freeze(items.map(([id,name,condition,bg,x,o,dot,accent,lastMove,linePlayed,fill]) =>
   Object.freeze({id,name,condition,fill,accent, catalog:catalog[id], finish:finishes[id], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed,glow:lastMove,lineActive:dot})})));
-export const getSkin = id => SKINS.find(s => s.id === id) || SKINS[0];
+
+// Seasonal previews are separate from the six progression skins. No client-side sales/grants.
+const seasonalItems = [
+  [
+    "frozen-christmas",
+    "Frozen Christmas",
+    299,
+    "12-01",
+    "01-10",
+    "#092336",
+    "#f08286",
+    "#88edff",
+    "#d3f3fc",
+    "#b3e3fe",
+    "#fbe3a1",
+    "ice",
+    "Snow crystals",
+    "❄"
+  ],
+  [
+    "golden-dragon",
+    "Golden Dragon",
+    399,
+    "02-01",
+    "02-21",
+    "#30100f",
+    "#ff7c79",
+    "#ffd46b",
+    "#f9e4aa",
+    "#eaa24a",
+    "#ffe2a0",
+    "royal",
+    "Dragon embers",
+    "◇"
+  ],
+  [
+    "spring-blossom",
+    "Spring Blossom",
+    299,
+    "03-01",
+    "04-30",
+    "#222938",
+    "#f7a9cc",
+    "#8fe4bd",
+    "#dceadf",
+    "#efaad3",
+    "#ffe4ac",
+    "white",
+    "Petal ripples",
+    "✿"
+  ],
+  [
+    "summer-paradise",
+    "Summer Paradise",
+    349,
+    "06-01",
+    "08-31",
+    "#073039",
+    "#ff9e81",
+    "#72f4dd",
+    "#b9f4eb",
+    "#61d9e7",
+    "#f8e1a1",
+    "ice",
+    "Ocean shimmer",
+    "≈"
+  ],
+  [
+    "autumn-kingdom",
+    "Autumn Kingdom",
+    299,
+    "09-01",
+    "11-30",
+    "#34221b",
+    "#f8af62",
+    "#a3d4a4",
+    "#e4c8a7",
+    "#e7aa64",
+    "#ffe2ad",
+    "wood",
+    "Amber dust",
+    "❋"
+  ],
+  [
+    "halloween-curse",
+    "Halloween Curse",
+    399,
+    "10-15",
+    "11-05",
+    "#21102c",
+    "#ff9b48",
+    "#c5a1ff",
+    "#e4d8fa",
+    "#ab78e9",
+    "#ffc76e",
+    "cyber",
+    "Mystic scan",
+    "✦"
+  ],
+  [
+    "midnight-gold",
+    "Midnight Gold",
+    499,
+    "12-25",
+    "01-15",
+    "#161820",
+    "#ffc976",
+    "#d3e6fc",
+    "#eee3cc",
+    "#dfb76a",
+    "#fff1b6",
+    "royal",
+    "Golden fireworks",
+    "✧"
+  ]
+];
+export const SEASONAL_SKINS = Object.freeze(seasonalItems.map(([id,name,priceCents,start,end,bg,x,o,dot,accent,lastMove,base,effect,motif]) =>
+  Object.freeze({id,name,condition:'Paid cosmetic • preview only',fill:'full',accent,
+    finish:finishes[base], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed:dot,glow:lastMove,lineActive:dot}),
+    catalog:Object.freeze({rarity:'Seasonal',description:effect,effect,motif}),
+    offer:Object.freeze({productId:'skin_'+id.replaceAll('-','_'),priceCents,currency:'EUR',start,end})
+  })));
+export const getSeasonalSkin = id => SEASONAL_SKINS.find(s=>s.id===id);
+// UTC date windows, inclusive. Prices are planning estimates, not Play Store quotes.
+export function seasonStatus(offer,now=new Date()) {
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) return {active:false,daysLeft:0};
+  const day=now.toISOString().slice(5,10), year=now.getUTCFullYear();
+  const {start,end}=offer, wraps=start>end;
+  const active=wraps ? day>=start || day<=end : day>=start && day<=end;
+  if (!active) return {active:false,daysLeft:0};
+  const endYear=wraps && day>=start ? year+1 : year;
+  const midnight=Date.UTC(year,now.getUTCMonth(),now.getUTCDate());
+  const [month,date]=end.split('-').map(Number);
+  return {active,daysLeft:Math.round((Date.UTC(endYear,month-1,date)-midnight)/86400000)+1};
+}
+export function seasonalCatalog(now=new Date()) {
+  return SEASONAL_SKINS.map(skin=>{
+    const {active,daysLeft}=seasonStatus(skin.offer,now);
+    return {skin,owned:false,active,daysLeft,status:active ? daysLeft+' days left • Preview' : 'Out of season'};
+  }).sort((a,b)=>Number(b.active)-Number(a.active));
+}
+export const seasonalPriceLabel = skin => new Intl.NumberFormat('en-IE',{style:'currency',currency:skin.offer.currency}).format(skin.offer.priceCents/100);
+
+export const getSkin = id => SKINS.find(s => s.id === id) || getSeasonalSkin(id) || SKINS[0];
 let current = SKINS[0];
 export const activeSkin = () => current;
-export function setActiveSkin(id) { current = getSkin(id); return current; }
+export function setActiveSkin(id) { current = SKINS.find(s=>s.id===id) || SKINS[0]; return current; }
 export function unlockedSkin(id, profile, daily) {
   switch(id) {
     case 'neon': return true;

@@ -6,7 +6,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } 
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, seasonStatus, seasonalPriceLabel } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -155,6 +155,7 @@ function syncSkin() {
 }
 let previewSkinId = 'neon';
 let collectionOnly = false;
+let seasonalOnly = false;
 let skinPreviewFrame = null;
 let skinPreviewRenderer = null;
 let skinPreviewBoard = null;
@@ -185,7 +186,11 @@ function showSkinPreview() {
     }
     el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
     el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : skin.id === 'royal' ? 'Coming soon' : 'Locked';
-    el('skin-status').textContent = skin.condition;
+    if (skin.offer) {
+        const {active,daysLeft}=seasonStatus(skin.offer);
+        el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
+        el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
+    } else el('skin-status').textContent = skin.condition;
     el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect;
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
@@ -207,13 +212,14 @@ function showSkinPreview() {
 }
 function renderSkinCatalog() {
     const {profile,daily} = skinState();
-    const entries = skinCatalog(profile,daily,activeSkin().id,collectionOnly);
+    const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
     const owned = skinCatalog(profile,daily,activeSkin().id,true);
     el('skin-owned-count').textContent = owned.length + ' / ' + SKINS.length + ' skins unlocked';
-    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly));
+    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly));
     el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
-    el('page-title').textContent = collectionOnly ? 'My Collection' : 'Skin Store';
-    if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = activeSkin().id;
+    el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
+    el('page-title').textContent = seasonalOnly ? 'Seasonal Collection' : collectionOnly ? 'My Collection' : 'Skin Store';
+    if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = entries[0]?.skin.id || activeSkin().id;
     const buttons = entries.map(({skin,status}) => {
         const button = document.createElement('button');
         button.type = 'button';
@@ -248,7 +254,7 @@ function renderSkinCatalog() {
         button.append(part('skin-card-rarity',skin.catalog.rarity),
             part('skin-card-name',skin.name),symbols,
             part('skin-card-description',skin.catalog.description),
-            part('skin-card-status',status + ' · Preview'));
+            part('skin-card-status',skin.offer ? status + ' · '+seasonalPriceLabel(skin)+' (target)' : status + ' · Preview'));
         button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); el('skin-preview-name').scrollIntoView?.({block:'nearest'}); };
         return button;
     });
@@ -256,12 +262,14 @@ function renderSkinCatalog() {
     showSkinPreview();
 }
 function openSkins() {
+    seasonalOnly = false;
     collectionOnly = false;
     previewSkinId = activeSkin().id;
     renderSkinCatalog();
 }
-el('skin-tab-store').onclick = () => { collectionOnly = false; renderSkinCatalog(); };
-el('skin-tab-collection').onclick = () => { collectionOnly = true; renderSkinCatalog(); };
+el('skin-tab-store').onclick = () => { seasonalOnly=false; collectionOnly = false; renderSkinCatalog(); };
+el('skin-tab-collection').onclick = () => { seasonalOnly=false; collectionOnly = true; renderSkinCatalog(); };
+if(el('skin-tab-seasonal')) el('skin-tab-seasonal').onclick = () => { collectionOnly=false; seasonalOnly=true; renderSkinCatalog(); };
 el('skin-effect-preview').onclick = () => {
     if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
     if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
