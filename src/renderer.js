@@ -231,30 +231,68 @@ export class Renderer {
   }
 
   spawnParticles(r, c, player) {
+    if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
     const skin = this.skin || activeSkin();
-    const colors = skin.colors;
-    const dx = i => this.offX + i * this.CELL;
-    const dy = j => this.offY + j * this.CELL;
-    const px = dx(c) + this.CELL/2, py = dy(r) + this.CELL/2;
-    const color = player === CONSTANTS.X ? colors.x : colors.o;
-    
-    for(let i=0; i<skin.finish.particles; i++) {
-        this.particles.push({
-            x:px, y:py, color: color,
-            vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10,
-            life:1, size:5
-        });
-    }
+    const color = player === CONSTANTS.X ? skin.colors.x : skin.colors.o;
+    // Grid coordinates keep the animation aligned through a resize.
+    const born = Date.now();
+    this.particles.push({r,c,color,born,duration:skin.finish.duration,effect:skin.finish.effect,count:skin.finish.particles});
+    // Bound memory when several cells are captured in a rapid chain.
+    if (this.particles.length > 48) this.particles.splice(0,this.particles.length-48);
   }
 
   updateParticles() {
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-        const p = this.particles[i];
-        p.x += p.vx; p.y += p.vy; p.vx *= 0.9; p.vy *= 0.9; p.life -= 0.05; p.size *= 0.94;
-        this.ctx.globalAlpha = p.life; this.ctx.fillStyle = p.color;
-        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill();
-        this.ctx.globalAlpha = 1.0;
-        if (p.life <= 0) this.particles.splice(i, 1);
+    const ctx = this.ctx;
+    const now = Date.now();
+    for (let i=this.particles.length-1;i>=0;i--) {
+      const p=this.particles[i];
+      const t=Math.max(0,(now-p.born)/p.duration);
+      if (t>=1) { this.particles.splice(i,1); continue; }
+      const size=this.CELL,x=this.offX+p.c*size,y=this.offY+p.r*size;
+      const cx=x+size/2,cy=y+size/2;
+      const a=1-t, ease=1-Math.pow(1-t,3);
+      ctx.save();
+      // Keep the shared edge and neighboring cells completely unobscured.
+      const margin=Math.max(2,size*.045);
+      ctx.beginPath(); ctx.rect(x+margin,y+margin,size-2*margin,size-2*margin); ctx.clip();
+      ctx.strokeStyle=p.color; ctx.fillStyle=p.color;
+      ctx.lineWidth=Math.max(1,size*.025);
+      ctx.globalAlpha=.65*a;
+      if (p.effect==='scan') {
+        const yy=y+size*(.1+.8*ease);
+        ctx.fillRect(x+margin,yy,size-2*margin,Math.max(2,size*.045));
+        ctx.strokeRect(x+size*.12,y+size*.12,size*.76,size*.76);
+      } else if (p.effect==='shard') {
+        for (let j=0;j<6;j++) {
+          const theta=j*Math.PI/3,r=size*(.12+.25*ease);
+          const xx=cx+Math.cos(theta)*r,yy=cy+Math.sin(theta)*r;
+          const h=size*.065*a;
+          ctx.beginPath(); ctx.moveTo(xx,yy-h);ctx.lineTo(xx+h*.65,yy);
+          ctx.lineTo(xx,yy+h);ctx.lineTo(xx-h*.65,yy);ctx.closePath();ctx.fill();
+        }
+      } else if (p.effect==='dust') {
+        for (let j=0;j<p.count;j++) {
+          const theta=j*2.399963,r=size*(.1+.29*ease);
+          ctx.beginPath();ctx.arc(cx+Math.cos(theta)*r,cy+Math.sin(theta)*r,
+            Math.max(.5,size*.023*a),0,Math.PI*2);ctx.fill();
+        }
+      } else {
+        ctx.beginPath();ctx.arc(cx,cy,size*(.15+.34*ease),0,Math.PI*2);ctx.stroke();
+        if (p.effect==='spark' || p.effect==='ring') {
+          for(let j=0;j<p.count;j++) {
+            const theta=j*Math.PI*2/p.count,r=size*(.16+.31*ease);
+            const xx=cx+Math.cos(theta)*r,yy=cy+Math.sin(theta)*r;
+            const h=size*.035*a;
+            if(p.effect==='spark') {
+              ctx.beginPath();ctx.moveTo(xx-h,yy);ctx.lineTo(xx+h,yy);
+              ctx.moveTo(xx,yy-h);ctx.lineTo(xx,yy+h);ctx.stroke();
+            } else {
+              ctx.beginPath();ctx.arc(xx,yy,Math.max(.4,h),0,Math.PI*2);ctx.fill();
+            }
+          }
+        }
+      }
+      ctx.restore();
     }
   }
 

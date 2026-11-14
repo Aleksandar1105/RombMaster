@@ -107,6 +107,15 @@ export const Game = {
 
   setSoundEnabled(enabled) { audio.enabled = Boolean(enabled); },
 
+  playCosmeticSound(event, skinId) {
+    if (this.paused || !audio.enabled) return;
+    audio.init();
+    if (event === 'capture') audio.score(skinId);
+    else if (event === 'win') audio.win(skinId);
+    else audio.move(skinId);
+  },
+  stopCosmeticSound() { audio.pause(); },
+
   init(canvasEl, uiRefs) {
     this.ui = uiRefs;
     this.renderer = new Renderer(canvasEl);
@@ -522,6 +531,7 @@ export const Game = {
     audio.init();
     const state = saved.state;
     this.board = state.board;
+    this.renderer.particles = [];
     this.player = state.player;
     this.settings = state.settings;
     this.historyStack = state.history;

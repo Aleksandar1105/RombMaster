@@ -1414,3 +1414,5 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 :root[data-skin="white"] :is(#menu-page input,#menu-page select) { background:#fff; color:#182334; border-color:#aeb9c8; }
 :root[data-skin="cyber"] :is(#controls .btn-icon,#skin-stage .skin-sample-controls span) { border-radius:0; }
 @media (prefers-reduced-motion:reduce) { #skin-stage * { animation:none!important; transition:none!important; } }
+
+#skin-effect-preview { width:100%; min-height:44px; font-size:.85rem; }

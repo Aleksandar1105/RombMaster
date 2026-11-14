@@ -61,6 +61,7 @@ const menuPages = {
 };
 let pageTrigger = null;
 function showHome() {
+    stopSkinPreview();
     el('menu-page').hidden = true;
     el('home-hub').hidden = false;
     ui.viewMenu.scrollTop = 0;
@@ -71,6 +72,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
     button.onclick = () => {
         pageTrigger = button;
         const selected = button.dataset.page;
+        if (selected !== 'skin-page') stopSkinPreview();
         if (selected === 'career-page') {
             const profile = ProfileStore.read().profile;
             if (profile) {
@@ -152,7 +154,19 @@ function syncSkin() {
     applySkin(readSkin(localStorage,key,profile,daily));
 }
 let previewSkinId = 'neon';
+let skinPreviewFrame = null;
+let skinPreviewRenderer = null;
+let skinPreviewBoard = null;
+function stopSkinPreview() {
+    if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
+    skinPreviewFrame = null;
+    if (skinPreviewRenderer) skinPreviewRenderer.particles = [];
+    // Only interrupt menu audio when a preview actually exists.
+    if (skinPreviewRenderer) Game.stopCosmeticSound();
+    skinPreviewRenderer = skinPreviewBoard = null;
+}
 function showSkinPreview() {
+    stopSkinPreview();
     const skin = getSkin(previewSkinId);
     const {profile,daily} = skinState();
     const unlocked = unlockedSkin(skin.id,profile,daily);
@@ -182,6 +196,8 @@ function showSkinPreview() {
         renderer.CELL = (canvas.width - 16) / board.S;
         renderer.offX = renderer.offY = 8;
         renderer.draw(board,null);
+        skinPreviewRenderer = renderer;
+        skinPreviewBoard = board;
     }
     for (const button of el('skin-options').children) {
         button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
@@ -204,6 +220,22 @@ function openSkins() {
     el('skin-options').replaceChildren(...buttons);
     showSkinPreview();
 }
+el('skin-effect-preview').onclick = () => {
+    if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
+    if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
+    skinPreviewFrame = null;
+    const renderer = skinPreviewRenderer, board = skinPreviewBoard;
+    renderer.particles = [];
+    renderer.spawnParticles(2,2,0);
+    Game.playCosmeticSound('capture',previewSkinId);
+    const frame = () => {
+        skinPreviewFrame = null;
+        if (el('skin-page').hidden || Game.paused || renderer !== skinPreviewRenderer) return;
+        renderer.draw(board,null);
+        if (renderer.particles.length) skinPreviewFrame = requestAnimationFrame(frame);
+    };
+    frame();
+};
 el('skin-equip').onclick = () => {
     const {profile,daily,key} = skinState();
     const result = saveSkin(localStorage,key,previewSkinId,profile,daily);
@@ -659,6 +691,8 @@ let practiceRound = 0;
 let practiceIndex = 0;
 let dailyIndex = 0;
 let duelLost = false;
+let dailyEffectFrame = null;
+let dailyLastMove = null;
 const dailyModal = el('daily-modal');
 dailyModal.hidden = true; // Explicit initial state, including minimal DOM test harnesses.
 const dailyNext = el('daily-next-btn');
@@ -694,10 +728,32 @@ const drawDaily = () => {
         clientWidth: width, clientHeight: Math.max(400, Math.min(window.innerHeight, 640)),
         querySelector: () => null,
     }, dailyPuzzle.board.S);
-    dailyRenderer.draw(dailyPuzzle.board, null);
+    dailyRenderer.draw(dailyPuzzle.board, dailyLastMove);
+};
+const stopDailyEffects = () => {
+    if (dailyEffectFrame !== null) cancelAnimationFrame(dailyEffectFrame);
+    dailyEffectFrame = null;
+    dailyRenderer.particles = [];
+    dailyLastMove = null;
+    Game.stopCosmeticSound();
+};
+const animateDaily = move => {
+    dailyLastMove = move;
+    if (dailyEffectFrame !== null) cancelAnimationFrame(dailyEffectFrame);
+    const frame = () => {
+        dailyEffectFrame = null;
+        if (!dailyPuzzle || dailyModal.hidden || Game.paused) return;
+        dailyRenderer.draw(dailyPuzzle.board,dailyLastMove);
+        if (dailyRenderer.particles.length) dailyEffectFrame = requestAnimationFrame(frame);
+    };
+    frame();
+};
+const dailyCapture = (result,player) => {
+    for (const sq of result?.capturedSquares || []) dailyRenderer.spawnParticles(sq.r,sq.c,player);
 };
 
 const closeDaily = () => {
+    stopDailyEffects();
     dailyModal.hidden = true;
     dailyPuzzle = null;
     dailySolved = false;
@@ -705,6 +761,7 @@ const closeDaily = () => {
 };
 
 const showDaily = () => {
+    stopDailyEffects();
     const state = DailyProgress.read(dailyDate);
     if (state.status !== 'ready') {
         dailyPuzzle = null;
@@ -771,13 +828,19 @@ dailyCanvas.addEventListener('pointerdown', event => {
     if (dailyPuzzle.type === 'duel') {
         const human = board.makeMove(move.t, move.r, move.c, 1);
         let lastMove = move;
+        dailyCapture(human,1);
+        let captured = human.points > 0;
         if (!human.points) {
             while (!board.isGameOver()) {
                 lastMove = duelReply(board);
-                if (!board.makeMove(lastMove.t, lastMove.r, lastMove.c, 0).points) break;
+                const reply = board.makeMove(lastMove.t, lastMove.r, lastMove.c, 0);
+                dailyCapture(reply,0);
+                if (!reply.points) break;
+                captured = true;
             }
         }
-        dailyRenderer.draw(board, lastMove);
+        Game.playCosmeticSound(captured ? 'capture' : 'move');
+        animateDaily(lastMove);
         const score = `You ${board.score[1]} · Computer ${board.score[0]}`;
         if (!board.isGameOver()) {
             dailyFeedback.textContent = score + (human.points ? ' · Capture! Play again.' : ' · Your turn.');
@@ -796,8 +859,10 @@ dailyCanvas.addEventListener('pointerdown', event => {
             dailyFeedback.textContent = dailyPuzzle.retry;
             return;
         }
-        board.makeMove(move.t, move.r, move.c, 1);
-        dailyRenderer.draw(board, move);
+        const result = board.makeMove(move.t, move.r, move.c, 1);
+        dailyCapture(result,1);
+        Game.playCosmeticSound(result.points ? 'capture' : 'move');
+        animateDaily(move);
         dailyFeedback.textContent = dailyPuzzle.success;
     }
     if (!practiceRound) {
@@ -821,10 +886,20 @@ refreshDailyMenu();
 
 // Visibility and native state may arrive in either order. Both must be active
 // before gameplay resumes, so duplicate events cannot queue extra AI responses.
-document.addEventListener('visibilitychange', () => Game.setActive('visibility', !document.hidden));
+document.addEventListener('visibilitychange', () => {
+    Game.setActive('visibility', !document.hidden);
+    if (document.hidden) {
+        stopSkinPreview();
+        stopDailyEffects();
+    } else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
+});
 window.addEventListener('pagehide', () => Game.setActive('page', false));
 window.addEventListener('pageshow', () => Game.setActive('page', true));
-Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
+Native.onStateChange(({ isActive }) => {
+    Game.setActive('native', isActive);
+    if (!isActive) { stopSkinPreview(); stopDailyEffects(); }
+    else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
+});
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
