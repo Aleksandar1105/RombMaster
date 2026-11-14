@@ -54,7 +54,10 @@ test('all six finished skins preserve one centered two-color line in both direct
     ]) {
       const edges=canvas.strokes.filter(s=>JSON.stringify(s.pts)===JSON.stringify(points));
       assert.equal(edges.length,1,skin.id);
-      assert.equal(edges[0].width,1.6);
+      assert.equal(edges[0].width,1);
+      // Gradient is perpendicular to the edge and centered on the same path.
+      const [[x1,y1],[x2,y2]]=points;
+      assert.deepEqual(Array.from(edges[0].style.coords), x1===x2 ? [x1-.5,y1,x1+.5,y1] : [x1,y1-.5,x1,y1+.5]);
       assert.equal(edges[0].style.stops[0][1],colors[0]);
       assert.equal(edges[0].style.stops[3][1],colors[1]);
     }
