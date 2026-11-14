@@ -101,19 +101,28 @@ export class Renderer {
             this.ctx.setLineDash([]);
         } else {
             const isLast = lastMove && lastMove.t === type && lastMove.r === r && lastMove.c === c;
-            if (isLast) {
-                this.ctx.strokeStyle = CONSTANTS.COLORS.lastMove;
-                this.ctx.lineWidth = Math.max(.85, Math.min(1.6, this.CELL * .045));
-                this.ctx.lineCap = "round";
-                this.ctx.shadowBlur = 15; this.ctx.shadowColor = CONSTANTS.COLORS.glow;
-                this.ctx.stroke();
-                this.ctx.shadowBlur = 0;
-            } else {
-                this.ctx.strokeStyle = CONSTANTS.COLORS.linePlayed;
-                this.ctx.lineWidth = Math.max(.85, Math.min(1.6, this.CELL * .045));
-                this.ctx.lineCap = "round";
-                this.ctx.stroke();
+            const before = type === 'h' ? board.owner[r - 1]?.[c] : board.owner[r]?.[c - 1];
+            const after = board.owner[r]?.[c];
+            const owner = before ?? after;
+            const color = owner === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+            const width = Math.max(.85, Math.min(1.6, this.CELL * .045));
+            this.ctx.lineWidth = width;
+            this.ctx.lineCap = "round";
+            this.ctx.strokeStyle = isLast ? CONSTANTS.COLORS.lastMove : CONSTANTS.COLORS.linePlayed;
+            if (owner != null) this.ctx.strokeStyle = color;
+            if (before != null && after != null && before !== after) {
+                // Across the stroke, each cell keeps its own half of the border.
+                const halfX = type === 'v' ? width / 2 : 0;
+                const halfY = type === 'h' ? width / 2 : 0;
+                const split = this.ctx.createLinearGradient(x1 - halfX, y1 - halfY, x1 + halfX, y1 + halfY);
+                split.addColorStop(.5, color);
+                split.addColorStop(.5, after === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o);
+                this.ctx.strokeStyle = split;
             }
+            this.ctx.shadowColor = isLast ? CONSTANTS.COLORS.glow : color;
+            this.ctx.shadowBlur = isLast ? 10 : owner != null ? 3 : 0;
+            this.ctx.stroke();
+            this.ctx.shadowBlur = 0;
         }
     };
 
