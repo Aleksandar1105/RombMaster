@@ -145,10 +145,105 @@ const seasonalItems = [
     "✧"
   ]
 ];
+const seasonalFinishes = Object.freeze({
+  "frozen-christmas": {
+    "material": "frost",
+    "symbolWeight": 0.087,
+    "glow": 5,
+    "frame": "bevel",
+    "particles": 12,
+    "effect": "snow",
+    "duration": 620
+  },
+  "golden-dragon": {
+    "material": "scale",
+    "symbolWeight": 0.087,
+    "glow": 5,
+    "frame": "bevel",
+    "particles": 16,
+    "effect": "ember",
+    "duration": 690
+  },
+  "spring-blossom": {
+    "material": "silk",
+    "symbolWeight": 0.087,
+    "glow": 2,
+    "frame": "bevel",
+    "particles": 10,
+    "effect": "petal",
+    "duration": 650
+  },
+  "summer-paradise": {
+    "material": "water",
+    "symbolWeight": 0.087,
+    "glow": 4,
+    "frame": "bevel",
+    "particles": 10,
+    "effect": "wave",
+    "duration": 580
+  },
+  "autumn-kingdom": {
+    "material": "amber",
+    "symbolWeight": 0.087,
+    "glow": 2,
+    "frame": "bevel",
+    "particles": 12,
+    "effect": "leaf",
+    "duration": 700
+  },
+  "halloween-curse": {
+    "material": "obsidian",
+    "symbolWeight": 0.087,
+    "glow": 6,
+    "frame": "bevel",
+    "particles": 12,
+    "effect": "wisp",
+    "duration": 640
+  },
+  "midnight-gold": {
+    "material": "platinum",
+    "symbolWeight": 0.087,
+    "glow": 5,
+    "frame": "bevel",
+    "particles": 20,
+    "effect": "firework",
+    "duration": 760
+  }
+});
+const seasonalDetails = Object.freeze({
+  "frozen-christmas": {
+    "description": "Faceted ice, snowflake filigree and winter lights",
+    "victory": "Snowfall crown"
+  },
+  "golden-dragon": {
+    "description": "Crimson lacquer, engraved gold and dragon scales",
+    "victory": "Dragon flame"
+  },
+  "spring-blossom": {
+    "description": "Rose silk, jade buds and delicate blossom petals",
+    "victory": "Blossom bloom"
+  },
+  "summer-paradise": {
+    "description": "Lagoon glass, coral and dancing light caustics",
+    "victory": "Ocean ripple"
+  },
+  "autumn-kingdom": {
+    "description": "Amber resin, copper veins and forest leaves",
+    "victory": "Falling leaves"
+  },
+  "halloween-curse": {
+    "description": "Obsidian facets, violet runes and ghostly wisps",
+    "victory": "Phantom eclipse"
+  },
+  "midnight-gold": {
+    "description": "Black enamel, champagne gold and platinum inlays",
+    "victory": "Midnight fireworks"
+  }
+});
 export const SEASONAL_SKINS = Object.freeze(seasonalItems.map(([id,name,priceCents,start,end,bg,x,o,dot,accent,lastMove,base,effect,motif]) =>
   Object.freeze({id,name,condition:'Paid cosmetic • preview only',fill:'full',accent,
-    finish:finishes[base], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed:dot,glow:lastMove,lineActive:dot}),
-    catalog:Object.freeze({rarity:'Seasonal',description:effect,effect,motif}),
+    finish:Object.freeze(seasonalFinishes[id]), colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed:dot,glow:lastMove,lineActive:dot}),
+    catalog:Object.freeze({rarity:'Seasonal',description:seasonalDetails[id].description,victory:seasonalDetails[id].victory,effect,motif}),
     offer:Object.freeze({productId:'skin_'+id.replaceAll('-','_'),priceCents,currency:'EUR',start,end})
   })));
 export const getSeasonalSkin = id => SEASONAL_SKINS.find(s=>s.id===id);

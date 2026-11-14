@@ -39,8 +39,8 @@ async function load(reduced=false){
 test('every skin has three distinct, short, low-volume synthesized cues',async()=>{
   const h=await load();
   for(const type of ['move','capture','win']){
-    const cues=h.skins.SKINS.map(s=>h.soundCue(s.id,type));
-    assert.equal(new Set(cues.map(JSON.stringify)).size,6);
+    const cues=[...h.skins.SKINS,...h.skins.SEASONAL_SKINS].map(s=>h.soundCue(s.id,type));
+    assert.equal(new Set(cues.map(JSON.stringify)).size,13);
     assert.ok(cues.every(c=>c.length && c.every(n=>n[3]<=.08 && n[2]<=.3 && n[4]<=300)));
   }
 });
@@ -62,7 +62,7 @@ function canvas(){
 }
 test('each capture effect expires and is clipped to its own square',async()=>{
   const h=await load();
-  for(const skin of h.skins.SKINS){
+  for(const skin of [...h.skins.SKINS,...h.skins.SEASONAL_SKINS]){
     const c=canvas(),r=new h.Renderer(c,skin);
     r.CELL=60;r.offX=r.offY=10;
     r.spawnParticles(2,2,1); assert.equal(r.particles.length,1);

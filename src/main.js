@@ -166,6 +166,8 @@ function stopSkinPreview() {
     // Only interrupt menu audio when a preview actually exists.
     if (skinPreviewRenderer) Game.stopCosmeticSound();
     skinPreviewRenderer = skinPreviewBoard = null;
+    const victory=el('seasonal-victory');
+    if(victory){victory.hidden=true;victory.classList.remove('playing');}
 }
 function showSkinPreview() {
     stopSkinPreview();
@@ -176,6 +178,10 @@ function showSkinPreview() {
     el('skin-preview-name').textContent = skin.name;
     const stage = el('skin-stage');
     stage.dataset.previewSkin = skin.id;
+    const crest=el('seasonal-crest');
+    if(crest)crest.hidden=!skin.offer;
+    const victoryButton=el('skin-victory-preview');
+    if(victoryButton)victoryButton.hidden=!skin.offer;
     if (stage.style.setProperty) {
         for (const [name,value] of Object.entries({
             '--skin-bg':skin.colors.bg,'--skin-x':skin.colors.x,'--skin-o':skin.colors.o,
@@ -191,7 +197,7 @@ function showSkinPreview() {
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
     } else el('skin-status').textContent = skin.condition;
-    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect;
+    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect + (skin.offer ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
         // A read-only sample with both orientations of contrasting shared edges.
@@ -214,7 +220,7 @@ function renderSkinCatalog() {
     const {profile,daily} = skinState();
     const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
     const owned = skinCatalog(profile,daily,activeSkin().id,true);
-    el('skin-owned-count').textContent = owned.length + ' / ' + SKINS.length + ' skins unlocked';
+    el('skin-owned-count').textContent = seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked';
     el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly));
     el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
@@ -285,6 +291,17 @@ el('skin-effect-preview').onclick = () => {
         if (renderer.particles.length) skinPreviewFrame = requestAnimationFrame(frame);
     };
     frame();
+};
+if(el('skin-victory-preview')) el('skin-victory-preview').onclick=()=>{
+    const skin=getSkin(previewSkinId), victory=el('seasonal-victory');
+    if(!skin.offer || el('skin-page').hidden || Game.paused || !victory)return;
+    victory.dataset.victorySkin=skin.id;
+    victory.textContent='Victory · '+skin.catalog.victory;
+    victory.classList.remove('playing');
+    victory.hidden=false;
+    void victory.offsetWidth;
+    victory.classList.add('playing');
+    Game.playCosmeticSound('win',skin.id);
 };
 el('skin-equip').onclick = () => {
     const {profile,daily,key} = skinState();

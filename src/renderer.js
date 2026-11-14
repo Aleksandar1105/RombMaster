@@ -224,7 +224,34 @@ export class Renderer {
     ctx.beginPath();
     ctx.rect(x, y, size, size);
     ctx.clip();
-    if (material === 'matte') {
+    if (skin.offer) {
+      // Distinct material accents stay away from the X/O symbol and cell edges.
+      const g=ctx.createLinearGradient(x,y,x+size,y+size);
+      for(const [at,alpha] of [[0,'54'],[.32,'22'],[.65,'35'],[1,'50']])g.addColorStop(at,color+alpha);
+      ctx.fillStyle=g;ctx.fillRect(x,y,size,size);
+      ctx.strokeStyle=color+'43';ctx.fillStyle=color+'24';ctx.lineWidth=Math.max(.5,size*.012);
+      const pt=(a,b)=>[x+size*a,y+size*b];
+      const line=(points,close=false,fill=false)=>{ctx.beginPath();ctx.moveTo(...pt(...points[0]));for(const p of points.slice(1))ctx.lineTo(...pt(...p));if(close)ctx.closePath();if(fill)ctx.fill();else ctx.stroke();};
+      if(material==='frost'){
+        line([[.04,.04],[.33,.04],[.04,.33]],true,true);line([[.96,.96],[.67,.96],[.96,.67]],true,true);
+        line([[.08,.25],[.25,.08],[.38,.08]]);
+      }else if(material==='scale'){
+        for(const i of [.13,.32,.51,.70,.89]){ctx.beginPath();ctx.arc(...pt(i,.09),size*.075,0,Math.PI);ctx.stroke();}
+        line([[.08,.8],[.08,.92],[.92,.92],[.92,.8]]);
+      }else if(material==='silk'){
+        for(const i of [.12,.24,.76,.88]){ctx.beginPath();ctx.moveTo(...pt(.05,i));ctx.bezierCurveTo(...pt(.28,i-.06),...pt(.72,i+.06),...pt(.95,i));ctx.stroke();}
+      }else if(material==='water'){
+        for(const i of [.12,.82]){ctx.beginPath();ctx.moveTo(...pt(.04,i));ctx.bezierCurveTo(...pt(.25,i+.12),...pt(.75,i-.09),...pt(.96,i));ctx.stroke();}
+      }else if(material==='amber'){
+        line([[.08,.3],[.25,.08],[.4,.08]]);line([[.12,.16],[.25,.23],[.25,.08]]);line([[.92,.7],[.75,.92],[.6,.92]]);
+      }else if(material==='obsidian'){
+        line([[.08,.08],[.28,.08],[.16,.28]],true,true);line([[.92,.92],[.72,.92],[.84,.72]],true,true);
+        line([[.08,.68],[.08,.92],[.32,.92]]);
+      }else if(material==='platinum'){
+        line([[.07,.27],[.07,.17],[.17,.07],[.83,.07],[.93,.17],[.93,.27]]);
+        line([[.07,.73],[.07,.83],[.17,.93],[.83,.93],[.93,.83],[.93,.73]]);
+      }
+    } else if (material === 'matte') {
       ctx.fillStyle = color + '16';
       ctx.fillRect(x, y, size, size);
     } else {
@@ -295,7 +322,26 @@ export class Renderer {
       ctx.strokeStyle=p.color; ctx.fillStyle=p.color;
       ctx.lineWidth=Math.max(1,size*.025);
       ctx.globalAlpha=.65*a;
-      if (p.effect==='scan') {
+      if (['snow','ember','petal','wave','leaf','wisp','firework'].includes(p.effect)) {
+        if(p.effect==='wave'){
+          for(let j=0;j<3;j++){ctx.globalAlpha=.55*a*(1-j*.22);ctx.beginPath();ctx.arc(cx,cy,size*(.08+.29*ease+j*.04),0,Math.PI*2);ctx.stroke();}
+        } else {
+          for(let j=0;j<p.count;j++){
+            const theta=j*2.399963+(p.effect==='wisp'?t:0);
+            const radius=size*(.10+.28*ease);
+            const xx=cx+Math.cos(theta)*radius,yy=cy+Math.sin(theta)*radius+(p.effect==='leaf'?size*.08*t:0);
+            const h=Math.max(.5,size*.045*a);
+            ctx.beginPath();
+            if(p.effect==='snow'){
+              for(let k=0;k<3;k++){const ang=k*Math.PI/3;ctx.moveTo(xx-h*Math.cos(ang),yy-h*Math.sin(ang));ctx.lineTo(xx+h*Math.cos(ang),yy+h*Math.sin(ang));}ctx.stroke();
+            }else if(p.effect==='petal'||p.effect==='leaf'){
+              ctx.moveTo(xx-h,yy);ctx.bezierCurveTo(xx-h,yy-h,xx+h,yy-h,xx+h,yy);ctx.bezierCurveTo(xx+h,yy+h,xx-h,yy+h,xx-h,yy);ctx.closePath();ctx.fill();
+            }else if(p.effect==='firework'||p.effect==='ember'){
+              ctx.moveTo(xx,yy);ctx.lineTo(xx+h*2*Math.cos(theta),yy+h*2*Math.sin(theta));ctx.stroke();
+            }else{ctx.arc(xx,yy,h,0,Math.PI*2);ctx.stroke();}
+          }
+        }
+      } else if (p.effect==='scan') {
         const yy=y+size*(.1+.8*ease);
         ctx.fillRect(x+margin,yy,size-2*margin,Math.max(2,size*.045));
         ctx.strokeRect(x+size*.12,y+size*.12,size*.76,size*.76);

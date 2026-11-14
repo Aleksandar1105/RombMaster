@@ -19,7 +19,7 @@ async function load() {
   await board.link(spec=>get(spec.replace('./','')));
   await board.evaluate();
   return {Renderer:renderer.namespace.Renderer,Board:board.namespace.Board,
-    skins:get('skins.js').namespace.SKINS};
+    skins:[...get('skins.js').namespace.SKINS,...get('skins.js').namespace.SEASONAL_SKINS]};
 }
 function fakeCanvas() {
   const strokes=[], fills=[];
@@ -36,7 +36,7 @@ function fakeCanvas() {
   };
   return {width:320,height:320,getContext:()=>ctx,strokes,fills};
 }
-test('all six finished skins preserve one centered two-color line in both directions',async()=>{
+test('all thirteen finished skins preserve one centered two-color line in both directions',async()=>{
   const {Renderer,Board,skins}=await load();
   for (const skin of skins) {
     const canvas=fakeCanvas(), renderer=new Renderer(canvas,skin), board=new Board(4);
@@ -66,7 +66,7 @@ test('all six finished skins preserve one centered two-color line in both direct
 });
 test('skin effects are distinct, bounded and do not add any game rules',async()=>{
   const {skins}=await load();
-  assert.equal(new Set(skins.map(s=>s.finish.material)).size,6);
+  assert.equal(new Set(skins.map(s=>s.finish.material)).size,13);
   assert.equal(skins[0].finish.material,'inset');
   assert.equal(skins[0].finish.glow,0);
   assert.ok(skins.every(s=>s.finish.particles>=8&&s.finish.particles<=20));

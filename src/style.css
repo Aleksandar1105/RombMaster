@@ -1607,3 +1607,45 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #skin-stage[data-preview-skin="autumn-kingdom"], #skin-page .skin-card[data-skin-id="autumn-kingdom"] {--theme-art:url('./skin-art/autumn-kingdom.svg');--arena-surface:radial-gradient(ellipse at top,#e7aa6433,#34221b 72%);--arena-face:#34221b;--arena-border:#e7aa64;--arena-radius:9px;}
 #skin-stage[data-preview-skin="halloween-curse"], #skin-page .skin-card[data-skin-id="halloween-curse"] {--theme-art:url('./skin-art/halloween-curse.svg');--arena-surface:radial-gradient(ellipse at top,#ab78e933,#21102c 72%);--arena-face:#21102c;--arena-border:#ab78e9;--arena-radius:9px;}
 #skin-stage[data-preview-skin="midnight-gold"], #skin-page .skin-card[data-skin-id="midnight-gold"] {--theme-art:url('./skin-art/midnight-gold.svg');--arena-surface:radial-gradient(ellipse at top,#dfb76a33,#161820 72%);--arena-face:#161820;--arena-border:#dfb76a;--arena-radius:9px;}
+
+/* Seasonal art polish: isolated previews, no changes to gameplay geometry. */
+#seasonal-crest[hidden],#seasonal-victory[hidden],#skin-victory-preview[hidden]{display:none!important;}
+#seasonal-crest{width:66px;height:66px;background:var(--theme-crest) center/contain no-repeat;filter:drop-shadow(0 0 9px var(--arena-border));}
+#skin-stage:has(#seasonal-crest:not([hidden])) {border:2px solid var(--arena-border);box-shadow:inset 0 0 26px #0006;}
+#skin-stage:has(#seasonal-crest:not([hidden])) #skin-preview{border:1px solid var(--arena-border);box-shadow:0 5px 16px #0007;}
+#skin-page .seasonal-victory{width:100%;padding:16px 8px;text-align:center;border:1px solid var(--victory-accent);border-radius:10px;color:var(--victory-accent);background:var(--victory-art) center/cover;font-size:1rem;font-weight:800;}
+#menu-page #skin-page #skin-victory-preview {background:#243650;color:#f4f7fc;border:1px solid #7489a7;border-radius:9px;clip-path:none;box-shadow:none;min-height:44px;}
+#skin-stage[data-preview-skin="frozen-christmas"]{--theme-crest:url('./skin-art/frozen-christmas-crest.svg');--arena-radius:5px;--arena-face:linear-gradient(135deg,#092336,#b3e3fe26,#092336);}
+#skin-page .seasonal-victory[data-victory-skin="frozen-christmas"]{--victory-accent:#b3e3fe;--victory-art:url('./skin-art/frozen-christmas.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="frozen-christmas"]{animation:season-frozen-christmas .75s ease-out both;}}
+@keyframes season-frozen-christmas{from{transform:translateY(-12px) scale(.92);opacity:.15}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="golden-dragon"]{--theme-crest:url('./skin-art/golden-dragon-crest.svg');--arena-radius:4px;--arena-face:linear-gradient(135deg,#30100f,#eaa24a26,#30100f);}
+#skin-page .seasonal-victory[data-victory-skin="golden-dragon"]{--victory-accent:#eaa24a;--victory-art:url('./skin-art/golden-dragon.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="golden-dragon"]{animation:season-golden-dragon .75s ease-out both;}}
+@keyframes season-golden-dragon{from{transform:scale(.78);filter:brightness(2);opacity:.4}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="spring-blossom"]{--theme-crest:url('./skin-art/spring-blossom-crest.svg');--arena-radius:14px;--arena-face:linear-gradient(135deg,#222938,#efaad326,#222938);}
+#skin-page .seasonal-victory[data-victory-skin="spring-blossom"]{--victory-accent:#efaad3;--victory-art:url('./skin-art/spring-blossom.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="spring-blossom"]{animation:season-spring-blossom .75s ease-out both;}}
+@keyframes season-spring-blossom{from{transform:rotate(-4deg) scale(.82);opacity:.1}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="summer-paradise"]{--theme-crest:url('./skin-art/summer-paradise-crest.svg');--arena-radius:13px;--arena-face:linear-gradient(135deg,#073039,#61d9e726,#073039);}
+#skin-page .seasonal-victory[data-victory-skin="summer-paradise"]{--victory-accent:#61d9e7;--victory-art:url('./skin-art/summer-paradise.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="summer-paradise"]{animation:season-summer-paradise .75s ease-out both;}}
+@keyframes season-summer-paradise{from{transform:scaleX(.6);opacity:.15}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="autumn-kingdom"]{--theme-crest:url('./skin-art/autumn-kingdom-crest.svg');--arena-radius:8px;--arena-face:linear-gradient(135deg,#34221b,#e7aa6426,#34221b);}
+#skin-page .seasonal-victory[data-victory-skin="autumn-kingdom"]{--victory-accent:#e7aa64;--victory-art:url('./skin-art/autumn-kingdom.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="autumn-kingdom"]{animation:season-autumn-kingdom .75s ease-out both;}}
+@keyframes season-autumn-kingdom{from{transform:translateY(-16px) rotate(4deg);opacity:.15}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="halloween-curse"]{--theme-crest:url('./skin-art/halloween-curse-crest.svg');--arena-radius:3px;--arena-face:linear-gradient(135deg,#21102c,#ab78e926,#21102c);}
+#skin-page .seasonal-victory[data-victory-skin="halloween-curse"]{--victory-accent:#ab78e9;--victory-art:url('./skin-art/halloween-curse.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="halloween-curse"]{animation:season-halloween-curse .75s ease-out both;}}
+@keyframes season-halloween-curse{from{transform:scale(1.08);filter:brightness(.55);opacity:.15}to{transform:none;filter:none;opacity:1;}}
+
+#skin-stage[data-preview-skin="midnight-gold"]{--theme-crest:url('./skin-art/midnight-gold-crest.svg');--arena-radius:4px;--arena-face:linear-gradient(135deg,#161820,#dfb76a26,#161820);}
+#skin-page .seasonal-victory[data-victory-skin="midnight-gold"]{--victory-accent:#dfb76a;--victory-art:url('./skin-art/midnight-gold.svg');}
+@media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="midnight-gold"]{animation:season-midnight-gold .75s ease-out both;}}
+@keyframes season-midnight-gold{from{transform:scale(.72);filter:brightness(2.2);opacity:.2}to{transform:none;filter:none;opacity:1;}}
