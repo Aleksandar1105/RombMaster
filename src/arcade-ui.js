@@ -38,7 +38,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   const result=readArcade(localStorage,LocalSlots.storageKey(ARCADE_KEY));
   el('arcade-period').textContent='Last '+days+' days';
   const summary=el('arcade-summary');
-  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;return;}
+  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;el('arcade-infinity').disabled=true;return;}
   el('arcade-rewards').hidden=false;rewards(result.data);
   const s=arcadeSummary(result.data,days);
   summary.textContent='Sessions '+s.sessions+' · Puzzle accuracy '+(s.accuracy===null?'—':s.accuracy+'%')+' · Match wins '+s.wins+'/'+s.games+' · Mean move time '+(s.meanSeconds===null?'—':s.meanSeconds+' s')+' · Doubles '+s.doubles+' · Best chain '+s.bestChain+' · Immediate concessions '+s.concessions+' · Survival '+s.survival;

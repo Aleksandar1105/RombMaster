@@ -91,7 +91,8 @@ export function applyEngagement(e,r){
 }
 // Upgrade retained history once; no retroactive assumption about pruned sessions.
 export function migrateEngagement(history,date){
- const old=history.filter(r=>validDateKey(r.date)&&dayNumber(r.date)>=0&&r.date<=date).sort((a,b)=>a.date.localeCompare(b.date));
+ if(history.some(r=>!validDateKey(r.date)||r.date>date))throw Error('Invalid or future-dated legacy history');
+ const old=history.filter(r=>dayNumber(r.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
  let e=freshEngagement(old[0]?.date||date);
  for(const r of old){const n=applyEngagement(e,r);if(!n)throw Error('Invalid legacy rewards');e=n;}
  return rollEngagement(e,date);

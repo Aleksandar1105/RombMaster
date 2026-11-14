@@ -26,7 +26,7 @@ export function practicePuzzle(mode,seed,date=localDateKey()){
 export function createArcade(mode,seed=1,round=1,date=localDateKey()){
  if(!ARCADE_MODES.includes(mode)||!Number.isSafeInteger(round)||round<1)throw Error('Invalid arcade mode');
  if(mode==='infinity'&&round>1000000)throw Error('Infinity stage limit');
- const puzzle=mode==='infinity'?createDailyPuzzle('2026-01-01',round%2,round):['puzzle','perfect'].includes(mode)?practicePuzzle(mode,seed,date):null;
+ const puzzle=mode==='infinity'?createDailyPuzzle('2026-01-01',Math.floor((round-1)/2)%2,round):['puzzle','perfect'].includes(mode)?practicePuzzle(mode,seed,date):null;
  const size=mode==='blitz'?4:round<=2?4:round<=4?6:8;
  const board=puzzle?.board||new Board(size);
  const maxCapture=mode==='perfect'?Math.max(...board.getFreeMoves().map(m=>captureValue(board,m))):0;
