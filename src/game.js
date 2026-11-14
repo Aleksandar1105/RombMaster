@@ -162,12 +162,6 @@ export const Game = {
     const reward = document.getElementById('career-reward');
     if (reward) { reward.hidden = true; reward.textContent = ''; }
     const nextButton = document.getElementById('nextCareerBtn');
-    const stars = document.getElementById('result-stars');
-    if (stars) {
-      const earned = this.careerOutcome?.awardedStars || 0;
-      stars.hidden = !this.settings.careerLevel || !this.careerOutcome?.victory;
-      stars.textContent = '★'.repeat(earned);
-    }
     if (nextButton) nextButton.hidden = true;
 
     this.player = CONSTANTS.X;
@@ -345,6 +339,12 @@ export const Game = {
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     const reward = document.getElementById('career-reward');
     const nextButton = document.getElementById('nextCareerBtn');
+    const stars = document.getElementById('result-stars');
+    if (stars) {
+      const earned = this.careerOutcome?.awardedStars || 0;
+      stars.hidden = !this.settings.careerLevel || !this.careerOutcome?.victory;
+      stars.textContent = '★'.repeat(earned);
+    }
     if (nextButton) nextButton.hidden = true;
     if (reward && this.settings.careerLevel) {
       const outcome = this.careerOutcome || { status: 'unavailable' };
@@ -353,7 +353,11 @@ export const Game = {
         if (nextButton && outcome.victory && outcome.profile.unlockedLevel > this.settings.careerLevel) {
           const stage = careerLevel(this.settings.careerLevel + 1);
           const title = document.getElementById('next-career-title');
-          if (title) title.textContent = 'Next · ' + (missionFor(stage.level)?.title ?? 'Level ' + stage.level);
+          const mission = missionFor(stage.level);
+          if (title) title.textContent = mission?.title ?? 'Level ' + stage.level;
+          document.getElementById('next-level-label').textContent = 'Up next · Level ' + stage.level;
+          document.getElementById('next-clue').textContent = mission?.clue ?? 'Win this match to advance.';
+          nextButton.textContent = 'Play level ' + stage.level;
           drawOpening(document.getElementById('next-opening'), stage);
           nextButton.hidden = false;
         }

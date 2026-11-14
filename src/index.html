@@ -46,13 +46,15 @@
                     <button type="button" id="page-back" class="btn-secondary">← Home</button>
                     <img class="section-brand" src="./neon/brand.webp" alt="RombMaster"><h2 id="page-title"></h2>
                     <section id="career-page" hidden class="career-panel home-career" aria-label="Career mode">
-                    <div class="career-heading">
-                        <span>CAREER MODE</span>
-                        <span id="career-progress">Level 1 / 30</span>
-                    </div>
-                    <div id="chapter-route" aria-label="Career chapter"></div><canvas id="mission-preview" width="128" height="128" aria-label="Selected opening"></canvas>
-                    <label class="career-select-label" for="career-level">Choose unlocked level</label>
-                    <select id="career-level" aria-label="Unlocked career level"></select>
+                    <nav class="chapter-nav" aria-label="Career chapters">
+                        <button id="previous-chapter" aria-label="Previous chapter">‹</button>
+                        <strong id="chapter-label"></strong>
+                        <button id="next-chapter" aria-label="Next chapter">›</button>
+                    </nav>
+                    <span id="career-progress" class="career-progress"></span>
+                    <div id="chapter-route" aria-label="Career missions"></div>
+                    <input id="career-level" type="hidden" value="1">
+                    <canvas id="mission-preview" width="300" height="300" aria-label="Selected opening"></canvas>
                     <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
                     <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
                     <p id="career-status" class="profile-feedback" role="status" aria-live="polite"></p>
@@ -201,9 +203,17 @@
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
             <p id="career-reward" class="career-reward" hidden></p>
-            <button id="nextCareerBtn" class="btn-primary full-width" hidden><canvas id="next-opening" class="opening-mini" width="96" height="96" aria-hidden="true"></canvas><span id="next-career-title">Next Level</span></button>
-            <button id="againBtn" class="btn-primary full-width">Play Again</button>
-            <button id="backMenuBtn" class="btn-secondary full-width">Main Menu</button>
+            <section class="up-next">
+                <small id="next-level-label"></small>
+                <h3 id="next-career-title"></h3>
+                <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
+                <p id="next-clue"></p>
+                <button id="nextCareerBtn" class="btn-primary full-width" hidden>Play next level</button>
+            </section>
+            <div class="result-actions">
+                <button id="againBtn" class="btn-secondary">Replay</button>
+                <button id="backMenuBtn" class="btn-secondary">Home</button>
+            </div>
         </div>
     </div>
 

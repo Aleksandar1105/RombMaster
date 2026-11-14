@@ -1232,3 +1232,24 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 @media(max-height:680px) { #view-game::before { display:none; } }
 #overlay .center-panel:has(#nextCareerBtn:not([hidden]))::before { content:none; }
 #result-stars { letter-spacing:.14em; font-size:2.4rem; color:#ffcf54; text-shadow:0 0 14px #d98121; }
+#view-game #p1-card,#view-game #turn-status { --gem:#fb7185; }
+#view-game #p2-card,#view-game #turn-status[data-player="two"] { --gem:#22d3ee; }
+#controls .btn-icon svg { filter:none; }
+#canvas-wrapper { padding:0; background:transparent; border:none; box-shadow:none; }
+#career-page .chapter-nav,.result-actions { display:flex; justify-content:center; align-items:center; gap:12px; }
+.chapter-nav button { width:46px; min-height:40px; font-size:1.4rem; }
+.chapter-nav button:disabled { opacity:.4; }
+#career-page .career-progress { text-align:center; font-size:.8rem; color:#d6c4ef; }
+#career-page #chapter-route button { min-height:42px; }
+#career-page #mission-preview { width:min(43vw,21vh,190px); }
+#career-description { text-align:center; }
+#overlay .center-panel { gap:8px; padding:18px; max-height:95dvh; overflow:auto; }
+#result-stars { line-height:1; }
+#overlay .up-next { background:linear-gradient(145deg,#35204e,#121329 65%); border:1px solid #ac77d6; padding:14px; border-radius:10px; }
+#overlay .up-next:has(#nextCareerBtn[hidden]) {display:none}
+.up-next h3,.up-next p { margin:6px 0; }
+.up-next small { color:#e3baff; }
+#overlay #next-opening { display:block; width:min(46vw,23vh,195px); height:auto; margin:8px auto; }
+.result-actions button { flex:1; min-height:42px; }
+#overlay #nextCareerBtn,#career-page #career-start-btn { --gem:#22d3ee; color:#061729; }
+#overlay #nextCareerBtn::before,#career-page #career-start-btn::before { background:linear-gradient(150deg,#97fbff,#22d3ee 55%,#69ecff); }

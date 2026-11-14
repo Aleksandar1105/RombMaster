@@ -35,7 +35,7 @@ export class Renderer {
     this.canvas.style.height = `${size}px`;
     this.ctx.scale(dpr, dpr);
 
-    this.CELL = Math.floor(size / (boardS + 1));
+    this.CELL = (size - 14) / boardS;
     const gridPx = boardS * this.CELL;
     this.offX = (size - gridPx) / 2;
     this.offY = (size - gridPx) / 2;
@@ -58,17 +58,17 @@ export class Renderer {
       if (board.active(r, c) && board.owner[r][c] != null) {
         const owner = board.owner[r][c];
         const x = dx(c), y = dy(r), size = this.CELL;
-        const rgb = owner === CONSTANTS.X ? '255,68,95' : '0,224,224';
+        const color = owner === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
         const fill = this.ctx.createLinearGradient(x, y, x + size, y + size);
-        fill.addColorStop(0, 'rgba(' + rgb + ',.70)');
-        fill.addColorStop(.48, 'rgba(' + rgb + ',.28)');
-        fill.addColorStop(1, 'rgba(' + rgb + ',.58)');
+        fill.addColorStop(0, color + '59');
+        fill.addColorStop(.48, color + '2b');
+        fill.addColorStop(1, color + '47');
         this.ctx.fillStyle = fill;
         this.ctx.fillRect(x, y, size, size);
         this.ctx.save();
         this.ctx.translate(x + size / 2, y + size / 2);
-        this.ctx.strokeStyle = owner === CONSTANTS.X ? '#ffbdc7' : '#adffff';
-        this.ctx.shadowColor = 'rgb(' + rgb + ')';
+        this.ctx.strokeStyle = color;
+        this.ctx.shadowColor = color;
         this.ctx.shadowBlur = Math.min(10, size / 4);
         this.ctx.lineWidth = Math.max(2, size * .078);
         this.ctx.lineCap = 'round';
@@ -96,21 +96,21 @@ export class Renderer {
         if (isGhost) {
             this.ctx.strokeStyle = CONSTANTS.COLORS.lineActive;
             this.ctx.lineWidth = 1;
-            this.ctx.setLineDash([2, 8]);
+            this.ctx.setLineDash([1.5, Math.min(5, this.CELL / 5)]);
             this.ctx.stroke();
             this.ctx.setLineDash([]);
         } else {
             const isLast = lastMove && lastMove.t === type && lastMove.r === r && lastMove.c === c;
             if (isLast) {
                 this.ctx.strokeStyle = CONSTANTS.COLORS.lastMove;
-                this.ctx.lineWidth = 4;
+                this.ctx.lineWidth = Math.max(.85, Math.min(1.6, this.CELL * .045));
                 this.ctx.lineCap = "round";
                 this.ctx.shadowBlur = 15; this.ctx.shadowColor = CONSTANTS.COLORS.glow;
                 this.ctx.stroke();
                 this.ctx.shadowBlur = 0;
             } else {
                 this.ctx.strokeStyle = CONSTANTS.COLORS.linePlayed;
-                this.ctx.lineWidth = 3;
+                this.ctx.lineWidth = Math.max(.85, Math.min(1.6, this.CELL * .045));
                 this.ctx.lineCap = "round";
                 this.ctx.stroke();
             }
@@ -146,7 +146,7 @@ export class Renderer {
 
     // Dots
     this.ctx.fillStyle = "#a5c5df"; 
-    const dotR = Math.max(3, this.CELL / 12);
+    const dotR = Math.max(1.4, Math.min(4, this.CELL * .065));
     for (let r=0; r<=board.S; r++) for (let c=0; c<=board.S; c++) {
       if (board.active(r,c) || board.active(r-1,c) || board.active(r,c-1) || board.active(r-1,c-1)) {
         this.ctx.beginPath(); this.ctx.arc(dx(c), dy(r), dotR, 0, Math.PI*2); this.ctx.fill();

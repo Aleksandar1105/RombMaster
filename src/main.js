@@ -99,6 +99,10 @@ const avatarPreview = el('profile-avatar-preview');
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
+    el('chapter-label').textContent = 'Chapter ' + (Math.floor((selected - 1) / 5) + 1) + ' / 6';
+    el('previous-chapter').disabled = first === 1;
+    el('next-chapter').disabled = first + 5 > profile.unlockedLevel;
+    el('career-start-btn').textContent = 'Play level ' + selected;
     const nodes = [];
     for (let level = first; level < first + 5; level++) {
         const button = document.createElement('button');
@@ -110,7 +114,7 @@ function renderRoute(profile, selected) {
         const title = document.createElement('span');
         title.textContent = missionFor(level)?.title ?? 'Level ' + level;
         const stars = document.createElement('small');
-        stars.textContent = '★'.repeat(profile.stars[level] || 0);
+        stars.textContent = button.disabled ? '🔒' : '★'.repeat(profile.stars[level] || 0);
         button.append(number, title, stars);
         button.onclick = () => {
             careerSelect.value = String(level);
@@ -178,11 +182,6 @@ const refreshCareer = () => {
     el('home-level').textContent = mission ? `Level ${p.unlockedLevel} · ${mission.title}` : careerProgress.textContent;
     drawOpening(el('home-opening'), careerLevel(p.unlockedLevel));
     const selected = Number(careerSelect.value) || p.unlockedLevel;
-    careerSelect.innerHTML = Array.from({ length: p.unlockedLevel }, (_, i) => {
-        const n = i + 1;
-        const stars = p.stars[n] ? ` · ${'★'.repeat(p.stars[n])}` : '';
-        return `<option value="${n}">Level ${n}${missionFor(n) ? " · " + missionFor(n).title : ""}${stars}</option>`;
-    }).join('');
     careerSelect.value = String(Math.min(selected, p.unlockedLevel));
     const stage = careerLevel(Number(careerSelect.value));
     careerDescription.textContent =
@@ -373,6 +372,15 @@ careerSelect.onchange = () => {
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
 };
+for (const [id, direction] of [['previous-chapter', -1], ['next-chapter', 1]]) {
+    el(id).onclick = () => {
+        const first = Math.floor((Number(careerSelect.value) - 1) / 5) * 5 + 1 + 5 * direction;
+        const profile = ProfileStore.read().profile;
+        if (!profile || first < 1 || first > profile.unlockedLevel) return;
+        careerSelect.value = String(first);
+        careerSelect.onchange();
+    };
+}
 el('career-start-btn').onclick = () => {
     const level = Number(careerSelect.value);
     const state = ProfileStore.read();
