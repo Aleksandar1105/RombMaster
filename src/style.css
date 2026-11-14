@@ -1673,3 +1673,12 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #arcade-clock{font-weight:800;color:var(--skin-gold,#ffce70);}
 .arcade-performance{width:100%;padding:10px;border-top:1px solid var(--skin-accent,#52d9eb);display:grid;gap:8px;}
 #arcade-summary{font-size:.8rem;}.arcade-performance small{font-size:.72rem;}
+
+/* Arena rewards stay scrollable and separate from board interaction. */
+#arcade-rewards[hidden]{display:none!important;}
+#arcade-rewards{width:100%;display:grid;gap:8px;text-align:left;}
+#arcade-rewards details{border:1px solid var(--skin-accent,#52d9eb);border-radius:9px;padding:10px;background:var(--skin-panel,#15283e);color:var(--skin-ink,#f1f5f9);}
+#arcade-rewards summary{min-height:36px;cursor:pointer;font-weight:700;}
+#arcade-rewards ul{margin:4px 0;padding-left:19px;display:grid;gap:7px;font-size:.82rem;line-height:1.4;}
+#arcade-rewards p{font-size:.76rem;text-align:left;}
+#arcade-infinity:disabled{opacity:.58;}

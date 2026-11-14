@@ -1,22 +1,45 @@
 import {createArcade,arcadeMove,timeoutArcade,BLITZ_MS,ARCADE_KEY,readArcade,recordArcade,arcadeSummary} from './arcade.js';
 import {Renderer} from './renderer.js';
 import {nearestLegalLine,canvasPoint} from './input.js';
-import {LocalSlots} from './profile.js';
+import {LocalSlots,ProfileStore,careerSummary} from './profile.js';
+import {localDateKey} from './daily-challenge.js';
+import {migrateEngagement,engagementView,PASS_TIERS} from './engagement.js';
 export function mountArcade({documentRef=document,windowRef=window,game}){
  const el=id=>documentRef.getElementById(id);
  const page=el('arcade-page'),canvas=el('arcade-canvas');
  if(!page||!canvas)return null;
- const modeNames={puzzle:'Puzzle Master',perfect:'Perfect Move',blitz:'Blitz',survival:'Survival'};
+ const modeNames={puzzle:'Puzzle Master',perfect:'Perfect Move',blitz:'Blitz',survival:'Survival',infinity:'Infinity'};
  const renderer=new Renderer(canvas);
- let session=null,key=null,seed=1,last=null,timer=null,active=false,turnStart=0,elapsed=0,days=30;
+ let session=null,canAdvance=false,key=null,seed=1,last=null,timer=null,active=false,turnStart=0,elapsed=0,days=30;
  const now=()=>performance.now();
  const currentElapsed=()=>elapsed+(active?Math.max(0,now()-turnStart):0);
  const stopClock=()=>{if(timer!==null)clearInterval(timer);timer=null;if(active)elapsed=currentElapsed();active=false;};
+ const unlockedInfinity=()=>Boolean(ProfileStore.read().profile?.stars?.[100]);
+ function rewards(data){
+  const container=el('arcade-rewards');if(!container)return;
+  const today=localDateKey(),infinity=el('arcade-infinity');
+  if(infinity){infinity.disabled=!unlockedInfinity();infinity.title=infinity.disabled?'Win Career level 100 first':'';}
+  try{
+   const view=engagementView(data.engagement||migrateEngagement(data.history,today),today);
+   if(!view)throw Error('Clock rollback');
+   const list=(id,rows)=>{const root=el(id);root.replaceChildren(...rows.map(text=>{const li=documentRef.createElement('li');li.textContent=text;return li;}));};
+   list('daily-arena-missions',view.daily.map(m=>(m.complete?'✓ ':'')+m.title+' · '+m.progress+'/'+m.target+' · '+m.xp+' XP'));
+   list('weekly-arena-missions',view.weekly.map(m=>(m.complete?'✓ ':'')+m.title+' · '+m.progress+'/'+m.target+' · '+m.xp+' XP'));
+   const profile=ProfileStore.read().profile,old=profile?careerSummary(profile).earnedAchievements:0;
+   el('arena-achievement-count').textContent=(old+view.achievements.filter(a=>a.earned).length)+' / 50';
+   list('arcade-achievements',view.achievements.map(a=>(a.earned?'🏆 ':'🔒 ')+a.title+' · '+a.progress+'/'+a.target));
+   el('season-progress').textContent='Season '+(view.season.id+1)+' · '+view.season.xp+' XP · Ends '+view.seasonEnd;
+   list('season-tiers',view.tiers.map(t=>(t.earned?'✓ ':'🔒 ')+t.xp+' XP · Free: '+t.free+' | Premium preview: '+t.premium));
+   list('season-collection',view.collection.map(id=>{const [season,tier]=id.split(':').map(Number);return 'Season '+(season+1)+' · '+PASS_TIERS[tier-1].free;}));
+   if(infinity)infinity.querySelector('small').textContent=infinity.disabled?'Win Career level 100':'Next stage '+(100+view.infinityNext);
+  }catch{el('season-progress').textContent='Rewards unavailable. Previous data preserved.';for(const id of ['daily-arena-missions','weekly-arena-missions','arcade-achievements','season-tiers','season-collection'])el(id).replaceChildren();el('arena-achievement-count').textContent='—';}
+ }
  function refresh(){
   const result=readArcade(localStorage,LocalSlots.storageKey(ARCADE_KEY));
   el('arcade-period').textContent='Last '+days+' days';
   const summary=el('arcade-summary');
-  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';return;}
+  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;return;}
+  el('arcade-rewards').hidden=false;rewards(result.data);
   const s=arcadeSummary(result.data,days);
   summary.textContent='Sessions '+s.sessions+' · Puzzle accuracy '+(s.accuracy===null?'—':s.accuracy+'%')+' · Match wins '+s.wins+'/'+s.games+' · Mean move time '+(s.meanSeconds===null?'—':s.meanSeconds+' s')+' · Doubles '+s.doubles+' · Best chain '+s.bestChain+' · Immediate concessions '+s.concessions+' · Survival '+s.survival;
  }
@@ -30,8 +53,9 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   stopClock();
   const result=key===LocalSlots.storageKey(ARCADE_KEY)?recordArcade(localStorage,key,session):{status:'unavailable'};
   el('arcade-feedback').textContent=(session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
-  el('arcade-next').hidden=false;
-  el('arcade-next').textContent=session.mode==='survival'&&session.outcome==='win'?'Next round':'Play again';
+  canAdvance=result.status==='ready';
+  el('arcade-next').hidden=session.mode==='infinity'&&!canAdvance;
+  el('arcade-next').textContent=['survival','infinity'].includes(session.mode)&&session.outcome==='win'?'Next round':'Play again';
   if(session.outcome==='win')game.playCosmeticSound('win');
   refresh();
  }
@@ -50,11 +74,16 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   tick();
  }
  function begin(mode,round=1){
-  stopClock();session=null;key=LocalSlots.storageKey(ARCADE_KEY);last=null;elapsed=0;
+  stopClock();session=null;key=LocalSlots.storageKey(ARCADE_KEY);last=null;elapsed=0;canAdvance=false;canvas.hidden=true;el('arcade-next').hidden=true;
+  if(mode==='infinity'){
+   if(!unlockedInfinity()){el('arcade-feedback').textContent='Win Career level 100 first.';return;}
+   try{const read=readArcade(localStorage,key);if(read.status!=='ready')throw Error();const today=localDateKey(),view=engagementView(read.data.engagement||migrateEngagement(read.data.history,today),today);if(!view)throw Error();round=view.infinityNext;}
+   catch{el('arcade-feedback').textContent='Infinity progress unavailable.';return;}
+  }
   try{session=createArcade(mode,seed,round);seed=seed%1000000+1;}
   catch{el('arcade-feedback').textContent='Could not create a practice board. Try again.';return;}
   canvas.hidden=false;el('arcade-next').hidden=true;
-  el('arcade-title').textContent=modeNames[mode];
+  el('arcade-title').textContent=modeNames[mode]+(mode==='infinity'?' · Stage '+(100+round):'');
   el('arcade-instruction').textContent=session.puzzle?.instruction||(mode==='blitz'?'You have 10 seconds per move. A timeout loses the round.':'Win successive rounds as board size and difficulty increase.');
   el('arcade-feedback').textContent='Your turn';
   el('arcade-clock').textContent='';draw();resume();

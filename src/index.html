@@ -101,6 +101,7 @@
  <button type="button" data-arcade="perfect">Perfect Move<small>Maximum capture</small></button>
  <button type="button" data-arcade="blitz">Blitz<small>10 seconds per move</small></button>
  <button type="button" data-arcade="survival">Survival<small>Win successive rounds</small></button>
+ <button type="button" id="arcade-infinity" data-arcade="infinity" disabled>Infinity<small>Win Career level 100</small></button>
  </div>
  <h3 id="arcade-title">Choose a challenge</h3><p id="arcade-instruction"></p>
  <p id="arcade-clock" aria-live="off"></p><p id="arcade-score"></p>
@@ -108,6 +109,13 @@
  <p id="arcade-feedback" role="status"></p>
  <button id="arcade-next" type="button" class="btn-primary" hidden>Play again</button>
  <section class="arcade-performance"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><p id="arcade-summary"></p><small>Local practice statistics, not a measurement of intelligence.</small></section>
+ <section id="arcade-rewards" class="arcade-rewards" aria-label="Arena rewards">
+ <details open><summary>Daily missions</summary><ul id="daily-arena-missions"></ul></details>
+ <details><summary>Weekly missions</summary><ul id="weekly-arena-missions"></ul></details>
+ <details><summary>Season Pass</summary><p id="season-progress"></p><ul id="season-tiers"></ul><p>Free crests are collected automatically. Premium preview · Purchases disabled.</p></details>
+ <details><summary>My seasonal crests</summary><ul id="season-collection"></ul></details>
+ <details><summary>Achievements · <span id="arena-achievement-count">0 / 50</span></summary><p>26 Arena achievements + 24 Career achievements</p><ul id="arcade-achievements"></ul></details>
+ </section>
  </section>
  <section id="skin-page" class="home-drawer" hidden>
                     <div class="home-drawer-content skin-collection">
