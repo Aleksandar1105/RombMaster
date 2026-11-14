@@ -71,23 +71,7 @@ export class Renderer {
         } else {
           this.paintCapture(skin, x, y, size, color);
         }
-        this.ctx.save();
-        this.ctx.translate(x + size / 2, y + size / 2);
-        this.ctx.strokeStyle = color;
-        this.ctx.shadowColor = color;
-        this.ctx.shadowBlur = Math.min(skin.finish.glow, size / 4);
-        this.ctx.lineWidth = Math.max(2, size * skin.finish.symbolWeight);
-        this.ctx.lineCap = 'round';
-        this.ctx.beginPath();
-        const arm = size * .19;
-        if (owner === CONSTANTS.X) {
-          this.ctx.moveTo(-arm,-arm); this.ctx.lineTo(arm,arm);
-          this.ctx.moveTo(arm,-arm); this.ctx.lineTo(-arm,arm);
-        } else {
-          this.ctx.arc(0, 0, size * .24, 0, Math.PI * 2);
-        }
-        this.ctx.stroke();
-        this.ctx.restore();
+        this.drawSymbol(skin, owner, x + size / 2, y + size / 2, size);
       }
     }
 
@@ -178,6 +162,57 @@ export class Renderer {
         this.ctx.beginPath(); this.ctx.arc(dx(c), dy(r), dotR, 0, Math.PI*2); this.ctx.fill();
       }
     }
+  }
+
+  // One symbol renderer is shared by gameplay, previews and the catalog.
+  // Coordinates are relative to the cell centre; no decoration reaches its edge.
+  drawSymbol(skin, owner, cx, cy, size) {
+    const ctx=this.ctx, x=owner===CONSTANTS.X;
+    const color=x?skin.colors.x:skin.colors.o;
+    const a=size*.19, r=size*.23;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.strokeStyle=color;
+    ctx.shadowColor=color;
+    ctx.shadowBlur=Math.min(skin.finish.glow,size/4);
+    ctx.lineWidth=Math.max(2,size*skin.finish.symbolWeight);
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    const trace=()=>{
+      ctx.beginPath();
+      if(x) {
+        ctx.moveTo(-a,-a);ctx.lineTo(a,a);
+        ctx.moveTo(a,-a);ctx.lineTo(-a,a);
+      } else if(skin.id==='cyber'||skin.id==='ice') {
+        const n=skin.id==='cyber'?8:6;
+        for(let i=0;i<n;i++){
+          const t=-Math.PI/2+Math.PI*2*i/n;
+          const xx=Math.cos(t)*r,yy=Math.sin(t)*r;
+          if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
+        }
+        ctx.closePath();
+      } else ctx.arc(0,0,r,0,Math.PI*2);
+    };
+    if(skin.id==='royal'||skin.id==='wood'||skin.id==='ice') {
+      ctx.lineCap=skin.id==='ice'?'square':'round';
+      trace();ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle=skin.id==='wood'?'#39261c80':'#ffffff85';
+      ctx.lineWidth=Math.max(.7,size*.018);
+      trace();ctx.stroke();
+    } else {
+      if(skin.id==='cyber')ctx.lineCap='square';
+      trace();ctx.stroke();
+    }
+    if(skin.id==='royal'&&x){
+      ctx.shadowBlur=0;ctx.strokeStyle=color;ctx.lineWidth=Math.max(1,size*.024);
+      ctx.beginPath();
+      for(const [xx,yy] of [[-a,-a],[a,-a],[-a,a],[a,a]]){
+        ctx.moveTo(xx-size*.045,yy);ctx.lineTo(xx+size*.045,yy);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   // Painted details stay within the captured square. The shared-edge pass
