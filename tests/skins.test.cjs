@@ -53,3 +53,26 @@ test('store lists all skins but collection lists only unlocked cosmetics',async(
   assert.ok(owned.every(x=>x.skin.id!=='royal'));
   assert.ok(initial.every(x=>x.skin.catalog.rarity&&x.skin.catalog.effect));
 });
+
+test('victory presentation respects AI and local PvP outcomes',async()=>{
+  const s=await load();
+  for(const [score,mode,outcome,title] of [
+    [[2,5],'ai','victory','Victory'],[[5,2],'ai','defeat','Game Over'],
+    [[3,3],'ai','draw','Draw'],[[2,5],'pvp','victory','Player 1 wins'],
+    [[5,2],'pvp','victory','Player 2 wins'],[[3,3],'pvp','draw','Draw']
+  ]){
+    const result=s.resultPresentation(score,mode);
+    assert.equal(result.outcome,outcome);assert.equal(result.title,title);
+  }
+});
+test('all six skins have bundled art and victory animation definitions',async()=>{
+  const s=await load();
+  const css=fs.readFileSync(path.resolve(__dirname,'../src/style.css'),'utf8');
+  for(const skin of s.SKINS){
+    const art=fs.readFileSync(path.resolve(__dirname,'../src/skin-art',skin.id+'.svg'),'utf8');
+    assert.ok(art.startsWith('<svg '),skin.id);
+    assert.ok(css.includes('@keyframes skin-victory-'+skin.id+' '),skin.id);
+    assert.ok(css.includes('@keyframes skin-halo-'+skin.id+' '),skin.id);
+  }
+  assert.ok(css.includes('prefers-reduced-motion:no-preference'));
+});
