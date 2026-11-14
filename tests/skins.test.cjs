@@ -35,3 +35,21 @@ test('per-slot preference, lock guard and storage failure',async()=>{
   assert.equal(s.readSkin(storage,'guest',profile),'ice');
   assert.equal(s.saveSkin({setItem(){throw Error()}},'guest','white',profile),'unavailable');
 });
+
+test('store lists all skins but collection lists only unlocked cosmetics',async()=>{
+  const s=await load();
+  const initial=s.skinCatalog(null,null,'neon');
+  assert.equal(initial.length,6);
+  assert.equal(initial.find(x=>x.skin.id==='neon').status,'Equipped');
+  assert.equal(initial.find(x=>x.skin.id==='royal').status,'Coming soon');
+  assert.equal(initial.find(x=>x.skin.id==='white').status,'Locked');
+  assert.deepEqual(Array.from(s.skinCatalog(null,null,'neon',true),x=>x.skin.id),['neon']);
+  const profile={unlockedLevel:15,stats:{wins:25}},daily={completedTotal:7};
+  const owned=s.skinCatalog(profile,daily,'ice',true);
+  assert.equal(owned.length,5);
+  assert.equal(owned.filter(x=>x.status==='Equipped').length,1);
+  assert.equal(owned.find(x=>x.skin.id==='ice').status,'Equipped');
+  assert.equal(owned.find(x=>x.skin.id==='white').status,'Owned');
+  assert.ok(owned.every(x=>x.skin.id!=='royal'));
+  assert.ok(initial.every(x=>x.skin.catalog.rarity&&x.skin.catalog.effect));
+});
