@@ -18,8 +18,17 @@ const finishes = Object.freeze({
   wood: Object.freeze({material:'grain', symbolWeight:.095, glow:0, frame:'round', particles:10, effect:'dust', duration:340}),
   white: Object.freeze({material:'matte', symbolWeight:.085, glow:0, frame:'round', particles:8, effect:'ripple', duration:280}),
 });
+// Rarity is presentation metadata, never a purchase entitlement.
+const catalog = Object.freeze({
+  neon: Object.freeze({ rarity:'Included', description:'The original neon arena', effect:'Neon ring' }),
+  royal: Object.freeze({ rarity:'Legendary', description:'Gilded metal and royal elegance', effect:'Golden sparks' }),
+  cyber: Object.freeze({ rarity:'Epic', description:'Angular digital circuitry', effect:'Scan wave' }),
+  ice: Object.freeze({ rarity:'Legendary', description:'Embers meet crystalline ice', effect:'Crystal shards' }),
+  wood: Object.freeze({ rarity:'Rare', description:'Handcrafted natural wood', effect:'Wood dust' }),
+  white: Object.freeze({ rarity:'Rare', description:'Clean matte minimalism', effect:'Gentle ripple' }),
+});
 export const SKINS = Object.freeze(items.map(([id,name,condition,bg,x,o,dot,accent,lastMove,linePlayed,fill]) =>
-  Object.freeze({id,name,condition,fill,accent, finish:finishes[id], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed,glow:lastMove,lineActive:dot})})));
+  Object.freeze({id,name,condition,fill,accent, catalog:catalog[id], finish:finishes[id], colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed,glow:lastMove,lineActive:dot})})));
 export const getSkin = id => SKINS.find(s => s.id === id) || SKINS[0];
 let current = SKINS[0];
 export const activeSkin = () => current;
@@ -33,6 +42,13 @@ export function unlockedSkin(id, profile, daily) {
     case 'cyber': return (daily?.completedTotal || 0) >= 7;
     default: return false; // Royal Gold has no purchase or entitlement flow yet.
   }
+}
+// Derive collection from existing progression; no additional stored grants.
+export function skinCatalog(profile,daily,equippedId,collectionOnly=false) {
+  return SKINS.map(skin => {
+    const owned = unlockedSkin(skin.id,profile,daily);
+    return {skin,owned,status:owned ? (skin.id===equippedId ? 'Equipped' : 'Owned') : skin.id==='royal' ? 'Coming soon' : 'Locked'};
+  }).filter(entry => !collectionOnly || entry.owned);
 }
 export function readSkin(storage,key,profile,daily) {
   if (!key) return 'neon';
