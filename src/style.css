@@ -1649,3 +1649,13 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #skin-page .seasonal-victory[data-victory-skin="midnight-gold"]{--victory-accent:#dfb76a;--victory-art:url('./skin-art/midnight-gold.svg');}
 @media(prefers-reduced-motion:no-preference){#skin-page .seasonal-victory.playing[data-victory-skin="midnight-gold"]{animation:season-midnight-gold .75s ease-out both;}}
 @keyframes season-midnight-gold{from{transform:scale(.72);filter:brightness(2.2);opacity:.2}to{transform:none;filter:none;opacity:1;}}
+
+/* Campaign progression and match feedback: text remains real and accessible. */
+.career-rival{margin:0;text-align:center;color:var(--skin-o,#22d3ee);font-weight:700;font-size:.83rem;}
+#capture-combo{position:absolute;z-index:3;top:42%;left:50%;transform:translateX(-50%);pointer-events:none;text-align:center;padding:8px 14px;border:1px solid currentColor;border-radius:10px;background:#101c2ded;color:var(--skin-o,#22d3ee);font-weight:800;white-space:nowrap;}
+#capture-combo[data-owner="1"]{color:var(--skin-x,#fb7185);}
+#capture-combo[hidden],#match-analysis[hidden]{display:none!important;}
+@media(prefers-reduced-motion:no-preference){#capture-combo.combo-flash{animation:combo-flash .65s ease-out both;}}
+@keyframes combo-flash{0%{opacity:0;transform:translateX(-50%) scale(.8)}30%{opacity:1;transform:translateX(-50%) scale(1.04)}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+@media(prefers-reduced-motion:reduce){#capture-combo{position:static;transform:none;margin:2px auto;}}
+#match-analysis{padding:9px;border:1px solid var(--skin-o,#22d3ee);border-radius:9px;color:var(--skin-ink,#e2e8f0);font-size:.78rem;line-height:1.5;}

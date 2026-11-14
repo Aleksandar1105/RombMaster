@@ -1,7 +1,10 @@
 // Offline career progress. Kept separate from the unfinished game save so
 // existing Continue/Undo data remains compatible with quick matches.
 export const PROFILE_KEY = 'rombmaster_profile_v1';
-export const CAREER_LEVEL_COUNT = 30;
+export const CAREER_LEVEL_COUNT = 100;
+export const CAREER_WORLDS = Object.freeze([["First Steps",1,10,"Rookie","🤖","Learn safe moves"],["Neon City",11,25,"Trickster","🦊","Avoid tactical traps"],["Crystal World",26,40,"Predator","🐲","Manage capture chains"],["Ancient Kingdom",41,60,"Phantom","🌙","Plan sacrifices"],["Cyber Arena",61,80,"Grandmaster","♜","Calculate the endgame"],["Master Realm",81,100,"Omega","◆","Master the arena"]].map(([name,start,end,rival,icon,focus])=>Object.freeze({name,start,end,rival,icon,focus})));
+export function careerWorld(level){return CAREER_WORLDS.find(w=>level>=w.start&&level<=w.end);}
+
 
 // Preset avatars need no photo uploads, personal information or accounts.
 export const PLAYER_AVATARS = Object.freeze([
@@ -24,6 +27,10 @@ export const ACHIEVEMENTS = Object.freeze([
   { id: 'strategist', title: 'Strategist', description: 'Unlock Career level 11' },
   { id: 'master', title: 'Master', description: 'Unlock Career level 21' },
   { id: 'champion', title: 'Champion', description: 'Clear Career level 30' },
+  ...CAREER_WORLDS.map(w=>({id:'boss-'+w.end,title:w.rival+' defeated',description:'Win Career level '+w.end})),
+  ...[20,50,100,200].map(n=>({id:'wins-'+n,title:n+' Victories',description:'Win '+n+' Career matches'})),
+  ...[25,75,150,300].map(n=>({id:'stars-'+n,title:n+' Stars',description:'Earn '+n+' Career stars'})),
+  ...[5,10,20].map(n=>({id:'streak-'+n,title:'Streak '+n,description:'Win '+n+' Career matches in a row'})),
 ]);
 
 export function careerSummary(profile) {
@@ -41,6 +48,10 @@ export function careerSummary(profile) {
     master: profile.unlockedLevel >= 21,
     champion: (profile.stars[30] || 0) >= 1,
   };
+  for(const w of CAREER_WORLDS)unlocked['boss-'+w.end]=Boolean(profile.stars[w.end]);
+  for(const n of [20,50,100,200])unlocked['wins-'+n]=wins>=n;
+  for(const n of [25,75,150,300])unlocked['stars-'+n]=totalStars>=n;
+  for(const n of [5,10,20])unlocked['streak-'+n]=bestStreak>=n;
   const achievements = ACHIEVEMENTS.map(({ id, title, description }) => ({
     id, title, description, earned: Boolean(unlocked[id]),
   }));
@@ -61,7 +72,7 @@ export function careerLevel(level) {
   }
   return {
     level,
-    size: level <= 10 ? 4 : level <= 20 ? 6 : 8,
+    size: level <= 10 ? 4 : level <= 20 ? 6 : level <= 60 ? 8 : 10,
     diff: level <= 10 ? 'easy' : level <= 20 ? 'normal' : 'hard',
   };
 }
@@ -103,7 +114,7 @@ function parseProfile(raw) {
   const stars = Object.create(null);
   for (const [key, value] of Object.entries(data.stars)) {
     const level = Number(key);
-    if (!/^(?:[1-9]|[12][0-9]|30)$/.test(key) ||
+    if (!/^(?:[1-9]|[1-9][0-9]|100)$/.test(key) ||
         level > data.unlockedLevel || !Number.isInteger(value) || value < 1 || value > 3) {
       throw new Error('Invalid career stars');
     }

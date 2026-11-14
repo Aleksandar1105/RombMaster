@@ -158,7 +158,7 @@ export function aiStrength(difficulty, careerLevel = null) {
       depth: difficulty === 'hard' ? 2 : 0,
     };
   }
-  if (!Number.isInteger(careerLevel) || careerLevel < 1 || careerLevel > 30) {
+  if (!Number.isInteger(careerLevel) || careerLevel < 1 || careerLevel > 100) {
     throw new Error('Invalid career AI level');
   }
   const expected = careerLevel <= 10 ? 'easy' : careerLevel <= 20 ? 'normal' : 'hard';
@@ -198,8 +198,18 @@ export const AI = {
       return moves[Math.min(moves.length - 1, Math.floor(random() * moves.length))];
     }
 
+    // Opponent styles affect tied choices, never legality or the core capture priority.
+    const style = careerLevel > 80 ? 'omega' : careerLevel > 60 ? 'master' : careerLevel > 40 ? 'phantom' : careerLevel > 25 ? 'predator' : 'trickster';
+    const bias = item => {
+      if (careerLevel === null || careerLevel <= 30) return 0; // old career behavior
+      const m=item.move, distance=Math.abs(m.r-board.C)+Math.abs(m.c-board.C);
+      if(style==='predator')return -distance;
+      if(style==='phantom')return m.t==='v'?1:0;
+      if(style==='master')return distance;
+      return (m.r+m.c)%2===0?1:0;
+    };
     const ordered = candidates(board, CONSTANTS.O, random)
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => b.priority - a.priority || bias(b)-bias(a));
     const bestCapture = ordered[0];
     // Extra moves from captured squares are usually strongest. Preserve this
     // rule even at low search depths so the computer cannot throw away points.

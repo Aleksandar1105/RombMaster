@@ -6,7 +6,7 @@ import { missionFor, startingBoard, drawOpening } from './career-missions.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
-import { ProfileStore, careerLevel, threeStarTarget } from './profile.js';
+import { ProfileStore, careerLevel, threeStarTarget, careerWorld } from './profile.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 
 const audio = new AudioController();
@@ -202,7 +202,9 @@ export const Game = {
       if (item) item.textContent = value;
     };
     setLabel('p1-name', playerName + ' · X');
-    this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : 'Computer';
+    const world=careerWorld(this.settings.careerLevel);
+    this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : world ? world.icon+' '+world.rival : 'Computer';
+    const combo=document.getElementById('capture-combo');if(combo)combo.hidden=true;
     setLabel('p2-name', (aiMatch ? this.rivalName : 'Player 2') + ' · O');
     this.updateUI();
     if (this.paused) audio.pause();
@@ -273,6 +275,21 @@ export const Game = {
       this.player = 1 - this.player;
     }
 
+    const combo=document.getElementById('capture-combo');
+    if(combo){
+      let chain=0;
+      for(let i=this.historyStack.length-1;i>=0;i--){
+        const turn=this.historyStack[i],after=this.historyStack[i+1]?.score??this.board.score;
+        if(turn.player!==snapshot.player || after[snapshot.player]-turn.score[snapshot.player] <= 0)break;
+        chain+=after[snapshot.player]-turn.score[snapshot.player];
+      }
+      combo.hidden=res.points===0||chain<2;
+      if(!combo.hidden){
+        combo.textContent=(res.points===2?'Double Capture':chain>=4?'Quad Chain':chain===3?'Triple Chain':'Double Chain')+' · '+chain+' cells';
+        combo.dataset.owner=String(snapshot.player);
+        combo.classList?.remove('combo-flash');void combo.offsetWidth;combo.classList?.add('combo-flash');
+      }
+    }
     this.saveLocal();
     this.updateUI();
 
@@ -381,6 +398,26 @@ export const Game = {
         }
       } else reward.textContent = 'Career progress could not be saved. Your game result is still shown.';
     } else if (reward) { reward.hidden = true; reward.textContent = ''; }
+    const analysis=document.getElementById('match-analysis');
+    if(analysis){
+      let moves=0,captured=0,doubles=0,bestChain=0,chain=0,gifts=0;
+      const player=CONSTANTS.X;
+      for(let i=0;i<this.historyStack.length;i++){
+        const turn=this.historyStack[i],after=this.historyStack[i+1]?.score??s;
+        if(turn.player!==player){chain=0;continue;}
+        moves++;
+        const gain=after[player]-turn.score[player];
+        captured+=gain;if(gain===2)doubles++;
+        if(gain){chain+=gain;bestChain=Math.max(bestChain,chain);}else{
+          chain=0;
+          // Count non-capturing moves immediately followed by a rival capture.
+          const next=this.historyStack[i+1],following=this.historyStack[i+2]?.score??s;
+          if(next&&next.player!==player&&following[next.player]>next.score[next.player])gifts++;
+        }
+      }
+      analysis.hidden=this.settings.mode!=='ai';
+      analysis.textContent='Match analysis · '+moves+' moves · '+captured+' cells · '+doubles+' double captures · Best chain '+bestChain+' · Immediate concessions '+gifts;
+    }
     overlay.classList.add('flex');
     this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');

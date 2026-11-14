@@ -42,7 +42,7 @@ test('campaign board and AI tiers change at level 11 and 21', async () => {
     assert.equal(stage.size, size);
     assert.equal(stage.diff, diff);
   }
-  assert.throws(() => h.careerLevel(31));
+  assert.throws(() => h.careerLevel(101));
   assert.throws(() => h.careerLevel(0));
 });
 

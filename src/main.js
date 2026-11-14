@@ -2,7 +2,7 @@ import './style.css';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
+import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
@@ -105,7 +105,10 @@ const avatarPreview = el('profile-avatar-preview');
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
-    el('chapter-label').textContent = 'Chapter ' + (Math.floor((selected - 1) / 5) + 1) + ' / 6';
+    const world=careerWorld(selected);
+    el('chapter-label').textContent = world.name+' · '+(Math.floor((selected-1)/5)+1)+' / '+Math.ceil(CAREER_LEVEL_COUNT/5);
+    const rival=el('career-rival');
+    if(rival)rival.textContent=world.icon+' '+world.rival+' · '+world.focus;
     el('previous-chapter').disabled = first === 1;
     el('next-chapter').disabled = first + 5 > profile.unlockedLevel;
     el('career-start-btn').textContent = 'Play level ' + selected;
@@ -118,7 +121,7 @@ function renderRoute(profile, selected) {
         const number = document.createElement('b');
         number.textContent = level;
         const title = document.createElement('span');
-        title.textContent = missionFor(level)?.title ?? 'Level ' + level;
+        title.textContent = careerWorld(level)?.end===level?'Boss Battle':missionFor(level)?.title ?? 'Level ' + level;
         const stars = document.createElement('small');
         stars.textContent = button.disabled ? '🔒' : '★'.repeat(profile.stars[level] || 0);
         button.append(number, title, stars);
@@ -350,8 +353,8 @@ const refreshCareer = () => {
         'stat-losses': summary.losses,
         'stat-win-rate': `${summary.winRate}%`,
         'stat-best-streak': summary.bestStreak,
-        'stat-cleared': `${summary.clearedLevels} / 30`,
-        'stat-stars': `${summary.totalStars} / 90`,
+        'stat-cleared': `${summary.clearedLevels} / ${CAREER_LEVEL_COUNT}`,
+        'stat-stars': `${summary.totalStars} / ${CAREER_LEVEL_COUNT*3}`,
     })) el(id).textContent = String(value);
     el('achievement-count').textContent =
         `${summary.earnedAchievements} / ${summary.achievements.length}`;
@@ -368,7 +371,7 @@ const refreshCareer = () => {
         }
     }
     careerXP.textContent = `${p.xp} XP`;
-    careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
+    careerProgress.textContent = `Level ${p.unlockedLevel} / ${CAREER_LEVEL_COUNT}`;
     const mission = missionFor(p.unlockedLevel);
     el('home-level').textContent = mission ? `Level ${p.unlockedLevel} · ${mission.title}` : careerProgress.textContent;
     drawOpening(el('home-opening'), careerLevel(p.unlockedLevel));
