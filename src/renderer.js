@@ -111,20 +111,21 @@ export class Renderer {
             this.ctx.strokeStyle = isLast ? CONSTANTS.COLORS.lastMove : CONSTANTS.COLORS.linePlayed;
             if (owner != null) this.ctx.strokeStyle = color;
             if (before != null && after != null && before !== after) {
-                // Keep a full stroke inside each cell, separated by a narrow dark seam.
-                const band = Math.min(2.4, Math.max(1.5, this.CELL * .04));
-                const offset = band / 2 + .55;
-                this.ctx.lineWidth = band;
+                // One centered stroke; interpolate across its width, not along its length.
+                // The negative side belongs to the top/left cell, the positive to bottom/right.
+                const half = width / 2;
+                const gx = type === 'v' ? half : 0;
+                const gy = type === 'h' ? half : 0;
+                const beforeColor = before === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+                const afterColor = after === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
+                const edge = this.ctx.createLinearGradient(x1 - gx, y1 - gy, x1 + gx, y1 + gy);
+                edge.addColorStop(0, beforeColor);
+                edge.addColorStop(.35, beforeColor);
+                edge.addColorStop(.65, afterColor);
+                edge.addColorStop(1, afterColor);
+                this.ctx.strokeStyle = edge;
                 this.ctx.shadowBlur = 0;
-                for (const [side, player] of [[-1, before], [1, after]]) {
-                    const ox = type === 'v' ? side * offset : 0;
-                    const oy = type === 'h' ? side * offset : 0;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(x1 + ox, y1 + oy);
-                    this.ctx.lineTo(x2 + ox, y2 + oy);
-                    this.ctx.strokeStyle = player === CONSTANTS.X ? CONSTANTS.COLORS.x : CONSTANTS.COLORS.o;
-                    this.ctx.stroke();
-                }
+                this.ctx.stroke();
                 return;
             }
             this.ctx.shadowColor = isLast ? CONSTANTS.COLORS.glow : color;
