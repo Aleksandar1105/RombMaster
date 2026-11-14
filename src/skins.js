@@ -61,3 +61,11 @@ export function saveSkin(storage,key,id,profile,daily) {
   try { storage.setItem(key,id); return 'ready'; }
   catch { return 'unavailable'; }
 }
+
+// Only presentation changes: never change scoring, save data or winner calculation.
+export function resultPresentation(score, mode) {
+  const x = score[CONSTANTS.X], o = score[CONSTANTS.O];
+  if (x === o) return {outcome:'draw',title:'Draw'};
+  if (mode === 'pvp') return {outcome:'victory',title:x > o ? 'Player 1 wins' : 'Player 2 wins'};
+  return x > o ? {outcome:'victory',title:'Victory'} : {outcome:'defeat',title:'Game Over'};
+}
