@@ -40,6 +40,7 @@
                         <button type="button" data-page="player-settings" class="nav-tile"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2L16 4V9L12 12L8 9V4Z M3 21L5 15L9 13L12 16L15 13L19 15L21 21Z"/></svg><strong>Profile</strong></button>
                         <button type="button" data-page="comfort-settings" class="nav-tile"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 9H6L12 4V20L6 15H2Z M15 8Q19 12 15 16 M18 4Q26 12 18 20"/></svg><strong>Sound</strong></button>
                     </nav>
+                    <button id="home-skin-store" type="button" data-page="skin-page" class="skin-store-entry">◇ Skin Store &amp; Collection</button>
                 </div>
                 </div>
                 <div id="menu-page" hidden>
@@ -94,7 +95,12 @@
                 </section>
                 <section id="skin-page" class="home-drawer" hidden>
                     <div class="home-drawer-content skin-collection">
-                        <p>Preview an arena. Skins never change the rules or difficulty.</p>
+                        <div class="skin-store-intro"><p>Discover your next arena.</p><small>Cosmetics never change the rules or difficulty.</small></div>
+                        <div class="skin-store-tabs" role="group" aria-label="Skin catalog view">
+                            <button id="skin-tab-store" type="button" aria-pressed="true">Skin Store</button>
+                            <button id="skin-tab-collection" type="button" aria-pressed="false">My Collection</button>
+                        </div>
+                        <p id="skin-owned-count" class="skin-owned-count" aria-live="polite"></p>
                         <div id="skin-options" class="skin-options" aria-label="Choose a skin"></div>
                         <div id="skin-stage" class="skin-stage" data-preview-skin="neon">
                             <h3 id="skin-preview-name">Neon Arena</h3>
@@ -102,13 +108,14 @@
                             <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
                             <div class="skin-sample-controls" aria-hidden="true"><span>↶ Undo</span><span>↻ Restart</span><span>⌂ Home</span></div>
                         </div>
+                        <p id="skin-effect-label" class="skin-effect-label"></p>
                         <button id="skin-effect-preview" class="btn-secondary" type="button">▶ Preview capture &amp; sound</button>
                         <button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
                         <p id="skin-status" class="profile-feedback" role="status" aria-live="polite"></p>
                     </div>
                 </section>
                 <section id="player-settings" class="home-drawer" hidden>
-                    <button type="button" data-page="skin-page" class="btn-secondary">Skin Collection</button>
+                    <button type="button" data-page="skin-page" class="btn-secondary">Skin Store &amp; Collection</button>
                     <div class="home-drawer-content">
                     <div class="identity-banner"><span id="identity-art" aria-hidden="true"></span><strong id="identity-name"></strong></div><div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
                     <div class="local-player-toolbar">
