@@ -20,7 +20,7 @@ export class Renderer {
       const el = viewElement.querySelector?.(selector);
       return el?.getBoundingClientRect?.().height || 0;
     };
-    const reserved = measure('#scoreboard') + measure('#turn-status') +
+    const reserved = measure('#match-mode') + measure('#scoreboard') + measure('#turn-status') +
       measure('#controls') + measure('#game-save-status') + 100;
     const availableWidth = Math.max(120, width - 48);
     const availableHeight = Math.max(160, height - reserved);

@@ -50,6 +50,10 @@ export function careerSummary(profile) {
   };
 }
 
+export function threeStarTarget(totalCells) {
+  return Math.ceil(totalCells * 7 / 10);
+}
+
 export function careerLevel(level) {
   if (!Number.isInteger(level) || level < 1 || level > CAREER_LEVEL_COUNT) {
     throw new Error('Invalid career level');
@@ -320,7 +324,7 @@ export const ProfileStore = {
       stats.streak++;
       stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
       const margin = (playerScore - computerScore) / Math.max(1, playerScore + computerScore);
-      awardedStars = margin >= 0.4 ? 3 : margin >= 0.2 ? 2 : 1;
+      awardedStars = playerScore >= threeStarTarget(playerScore + computerScore) ? 3 : margin >= 0.2 ? 2 : 1;
       const oldStars = stars[level] || 0;
       if (awardedStars > oldStars) {
         earnedXP = (awardedStars - oldStars) * 50 + (oldStars === 0 ? 50 : 0);

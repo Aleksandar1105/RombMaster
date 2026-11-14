@@ -49,6 +49,34 @@ const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
     } else onConfirm();
 };
 
+const menuPages = {
+    'career-page': 'Career',
+    'quick-settings': 'Quick Play settings',
+    'player-settings': 'Player profile',
+    'comfort-settings': 'Sound & feedback',
+};
+let pageTrigger = null;
+function showHome() {
+    el('menu-page').hidden = true;
+    el('home-hub').hidden = false;
+    ui.viewMenu.scrollTop = 0;
+    pageTrigger?.focus();
+    pageTrigger = null;
+}
+document.querySelectorAll('[data-page]').forEach(button => {
+    button.onclick = () => {
+        pageTrigger = button;
+        const selected = button.dataset.page;
+        for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
+        el('page-title').textContent = menuPages[selected];
+        el('home-hub').hidden = true;
+        el('menu-page').hidden = false;
+        ui.viewMenu.scrollTop = 0;
+        el('page-back').focus();
+    };
+});
+el('page-back').onclick = showHome;
+
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
 const profileFeedback = el('profile-feedback');
@@ -101,7 +129,7 @@ const refreshCareer = () => {
         }
     }
     careerXP.textContent = `${p.xp} XP`;
-    careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
+    el('home-level').textContent = careerProgress.textContent = `Level ${p.unlockedLevel} / 30`;
     const selected = Number(careerSelect.value) || p.unlockedLevel;
     careerSelect.innerHTML = Array.from({ length: p.unlockedLevel }, (_, i) => {
         const n = i + 1;
@@ -321,10 +349,17 @@ const setupGroup = (sel, cb) => {
     document.querySelectorAll(sel).forEach(b => b.onclick = () => {
         document.querySelectorAll(sel).forEach(x => x.classList.remove("selected"));
         b.classList.add("selected"); cb(b);
+        refreshQuickSummary();
     });
 };
 
 let size = 6, mode = 'ai', diff = 'normal';
+function refreshQuickSummary() {
+    const board = { 4: 'Small', 6: 'Classic', 8: 'Large', 10: 'Grand' }[size];
+    const difficulty = { easy: 'Casual', normal: 'Smart', hard: 'Master' }[diff];
+    el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
+}
+refreshQuickSummary();
 setupGroup("[data-size]", b => size = +b.dataset.size);
 setupGroup("[data-ai]", b => {
     mode = b.dataset.ai;
@@ -345,6 +380,7 @@ el('startBtn').onclick = () => {
 el('continueBtn').onclick = () => {
     if (!Game.resume()) return;
     ({ size, mode, diff } = Game.settings);
+    refreshQuickSummary();
     for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
         document.querySelectorAll(`[data-${key}]`).forEach(button => {
             if (button.dataset[key] === String(value)) button.classList.add('selected');
@@ -371,6 +407,7 @@ el('restartBtn').onclick = () => {
     } else restart();
 };
 el('menuBtn').onclick = () => {
+    showHome();
     Game.saveLocal();
     Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
@@ -409,18 +446,34 @@ el('backMenuBtn').onclick = () => {
 
 // Self-contained tutorial: no Board moves, career XP or save data are modified.
 let tutorialIndex = 0;
+let practiceWon = false;
 const updateTutorial = () => {
     const step = tutorialStep(tutorialIndex);
     el('tutorial-count').textContent = `Step ${tutorialIndex + 1} of ${TUTORIAL_STEPS.length}`;
     el('tutorial-step-title').textContent = step.title;
     el('tutorial-step-text').textContent = step.text;
     const diagram = el('tutorial-demo');
-    if (diagram.dataset) diagram.dataset.phase = step.diagram;
+    const practice = step.diagram === 'again';
+    if (diagram.dataset) diagram.dataset.phase = practice ? (practiceWon ? 'won' : 'start') : step.diagram;
+    el('tutorial-play').hidden = !practice || practiceWon;
+    if (practice) {
+        el('tutorial-step-title').textContent = practiceWon ? 'You won 1–0!' : 'One square left. The score is 0–0.';
+        el('tutorial-step-text').textContent = practiceWon
+            ? 'You closed the final square and earned the deciding point.'
+            : 'Play the last dotted side to capture the square.';
+    }
     el('tutorial-back').hidden = tutorialIndex === 0;
     el('tutorial-next').textContent =
         tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Finish' : 'Next';
 };
+el('tutorial-play').onclick = () => {
+    if (tutorialStep(tutorialIndex).diagram !== 'again' || practiceWon) return;
+    practiceWon = true;
+    updateTutorial();
+    el('tutorial-next').focus?.();
+};
 el('helpBtn').onclick = () => {
+    practiceWon = false;
     tutorialIndex = 0;
     updateTutorial();
     el('help-modal').classList.add('flex');
@@ -433,6 +486,7 @@ el('tutorial-next').onclick = () => {
 };
 el('tutorial-back').onclick = () => {
     if (tutorialIndex > 0) {
+        practiceWon = false;
         tutorialIndex--;
         updateTutorial();
     }
@@ -466,8 +520,8 @@ const refreshDailyMenu = () => {
     el('daily-open-btn').disabled = false;
     el('daily-points').textContent = `${state.progress.brainPoints} Brain Points`;
     el('daily-menu-status').textContent = state.progress.solved === 3
-        ? 'Completed today! Come back whenever you like.'
-        : `${state.progress.solved} of 3 tactics completed today`;
+        ? 'View today’s result →'
+        : `${state.progress.solved} of 3 complete`;
 };
 
 const drawDaily = () => {
@@ -507,7 +561,7 @@ const showDaily = () => {
         dailyPuzzle = null;
         el('daily-step').textContent = 'All 3 challenges complete';
         el('daily-title').textContent = 'Daily workout complete!';
-        el('daily-instruction').textContent = 'Well played! You earned 30 Brain Points. Your next workout is optional.';
+        el('daily-instruction').textContent = `+30 Brain Points today · ${state.progress.brainPoints} total`;
         return;
     }
     dailyPuzzle = createDailyPuzzle(dailyDate, index);
@@ -585,7 +639,14 @@ Native.onBack(() => {
         el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
+    } else if (pageTrigger) {
+        showHome();
     } else {
-        Native.exit();
+        confirmDialog.open({
+            heading: 'Exit RombMaster?',
+            detail: 'Close the game and return to your phone?',
+            confirmLabel: 'Yes, exit', cancelLabel: 'No, stay',
+            onConfirm: () => Native.exit(),
+        });
     }
 });

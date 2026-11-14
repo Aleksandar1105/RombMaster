@@ -1,7 +1,7 @@
 export const TUTORIAL_STEPS = Object.freeze([
   {
-    title: 'Start with a 2–2 score',
-    text: 'Four starter squares are already owned: two red and two blue. They are part of the board, not bonus points.',
+    title: 'Start with a 0–0 score',
+    text: 'Each player starts with two marked squares. Score your first point by closing a new square.',
     diagram: 'start',
   },
   {
@@ -11,7 +11,7 @@ export const TUTORIAL_STEPS = Object.freeze([
   },
   {
     title: 'Complete a square',
-    text: 'The player who closes the fourth side captures that square and earns one point.',
+    text: 'The player who closes the fourth side earns one point and plays again if a line remains. A move without a capture passes the turn.',
     diagram: 'capture',
   },
   {

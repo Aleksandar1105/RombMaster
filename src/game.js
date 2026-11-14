@@ -5,7 +5,7 @@ import { Board } from './board.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
 import { SaveStore } from './save.js';
-import { ProfileStore, careerLevel } from './profile.js';
+import { ProfileStore, careerLevel, threeStarTarget } from './profile.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 
 const audio = new AudioController();
@@ -182,6 +182,16 @@ export const Game = {
   },
 
   showBoard() {
+    const aiMatch = this.settings.mode === 'ai';
+    const playerName = aiMatch ? ProfileStore.read().profile?.name || 'You' : 'Player 1';
+    this.firstPlayerName = playerName;
+    const setLabel = (id, value) => {
+      const item = document.getElementById(id);
+      if (item) item.textContent = value;
+    };
+    setLabel('p1-name', playerName + ' · X');
+    setLabel('p2-name', (aiMatch ? 'Computer' : 'Player 2') + ' · O');
+    this.updateUI();
     if (this.paused) audio.pause();
     // 2. Исчисти партикли
     this.renderer.particles = [];
@@ -196,7 +206,6 @@ export const Game = {
     // Бидејќи renderer.js сега користи window.innerWidth, не мора да чекаме!
     // Веднаш ги поставуваме точните димензии пред прелистувачот да нацрта следен фрејм.
     this.renderer.resize(this.ui.viewGame, this.board.S);
-    this.updateUI();
 
     // 5. Стартувај ја јамката веднаш
     this.requestRender();
@@ -360,7 +369,7 @@ export const Game = {
 
     const isComputer = this.settings.mode === 'ai' && this.player === CONSTANTS.O;
     const currentName = this.player === CONSTANTS.X
-      ? 'Player 1'
+      ? this.firstPlayerName
       : isComputer ? 'Computer' : 'Player 2';
     const last = this.historyStack[this.historyStack.length - 1];
     const extraTurn = last && last.player === this.player &&
@@ -375,7 +384,7 @@ export const Game = {
       hint.textContent = 'View the final score';
     } else if (isComputer) {
       label.textContent = extraTurn ? 'Computer gets another turn' : 'Computer thinking…';
-      hint.textContent = 'Your turn is next';
+      hint.textContent = extraTurn ? 'Square captured · Computer plays again' : 'Choosing a line';
     } else if (extraTurn) {
       label.textContent = currentName + ' gets another turn';
       hint.textContent = 'You captured a square — play again';
@@ -386,10 +395,25 @@ export const Game = {
   },
 
   updateUI() {
+    const modeLabel = document.getElementById('match-mode');
+    if (modeLabel) {
+      const level = this.settings.careerLevel;
+      if (level) {
+        const radius = this.board.R;
+        const playableCells = 1 + 2 * radius * (radius + 1) - 4;
+        const target = threeStarTarget(playableCells);
+        const earned = this.board.score[CONSTANTS.X];
+        const goal = earned >= target ? '★★★ secured' : '3-star goal: ' + earned + '/' + target;
+        modeLabel.textContent = 'Career · Level ' + level + ' / 30 · ' + goal;
+      } else modeLabel.textContent = 'Quick Play';
+    }
     this.updateTurnStatus();
     this.ui.p1Score.textContent = this.board.score[CONSTANTS.X];
     this.ui.p2Score.textContent = this.board.score[CONSTANTS.O];
-    if (this.player === CONSTANTS.X) {
+    if (this.gameOver || this.board.isGameOver()) {
+      this.ui.p1Card.classList.remove('active');
+      this.ui.p2Card.classList.remove('active');
+    } else if (this.player === CONSTANTS.X) {
       this.ui.p1Card.classList.add('active');
       this.ui.p2Card.classList.remove('active');
     } else {
