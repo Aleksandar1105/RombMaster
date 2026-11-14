@@ -1416,3 +1416,61 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 @media (prefers-reduced-motion:reduce) { #skin-stage * { animation:none!important; transition:none!important; } }
 
 #skin-effect-preview { width:100%; min-height:44px; font-size:.85rem; }
+
+/* Skin identity: offline, vector-like CSS artwork and native font stacks.
+   Neon keeps its already approved presentation. */
+:root[data-skin="royal"], #skin-stage[data-preview-skin="royal"] {
+  --arena-font: Georgia, "Times New Roman", serif;
+  --arena-ink: #f6e5bc;
+  --arena-surface: radial-gradient(ellipse at 50% 10%,#aa793b35,transparent 46%),
+    repeating-linear-gradient(90deg,transparent 0 14%,#d9ae5014 14% 14.6%,transparent 14.6% 28%),
+    linear-gradient(155deg,#382719,#17130d 58%,#241914);
+}
+:root[data-skin="cyber"], #skin-stage[data-preview-skin="cyber"] {
+  --arena-font: "Courier New", monospace;
+  --arena-ink: #e9dcff;
+  --arena-surface: linear-gradient(150deg,#ff38b817,transparent 40%,#b0f83d0b),
+    repeating-linear-gradient(0deg,#9568ff18 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(90deg,#9568ff18 0 1px,transparent 1px 24px),
+    radial-gradient(ellipse at 50% 0%,#351548,#180b28 75%);
+}
+:root[data-skin="ice"], #skin-stage[data-preview-skin="ice"] {
+  --arena-font: "Trebuchet MS", system-ui, sans-serif;
+  --arena-ink: #e9f7ff;
+  --arena-surface: linear-gradient(148deg,#ff813c35,transparent 39%),
+    linear-gradient(28deg,transparent 60%,#78dfff29 60% 62%,transparent 62%),
+    linear-gradient(155deg,transparent 67%,#78dfff18 67% 69%,transparent 69%),
+    radial-gradient(ellipse at 90% 75%,#24699470,transparent 53%),#111d2c;
+}
+:root[data-skin="wood"], #skin-stage[data-preview-skin="wood"] {
+  --arena-font: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --arena-ink: #fff0d8;
+  --arena-surface: radial-gradient(ellipse at 50% 0%,#ad80512b,transparent 65%),
+    repeating-linear-gradient(7deg,#ffffff06 0 1px,transparent 1px 7px,#00000013 7px 9px,transparent 9px 19px),
+    repeating-linear-gradient(90deg,#39261c 0 24%,#2b1c15 24% 24.5%,#442d20 24.5% 49%);
+}
+:root[data-skin="white"], #skin-stage[data-preview-skin="white"] {
+  --arena-font: system-ui, sans-serif;
+  --arena-ink: #24344b;
+  --arena-surface: radial-gradient(ellipse at 85% 10%,#dbe6f1,transparent 55%),
+    radial-gradient(ellipse at 10% 85%,#e4e0da,transparent 45%),#f4f5f7;
+}
+:root[data-skin]:not([data-skin="neon"]) :is(#view-menu,#view-game,#overlay) {
+  font-family:var(--arena-font,system-ui,sans-serif);
+  color:var(--arena-ink,var(--skin-ink));
+  background:var(--arena-surface);
+}
+:root[data-skin]:not([data-skin="neon"]) :is(#view-menu,#view-game,#overlay) :is(button,input,select) {
+  font-family:inherit;
+}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-title,
+:root[data-skin]:not([data-skin="neon"]) #page-title {
+  font-family:var(--arena-font,system-ui,sans-serif);
+  color:var(--arena-ink,var(--skin-ink));
+  text-shadow:none;
+}
+#skin-stage {font-family:var(--arena-font,var(--font-main));color:var(--arena-ink,var(--skin-ink));}
+#skin-stage h3 {font-family:inherit;letter-spacing:.04em;}
+:root[data-skin="royal"] #home-hub .home-title,#skin-stage[data-preview-skin="royal"] h3 {letter-spacing:.09em;}
+:root[data-skin="cyber"] #home-hub .home-title,#skin-stage[data-preview-skin="cyber"] h3 {text-transform:uppercase;letter-spacing:.08em;}
+:root[data-skin="white"] #home-hub .home-title,#skin-stage[data-preview-skin="white"] h3 {font-weight:400;letter-spacing:.13em;}
