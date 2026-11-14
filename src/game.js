@@ -107,6 +107,15 @@ export const Game = {
 
   setSoundEnabled(enabled) { audio.enabled = Boolean(enabled); },
 
+  playCosmeticSound(event, skinId) {
+    if (this.paused || !audio.enabled) return;
+    audio.init();
+    if (event === 'capture') audio.score(skinId);
+    else if (event === 'win') audio.win(skinId);
+    else audio.move(skinId);
+  },
+  stopCosmeticSound() { audio.pause(); },
+
   init(canvasEl, uiRefs) {
     this.ui = uiRefs;
     this.renderer = new Renderer(canvasEl);
@@ -331,7 +340,7 @@ export const Game = {
     const s = this.board.score;
     document.getElementById('result-title').textContent =
       s[CONSTANTS.X] > s[CONSTANTS.O]
-        ? 'You Win!'
+        ? 'Victory'
         : s[CONSTANTS.O] > s[CONSTANTS.X]
           ? 'Game Over'
           : 'Draw';
@@ -339,6 +348,13 @@ export const Game = {
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     const reward = document.getElementById('career-reward');
     const nextButton = document.getElementById('nextCareerBtn');
+    const stars = document.getElementById('result-stars');
+    if (stars) {
+      const earned = this.careerOutcome?.awardedStars || 0;
+      stars.hidden = !this.settings.careerLevel || !this.careerOutcome?.victory;
+      stars.textContent = '★'.repeat(earned);
+      stars.style?.setProperty('--stars', String(earned));
+    }
     if (nextButton) nextButton.hidden = true;
     if (reward && this.settings.careerLevel) {
       const outcome = this.careerOutcome || { status: 'unavailable' };
@@ -347,12 +363,16 @@ export const Game = {
         if (nextButton && outcome.victory && outcome.profile.unlockedLevel > this.settings.careerLevel) {
           const stage = careerLevel(this.settings.careerLevel + 1);
           const title = document.getElementById('next-career-title');
-          if (title) title.textContent = 'Next · ' + (missionFor(stage.level)?.title ?? 'Level ' + stage.level);
+          const mission = missionFor(stage.level);
+          if (title) title.textContent = mission?.title ?? 'Level ' + stage.level;
+          document.getElementById('next-level-label').textContent = 'Up next · Level ' + stage.level;
+          document.getElementById('next-clue').textContent = mission?.clue ?? 'Win this match to advance.';
+          nextButton.textContent = 'Play level ' + stage.level;
           drawOpening(document.getElementById('next-opening'), stage);
           nextButton.hidden = false;
         }
         reward.textContent = outcome.victory
-          ? `Career level ${outcome.level} cleared! ${outcome.awardedStars} stars · +${outcome.earnedXP} XP`
+          ? `+${outcome.earnedXP} XP`
           : `Career level ${this.settings.careerLevel}: ${s[CONSTANTS.X] === s[CONSTANTS.O] ? 'Draw' : 'Try again'}`;
         if (outcome.foxUnlocked) reward.textContent += '\nAvatar unlocked: Neon Fox';
         if (outcome.newAchievements?.length) {
@@ -422,8 +442,12 @@ export const Game = {
         const mission = this.settings.openingVersion && missionFor(level);
         const double = this.doubleCaptureGoal();
         const progress = double === null ? goal : double ? 'Double capture ✓' : 'Goal: double capture';
-        modeLabel.textContent = 'Career · Level ' + level + ' / 30 · ' + (mission ? mission.title + ' · ' : '') + progress;
-      } else modeLabel.textContent = 'Quick Play';
+        modeLabel.textContent = 'Career · Level ' + level + '\n' + (mission?.title ?? progress);
+        modeLabel.title = progress;
+      } else {
+        modeLabel.textContent = 'Quick Play';
+        modeLabel.title = '';
+      }
     }
     this.updateTurnStatus();
     this.ui.p1Score.textContent = this.board.score[CONSTANTS.X];
@@ -507,6 +531,7 @@ export const Game = {
     audio.init();
     const state = saved.state;
     this.board = state.board;
+    this.renderer.particles = [];
     this.player = state.player;
     this.settings = state.settings;
     this.historyStack = state.history;
@@ -533,3 +558,4 @@ export const Game = {
     this.setSaveStatus(saved ? '' : 'Could not save your latest move. Keep the game open to avoid losing progress.');
   },
 };
+

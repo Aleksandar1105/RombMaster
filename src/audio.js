@@ -1,13 +1,22 @@
+import { activeSkin } from './skins.js';
+import { soundCue } from './skin-sounds.js';
+
 export class AudioController {
   constructor() {
     this.ctx = null;
-    this.enabled = true;
+    this._enabled = true;
     this.paused = false;
     this.timers = new Set();
     this.oscillators = new Set();
     this.generation = 0;
   }
   
+  get enabled() { return this._enabled; }
+  set enabled(value) {
+    this._enabled = Boolean(value);
+    if (!this._enabled) this.cancelCue();
+  }
+
   init() {
     if (!this.ctx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -23,6 +32,11 @@ export class AudioController {
 
   pause() {
     this.paused = true;
+    this.cancelCue();
+    if (this.ctx?.state === 'running') this.ctx.suspend().catch(() => {});
+  }
+
+  cancelCue() {
     this.generation++;
     for (const timer of this.timers) clearTimeout(timer);
     this.timers.clear();
@@ -30,11 +44,10 @@ export class AudioController {
       try { osc.stop(); } catch {}
     }
     this.oscillators.clear();
-    if (this.ctx?.state === 'running') this.ctx.suspend().catch(() => {});
   }
 
   later(callback, delay) {
-    if (this.paused) return;
+    if (this.paused || !this.enabled) return;
     const generation = this.generation;
     const timer = setTimeout(() => {
       this.timers.delete(timer);
@@ -50,7 +63,7 @@ export class AudioController {
     osc.type = type;
     osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
     gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     this.oscillators.add(osc);
@@ -59,7 +72,15 @@ export class AudioController {
     osc.stop(this.ctx.currentTime + duration);
   }
 
-  move() { this.playTone(300, 'sine', 0.1, 0.05); }
-  score() { this.playTone(600, 'triangle', 0.1, 0.1); this.later(() => this.playTone(800, 'sine', 0.2, 0.1), 100); }
-  win() { [400, 500, 600, 800].forEach((f, i) => this.later(() => this.playTone(f, 'square', 0.2, 0.1), i * 150)); }
+  cue(event, id = activeSkin().id) {
+    if (this.paused || !this.enabled || !this.ctx) return;
+    this.cancelCue();
+    for (const [freq, type, duration, gain, delay] of soundCue(id,event)) {
+      if (delay === 0) this.playTone(freq,type,duration,gain);
+      else this.later(() => this.playTone(freq,type,duration,gain),delay);
+    }
+  }
+  move(id) { this.cue('move',id); }
+  score(id) { this.cue('capture',id); }
+  win(id) { this.cue('win',id); }
 }

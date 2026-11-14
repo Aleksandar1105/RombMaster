@@ -10,6 +10,6 @@ export const CONSTANTS = {
     oDim: 'rgba(34, 211, 238, 0.17)',
     lastMove: '#F6C86A',          // Неонски сјај
     glow: '#F6C86A',
-    bg: '#101B34'
+    bg: '#071729'
   }
 };
