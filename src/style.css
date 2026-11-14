@@ -1523,3 +1523,40 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #menu-page #skin-page :is(#skin-effect-preview,#skin-equip) {clip-path:none;border-radius:9px;border:1px solid #7489a7;box-shadow:none;background:#243650;color:#f4f7fc;}
 #menu-page #skin-page :is(#skin-effect-preview,#skin-equip)::before {display:none;}
 #menu-page #skin-page #skin-status {color:#d3e1f5;}
+
+/* 27.3: themed artwork is local and decorative; gameplay uses an opaque canvas. */
+:root[data-skin="royal"], #skin-stage[data-preview-skin="royal"], #skin-page .skin-card[data-skin-id="royal"] {--theme-art:url('./skin-art/royal.svg');}
+:root[data-skin="cyber"], #skin-stage[data-preview-skin="cyber"], #skin-page .skin-card[data-skin-id="cyber"] {--theme-art:url('./skin-art/cyber.svg');}
+:root[data-skin="ice"], #skin-stage[data-preview-skin="ice"], #skin-page .skin-card[data-skin-id="ice"] {--theme-art:url('./skin-art/ice.svg');}
+:root[data-skin="wood"], #skin-stage[data-preview-skin="wood"], #skin-page .skin-card[data-skin-id="wood"] {--theme-art:url('./skin-art/wood.svg');}
+:root[data-skin="white"], #skin-stage[data-preview-skin="white"], #skin-page .skin-card[data-skin-id="white"] {--theme-art:url('./skin-art/white.svg');}
+#skin-stage[data-preview-skin="neon"], #skin-page .skin-card[data-skin-id="neon"] {--theme-art:url('./skin-art/neon.svg');}
+:root[data-skin]:not([data-skin="neon"]) :is(#view-game,#view-menu,#overlay), #skin-stage {
+  background-image:var(--theme-art),var(--arena-surface);
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+}
+#menu-page #skin-page .skin-card[data-skin-id] {background-image:var(--theme-art);background-size:cover;background-position:center;}
+#skin-page .skin-card-symbols canvas {width:min(100%,108px);height:auto;border-radius:7px;display:block;}
+/* Restore genuine elements hidden by the original portrait artwork. */
+:root[data-skin]:not([data-skin="neon"]) #home-hub :is(.home-hero > div,.home-mark,.opening-mini,.hub-glyph,.nav-tile strong) {
+  position:static;width:auto;height:auto;overflow:visible;clip-path:none;
+}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-mark {width:min(100%,90px);}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .opening-mini {width:48px;height:48px;}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .hub-glyph {width:2em;height:2em;}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-hero .home-help {position:static;width:auto;height:auto;grid-column:1/-1;min-height:44px;}
+:root[data-skin]:not([data-skin="neon"]) #home-hub .home-links button {margin:0;}
+@media (prefers-reduced-motion:no-preference) {
+  #overlay.flex[data-outcome="victory"] #result-title {animation:skin-victory-neon .55s ease-out both;}
+  :root[data-skin="royal"] #overlay.flex[data-outcome="victory"] #result-title {animation-name:skin-victory-royal;}
+  :root[data-skin="cyber"] #overlay.flex[data-outcome="victory"] #result-title {animation-name:skin-victory-cyber;}
+  :root[data-skin="ice"] #overlay.flex[data-outcome="victory"] #result-title {animation-name:skin-victory-ice;}
+  :root[data-skin="wood"] #overlay.flex[data-outcome="victory"] #result-title {animation-name:skin-victory-wood;}
+  :root[data-skin="white"] #overlay.flex[data-outcome="victory"] #result-title {animation-name:skin-victory-white;}
+}
+@keyframes skin-victory-neon {from{transform:scale(.9);opacity:.5}to{transform:none;opacity:1}}
+@keyframes skin-victory-royal {from{text-shadow:0 0 28px #ffdc85;transform:translateY(6px)}to{text-shadow:none;transform:none}}
+@keyframes skin-victory-cyber {from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+@keyframes skin-victory-ice {from{filter:brightness(1.8);letter-spacing:.1em}to{filter:none;letter-spacing:normal}}
+@keyframes skin-victory-wood {from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes skin-victory-white {from{opacity:0}to{opacity:1}}
