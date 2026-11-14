@@ -1,4 +1,5 @@
 import './style.css';
+import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
@@ -52,15 +53,18 @@ const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
     } else onConfirm();
 };
 
+const arcade=mountArcade({game:Game});
 const menuPages = {
     'career-page': 'Career',
     'quick-settings': 'Quick Play settings',
     'player-settings': 'Player profile',
     'comfort-settings': 'Sound & feedback',
     'skin-page': 'Skin Store',
+    ...(el('arcade-page')?{'arcade-page':'Challenge Arena'}:{}),
 };
 let pageTrigger = null;
 function showHome() {
+    arcade?.leave();
     stopSkinPreview();
     el('menu-page').hidden = true;
     el('home-hub').hidden = false;
@@ -72,6 +76,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
     button.onclick = () => {
         pageTrigger = button;
         const selected = button.dataset.page;
+        if(selected!=='arcade-page')arcade?.leave();
         if (selected !== 'skin-page') stopSkinPreview();
         if (selected === 'career-page') {
             const profile = ProfileStore.read().profile;
@@ -87,6 +92,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         el('home-hub').hidden = true;
         el('menu-page').hidden = false;
         ui.viewMenu.scrollTop = 0;
+        if(selected==='arcade-page')arcade?.enter();
         el('page-back').focus();
     };
 });
@@ -958,15 +964,17 @@ refreshDailyMenu();
 // before gameplay resumes, so duplicate events cannot queue extra AI responses.
 document.addEventListener('visibilitychange', () => {
     Game.setActive('visibility', !document.hidden);
+    arcade?.activity();
     if (document.hidden) {
         stopSkinPreview();
         stopDailyEffects();
     } else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
 });
-window.addEventListener('pagehide', () => Game.setActive('page', false));
-window.addEventListener('pageshow', () => Game.setActive('page', true));
+window.addEventListener('pagehide', () => {Game.setActive('page', false);arcade?.activity();});
+window.addEventListener('pageshow', () => {Game.setActive('page', true);arcade?.activity();});
 Native.onStateChange(({ isActive }) => {
     Game.setActive('native', isActive);
+    arcade?.activity();
     if (!isActive) { stopSkinPreview(); stopDailyEffects(); }
     else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
 });

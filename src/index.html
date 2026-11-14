@@ -40,6 +40,7 @@
                         <button type="button" data-page="player-settings" class="nav-tile"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2L16 4V9L12 12L8 9V4Z M3 21L5 15L9 13L12 16L15 13L19 15L21 21Z"/></svg><strong>Profile</strong></button>
                         <button type="button" data-page="comfort-settings" class="nav-tile"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 9H6L12 4V20L6 15H2Z M15 8Q19 12 15 16 M18 4Q26 12 18 20"/></svg><strong>Sound</strong></button>
                     </nav>
+                    <button id="home-arcade" type="button" data-page="arcade-page" class="skin-store-entry">◇ Challenge Arena</button>
                     <button id="home-skin-store" type="button" data-page="skin-page" class="skin-store-entry">◇ Skin Store &amp; Collection</button>
                 </div>
                 </div>
@@ -94,7 +95,21 @@
                     <button id="setup-play" type="button" class="btn-primary">▶ Play</button>
                     </div>
                 </section>
-                <section id="skin-page" class="home-drawer" hidden>
+                <section id="arcade-page" hidden class="arcade-panel" aria-label="Challenge Arena">
+ <div class="arcade-modes">
+ <button type="button" data-arcade="puzzle">Puzzle Master<small>Find the right tactic</small></button>
+ <button type="button" data-arcade="perfect">Perfect Move<small>Maximum capture</small></button>
+ <button type="button" data-arcade="blitz">Blitz<small>10 seconds per move</small></button>
+ <button type="button" data-arcade="survival">Survival<small>Win successive rounds</small></button>
+ </div>
+ <h3 id="arcade-title">Choose a challenge</h3><p id="arcade-instruction"></p>
+ <p id="arcade-clock" aria-live="off"></p><p id="arcade-score"></p>
+ <canvas id="arcade-canvas" hidden aria-label="Challenge board. Tap between dots to draw a line."></canvas>
+ <p id="arcade-feedback" role="status"></p>
+ <button id="arcade-next" type="button" class="btn-primary" hidden>Play again</button>
+ <section class="arcade-performance"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><p id="arcade-summary"></p><small>Local practice statistics, not a measurement of intelligence.</small></section>
+ </section>
+ <section id="skin-page" class="home-drawer" hidden>
                     <div class="home-drawer-content skin-collection">
                         <div class="skin-store-intro"><p>Discover your next arena.</p><small>Cosmetics never change the rules or difficulty.</small></div>
                         <div class="skin-store-tabs" role="group" aria-label="Skin catalog view">

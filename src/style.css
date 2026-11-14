@@ -1659,3 +1659,17 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 @keyframes combo-flash{0%{opacity:0;transform:translateX(-50%) scale(.8)}30%{opacity:1;transform:translateX(-50%) scale(1.04)}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
 @media(prefers-reduced-motion:reduce){#capture-combo{position:static;transform:none;margin:2px auto;}}
 #match-analysis{padding:9px;border:1px solid var(--skin-o,#22d3ee);border-radius:9px;color:var(--skin-ink,#e2e8f0);font-size:.78rem;line-height:1.5;}
+
+/* Offline Challenge Arena: real controls and bounded local statistics. */
+#arcade-page[hidden],#arcade-canvas[hidden],#arcade-next[hidden]{display:none!important;}
+#home-hub #home-arcade{display:block;width:100%;min-height:44px;background:#14354b;border:1px solid #52d9eb;color:#effbff;border-radius:11px;clip-path:none;box-shadow:none;font-size:.85rem;}
+@media(orientation:portrait){#home-hub .home-actions{grid-template-rows:minmax(74px,267fr) minmax(142px,501fr) minmax(100px,510fr) auto auto;}}
+#arcade-page{display:flex;flex-direction:column;align-items:center;gap:9px;padding:12px;border:1px solid var(--skin-accent,#52d9eb);border-radius:14px;background:var(--skin-panel,#101b30);color:var(--skin-ink,#f1f5f9);}
+#arcade-page p,#arcade-page h3{margin:0;text-align:center;line-height:1.4;}
+.arcade-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;}
+#menu-page .arcade-modes button,#arcade-period{min-height:48px;padding:9px 4px;clip-path:none;border-radius:9px;background:var(--skin-panel,#162c42);color:var(--skin-ink,#effbff);border:1px solid var(--skin-accent,#52d9eb);}
+.arcade-modes small{display:block;font-size:.72rem;font-weight:400;margin-top:3px;}
+#arcade-canvas{max-width:100%;touch-action:none;border:1px solid var(--skin-accent,#52d9eb);border-radius:9px;}
+#arcade-clock{font-weight:800;color:var(--skin-gold,#ffce70);}
+.arcade-performance{width:100%;padding:10px;border-top:1px solid var(--skin-accent,#52d9eb);display:grid;gap:8px;}
+#arcade-summary{font-size:.8rem;}.arcade-performance small{font-size:.72rem;}
