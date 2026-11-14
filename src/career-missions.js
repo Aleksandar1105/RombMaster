@@ -1,3 +1,4 @@
+import { Renderer } from './renderer.js';
 import { Board } from './board.js';
 
 // Coordinates use Board's horizontal/vertical edge grids. Keep version 1
@@ -29,23 +30,8 @@ export function drawOpening(canvas, stage) {
   if (!ctx) return;
   const board = startingBoard({ size: stage.size, careerLevel: stage.level,
     openingVersion: missionFor(stage.level) ? 1 : undefined });
-  const step = (canvas.width - 8) / board.S;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.lineWidth = Math.max(1.3, step * 0.14);
-  ctx.lineCap = 'round';
-  for (let r = 0; r < board.S; r++) {
-    for (let c = 0; c < board.S; c++) {
-      if (!board.active(r, c)) continue;
-      const x = 4 + c * step, y = 4 + r * step;
-      ctx.fillStyle = board.owner[r][c] === null ? '#40385c' : board.owner[r][c] ? '#fb7185' : '#22d3ee';
-      ctx.fillRect(x + 1, y + 1, step - 2, step - 2);
-      ctx.strokeStyle = '#ede5ff';
-      ctx.beginPath();
-      if (board.h[r][c]) { ctx.moveTo(x, y); ctx.lineTo(x + step, y); }
-      if (board.v[r][c]) { ctx.moveTo(x, y); ctx.lineTo(x, y + step); }
-      if (board.h[r + 1][c]) { ctx.moveTo(x, y + step); ctx.lineTo(x + step, y + step); }
-      if (board.v[r][c + 1]) { ctx.moveTo(x + step, y); ctx.lineTo(x + step, y + step); }
-      ctx.stroke();
-    }
-  }
+  const preview = new Renderer(canvas);
+  preview.CELL = (canvas.width - 10) / board.S;
+  preview.offX = preview.offY = 5;
+  preview.draw(board, null);
 }

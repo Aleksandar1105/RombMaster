@@ -5,6 +5,8 @@ import { Native } from './native.js';
 import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
+import { Board } from './board.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -55,9 +57,11 @@ const menuPages = {
     'quick-settings': 'Quick Play settings',
     'player-settings': 'Player profile',
     'comfort-settings': 'Sound & feedback',
+    'skin-page': 'Skin Store',
 };
 let pageTrigger = null;
 function showHome() {
+    stopSkinPreview();
     el('menu-page').hidden = true;
     el('home-hub').hidden = false;
     ui.viewMenu.scrollTop = 0;
@@ -68,6 +72,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
     button.onclick = () => {
         pageTrigger = button;
         const selected = button.dataset.page;
+        if (selected !== 'skin-page') stopSkinPreview();
         if (selected === 'career-page') {
             const profile = ProfileStore.read().profile;
             if (profile) {
@@ -76,6 +81,8 @@ document.querySelectorAll('[data-page]').forEach(button => {
             }
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
+        if (selected === 'quick-settings') refreshSetupPreview();
+        if (selected === 'skin-page') openSkins();
         el('page-title').textContent = menuPages[selected];
         el('home-hub').hidden = true;
         el('menu-page').hidden = false;
@@ -95,7 +102,196 @@ const careerDescription = el('career-description');
 const careerStatus = el('career-status');
 const avatarSelect = el('profile-avatar');
 const avatarPreview = el('profile-avatar-preview');
+function renderRoute(profile, selected) {
+    const route = el('chapter-route');
+    const first = Math.floor((selected - 1) / 5) * 5 + 1;
+    el('chapter-label').textContent = 'Chapter ' + (Math.floor((selected - 1) / 5) + 1) + ' / 6';
+    el('previous-chapter').disabled = first === 1;
+    el('next-chapter').disabled = first + 5 > profile.unlockedLevel;
+    el('career-start-btn').textContent = 'Play level ' + selected;
+    const nodes = [];
+    for (let level = first; level < first + 5; level++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.disabled = level > profile.unlockedLevel;
+        button.setAttribute('aria-pressed', String(level === selected));
+        const number = document.createElement('b');
+        number.textContent = level;
+        const title = document.createElement('span');
+        title.textContent = missionFor(level)?.title ?? 'Level ' + level;
+        const stars = document.createElement('small');
+        stars.textContent = button.disabled ? '🔒' : '★'.repeat(profile.stars[level] || 0);
+        button.append(number, title, stars);
+        button.onclick = () => {
+            careerSelect.value = String(level);
+            careerSelect.onchange();
+            route.querySelector('[aria-pressed="true"]')?.focus();
+        };
+        nodes.push(button);
+    }
+    route.replaceChildren(...nodes);
+}
+// Read preferences from the current local slot, independent of saved matches.
+const skinState = () => {
+    const state = ProfileStore.read();
+    return { profile: state.profile, daily: DailyProgress.read(localDateKey()).progress,
+        key: LocalSlots.storageKey(SKIN_KEY) };
+};
+function applySkin(id) {
+    const skin = setActiveSkin(id);
+    const root = document.documentElement;
+    if (!root) return; // headless input tests
+    root.dataset.skin = skin.id;
+    for (const [name,value] of Object.entries({
+        '--skin-bg': skin.colors.bg, '--skin-x': skin.colors.x, '--skin-o': skin.colors.o,
+        '--skin-accent': skin.accent, '--skin-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
+        '--skin-panel': skin.id === 'white' ? '#ffffff' : skin.colors.bg,
+        '--skin-gold': skin.colors.lastMove,
+    })) root.style.setProperty(name,value);
+}
+function syncSkin() {
+    const {profile,daily,key} = skinState();
+    applySkin(readSkin(localStorage,key,profile,daily));
+}
+let previewSkinId = 'neon';
+let collectionOnly = false;
+let skinPreviewFrame = null;
+let skinPreviewRenderer = null;
+let skinPreviewBoard = null;
+function stopSkinPreview() {
+    if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
+    skinPreviewFrame = null;
+    if (skinPreviewRenderer) skinPreviewRenderer.particles = [];
+    // Only interrupt menu audio when a preview actually exists.
+    if (skinPreviewRenderer) Game.stopCosmeticSound();
+    skinPreviewRenderer = skinPreviewBoard = null;
+}
+function showSkinPreview() {
+    stopSkinPreview();
+    const skin = getSkin(previewSkinId);
+    const {profile,daily} = skinState();
+    const unlocked = unlockedSkin(skin.id,profile,daily);
+    const canvas = el('skin-preview');
+    el('skin-preview-name').textContent = skin.name;
+    const stage = el('skin-stage');
+    stage.dataset.previewSkin = skin.id;
+    if (stage.style.setProperty) {
+        for (const [name,value] of Object.entries({
+            '--skin-bg':skin.colors.bg,'--skin-x':skin.colors.x,'--skin-o':skin.colors.o,
+            '--skin-accent':skin.accent,'--skin-ink':skin.id === 'white' ? '#182334' : '#f8fafc',
+            '--skin-panel':skin.id === 'white' ? '#ffffff' : skin.colors.bg,
+            '--skin-gold':skin.colors.lastMove,
+        })) stage.style.setProperty(name,value);
+    }
+    el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
+    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : skin.id === 'royal' ? 'Coming soon' : 'Locked';
+    el('skin-status').textContent = skin.condition;
+    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect;
+    if (canvas?.getContext?.('2d')) {
+        const board = new Board(4);
+        // A read-only sample with both orientations of contrasting shared edges.
+        for (const [r,c,p] of [[1,2,1],[2,2,0],[2,3,1]]) {
+            board.owner[r][c] = p;
+            board.h[r][c] = board.h[r+1][c] = board.v[r][c] = board.v[r][c+1] = true;
+        }
+        const renderer = new Renderer(canvas,skin);
+        renderer.CELL = (canvas.width - 16) / board.S;
+        renderer.offX = renderer.offY = 8;
+        renderer.draw(board,null);
+        skinPreviewRenderer = renderer;
+        skinPreviewBoard = board;
+    }
+    for (const button of el('skin-options').children) {
+        button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
+    }
+}
+function renderSkinCatalog() {
+    const {profile,daily} = skinState();
+    const entries = skinCatalog(profile,daily,activeSkin().id,collectionOnly);
+    const owned = skinCatalog(profile,daily,activeSkin().id,true);
+    el('skin-owned-count').textContent = owned.length + ' / ' + SKINS.length + ' skins unlocked';
+    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly));
+    el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
+    el('page-title').textContent = collectionOnly ? 'My Collection' : 'Skin Store';
+    if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = activeSkin().id;
+    const buttons = entries.map(({skin,status}) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'skin-card';
+        button.dataset.skinId = skin.id;
+        button.style.setProperty('--card-x',skin.colors.x);
+        button.style.setProperty('--card-o',skin.colors.o);
+        button.style.setProperty('--card-accent',skin.accent);
+        button.setAttribute('aria-label',skin.name + ', ' + skin.catalog.rarity + ', ' + status + ', preview');
+        const part = (className,value) => {
+            const node = document.createElement('span');
+            node.className = className;
+            node.textContent = value;
+            return node;
+        };
+        const symbols = part('skin-card-symbols','');
+        symbols.setAttribute('aria-hidden','true');
+        const sample = document.createElement('canvas');
+        sample.width=144; sample.height=72;
+        if (sample.getContext?.('2d')) {
+            const iconRenderer=new Renderer(sample,skin);
+            const ctx=iconRenderer.ctx;
+            ctx.fillStyle=skin.colors.bg;
+            ctx.fillRect(0,0,144,72);
+            for(const [owner,x] of [[1,4],[0,76]]) {
+                const color=owner===1?skin.colors.x:skin.colors.o;
+                iconRenderer.paintCapture(skin,x,4,64,color);
+                iconRenderer.drawSymbol(skin,owner,x+32,36,64);
+            }
+            symbols.append(sample);
+        } else symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
+        button.append(part('skin-card-rarity',skin.catalog.rarity),
+            part('skin-card-name',skin.name),symbols,
+            part('skin-card-description',skin.catalog.description),
+            part('skin-card-status',status + ' · Preview'));
+        button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); el('skin-preview-name').scrollIntoView?.({block:'nearest'}); };
+        return button;
+    });
+    el('skin-options').replaceChildren(...buttons);
+    showSkinPreview();
+}
+function openSkins() {
+    collectionOnly = false;
+    previewSkinId = activeSkin().id;
+    renderSkinCatalog();
+}
+el('skin-tab-store').onclick = () => { collectionOnly = false; renderSkinCatalog(); };
+el('skin-tab-collection').onclick = () => { collectionOnly = true; renderSkinCatalog(); };
+el('skin-effect-preview').onclick = () => {
+    if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
+    if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
+    skinPreviewFrame = null;
+    const renderer = skinPreviewRenderer, board = skinPreviewBoard;
+    renderer.particles = [];
+    renderer.spawnParticles(2,2,0);
+    Game.playCosmeticSound('capture',previewSkinId);
+    const frame = () => {
+        skinPreviewFrame = null;
+        if (el('skin-page').hidden || Game.paused || renderer !== skinPreviewRenderer) return;
+        renderer.draw(board,null);
+        if (renderer.particles.length) skinPreviewFrame = requestAnimationFrame(frame);
+    };
+    frame();
+};
+el('skin-equip').onclick = () => {
+    const {profile,daily,key} = skinState();
+    const result = saveSkin(localStorage,key,previewSkinId,profile,daily);
+    if (result !== 'ready') {
+        el('skin-status').textContent = result === 'locked' ? 'This skin is locked.' : 'Could not save skin. Previous selection preserved.';
+        return;
+    }
+    applySkin(previewSkinId);
+    refreshCareer();
+    renderSkinCatalog();
+    el('skin-status').textContent = 'Equipped for this local player.';
+};
 const refreshCareer = () => {
+    syncSkin();
     const state = ProfileStore.read();
     if (state.status === 'invalid' || state.status === 'unavailable') {
         profileFeedback.textContent = state.status === 'invalid'
@@ -118,6 +314,9 @@ const refreshCareer = () => {
     if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
     else avatarPreview.classList.remove('neon-fox');
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
+    el('identity-name').textContent = p.name;
+    el('identity-art').dataset.avatar = p.avatar;
+    el('identity-art').textContent = ['robot','spark','fox','neon-fox'].includes(p.avatar) ? '' : avatarPreview.textContent;
     const summary = careerSummary(p);
     for (const [id, value] of Object.entries({
         'stat-played': summary.played,
@@ -149,15 +348,12 @@ const refreshCareer = () => {
     el('home-level').textContent = mission ? `Level ${p.unlockedLevel} · ${mission.title}` : careerProgress.textContent;
     drawOpening(el('home-opening'), careerLevel(p.unlockedLevel));
     const selected = Number(careerSelect.value) || p.unlockedLevel;
-    careerSelect.innerHTML = Array.from({ length: p.unlockedLevel }, (_, i) => {
-        const n = i + 1;
-        const stars = p.stars[n] ? ` · ${'★'.repeat(p.stars[n])}` : '';
-        return `<option value="${n}">Level ${n}${missionFor(n) ? " · " + missionFor(n).title : ""}${stars}</option>`;
-    }).join('');
     careerSelect.value = String(Math.min(selected, p.unlockedLevel));
     const stage = careerLevel(Number(careerSelect.value));
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
+    drawOpening(el('mission-preview'), stage);
+    renderRoute(p, stage.level);
     profileFeedback.textContent = '';
 };
 // Keep DOM names escaped: profile names are user-controlled plain text.
@@ -336,9 +532,21 @@ avatarSelect.onchange = () => {
 };
 careerSelect.onchange = () => {
     const stage = careerLevel(Number(careerSelect.value));
+    drawOpening(el('mission-preview'), stage);
+    const profile = ProfileStore.read().profile;
+    if (profile) renderRoute(profile, stage.level);
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
 };
+for (const [id, direction] of [['previous-chapter', -1], ['next-chapter', 1]]) {
+    el(id).onclick = () => {
+        const first = Math.floor((Number(careerSelect.value) - 1) / 5) * 5 + 1 + 5 * direction;
+        const profile = ProfileStore.read().profile;
+        if (!profile || first < 1 || first > profile.unlockedLevel) return;
+        careerSelect.value = String(first);
+        careerSelect.onchange();
+    };
+}
 el('career-start-btn').onclick = () => {
     const level = Number(careerSelect.value);
     const state = ProfileStore.read();
@@ -378,7 +586,10 @@ function refreshQuickSummary() {
     el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
 }
 refreshQuickSummary();
-setupGroup("[data-size]", b => size = +b.dataset.size);
+const refreshSetupPreview = () => drawOpening(el('setup-preview'), { size });
+setupGroup("[data-size]", b => { size = +b.dataset.size; refreshSetupPreview(); });
+el('setup-play').onclick = () => el('startBtn').click();
+refreshSetupPreview();
 setupGroup("[data-ai]", b => {
     mode = b.dataset.ai;
     el('difficulty-wrapper').style.opacity = mode === 'pvp' ? '0.3' : '1';
@@ -522,6 +733,8 @@ let practiceRound = 0;
 let practiceIndex = 0;
 let dailyIndex = 0;
 let duelLost = false;
+let dailyEffectFrame = null;
+let dailyLastMove = null;
 const dailyModal = el('daily-modal');
 dailyModal.hidden = true; // Explicit initial state, including minimal DOM test harnesses.
 const dailyNext = el('daily-next-btn');
@@ -557,10 +770,32 @@ const drawDaily = () => {
         clientWidth: width, clientHeight: Math.max(400, Math.min(window.innerHeight, 640)),
         querySelector: () => null,
     }, dailyPuzzle.board.S);
-    dailyRenderer.draw(dailyPuzzle.board, null);
+    dailyRenderer.draw(dailyPuzzle.board, dailyLastMove);
+};
+const stopDailyEffects = () => {
+    if (dailyEffectFrame !== null) cancelAnimationFrame(dailyEffectFrame);
+    dailyEffectFrame = null;
+    dailyRenderer.particles = [];
+    dailyLastMove = null;
+    Game.stopCosmeticSound();
+};
+const animateDaily = move => {
+    dailyLastMove = move;
+    if (dailyEffectFrame !== null) cancelAnimationFrame(dailyEffectFrame);
+    const frame = () => {
+        dailyEffectFrame = null;
+        if (!dailyPuzzle || dailyModal.hidden || Game.paused) return;
+        dailyRenderer.draw(dailyPuzzle.board,dailyLastMove);
+        if (dailyRenderer.particles.length) dailyEffectFrame = requestAnimationFrame(frame);
+    };
+    frame();
+};
+const dailyCapture = (result,player) => {
+    for (const sq of result?.capturedSquares || []) dailyRenderer.spawnParticles(sq.r,sq.c,player);
 };
 
 const closeDaily = () => {
+    stopDailyEffects();
     dailyModal.hidden = true;
     dailyPuzzle = null;
     dailySolved = false;
@@ -568,6 +803,7 @@ const closeDaily = () => {
 };
 
 const showDaily = () => {
+    stopDailyEffects();
     const state = DailyProgress.read(dailyDate);
     if (state.status !== 'ready') {
         dailyPuzzle = null;
@@ -634,13 +870,19 @@ dailyCanvas.addEventListener('pointerdown', event => {
     if (dailyPuzzle.type === 'duel') {
         const human = board.makeMove(move.t, move.r, move.c, 1);
         let lastMove = move;
+        dailyCapture(human,1);
+        let captured = human.points > 0;
         if (!human.points) {
             while (!board.isGameOver()) {
                 lastMove = duelReply(board);
-                if (!board.makeMove(lastMove.t, lastMove.r, lastMove.c, 0).points) break;
+                const reply = board.makeMove(lastMove.t, lastMove.r, lastMove.c, 0);
+                dailyCapture(reply,0);
+                if (!reply.points) break;
+                captured = true;
             }
         }
-        dailyRenderer.draw(board, lastMove);
+        Game.playCosmeticSound(captured ? 'capture' : 'move');
+        animateDaily(lastMove);
         const score = `You ${board.score[1]} · Computer ${board.score[0]}`;
         if (!board.isGameOver()) {
             dailyFeedback.textContent = score + (human.points ? ' · Capture! Play again.' : ' · Your turn.');
@@ -659,8 +901,10 @@ dailyCanvas.addEventListener('pointerdown', event => {
             dailyFeedback.textContent = dailyPuzzle.retry;
             return;
         }
-        board.makeMove(move.t, move.r, move.c, 1);
-        dailyRenderer.draw(board, move);
+        const result = board.makeMove(move.t, move.r, move.c, 1);
+        dailyCapture(result,1);
+        Game.playCosmeticSound(result.points ? 'capture' : 'move');
+        animateDaily(move);
         dailyFeedback.textContent = dailyPuzzle.success;
     }
     if (!practiceRound) {
@@ -684,10 +928,20 @@ refreshDailyMenu();
 
 // Visibility and native state may arrive in either order. Both must be active
 // before gameplay resumes, so duplicate events cannot queue extra AI responses.
-document.addEventListener('visibilitychange', () => Game.setActive('visibility', !document.hidden));
+document.addEventListener('visibilitychange', () => {
+    Game.setActive('visibility', !document.hidden);
+    if (document.hidden) {
+        stopSkinPreview();
+        stopDailyEffects();
+    } else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
+});
 window.addEventListener('pagehide', () => Game.setActive('page', false));
 window.addEventListener('pageshow', () => Game.setActive('page', true));
-Native.onStateChange(({ isActive }) => Game.setActive('native', isActive));
+Native.onStateChange(({ isActive }) => {
+    Game.setActive('native', isActive);
+    if (!isActive) { stopSkinPreview(); stopDailyEffects(); }
+    else if (el('skin-page').hidden === false && el('menu-page').hidden === false) showSkinPreview();
+});
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
@@ -714,3 +968,4 @@ Native.onBack(() => {
         });
     }
 });
+

@@ -137,7 +137,7 @@ const DEFAULT_SLOTS = () => ({
   version: 1, activeId: 'guest', nextId: 1, slots: ['guest'],
 });
 const SLOT_ID = /^slot-([1-9][0-9]{0,3})$/;
-const SCOPED_KEYS = [PROFILE_KEY, 'rhombus_save', 'rombmaster_daily_progress_v1'];
+const SCOPED_KEYS = [PROFILE_KEY, 'rhombus_save', 'rombmaster_daily_progress_v1', 'rombmaster_skin_v1'];
 const scopedKey = (base, id) => id === 'guest' ? base : `${base}:${id}`;
 
 function parseSlotIndex(raw) {
