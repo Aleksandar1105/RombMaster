@@ -1,6 +1,7 @@
 import { Native } from './native.js';
 import { AudioController } from './audio.js';
 import { CONSTANTS } from './constants.js';
+import { resultPresentation } from './skins.js';
 import { missionFor, startingBoard, drawOpening } from './career-missions.js';
 import { AI } from './ai.js';
 import { Renderer } from './renderer.js';
@@ -168,6 +169,7 @@ export const Game = {
     audio.init();
     this.settings = career === null ? { size, mode, diff } : { size, mode, diff, careerLevel: career };
     document.getElementById('overlay').classList.remove('flex');
+    document.getElementById('overlay').dataset.outcome = '';
     const reward = document.getElementById('career-reward');
     if (reward) { reward.hidden = true; reward.textContent = ''; }
     const nextButton = document.getElementById('nextCareerBtn');
@@ -335,15 +337,13 @@ export const Game = {
     if (this.gameOver || this.paused || !this.board.isGameOver()) return;
     this.cancelPendingAction();
     this.gameOver = true;
-    audio.win();
-    Native.vibrate('heavy');
     const s = this.board.score;
-    document.getElementById('result-title').textContent =
-      s[CONSTANTS.X] > s[CONSTANTS.O]
-        ? 'Victory'
-        : s[CONSTANTS.O] > s[CONSTANTS.X]
-          ? 'Game Over'
-          : 'Draw';
+    const result = resultPresentation(s, this.settings.mode);
+    const overlay = document.getElementById('overlay');
+    overlay.dataset.outcome = result.outcome;
+    if (result.outcome === 'victory') audio.win();
+    Native.vibrate('heavy');
+    document.getElementById('result-title').textContent = result.title;
     document.getElementById('result-score').textContent =
       `${s[CONSTANTS.X]} - ${s[CONSTANTS.O]}`;
     const reward = document.getElementById('career-reward');
@@ -381,7 +381,7 @@ export const Game = {
         }
       } else reward.textContent = 'Career progress could not be saved. Your game result is still shown.';
     } else if (reward) { reward.hidden = true; reward.textContent = ''; }
-    document.getElementById('overlay').classList.add('flex');
+    overlay.classList.add('flex');
     this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
   },
@@ -541,6 +541,7 @@ export const Game = {
     this.lastMove = state.lastMove;
     this.gameOver = false;
     document.getElementById('overlay').classList.remove('flex');
+    document.getElementById('overlay').dataset.outcome = '';
     const nextButton = document.getElementById('nextCareerBtn');
     if (nextButton) nextButton.hidden = true;
     this.showBoard();
