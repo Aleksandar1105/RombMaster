@@ -87,8 +87,8 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if (selected === 'quick-settings') refreshSetupPreview();
-        if (selected === 'skin-page') openSkins();
         el('page-title').textContent = menuPages[selected];
+        if (selected === 'skin-page') openSkins(button.dataset.collection === 'true');
         el('home-hub').hidden = true;
         el('menu-page').hidden = false;
         ui.viewMenu.scrollTop = 0;
@@ -248,6 +248,7 @@ function renderSkinCatalog() {
         button.style.setProperty('--card-x',skin.colors.x);
         button.style.setProperty('--card-o',skin.colors.o);
         button.style.setProperty('--card-accent',skin.accent);
+        button.style.setProperty('--card-bg',skin.colors.bg);
         button.setAttribute('aria-label',skin.name + ', ' + skin.catalog.rarity + ', ' + status + ', preview');
         const part = (className,value) => {
             const node = document.createElement('span');
@@ -281,9 +282,9 @@ function renderSkinCatalog() {
     el('skin-options').replaceChildren(...buttons);
     showSkinPreview();
 }
-function openSkins() {
+function openSkins(ownedOnly = false) {
     seasonalOnly = false;
-    collectionOnly = false;
+    collectionOnly = ownedOnly;
     previewSkinId = activeSkin().id;
     renderSkinCatalog();
 }
