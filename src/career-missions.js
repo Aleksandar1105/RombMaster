@@ -42,12 +42,12 @@ export function startingBoard(settings) {
   return board;
 }
 
-export function drawOpening(canvas, stage) {
+export function drawOpening(canvas, stage, skin = null) {
   const ctx = canvas?.getContext?.('2d');
   if (!ctx) return;
   const board = startingBoard({ size: stage.size, careerLevel: stage.level,
     openingVersion: missionFor(stage.level) ? 1 : undefined });
-  const preview = new Renderer(canvas);
+  const preview = new Renderer(canvas, skin);
   preview.CELL = (canvas.width - 10) / board.S;
   preview.offX = preview.offY = 5;
   preview.draw(board, null);
