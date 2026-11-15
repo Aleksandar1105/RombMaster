@@ -183,8 +183,8 @@ export class Renderer {
       if(x) {
         ctx.moveTo(-a,-a);ctx.lineTo(a,a);
         ctx.moveTo(a,-a);ctx.lineTo(-a,a);
-      } else if(skin.id==='cyber'||skin.id==='ice') {
-        const n=skin.id==='cyber'?8:6;
+      } else if(['circuit','crystal','frost','obsidian','platinum'].includes(skin.finish.material)) {
+        const n=['crystal','frost'].includes(skin.finish.material)?6:8;
         for(let i=0;i<n;i++){
           const t=-Math.PI/2+Math.PI*2*i/n;
           const xx=Math.cos(t)*r,yy=Math.sin(t)*r;
@@ -193,7 +193,31 @@ export class Renderer {
         ctx.closePath();
       } else ctx.arc(0,0,r,0,Math.PI*2);
     };
-    if(skin.id==='royal'||skin.id==='wood'||skin.id==='ice') {
+    // Seasonal finishes use the same vector silhouette as gameplay previews.
+    // The inset highlight and shadow remain inside the symbol stroke.
+    if(skin.offer) {
+      const material=skin.finish.material;
+      if(['frost','obsidian','platinum'].includes(material))ctx.lineCap='square';
+      const width=ctx.lineWidth;
+      ctx.shadowBlur=0;
+      ctx.strokeStyle='#00000055';
+      ctx.lineWidth=width*1.26;
+      trace();ctx.stroke();
+      const sheen=ctx.createLinearGradient(-r,-r,r,r);
+      sheen.addColorStop(0,color);
+      sheen.addColorStop(.32,'#ffffffd9');
+      sheen.addColorStop(.55,color);
+      sheen.addColorStop(1,color);
+      ctx.strokeStyle=sheen;
+      ctx.lineWidth=width;
+      ctx.shadowColor=color;
+      ctx.shadowBlur=Math.min(skin.finish.glow,size*.12);
+      trace();ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle=color;
+      ctx.lineWidth=Math.max(.55,width*.30);
+      trace();ctx.stroke();
+    } else if(skin.id==='royal'||skin.id==='wood'||skin.id==='ice') {
       ctx.lineCap=skin.id==='ice'?'square':'round';
       trace();ctx.stroke();
       ctx.shadowBlur=0;
@@ -290,6 +314,20 @@ export class Renderer {
         ctx.lineTo(x+size*.22,y+size*.12); ctx.lineTo(x+size*.78,y+size*.12);
         ctx.stroke();
       }
+    }
+    // Interior specular facet: never draws a border or touches an adjacent cell.
+    // Skip tiny cells and matte finishes to avoid clutter.
+    if(size>=30 && material!=='matte' && material!=='grain' && material!=='inset') {
+      ctx.beginPath();
+      ctx.moveTo(x+size*.08,y+size*.08);
+      ctx.lineTo(x+size*.46,y+size*.08);
+      ctx.lineTo(x+size*.08,y+size*.46);
+      ctx.closePath();
+      const light=ctx.createLinearGradient(x+size*.08,y+size*.08,x+size*.3,y+size*.3);
+      light.addColorStop(0,'#ffffff24');
+      light.addColorStop(1,'#ffffff00');
+      ctx.fillStyle=light;
+      ctx.fill();
     }
     ctx.restore();
   }
