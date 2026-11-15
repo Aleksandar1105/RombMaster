@@ -310,20 +310,38 @@ test('undo cannot reopen a stopped or completed game', async () => {
   assert.equal(h.getElement('overlay').classList.contains('flex'), true);
 });
 
-test('twenty restarts leave one frame and one draw per tick', async () => {
+test('twenty restarts coalesce into one frame, idle stops and moves and Undo repaint', async () => {
   const h = await harness();
   let draws = 0;
   h.game.renderer.draw = () => draws++;
   for (let i = 0; i < 20; i++) h.game.start(6, 'pvp', 'normal');
   assert.equal(h.frames.size, 1);
-  for (let i = 1; i <= 5; i++) {
-    h.tick();
-    assert.equal(draws, i);
-    assert.equal(h.frames.size, 1);
-  }
+  h.tick();
+  assert.equal(draws, 1);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
+  for (let i = 0; i < 5; i++) h.tick();
+  assert.equal(draws, 1);
+  assert.equal(h.frames.size, 0);
+
+  const before = JSON.stringify(h.game.board);
+  h.game.executeMove(nonScoringMove(h.game.board));
+  assert.notEqual(JSON.stringify(h.game.board), before);
+  assert.equal(h.frames.size, 1, 'A move must invalidate a settled board');
+  h.tick();
+  assert.equal(draws, 2);
+  assert.equal(h.frames.size, 0);
+
+  h.game.undo();
+  assert.equal(JSON.stringify(h.game.board), before);
+  assert.equal(h.frames.size, 1, 'Undo must invalidate a settled board');
+  h.tick();
+  assert.equal(draws, 3);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
 });
 
-test('a stale frame cannot draw or clear the new game frame', async () => {
+test('a stale frame cannot draw or clear the new game frame, including after idle', async () => {
   const h = await harness();
   const stale = [...h.frames.values()][0];
   let draws = 0;
@@ -336,7 +354,20 @@ test('a stale frame cannot draw or clear the new game frame', async () => {
   assert.equal(h.frames.size, 1);
   h.tick();
   assert.equal(draws, 1);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
+
+  h.game.requestRender();
+  h.game.requestRender();
+  const nextFrame = h.game.animationFrame;
+  stale();
+  assert.equal(draws, 1);
+  assert.equal(h.game.animationFrame, nextFrame);
   assert.equal(h.frames.size, 1);
+  h.tick();
+  assert.equal(draws, 2);
+  assert.equal(h.frames.size, 0);
+  assert.equal(h.game.animationFrame, null);
 });
 
 test('menu exit cancels the frame even when particles remain', async () => {
