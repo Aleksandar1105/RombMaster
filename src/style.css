@@ -2308,3 +2308,93 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  }
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-stage {background-position:center center;}
 }
+
+
+/* Premium theme artwork, approved Royal Gold and Halloween Curse.
+   The WebP crops contain scenery/wordmark only; all interactive UI remains live. */
+:root[data-skin="royal"] {
+ --premium-hero-art:url('/assets/premium/reference/royal-reference-hero.webp');
+ --premium-floor-art:url('/assets/premium/reference/royal-reference-floor.webp');
+ --premium-back:#15121c;--premium-rim:#edc66f;--premium-face:#4b331c;--premium-alt:#252351;--premium-text:#fff2d3;
+}
+:root[data-skin="halloween-curse"] {
+ --premium-hero-art:url('/assets/premium/reference/halloween-curse-reference-hero.webp');
+ --premium-floor-art:url('/assets/premium/reference/halloween-curse-reference-floor.webp');
+ --premium-back:#190f29;--premium-rim:#efa560;--premium-face:#40206c;--premium-alt:#103958;--premium-text:#fff1db;
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu:has(#home-hub[data-neon-reference="1"]:not([hidden])) {
+ background:var(--premium-back);
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu > .home-shell:has(#home-hub[data-neon-reference="1"]:not([hidden])) {
+ background:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-stage {
+ background:var(--premium-hero-art) center/contain no-repeat,var(--premium-back);
+ border:0;box-shadow:none;border-radius:0;
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.premium-hero-emblem,#premium-hero-board,#premium-hero-title) {display:none;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-home-progress {
+ background:linear-gradient(140deg,var(--premium-face),var(--premium-back) 73%);
+ border-color:var(--premium-rim);color:var(--premium-text);
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section {
+ background:linear-gradient(140deg,var(--premium-alt),var(--premium-back));
+ border:1px solid var(--premium-rim);box-shadow:inset 0 0 12px color-mix(in srgb,var(--premium-rim) 30%,transparent);
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section h2 {color:var(--premium-text);text-align:center;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden]) {
+ --premium-tile:var(--premium-face);
+ color:var(--premium-text);border:2px solid transparent;border-radius:0;isolation:isolate;
+ clip-path:polygon(9px 0,calc(100% - 9px) 0,100% 9px,100% calc(100% - 9px),calc(100% - 9px) 100%,9px 100%,0 calc(100% - 9px),0 9px);
+ background:linear-gradient(145deg,#ffffff35 0 9%,transparent 9% 86%,#ffffff20 86%),linear-gradient(155deg,color-mix(in srgb,var(--premium-tile) 80%,#fff),var(--premium-tile) 26%,var(--premium-back) 76%,var(--premium-tile)) padding-box,linear-gradient(140deg,#fff4d5,var(--premium-rim) 22%,#735438 45%,var(--premium-rim) 82%,#fff2cf) border-box;
+ background-clip:padding-box,padding-box,border-box;box-shadow:inset 0 0 10px color-mix(in srgb,var(--premium-rim) 35%,transparent);
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden])::before,
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden])::after {content:none;display:none;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(#daily-open-btn,#home-arcade):not([hidden]) {--premium-tile:var(--premium-alt);}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button:not([hidden]) {
+ background:linear-gradient(145deg,#ffffff44 0 11%,transparent 11% 84%,#ffffff22 84%),linear-gradient(105deg,var(--premium-face),var(--premium-back) 48%,var(--premium-alt)) padding-box,linear-gradient(120deg,#fff4d5,var(--premium-rim),#735438,var(--premium-rim),#fff2cf) border-box;
+ background-clip:padding-box,padding-box,border-box;
+ clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%);
+}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.mode-grid,.play-row) small {color:var(--premium-text);}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(#home-skins,#home-skin-store) {--premium-tile:#502776;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links #home-skin-store {flex-direction:row;gap:5px;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-0 .reference-rival-frame {--rival-rim:#51e8ff;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-1 .reference-rival-frame {--rival-rim:#f67bff;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-2 .reference-rival-frame {--rival-rim:#ff736c;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-3 .reference-rival-frame {--rival-rim:#679dff;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-4 .reference-rival-frame {--rival-rim:#ffd19a;}
+:root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-5 .reference-rival-frame {--rival-rim:#ffbc45;}
+@media(orientation:portrait) {
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {display:grid;grid-template-columns:minmax(0,1fr) 86px;grid-template-rows:auto auto minmax(70px,1fr) auto auto auto auto auto;align-items:stretch;align-content:stretch;gap:5px;background:var(--premium-floor-art) center bottom/100% auto no-repeat;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .home-actions {display:contents;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-preview-bar:not([hidden]) {grid-column:1/-1;grid-row:1;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .home-hero {grid-column:2;grid-row:2;display:flex;align-items:stretch;justify-content:center;min-height:0;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .home-hero > :is(div,.home-mark) {position:absolute;width:1px;height:1px;padding:0;margin:-1px;clip-path:inset(50%);overflow:hidden;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) #helpBtn {width:100%;max-width:100%;min-height:44px;align-self:stretch;flex:1;flex-direction:column;gap:2px;background:linear-gradient(145deg,var(--premium-face),var(--premium-back));border:1px solid var(--premium-rim);color:var(--premium-text);}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .premium-home-progress {grid-column:1;grid-row:2;min-width:0;gap:3px;padding:5px 6px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-profile-row {grid-template-columns:32px minmax(0,1fr) auto;grid-template-rows:auto auto;gap:3px 4px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-profile-row > .premium-player-avatar {grid-column:1;grid-row:1/3;width:32px;height:32px;border:1px solid var(--premium-rim);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-player-name {grid-column:2;grid-row:1;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-player-stars {grid-column:3;grid-row:1;color:#ffdb84;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-player-xp {grid-column:2;grid-row:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-brain-points {grid-column:3;grid-row:2;justify-self:end;white-space:nowrap;max-width:100%;font-size:.58rem;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .premium-hero-stage {grid-column:1/-1;grid-row:3;min-height:70px;height:auto;max-height:none;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .play-row {grid-column:1/-1;grid-row:4;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .mode-grid {grid-column:1/-1;grid-row:5;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .home-utility-row {grid-column:1/-1;grid-row:6;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .premium-rivals-section {grid-column:1/-1;grid-row:7;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .home-links {grid-column:1/-1;grid-row:8;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links button:not([hidden]) {min-height:44px;}
+}
+@media(orientation:portrait) and (min-height:740px) {
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {padding-bottom:clamp(40px,calc(100vw * .154),72px);}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row :is(#continueBtn,#startBtn) {min-height:60px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:not([hidden]) {min-height:64px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row :is(#home-arcade,#home-skins) {min-height:52px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links {grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto;gap:5px;}
+ :root:is([data-skin="royal"],[data-skin="halloween-curse"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links #home-skin-store:not([hidden]) {grid-column:1/-1;justify-self:center;width:min(100%,190px);min-height:48px;clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,16px 100%,0 50%);}
+}
+#menu-page #skin-page .skin-card[data-skin-id="royal"] {--theme-art:url('/assets/premium/reference/royal-reference-floor.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="halloween-curse"] {--theme-art:url('/assets/premium/reference/halloween-curse-reference-floor.webp');}
