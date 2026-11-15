@@ -87,3 +87,25 @@ test('all home themes share one real interface; preview cannot equip or save a s
   for (const id of ['frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold'])
     assert.ok(css.includes(':root[data-skin="' + id + '"]'), id);
 });
+
+test('Visual 3 makes collection and store independently reachable and uses a bounded home layout', () => {
+ const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
+ assert.equal(count('home-skins'),1);
+ assert.equal(count('home-skin-store'),1);
+ assert.match(html,/id="home-skins"[^>]*data-page="skin-page"[^>]*data-collection="true"/);
+ assert.match(html,/id="home-skin-store"[^>]*data-page="skin-page"/);
+ assert.ok(html.indexOf('id="home-skin-store"') < html.indexOf('id="menu-page"'));
+ assert.match(main,/openSkins\(button\.dataset\.collection === 'true'\)/);
+ assert.match(main,/function openSkins\(ownedOnly = false\)/);
+ assert.match(main,/collectionOnly = ownedOnly/);
+ assert.match(css,/data-home-revision="3"[^\n]*\{\s*padding:[^}]*overflow:hidden/);
+ assert.match(css,/data-home-revision="3"[^\n]*\.premium-hero-stage\s*\{\s*flex:1 1 0;min-height:0/);
+ assert.ok(html.indexOf('id="skin-equip"') < html.indexOf('id="skin-options"'));
+});
+test('Gameplay sound button is a real accessible fourth control with a visible mute state', () => {
+ assert.equal(count('game-sound-btn'),1);
+ assert.equal(count('game-sound-label'),1);
+ assert.match(html,/id="game-sound-btn"[^>]*aria-pressed="true"/);
+ assert.match(css,/#view-game #controls\s*\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+ assert.match(css,/#game-sound-btn\[aria-pressed="false"\] \.sound-waves/);
+});
