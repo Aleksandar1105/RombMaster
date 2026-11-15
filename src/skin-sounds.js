@@ -458,4 +458,11 @@ const seasonalThemes = {
     ]
   }
 };
-export const soundCue=(id,event)=>(Object.hasOwn(seasonalThemes,id)?seasonalThemes[id]:Object.hasOwn(themes,id)?themes[id]:themes.neon)[event]||[];
+// A gentle, short outcome cue, derived from the theme's original move tone.
+export const soundCue=(id,event)=>{
+  const theme=Object.hasOwn(seasonalThemes,id)?seasonalThemes[id]:Object.hasOwn(themes,id)?themes[id]:themes.neon;
+  const base=theme.move[0][0];
+  if(event==='defeat')return [[base,'sine',.13,.035,0],[base*.75,'triangle',.18,.025,115]];
+  if(event==='draw')return [[base,'sine',.10,.03,0],[base,'sine',.15,.025,120]];
+  return theme[event]||[];
+};
