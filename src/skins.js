@@ -20,10 +20,10 @@ const finishes = Object.freeze({
 });
 // Rarity is presentation metadata, never a purchase entitlement.
 const catalog = Object.freeze({
-  neon: Object.freeze({ rarity:'Included', description:'The original neon arena', effect:'Neon ring' }),
-  royal: Object.freeze({ rarity:'Legendary', description:'Gilded metal and royal elegance', effect:'Golden sparks' }),
+  neon: Object.freeze({ rarity:'Default', description:'The original neon arena', effect:'Neon ring' }),
+  royal: Object.freeze({ rarity:'Epic', description:'Gilded metal and royal elegance', effect:'Golden sparks' }),
   cyber: Object.freeze({ rarity:'Epic', description:'Angular digital circuitry', effect:'Scan wave' }),
-  ice: Object.freeze({ rarity:'Legendary', description:'Embers meet crystalline ice', effect:'Crystal shards' }),
+  ice: Object.freeze({ rarity:'Rare', description:'Embers meet crystalline ice', effect:'Crystal shards' }),
   wood: Object.freeze({ rarity:'Rare', description:'Handcrafted natural wood', effect:'Wood dust' }),
   white: Object.freeze({ rarity:'Rare', description:'Clean matte minimalism', effect:'Gentle ripple' }),
 });
@@ -243,7 +243,7 @@ const seasonalDetails = Object.freeze({
 export const SEASONAL_SKINS = Object.freeze(seasonalItems.map(([id,name,priceCents,start,end,bg,x,o,dot,accent,lastMove,base,effect,motif]) =>
   Object.freeze({id,name,condition:'Paid cosmetic • preview only',fill:'full',accent,
     finish:Object.freeze(seasonalFinishes[id]), colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed:dot,glow:lastMove,lineActive:dot}),
-    catalog:Object.freeze({rarity:'Seasonal',description:seasonalDetails[id].description,victory:seasonalDetails[id].victory,effect,motif}),
+    catalog:Object.freeze({rarity:['spring-blossom','summer-paradise','autumn-kingdom'].includes(id) ? 'Epic' : 'Legendary',description:seasonalDetails[id].description,victory:seasonalDetails[id].victory,effect,motif}),
     offer:Object.freeze({productId:'skin_'+id.replaceAll('-','_'),priceCents,currency:'EUR',start,end})
   })));
 export const getSeasonalSkin = id => SEASONAL_SKINS.find(s=>s.id===id);
