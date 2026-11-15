@@ -372,6 +372,7 @@ export const Game = {
     const overlay = document.getElementById('overlay');
     overlay.dataset.outcome = result.outcome;
     if (result.outcome === 'victory') audio.win();
+    else audio.cue(result.outcome);
     Native.vibrate('heavy');
     document.getElementById('result-title').textContent = result.title;
     document.getElementById('result-score').textContent =
