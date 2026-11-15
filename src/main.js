@@ -240,11 +240,14 @@ function renderSkinCatalog() {
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
     el('page-title').textContent = seasonalOnly ? 'Seasonal Collection' : collectionOnly ? 'My Collection' : 'Skin Store';
     if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = entries[0]?.skin.id || activeSkin().id;
-    const buttons = entries.map(({skin,status}) => {
+    const buttons = entries.map(({skin,status,owned,active}) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'skin-card';
         button.dataset.skinId = skin.id;
+        button.dataset.ownership = status === 'Equipped' ? 'equipped' : owned ? 'owned' : skin.offer ? 'seasonal-preview' : 'locked';
+        button.dataset.rarity = skin.catalog.rarity.toLowerCase();
+        if (skin.offer) button.dataset.inSeason = String(!!active);
         button.style.setProperty('--card-x',skin.colors.x);
         button.style.setProperty('--card-o',skin.colors.o);
         button.style.setProperty('--card-accent',skin.accent);
@@ -275,7 +278,8 @@ function renderSkinCatalog() {
         button.append(part('skin-card-rarity',skin.catalog.rarity),
             part('skin-card-name',skin.name),symbols,
             part('skin-card-description',skin.catalog.description),
-            part('skin-card-status',skin.offer ? status + ' · '+seasonalPriceLabel(skin)+' (target)' : status + ' · Preview'));
+            part('skin-card-status',skin.offer ? status + ' · '+seasonalPriceLabel(skin)+' (target)' : status),
+            part('skin-card-action','View skin ›'));
         button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); el('skin-preview-name').scrollIntoView?.({block:'nearest'}); };
         return button;
     });
