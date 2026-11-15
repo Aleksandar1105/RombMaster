@@ -68,7 +68,7 @@ try{
  });
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
  const url='http://127.0.0.1:'+server.address().port+'/';
- browser=spawn(executable,['--headless=new','--disable-gpu','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+temp,'about:blank'],{stdio:'ignore',windowsHide:true});
+ browser=spawn(executable,['--headless=new','--disable-gpu','--disable-backgrounding-occluded-windows','--disable-renderer-backgrounding','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+temp,'about:blank'],{stdio:'ignore',windowsHide:true});
  let launchError;browser.on('error',e=>{launchError=e;});
  const port=await until(async()=>{
   if(launchError)throw launchError;
@@ -94,6 +94,7 @@ try{
   if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;
  };
  await cdp('Page.enable');await cdp('Runtime.enable');await cdp('Network.enable');
+ await cdp('Page.bringToFront');await cdp('Emulation.setFocusEmulationEnabled',{enabled:true});
  const viewport=async(width,height)=>{
   await cdp('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true,screenOrientation:{type:width>height?'landscapePrimary':'portraitPrimary',angle:width>height?90:0}});await sleep(350);
  };
@@ -104,7 +105,9 @@ try{
  const shot=async name=>{
   await evaluate("Promise.all([...document.images].filter(i=>i.getBoundingClientRect().width>0).map(i=>i.decode().catch(()=>{}))).then(()=>true)");
   await sleep(300);
-  const {data}=await cdp('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  await evaluate("Promise.race([new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))),new Promise(r=>setTimeout(r,1200))]).then(()=>true)");
+  const {cssVisualViewport:v}=await cdp('Page.getLayoutMetrics');
+  const {data}=await cdp('Page.captureScreenshot',{format:'png',fromSurface:true,captureBeyondViewport:false,clip:{x:v.pageX,y:v.pageY,width:v.clientWidth,height:v.clientHeight,scale:1}});
   await fs.writeFile(path.join(out,name+'.png'),Buffer.from(data,'base64'));
  };
  const click=async(sel,scroll=false)=>{
@@ -172,9 +175,25 @@ try{
   await click('#page-back',true);
  });
  await check('In-match sound toggle and persistence',async()=>{
+  // Select a deterministic local PvP board; no AI racing the sound check.
+  await click('[data-page="quick-settings"]');
+  await click('[data-size="4"]',true);
+  await click('[data-ai="pvp"]',true);
+  await click('#page-back',true);
+  await cdp('Page.bringToFront');
   await click('#startBtn');
   await until(()=>evaluate("document.getElementById('view-game').classList.contains('active-view')"),'quick match');
   await sleep(400);await shot('game-sound-on');
+  const liveBoard=await evaluate("(()=>{const c=document.getElementById('canvas'),ctx=c.getContext('2d'),p=ctx.getImageData(0,0,c.width,c.height).data;let painted=0;for(let i=0;i<p.length;i+=4)if(p[i]||p[i+1]||p[i+2])painted++;return {turn:document.getElementById('turn-label').textContent,visibility:document.visibilityState,width:c.width,height:c.height,painted:painted/(p.length/4)};})()");
+  assert.equal(liveBoard.visibility,'visible',JSON.stringify(liveBoard));
+  assert.doesNotMatch(liveBoard.turn,/paused/i,JSON.stringify(liveBoard));
+  assert.ok(liveBoard.width>=120&&liveBoard.height>=120&&liveBoard.painted>0.1,JSON.stringify(liveBoard));
+  assert.equal(await evaluate("document.getElementById('undoBtn').classList.contains('disabled')"),true);
+  const edge=await evaluate("(()=>{const c=document.getElementById('canvas'),r=c.getBoundingClientRect(),w=parseFloat(c.style.width),cell=(w-14)/5;return {x:r.left+(7+1.5*cell)*r.width/w,y:r.top+(7+2*cell)*r.height/w};})()");
+  await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:edge.x,y:edge.y,button:'left',clickCount:1});
+  await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:edge.x,y:edge.y,button:'left',clickCount:1});
+  await until(()=>evaluate("!document.getElementById('undoBtn').classList.contains('disabled')"),'legal PvP move enables Undo',4000);
+  await shot('game-after-legal-move');
   const settings=()=>evaluate("JSON.parse(localStorage.getItem('rombmaster.comfort.v1')||'{\"sound\":true,\"haptics\":true}')");
   assert.equal((await settings()).sound,true);
   const score=await evaluate("[document.getElementById('p1-score').textContent,document.getElementById('p2-score').textContent]");
@@ -187,6 +206,9 @@ try{
   await cdp('Page.reload');await loaded();
   assert.equal(await evaluate("document.getElementById('sound-toggle').checked"),false);
   await click('#continueBtn');await sleep(400);
+  assert.equal(await evaluate("document.getElementById('view-game').classList.contains('active-view')"),true);
+  assert.doesNotMatch(await evaluate("document.getElementById('turn-label').textContent"),/paused/i);
+  assert.equal(await evaluate("document.getElementById('undoBtn').classList.contains('disabled')"),false,'Played move must survive reload');
   assert.equal(await evaluate("document.getElementById('game-sound-btn').getAttribute('aria-pressed')"),'false');
   await click('#game-sound-btn');assert.equal((await settings()).sound,true);
  });
