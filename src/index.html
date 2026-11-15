@@ -27,6 +27,12 @@
                     <button id="helpBtn" class="text-btn home-help" type="button"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5Q8 3 12 7Q16 3 21 5V18Q16 16 12 20Q8 16 3 18Z M12 7V20 M5 9L8 12M8 9L5 12 M15 13L18 9M15 9H18V12"/></svg>How to play</button>
                 </header>
                 <div class="home-actions">
+                    <section id="premium-home-progress" class="premium-home-progress" aria-label="Career overview" hidden>
+                        <div class="premium-profile-row"><strong id="premium-player-name"></strong><span id="premium-player-xp"></span><span id="premium-player-stars"></span></div>
+                        <div class="premium-world-row"><span id="premium-rival-icon" aria-hidden="true"></span><div><small>Current rival</small><strong id="premium-rival-name"></strong><small id="premium-world-name"></small></div><span id="premium-world-level"></span></div>
+                        <label class="premium-progress-label" for="premium-career-progress">Career progress <span id="premium-career-count"></span></label>
+                        <progress id="premium-career-progress" max="100" value="0"></progress>
+                    </section>
                     <div class="play-row">
                     <button id="continueBtn" class="btn-primary home-continue" type="button" hidden>Continue match →<small id="continue-summary"></small></button>
                     <button id="startBtn" class="btn-primary home-play" type="button">▶ Quick Play <small id="quick-summary"></small></button>
