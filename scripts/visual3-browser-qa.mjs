@@ -161,7 +161,21 @@ try{
     }
     assert.equal(await evaluate("document.documentElement.dataset.skin"),id);
     assert.equal(await evaluate("document.querySelector('.home-actions').inert"),true);
-    await shot('preview-'+id);return await homeLayout();
+    await shot('preview-'+id);
+    const art=await evaluate(`(async()=>{
+      const name=${JSON.stringify(id)}+'-reference-hero.webp';
+      const hero=document.getElementById('premium-hero-stage');
+      const background=getComputedStyle(hero).backgroundImage;
+      const urls=Array.from(background.matchAll(/url\\(["']?([^"')]+)["']?\\)/g),m=>m[1]);
+      const first=urls[0]||'';
+      if(!first.endsWith('/assets/premium/reference/'+name))return {ok:false,background,name};
+      const image=new Image();
+      image.src=first;
+      try{await image.decode();}catch(e){return {ok:false,background,name,error:String(e)};}
+      return {ok:image.naturalWidth>0&&image.naturalHeight>0,name,width:image.naturalWidth,height:image.naturalHeight};
+    })()`);
+    assert.equal(art.ok,true,'Hero artwork mismatch: '+JSON.stringify(art));
+    return (await homeLayout())+', '+art.name+' '+art.width+'x'+art.height;
    }finally{
     if(await evaluate("!document.getElementById('home-preview-bar').hidden"))await click('#home-preview-close');
     assert.equal(await evaluate("document.documentElement.dataset.skin"),priorSkin);
