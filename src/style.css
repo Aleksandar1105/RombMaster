@@ -2631,3 +2631,20 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 @media (prefers-reduced-motion:reduce) {
  #overlay.flex #result-title,#overlay.flex #result-title::after {animation:none!important;}
 }
+
+/* Premium victory medallion — optional local asset, existing laurel kept as fallback. */
+#overlay.flex[data-outcome="victory"] #result-title::before {
+ content:"";display:block;width:clamp(64px,12dvh,108px);aspect-ratio:1;
+ margin:0 auto 5px;pointer-events:none;
+ background:url('/assets/premium/reference/victory-medallion.webp') center/contain no-repeat,url('./neon/gold-star.webp') center/60% auto no-repeat;
+}
+/* Keep the actual title, including both PVP winners, rather than replacing it with baked text. */
+#overlay.flex[data-outcome="victory"] .center-panel:has(#result-stars:not([hidden])) #result-title {
+ font-size:clamp(1.55rem,6vw,2.5rem);line-height:1.15;height:auto;width:100%;
+ color:var(--skin-ink,#f8fafc);background:none;
+}
+#overlay.flex[data-outcome="victory"] #result-title {position:relative;}
+/* Show a compact badge on short devices; never hide the reward or real action buttons. */
+@media(max-height:650px) {
+ #overlay.flex[data-outcome="victory"] #result-title::before {width:56px;margin-bottom:2px;}
+}
