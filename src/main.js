@@ -594,6 +594,12 @@ const setComfort = (settings, persist = false) => {
     soundToggle.checked = settings.sound;
     hapticsToggle.checked = settings.haptics;
     Game.setSoundEnabled(settings.sound);
+    const gameSound = el('game-sound-btn');
+    if (gameSound) {
+        gameSound.setAttribute('aria-pressed', String(settings.sound));
+        gameSound.title = settings.sound ? 'Mute game sound' : 'Unmute game sound';
+        el('game-sound-label').textContent = settings.sound ? 'Sound on' : 'Sound off';
+    }
     Native.setHapticsEnabled(settings.haptics);
     if (!persist) return;
     try {
@@ -606,6 +612,7 @@ const setComfort = (settings, persist = false) => {
 setComfort(readComfort());
 soundToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
 hapticsToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
+el('game-sound-btn').onclick = () => setComfort({ sound: !soundToggle.checked, haptics: hapticsToggle.checked }, true);
 
 // The explicit in-game confirmation protects against accidental Career data loss.
 // A saved Career match must be resolved first, so it cannot later re-award
