@@ -195,7 +195,8 @@ export const Game = {
 
   showBoard() {
     const aiMatch = this.settings.mode === 'ai';
-    const playerName = aiMatch ? ProfileStore.read().profile?.name || 'You' : 'Player 1';
+    const profile = aiMatch ? ProfileStore.read().profile : null;
+    const playerName = aiMatch ? profile?.name || 'You' : 'Player 1';
     this.firstPlayerName = playerName;
     const setLabel = (id, value) => {
       const item = document.getElementById(id);
@@ -203,6 +204,18 @@ export const Game = {
     };
     setLabel('p1-name', playerName + ' · X');
     const world=careerWorld(this.settings.careerLevel);
+    const playerPortrait = document.getElementById('match-player-portrait');
+    if (playerPortrait) {
+      playerPortrait.hidden = !aiMatch || !profile;
+      playerPortrait.dataset.avatar = profile?.avatar || '';
+    }
+    const rivalPortrait = document.getElementById('match-rival-portrait');
+    if (rivalPortrait) {
+      rivalPortrait.hidden = !aiMatch;
+      rivalPortrait.dataset.rival = this.settings.openingVersion && this.settings.careerLevel === 5
+        ? 'trickster' : world?.rival.toLowerCase() || 'rookie';
+    }
+    if (this.ui.viewGame.dataset) this.ui.viewGame.dataset.world = world?.name.toLowerCase().replace(/ /g, '-') || '';
     this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : world ? world.icon+' '+world.rival : 'Computer';
     const combo=document.getElementById('capture-combo');if(combo)combo.hidden=true;
     setLabel('p2-name', (aiMatch ? this.rivalName : 'Player 2') + ' · O');
