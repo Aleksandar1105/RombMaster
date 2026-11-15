@@ -176,6 +176,42 @@ export function aiStrength(difficulty, careerLevel = null) {
   };
 }
 
+// Boss-only tuning: historical stages 1–30 and free play remain unchanged.
+// All profiles use the same legal moves, scoring and extra-turn rules.
+const BOSS_TACTICS = Object.freeze({
+  40: Object.freeze({ style: 'chain-hunter', depth: 3, limit: 180, branchLimit: 5, roots: 6 }),
+  60: Object.freeze({ style: 'trap-builder', depth: 3, limit: 180, branchLimit: 5, roots: 6 }),
+  80: Object.freeze({ style: 'endgame-calculator', depth: 4, limit: 240, branchLimit: 5, roots: 6 }),
+  100: Object.freeze({ style: 'omega', depth: 4, limit: 300, branchLimit: 6, roots: 7 }),
+});
+export function bossTactics(level) {
+  return Object.prototype.hasOwnProperty.call(BOSS_TACTICS, level) ? BOSS_TACTICS[level] : null;
+}
+
+function twoSidedCells(board) {
+  let count = 0;
+  for (let r = 0; r < board.S; r++) {
+    for (let c = 0; c < board.S; c++) {
+      if (!board.active(r, c) || board.owner[r][c] !== null) continue;
+      const edges = Number(board.h[r][c]) + Number(board.h[r + 1][c]) +
+        Number(board.v[r][c]) + Number(board.v[r][c + 1]);
+      if (edges === 2) count++;
+    }
+  }
+  return count;
+}
+
+export function bossMoveBias(tactics, item) {
+  if (!tactics) return 0;
+  if (tactics.style === 'chain-hunter' && item.points > 0) {
+    return captureOpportunities(item.next);
+  }
+  if (tactics.style === 'trap-builder' && item.points === 0 && item.exposed === 0) {
+    return twoSidedCells(item.next);
+  }
+  return 0;
+}
+
 export const AI = {
   getBestMove(board, difficulty, careerLevel = null, random = Math.random) {
     const moves = board.getFreeMoves();
@@ -208,8 +244,11 @@ export const AI = {
       if(style==='master')return distance;
       return (m.r+m.c)%2===0?1:0;
     };
+    const tactics = bossTactics(careerLevel);
+    // Cache the bounded, cheap tactical score once per candidate, not in the sort.
     const ordered = candidates(board, CONSTANTS.O, random)
-      .sort((a, b) => b.priority - a.priority || bias(b)-bias(a));
+      .map(item => ({ ...item, bossBias: bossMoveBias(tactics, item) }))
+      .sort((a, b) => b.priority - a.priority || b.bossBias - a.bossBias || bias(b)-bias(a));
     const bestCapture = ordered[0];
     // Extra moves from captured squares are usually strongest. Preserve this
     // rule even at low search depths so the computer cannot throw away points.
@@ -230,12 +269,15 @@ export const AI = {
 
     // Bounded lookahead with extra-turn-aware turn transitions. Fixed node
     // budget avoids pathological pauses on larger boards and older phones.
-    const budget = { nodes: 0, limit: 180, branchLimit: 5 };
+    // Extra calculation is restricted to late positions, to avoid a larger
+    // search workload on the opening of a 10x10 board.
+    const lateBoss = tactics && moves.length <= 24 ? tactics : null;
+    const budget = { nodes: 0, limit: lateBoss?.limit ?? 180, branchLimit: lateBoss?.branchLimit ?? 5 };
     let best = ordered[0];
     let bestValue = -Infinity;
-    for (const candidate of ordered.slice(0, 6)) {
+    for (const candidate of ordered.slice(0, lateBoss?.roots ?? 6)) {
       const value = search(candidate.next, candidate.nextPlayer,
-        strength.depth - 1, -Infinity, Infinity, budget, random);
+        (lateBoss?.depth ?? strength.depth) - 1, -Infinity, Infinity, budget, random);
       if (value > bestValue) {
         best = candidate;
         bestValue = value;
