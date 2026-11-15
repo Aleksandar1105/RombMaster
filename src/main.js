@@ -230,6 +230,7 @@ function showSkinPreview() {
         button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
     }
 }
+const skinSampleCache = new Map(); // bounded by the fixed skin catalog
 function renderSkinCatalog() {
     const {profile,daily} = skinState();
     const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
@@ -261,20 +262,27 @@ function renderSkinCatalog() {
         };
         const symbols = part('skin-card-symbols','');
         symbols.setAttribute('aria-hidden','true');
-        const sample = document.createElement('canvas');
-        sample.width=144; sample.height=72;
-        if (sample.getContext?.('2d')) {
-            const iconRenderer=new Renderer(sample,skin);
-            const ctx=iconRenderer.ctx;
-            ctx.fillStyle=skin.colors.bg;
-            ctx.fillRect(0,0,144,72);
-            for(const [owner,x] of [[1,4],[0,76]]) {
-                const color=owner===1?skin.colors.x:skin.colors.o;
-                iconRenderer.paintCapture(skin,x,4,64,color);
-                iconRenderer.drawSymbol(skin,owner,x+32,36,64);
-            }
-            symbols.append(sample);
-        } else symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
+        // Immutable render samples are reused when switching tabs or equipping a skin.
+        // Moving the canvas into the new card avoids encoding images or another draw pass.
+        let sample = skinSampleCache.get(skin.id);
+        if (!sample) {
+            sample = document.createElement('canvas');
+            sample.width=144; sample.height=72;
+            if (sample.getContext?.('2d')) {
+                const iconRenderer=new Renderer(sample,skin);
+                const ctx=iconRenderer.ctx;
+                ctx.fillStyle=skin.colors.bg;
+                ctx.fillRect(0,0,144,72);
+                for(const [owner,x] of [[1,4],[0,76]]) {
+                    const color=owner===1?skin.colors.x:skin.colors.o;
+                    iconRenderer.paintCapture(skin,x,4,64,color);
+                    iconRenderer.drawSymbol(skin,owner,x+32,36,64);
+                }
+                skinSampleCache.set(skin.id,sample);
+            } else sample=null;
+        }
+        if(sample) symbols.append(sample);
+        else symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
         button.append(part('skin-card-rarity',skin.catalog.rarity),
             part('skin-card-name',skin.name),symbols,
             part('skin-card-description',skin.catalog.description),
