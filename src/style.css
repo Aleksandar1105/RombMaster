@@ -2398,3 +2398,31 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 }
 #menu-page #skin-page .skin-card[data-skin-id="royal"] {--theme-art:url('/assets/premium/reference/royal-reference-floor.webp');}
 #menu-page #skin-page .skin-card[data-skin-id="halloween-curse"] {--theme-art:url('/assets/premium/reference/halloween-curse-reference-floor.webp');}
+
+
+/* Premium Store V2: independent catalog surface; real renderer samples and ownership. */
+#menu-page #skin-page .skin-collection {color:#f2f5ff;background:#0b1427;border-radius:14px;padding:10px;gap:12px;}
+#menu-page #skin-page .skin-store-intro {background:radial-gradient(ellipse at 85% 0,#7944a94d,transparent 65%),linear-gradient(140deg,#173653,#10172e);border:1px solid #6593b7;padding:16px 12px;}
+#menu-page #skin-page .skin-store-intro p {font-weight:800;letter-spacing:.035em;}
+#menu-page #skin-page .skin-store-intro small {color:#bccde3;}
+#menu-page #skin-page .skin-options {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+#menu-page #skin-page .skin-card[data-skin-id] {--card-ink:#f8fafc;--card-muted:#dce7f6;--rarity-rim:#8cb7d5;display:flex;align-items:stretch;min-height:222px;gap:7px;padding:10px;border:1px solid var(--rarity-rim);border-radius:10px;background:linear-gradient(180deg,#060c1c34 0%,#060c1cb8 48%,#0b1427 86%),var(--theme-art) center top/cover no-repeat,var(--card-bg);color:var(--card-ink);font-family:inherit;box-shadow:inset 0 0 14px color-mix(in srgb,var(--card-accent) 28%,transparent);}
+#menu-page #skin-page .skin-card[data-rarity="epic"] {--rarity-rim:#c391fc;}
+#menu-page #skin-page .skin-card[data-rarity="legendary"] {--rarity-rim:#f5cc79;}
+#menu-page #skin-page .skin-card[data-rarity="seasonal"] {--rarity-rim:#af9be6;}
+#menu-page #skin-page .skin-card[data-ownership="equipped"] {--rarity-rim:#6ee7d0;}
+#menu-page #skin-page .skin-card[data-skin-id="white"] {background:linear-gradient(180deg,#edf4f599,#0b1427 64%),var(--theme-art) center/cover no-repeat;}
+#menu-page #skin-page .skin-card-rarity {align-self:flex-start;background:#081225e8;color:var(--rarity-rim);border-color:var(--rarity-rim);font-size:.62rem;text-transform:uppercase;letter-spacing:.055em;}
+#menu-page #skin-page .skin-card-name {color:#fff;text-shadow:0 1px 5px #000;font-size:clamp(.83rem,3.5vw,1.05rem);}
+#menu-page #skin-page .skin-card-symbols {margin:6px 0;align-self:center;}
+#menu-page #skin-page .skin-card-symbols canvas {width:112px;max-width:100%;height:auto;border-radius:6px;border:1px solid var(--card-accent);}
+#menu-page #skin-page .skin-card-description {color:#dce7f6;font-size:.7rem;}
+#menu-page #skin-page .skin-card-status {margin-top:auto;color:#e4edff;overflow-wrap:anywhere;border-top:1px solid #ffffff35;}
+#menu-page #skin-page .skin-card[data-ownership="equipped"] .skin-card-status {color:#8ff8e0;}
+#menu-page #skin-page .skin-card-action {display:block;color:#fff;background:linear-gradient(145deg,#263b58,#152039);border:1px solid var(--rarity-rim);border-radius:6px;padding:8px 3px;text-align:center;font-size:.72rem;font-weight:800;}
+#menu-page #skin-page .skin-card[aria-pressed=true] {outline:2px solid var(--rarity-rim);outline-offset:-3px;}
+#menu-page #skin-page .skin-card:focus-visible {outline:3px solid #fff;outline-offset:2px;}
+#menu-page #skin-page #skin-stage {overflow:hidden;min-width:0;padding:12px 8px;}
+#menu-page #skin-page #skin-preview {max-width:100%;height:auto;}
+#menu-page #skin-page :is(#skin-home-preview,#skin-effect-preview,#skin-victory-preview,#skin-equip) {white-space:normal;overflow-wrap:anywhere;min-height:48px;}
+@media(max-width:340px) {#menu-page #skin-page .skin-options {gap:6px;}#menu-page #skin-page .skin-card[data-skin-id] {padding:7px 5px;}}
