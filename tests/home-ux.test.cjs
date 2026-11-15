@@ -109,3 +109,21 @@ test('Gameplay sound button is a real accessible fourth control with a visible m
  assert.match(css,/#view-game #controls\s*\{[^}]*grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
  assert.match(css,/#game-sound-btn\[aria-pressed="false"\] \.sound-waves/);
 });
+
+test('approved Neon hero and floor are the supplied reference artwork, with separate live controls', () => {
+ const crypto = require('node:crypto');
+ for (const [file,hash] of [
+ ['neon-reference-hero.webp','ab8ab1e70be92fbeb8d9da06d1fe6623f0198d8529a797564057dd788146e729'],
+ ['neon-reference-floor.webp','d4e55cd00e6c1e4212596451aad8939614fb18b993dd0b504428c625734a84e7']
+ ]) {
+  const asset = path.resolve(__dirname,'../src/public/assets/premium/reference',file);
+  assert.ok(fs.existsSync(asset),'Import approved reference asset: '+file);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(asset)).digest('hex'),hash);
+  assert.ok(css.includes('/assets/premium/reference/'+file));
+ }
+ assert.ok(html.includes('data-neon-reference="1"'));
+ assert.equal(count('home-skins'),1);
+ assert.equal(count('home-skin-store'),1);
+ assert.equal(count('game-sound-btn'),1);
+ assert.equal(count('premium-world-level'),1);
+});
