@@ -271,15 +271,17 @@
             <span id="result-stars" aria-hidden="true" hidden></span>
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
-            <section id="match-analysis" class="match-analysis" hidden aria-label="Match analysis"></section>
-            <p id="career-reward" class="career-reward" hidden></p>
-            <section class="up-next">
-                <small id="next-level-label"></small>
-                <h3 id="next-career-title"></h3>
-                <p id="next-clue"></p>
-                <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
-                <button id="nextCareerBtn" class="btn-primary full-width" hidden>Play next level</button>
-            </section>
+            <div class="result-details" tabindex="0" aria-label="Match rewards and details">
+                <p id="career-reward" class="career-reward" hidden></p>
+                <section class="up-next">
+                    <small id="next-level-label"></small>
+                    <h3 id="next-career-title"></h3>
+                    <p id="next-clue"></p>
+                    <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
+                </section>
+                <section id="match-analysis" class="match-analysis" hidden aria-label="Match analysis"></section>
+            </div>
+            <button id="nextCareerBtn" class="btn-primary full-width" hidden>Play next level</button>
             <div class="result-actions">
                 <button id="againBtn" class="btn-secondary">Replay</button>
                 <button id="backMenuBtn" class="btn-secondary">Home</button>
