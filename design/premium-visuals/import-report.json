@@ -1,0 +1,239 @@
+{
+  "status": "verified_import",
+  "source_manifest_sha256": "a86c68f582398889573678b5edfb83a3ca4ef2370d19ec1a6e3563fbc7b480c7",
+  "original_count": 21,
+  "runtime_count": 12,
+  "assets": [
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/ancient-kingdom-concept-v01.png",
+      "bytes": 2114083,
+      "sha256": "a5b98b7e834042231e2bbc929fd2c531ec650e0c7928a3ce0f8c297ed9f844fd",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/crystal-world-concept-v01.png",
+      "bytes": 2092037,
+      "sha256": "480193840e02ccefb5f5e3e02f1e549f7aa47350f1c6314aa5bcf69d3554fb02",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/cyber-arena-concept-v01.png",
+      "bytes": 1977448,
+      "sha256": "ddb1b025f6030c482c2e5277294c5571cf566c2e7c0a29aaff580e7eac31f9cc",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/first-steps-concept-v01.png",
+      "bytes": 1991924,
+      "sha256": "34d1f9c6af71d1ab5f069b418147e2769e48c096361f3f755ad32483479910a1",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/master-realm-concept-v01.png",
+      "bytes": 2053361,
+      "sha256": "67cc5054c5954c8b995f48d82d3edbd61c39c81a462c1db2872cccefe1ad7cb5",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/arenas/neon-city-concept-v01.png",
+      "bytes": 2111459,
+      "sha256": "17d1b0ae3d1be02a8ac611a38b98e3e84b97866ddd700c710c09b8f28b4f9dd0",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/home/premium-home-concept-v01.png",
+      "bytes": 2589915,
+      "sha256": "de1f0fee5f8cc36b1e9f1e77bd201bf12527fadec738eda42b7aad65d6ee0c22",
+      "width": 1024,
+      "height": 1824
+    },
+    {
+      "original": "design/premium-visuals/originals/concepts/rivals/rookie-concept-v01.png",
+      "bytes": 1294207,
+      "sha256": "ae3947dc97f3d7707e72a4578d3f9aa4a5576233a3b43cfa7126d536e6d1d86b",
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/ancient-kingdom-2k-final-v01.png",
+      "bytes": 4313703,
+      "sha256": "df8b18a1b1e4e0dd3f090c10ed3a83e6c06f2e4831d0789ec20cf7539ae8fb11",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/ancient-kingdom.webp",
+        "bytes": 127880,
+        "sha256": "1a067fac81d84463cb918f0b47ea808f2f09a931e8e0cc2b59ee9574aa86d554",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/crystal-world-2k-final-v01.png",
+      "bytes": 4296374,
+      "sha256": "3773cd9946935c0b954fbaffb2b48ee03ba052c3bfe9bcc7cc979112c97f904a",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/crystal-world.webp",
+        "bytes": 133836,
+        "sha256": "4f54ad325c08f3c299cfcd8e745e911f199b26eac0632906a18090df50569241",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/cyber-arena-2k-final-v01.png",
+      "bytes": 4149171,
+      "sha256": "ee3bb5a3c934ea573a59179080f3a2412b44b1670808eff3a607db2f8676d311",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/cyber-arena.webp",
+        "bytes": 102012,
+        "sha256": "64a49ad871f2f06c52f03baa4bcae5eaa270434ea57a4c32b5a9d70586e463f5",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/first-steps-2k-final-v01.png",
+      "bytes": 3977129,
+      "sha256": "71ef9ba97dcb855a5abb09becece6d848320dfea2e261d93ede7e92429722ceb",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/first-steps.webp",
+        "bytes": 128594,
+        "sha256": "346f2ff90822ac43a15dea30ce7b3eb393dc6cba5a388846a82d7641ecfbdaa6",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/master-realm-2k-final-v01.png",
+      "bytes": 4250188,
+      "sha256": "8008b8ba0434660d0734e072b36c863c904498befc3613ce0677510f8d9e888b",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/master-realm.webp",
+        "bytes": 131662,
+        "sha256": "9dde9bb7b5763223b600156d68eaba4e270d7b07505d444913e29e34410f76d1",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/arenas/neon-city-2k-final-v01.png",
+      "bytes": 4343212,
+      "sha256": "c8d6052ecbc294550b8660d2331469324d004f731878fb4e1db271cb95f0db67",
+      "width": 1440,
+      "height": 2560,
+      "runtime": {
+        "path": "src/public/assets/premium/arenas/neon-city.webp",
+        "bytes": 160304,
+        "sha256": "dfc6e2098c18665847f8fde04e97dd6cae71fc79ee06114cee9a51ab978f5a9c",
+        "width": 1080,
+        "height": 1920
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/home/premium-home-final-2k-v01.png",
+      "bytes": 4699293,
+      "sha256": "5d488f695d296c547224f64cfd500e838774c86d578c9fbd2b7b2eba7fd42266",
+      "width": 1440,
+      "height": 2560
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/grandmaster-2k-v01.png",
+      "bytes": 5100041,
+      "sha256": "d27e075987b69966b9e399e5abb3f2cdc3028946f209e0cfff318e925e7f3408",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/grandmaster.webp",
+        "bytes": 81964,
+        "sha256": "1cc344237d3e49c6d0d452605344f84a99b8c2407dcca37ea7fa185d88c5ba6b",
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/omega-2k-v01.png",
+      "bytes": 5115083,
+      "sha256": "feb5a6b7702e79dcd9ec86b3347834deb14af50ba0ae67aa9f9d9959281cb20a",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/omega.webp",
+        "bytes": 85016,
+        "sha256": "2570849888ade327e8712b88727faa03d98e5c03a3bbf873ced5336793c1d86a",
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/phantom-2k-v01.png",
+      "bytes": 5204509,
+      "sha256": "b1961cc15f12ebb7224f01120a2cfbeae21c76c5da3b07bcdbfe14feaaeffbbb",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/phantom.webp",
+        "bytes": 67878,
+        "sha256": "40104c005e961307ceb42e8ba976a723d95e26e2c1b4f847200f781a88a6189b",
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/predator-2k-v01.png",
+      "bytes": 4548531,
+      "sha256": "d5caae9154373f625fddfd7584d348c0c64cc26fa360563b4583c7b17f6f8244",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/predator.webp",
+        "bytes": 83980,
+        "sha256": "557a046a645cb9c73cb8bbe8c8bda1b5dc2fbf2651d63762d050c62acaa7f69b",
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/rookie-2k-v01.png",
+      "bytes": 5497502,
+      "sha256": "afdff604a8cfecf0dc44d20d8a33fe99d101087a0d0df8e45f9313898a43aa00",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/rookie.webp",
+        "bytes": 148056,
+        "sha256": "ccd2ade6b5fae32ccc8d45d234f9808207bb3ff66e0203eb3984566faade43a3",
+        "width": 768,
+        "height": 768
+      }
+    },
+    {
+      "original": "design/premium-visuals/originals/final/rivals/trickster-2k-v01.png",
+      "bytes": 4826250,
+      "sha256": "8a18ee8e278c6882535dab4750fe4a843249e43b171aad75ffc070feedd08881",
+      "width": 2048,
+      "height": 2048,
+      "runtime": {
+        "path": "src/public/assets/premium/rivals/trickster.webp",
+        "bytes": 66772,
+        "sha256": "c43475beba7b5ac744218cba2b4c0a938ab8fc61fd7dca63bbe21a35dc774f45",
+        "width": 768,
+        "height": 768
+      }
+    }
+  ]
+}
