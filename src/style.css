@@ -2705,3 +2705,97 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
    Real gameplay, daily and arcade input canvases keep touch-action:none. */
 #view-menu :is(#skin-preview,.skin-card-symbols canvas,#mission-preview,#setup-preview),
 #overlay #next-opening {touch-action:pan-y;pointer-events:none;}
+
+/* V2.1 compact menu pages. Intrinsic content can still expand for accessibility;
+   on normal phone viewports these pages fit without scrolling. */
+#view-menu:has(:is(#career-page,#quick-settings):not([hidden])) {
+ padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right))
+         max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
+ overflow-x:hidden;overflow-y:auto;touch-action:pan-y;
+}
+#view-menu > .home-shell:has(:is(#career-page,#quick-settings):not([hidden])) {
+ width:100%;max-width:560px;min-height:100%;flex:0 0 auto;
+ margin:0 auto;padding:0;gap:0;display:flex;flex-direction:column;align-items:stretch;
+}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) {
+ flex:1 0 auto;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;
+ grid-template-rows:44px 1fr;align-items:start;gap:6px;padding:0;min-width:0;
+}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden]))::before {content:none;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > .section-brand {display:none;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-back {
+ position:relative;top:auto;left:auto;grid-column:1;grid-row:1;width:44px;min-height:44px;
+ margin:0;padding:4px;font-size:0;
+}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-back::after {content:'‹';font-size:1.6rem;line-height:1;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-title {
+ grid-column:2;grid-row:1;align-self:center;width:100%;margin:0;padding:4px;
+ font-size:clamp(1.05rem,4vw,1.4rem);line-height:1.15;
+}
+#view-menu #menu-page > :is(#career-page,#quick-settings):not([hidden]) {
+ grid-column:1/-1;grid-row:2;min-width:0;width:100%;align-self:stretch;margin:0;
+}
+#view-menu #menu-page #career-page:not([hidden]) {
+ display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto minmax(0,1fr) auto;
+ gap:5px;padding:0;align-content:start;
+}
+#career-page .chapter-nav {min-width:0;gap:5px;}
+#career-page .chapter-nav button {width:44px;height:44px;min-height:44px;flex:0 0 44px;}
+#career-page #chapter-label {flex:1 1 0;min-width:0;font-size:.83rem;line-height:1.2;padding:5px;overflow-wrap:anywhere;}
+#career-page .career-rival {font-size:.72rem;line-height:1.2;}
+#career-page .premium-rivals-grid {grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;}
+#career-page .premium-rivals-grid .premium-rival-card {gap:2px;}
+#career-page .premium-rivals-grid .premium-rival-card img {width:min(100%,48px);}
+#career-page .premium-rivals-grid .premium-rival-card strong {font-size:clamp(.49rem,1.65vw,.71rem);}
+#career-page .premium-rivals-grid .premium-rival-card small {font-size:.54rem;}
+#view-menu #menu-page #career-page #chapter-route {display:grid;grid-template-columns:minmax(0,1fr);gap:4px;margin:0;}
+#view-menu #menu-page #career-page #chapter-route button {
+ min-height:44px;min-width:0;gap:5px;padding:5px 8px;font-size:.78rem;
+}
+#chapter-route button > span {min-width:0;overflow-wrap:anywhere;}
+#chapter-route button > b {flex:0 0 25px;}
+#chapter-route button > small {flex:none;font-size:.8rem;}
+#view-menu #career-page .mission-detail {
+ min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:1fr auto;
+ align-items:center;gap:5px 8px;padding:7px;
+}
+#view-menu #career-page #mission-preview {grid-column:1;grid-row:1;width:min(27vw,15dvh,128px);margin:0;}
+#view-menu #career-page #career-description {grid-column:2;grid-row:1;text-align:left;margin:0;font-size:.78rem;line-height:1.25;}
+#view-menu #career-page #career-start-btn {grid-column:1/-1;grid-row:2;min-height:48px;width:100%;margin:0;padding:6px;}
+#career-page #career-status {font-size:.72rem;line-height:1.2;}
+#view-menu #menu-page #quick-settings .home-drawer-content {
+ display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:8px;
+}
+#quick-settings .home-drawer-content > div > label {font-size:.68rem;line-height:1.2;margin:0 0 3px;}
+#quick-settings .btn-group button {min-height:44px;min-width:0;white-space:normal;overflow-wrap:anywhere;}
+#quick-settings #setup-preview {width:min(36vw,22dvh,160px);margin:0 auto;}
+#view-menu #quick-settings #setup-play {width:100%;min-height:48px;margin:0;}
+@media(max-height:720px) and (orientation:portrait) {
+ #view-menu #menu-page #career-page #chapter-route {grid-template-columns:repeat(2,minmax(0,1fr));}
+ #career-page .premium-rivals-grid .premium-rival-card img {width:min(100%,34px);}
+ #view-menu #career-page #mission-preview {width:min(24vw,13dvh,98px);}
+ #view-menu #menu-page #career-page #chapter-route button:last-child {grid-column:1/-1;}
+ #view-menu #menu-page #quick-settings .home-drawer-content {gap:5px;padding:6px;}
+}
+@media(orientation:landscape) and (max-height:540px) {
+ #view-menu > .home-shell:has(:is(#career-page,#quick-settings):not([hidden])) {max-width:920px;}
+ #view-menu #menu-page #career-page:not([hidden]) {
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto;
+  grid-template-areas:"chapter chapter" "rival rival" "route portraits" "route mission" "status status";
+ }
+ #career-page .chapter-nav {grid-area:chapter;}
+ #career-page .career-rival {grid-area:rival;}
+ #career-page .premium-rivals-grid {grid-area:portraits;}
+ #view-menu #menu-page #career-page #chapter-route {grid-area:route;}
+ #view-menu #career-page .mission-detail {grid-area:mission;}
+ #career-page #career-status {grid-area:status;}
+ #career-page .premium-rivals-grid .premium-rival-card img {width:min(100%,32px);}
+ #view-menu #career-page #mission-preview {width:min(20vw,24dvh,110px);}
+ #view-menu #menu-page #quick-settings .home-drawer-content {
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);grid-template-rows:auto auto auto auto;
+  gap:5px 12px;align-items:start;
+ }
+ #quick-settings .home-drawer-content > div {grid-column:1;}
+ #quick-settings #setup-preview {grid-column:2;grid-row:1/4;align-self:center;width:min(28vw,44dvh,160px);}
+ #view-menu #quick-settings #setup-play {grid-column:1/-1;grid-row:4;}
+}
