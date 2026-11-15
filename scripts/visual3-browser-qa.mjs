@@ -108,10 +108,15 @@ try{
   await fs.writeFile(path.join(out,name+'.png'),Buffer.from(data,'base64'));
  };
  const click=async(sel,scroll=false)=>{
-  const r=await evaluate('(()=>{const e=document.querySelector('+JSON.stringify(sel)+');if(!e||e.disabled||e.closest("[hidden]"))return null;if('+scroll+')e.scrollIntoView({block:"center",behavior:"instant"});const b=e.getBoundingClientRect();const x=b.x+b.width/2,y=b.y+b.height/2;const hit=document.elementFromPoint(x,y);return {x,y,hit:e===hit||e.contains(hit)};})()');
+  const locate='(()=>{const e=document.querySelector('+JSON.stringify(sel)+');if(!e||e.disabled||e.closest("[hidden]"))return null;const b=e.getBoundingClientRect();const x=b.x+b.width/2,y=b.y+b.height/2;const hit=document.elementFromPoint(x,y);return {x,y,hit:e===hit||e.contains(hit),hitTag:hit?.id||hit?.tagName};})()';
+  if(scroll)await evaluate('document.querySelector('+JSON.stringify(sel)+')?.scrollIntoView({block:"center",behavior:"instant"})');
+  await sleep(300);
+  let r;
+  await until(async()=>{const a=await evaluate(locate);await sleep(100);const b=await evaluate(locate);r=b;return a?.hit&&b?.hit&&Math.abs(a.x-b.x)<1&&Math.abs(a.y-b.y)<1;},'stable reachable control '+sel,4000);
   assert.ok(r?.hit,'Control is not reachable: '+sel);
+  await cdp('Input.dispatchMouseEvent',{type:'mouseMoved',x:r.x,y:r.y});
   await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:r.x,y:r.y,button:'left',clickCount:1});
-  await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:r.x,y:r.y,button:'left',clickCount:1});await sleep(300);
+  await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:r.x,y:r.y,button:'left',clickCount:1});await sleep(350);
  };
  const homeLayout=async()=>{
   const d=await evaluate('('+inspectHome.toString()+')()');
@@ -146,6 +151,11 @@ try{
    try{
     await click('[data-skin-id="'+id+'"]',true);
     await click('#skin-home-preview',true);
+    const state=await evaluate("({skin:document.documentElement.dataset.skin,homeHidden:document.getElementById('home-hub').hidden,storeHidden:document.getElementById('skin-page').hidden,menuHidden:document.getElementById('menu-page').hidden,previewHidden:document.getElementById('home-preview-bar').hidden,selected:document.getElementById('skin-stage').dataset.previewSkin,visibility:document.visibilityState})");
+    if(state.skin!==id||state.homeHidden||state.previewHidden) {
+     await shot('failed-preview-'+id);
+     throw Error('Preview did not open: '+JSON.stringify(state));
+    }
     assert.equal(await evaluate("document.documentElement.dataset.skin"),id);
     assert.equal(await evaluate("document.querySelector('.home-actions').inert"),true);
     await shot('preview-'+id);return await homeLayout();
