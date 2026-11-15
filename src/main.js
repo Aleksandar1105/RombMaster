@@ -324,6 +324,25 @@ el('skin-equip').onclick = () => {
     renderSkinCatalog();
     el('skin-status').textContent = 'Equipped for this local player.';
 };
+function refreshPremiumHome(profile, summary) {
+    const panel = el('premium-home-progress');
+    if (!panel) return;
+    panel.hidden = !profile || !summary || activeSkin().id !== 'neon';
+    const world = profile ? careerWorld(profile.unlockedLevel) : null;
+    for (const [id, value] of Object.entries({
+        'premium-player-name': profile?.name ?? '',
+        'premium-player-xp': profile ? profile.xp + ' XP' : '',
+        'premium-player-stars': summary ? '★ ' + summary.totalStars : '',
+        'premium-rival-icon': world?.icon ?? '',
+        'premium-rival-name': world?.rival ?? '',
+        'premium-world-name': world?.name ?? '',
+        'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
+        'premium-career-count': summary ? summary.clearedLevels + ' / ' + CAREER_LEVEL_COUNT : '',
+    })) el(id).textContent = value;
+    const progress = el('premium-career-progress');
+    progress.max = CAREER_LEVEL_COUNT;
+    progress.value = summary?.clearedLevels ?? 0;
+}
 const refreshCareer = () => {
     syncSkin();
     const state = ProfileStore.read();
@@ -333,6 +352,7 @@ const refreshCareer = () => {
             : 'Profile storage is unavailable. Career progress cannot be saved.';
         el('career-start-btn').disabled = true;
         el('reset-career-btn').disabled = true;
+        refreshPremiumHome(null, null);
         return;
     }
     const p = state.profile;
@@ -352,6 +372,7 @@ const refreshCareer = () => {
     el('identity-art').dataset.avatar = p.avatar;
     el('identity-art').textContent = ['robot','spark','fox','neon-fox'].includes(p.avatar) ? '' : avatarPreview.textContent;
     const summary = careerSummary(p);
+    refreshPremiumHome(p, summary);
     for (const [id, value] of Object.entries({
         'stat-played': summary.played,
         'stat-wins': summary.wins,
