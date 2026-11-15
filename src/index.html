@@ -20,15 +20,16 @@
         <!-- MENU VIEW: prominent core actions, advanced choices on demand -->
         <div id="view-menu" class="view active-view">
             <div class="glass-panel home-shell">
-                <div id="home-hub">
+                <div id="home-hub" data-layout="premium">
+                <div id="home-preview-bar" hidden><strong id="home-preview-label">Home preview</strong><button id="home-preview-close" type="button">Exit preview</button></div>
                 <header class="home-hero">
                     <img src="./brand-neon.webp" class="home-mark" alt="">
-                    <div><h1 class="home-title">ROMB<span>MASTER</span></h1></div>
+                    <div><h1 class="home-title">ROMB<span>MASTER</span></h1><small id="premium-skin-name">Neon Arena</small></div>
                     <button id="helpBtn" class="text-btn home-help" type="button"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5Q8 3 12 7Q16 3 21 5V18Q16 16 12 20Q8 16 3 18Z M12 7V20 M5 9L8 12M8 9L5 12 M15 13L18 9M15 9H18V12"/></svg><span>How to play</span></button>
                 </header>
                 <div class="home-actions">
                     <section id="premium-home-progress" class="premium-home-progress" aria-label="Career overview" hidden>
-                        <div class="premium-profile-row"><span id="premium-player-avatar" class="premium-player-avatar" aria-hidden="true"></span><strong id="premium-player-name"></strong><span id="premium-player-xp"></span><span id="premium-player-stars"></span></div>
+                        <div class="premium-profile-row"><span id="premium-player-avatar" class="premium-player-avatar" aria-hidden="true"></span><strong id="premium-player-name"></strong><span id="premium-player-xp"></span><span id="premium-player-stars"></span><span id="premium-brain-points"></span></div>
                         <div class="premium-world-row"><span id="premium-rival-icon" aria-hidden="true"></span><div><small>Current rival</small><strong id="premium-rival-name"></strong><small id="premium-world-name"></small></div><span id="premium-world-level"></span></div>
                         <label class="premium-progress-label" for="premium-career-progress">Career progress <span id="premium-career-count"></span></label>
                         <progress id="premium-career-progress" max="100" value="0"></progress>
@@ -143,6 +144,7 @@
                             <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
                             <div class="skin-sample-controls" aria-hidden="true"><span>↶ Undo</span><span>↻ Restart</span><span>⌂ Home</span></div>
                         </div>
+                        <button id="skin-home-preview" class="btn-secondary" type="button">Preview complete home screen</button>
                         <p id="skin-effect-label" class="skin-effect-label"></p>
                         <button id="skin-effect-preview" class="btn-secondary" type="button">▶ Preview capture &amp; sound</button>
                         <div id="seasonal-victory" class="seasonal-victory" role="status" hidden></div>
@@ -183,6 +185,7 @@
                             <option value="shield">🛡️ Shield</option>
                         </select>
                     </div>
+                    <div class="premium-avatar-grid" aria-label="Player avatars"><button class="avatar-choice" data-profile-avatar="spark" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong>Spark</strong></button><button class="avatar-choice" data-profile-avatar="neon-fox" type="button" aria-pressed="false" disabled><span class="avatar-art" data-avatar="neon-fox" aria-hidden="true"></span><strong>Neon Fox</strong><small data-avatar-lock>Win level 5</small></button><button class="avatar-choice" data-profile-avatar="fox" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="fox" aria-hidden="true"></span><strong>Fox</strong></button><button class="avatar-choice" data-profile-avatar="robot" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="robot" aria-hidden="true"></span><strong>Robot</strong></button><button class="avatar-choice" data-profile-avatar="rocket" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="rocket" aria-hidden="true"></span><strong>Rocket</strong></button><button class="avatar-choice" data-profile-avatar="dragon" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="dragon" aria-hidden="true"></span><strong>Dragon</strong></button><button class="avatar-choice" data-profile-avatar="shield" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="shield" aria-hidden="true"></span><strong>Shield</strong></button></div>
                     <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
                     <details id="player-stats" class="profile-stats">
                         <summary>Career statistics &amp; achievements</summary>
@@ -222,7 +225,7 @@
             <div id="match-mode"></div>
             <div id="scoreboard">
                 <div class="player-card" id="p1-card" style="border-left: 4px solid var(--accent)">
-                    <span class="badge badge-x"></span>
+                    <span class="badge badge-x"></span><span id="match-player-portrait" class="match-portrait" aria-hidden="true" hidden></span>
                     <div class="score-meta">
                         <span id="p1-name" class="p-label" style="color:var(--accent)">Player 1</span>
                         <span class="score-num" id="p1-score">0</span>
@@ -230,7 +233,7 @@
                 </div>
                 <div class="player-card" id="p2-card"
                     style="border-right: 4px solid var(--primary); flex-direction: row-reverse;">
-                    <span class="badge badge-o"></span>
+                    <span class="badge badge-o"></span><span id="match-rival-portrait" class="match-portrait" aria-hidden="true" hidden></span>
                     <div class="score-meta" style="align-items:flex-end">
                         <span id="p2-name" class="p-label" style="color:var(--primary)">Player 2</span>
                         <span class="score-num" id="p2-score">0</span>
