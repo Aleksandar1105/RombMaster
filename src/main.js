@@ -3,7 +3,7 @@ import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld } from './profile.js';
+import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
@@ -324,11 +324,41 @@ el('skin-equip').onclick = () => {
     renderSkinCatalog();
     el('skin-status').textContent = 'Equipped for this local player.';
 };
+// Portraits are cosmetic; lock state is derived from the validated profile.
+function refreshRivalPortraits(profile) {
+    for (const [i, world] of CAREER_WORLDS.entries()) {
+        const state = profile?.stars?.[world.end] ? 'defeated' : profile && profile.unlockedLevel >= world.start ? 'available' : 'locked';
+        for (const prefix of ['home-rival', 'career-rival-card']) {
+            const card = el(prefix + '-' + i);
+            const status = el(prefix + '-status-' + i);
+            if (card) card.dataset.state = state;
+            if (status) status.textContent = state === 'defeated' ? 'Defeated' : state === 'available' ? 'Available' : 'Locked';
+        }
+    }
+}
 function refreshPremiumHome(profile, summary) {
     const panel = el('premium-home-progress');
     if (!panel) return;
     panel.hidden = !profile || !summary || activeSkin().id !== 'neon';
     const world = profile ? careerWorld(profile.unlockedLevel) : null;
+    refreshRivalPortraits(profile);
+    const hero = el('premium-hero-stage');
+    const gallery = el('premium-rivals-section');
+    if (hero) {
+        hero.hidden = panel.hidden;
+        hero.dataset.world = world ? world.name.toLowerCase().replace(/ /g, '-') : '';
+    }
+    if (gallery) gallery.hidden = panel.hidden;
+    const avatar = el('premium-player-avatar');
+    if (avatar) {
+        avatar.dataset.avatar = profile?.avatar ?? '';
+        avatar.textContent = PLAYER_AVATARS.find(item => item.id === profile?.avatar)?.icon || '';
+    }
+    const rivalIcon = el('premium-rival-icon');
+    if (rivalIcon) rivalIcon.dataset.rival = world?.rival.toLowerCase() ?? '';
+    const heroTitle = el('premium-hero-title');
+    if (heroTitle) heroTitle.textContent = world ? world.name + ' · Level ' + profile.unlockedLevel : '';
+    if (!panel.hidden && profile) drawOpening(el('premium-hero-board'), careerLevel(profile.unlockedLevel));
     for (const [id, value] of Object.entries({
         'premium-player-name': profile?.name ?? '',
         'premium-player-xp': profile ? profile.xp + ' XP' : '',
@@ -367,6 +397,7 @@ const refreshCareer = () => {
     avatarSelect.value = p.avatar;
     if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
     else avatarPreview.classList.remove('neon-fox');
+    avatarPreview.dataset.avatar = p.avatar;
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
     el('identity-name').textContent = p.name;
     el('identity-art').dataset.avatar = p.avatar;
