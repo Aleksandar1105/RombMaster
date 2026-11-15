@@ -51,3 +51,18 @@ test('premium home uses original brand and active profile progress', () => {
   assert.ok(css.includes(':root[data-skin="neon"] #home-hub [hidden]'));
   assert.ok(css.includes(':root[data-skin]:not([data-skin="neon"]) .premium-home-progress'));
 });
+
+test('premium home and Career expose six actual local rival portraits and preserve profile locks', () => {
+  const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
+  for (const [i, name] of ['rookie','trickster','predator','phantom','grandmaster','omega'].entries()) {
+    assert.ok(fs.existsSync(path.resolve(__dirname, '../src/public/assets/premium/rivals', name + '.webp')), name);
+    assert.ok(html.includes('/assets/premium/rivals/' + name + '.webp'), name);
+    assert.equal(count('home-rival-' + i), 1);
+    assert.equal(count('career-rival-card-' + i), 1);
+  }
+  assert.equal(count('premium-hero-board'), 1);
+  assert.match(main, /profile\?\.stars\?\.\[world\.end\]/);
+  assert.match(main, /profile\.unlockedLevel >= world\.start/);
+  assert.match(css, /#helpBtn \.hub-glyph\s*\{[^}]*flex:0 0 22px/);
+  assert.match(html, /<span>How to play<\/span>/);
+});
