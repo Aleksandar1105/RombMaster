@@ -2144,3 +2144,47 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-stage {background:url('/assets/premium/reference/neon-reference-hero.webp') center/contain no-repeat,#090f24;border:0;box-shadow:none;min-height:70px;}
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-emblem,:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-title {display:none;}
 }
+
+
+/* Reference V2: fix unbounded utility icons on non-Neon themes, reserve
+   room for artwork, and keep the reference proportions on tall phones. */
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .reference-infinity {font-size:1.55rem;line-height:1;flex:none;color:var(--skin-o);}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .reference-skins-icon {width:24px;height:24px;max-width:24px;max-height:24px;flex:0 0 24px;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row :is(#home-arcade,#home-skins) {flex-direction:row;gap:6px;min-width:0;min-height:44px;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row strong {font-size:.82rem;line-height:1.1;overflow-wrap:normal;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-progress-label {text-transform:none;letter-spacing:normal;align-items:center;white-space:nowrap;min-width:0;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-progress-label > span {min-width:0;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-world-level {font-size:.66rem;white-space:nowrap;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card img {max-inline-size:100%;max-block-size:56px;}
+:root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card {min-width:0;}
+@media(orientation:portrait) {
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {
+  grid-template-rows:auto auto minmax(70px,1fr) auto auto auto auto auto;
+  align-content:stretch;
+ }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-stage {background-position:center bottom;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-home-progress {border:0;box-shadow:none;background:linear-gradient(90deg,#0f1c35,#090f24);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-profile-row > span:not(.premium-player-avatar) {border:0;background:none;padding:0;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-profile-row > .premium-player-avatar {border:1px solid #91ecff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section {padding:8px 5px;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row button:not([hidden]) {clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);border:0;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row button:not([hidden])::before {content:"";display:block;clip-path:inherit;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid [data-page="career-page"] {--reference-rim:#c08cff;--reference-fill:#49317e;background:linear-gradient(135deg,#fff,#b979ff 18%,#4b347e 53%,#cfa8ff 91%,#fff);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row #home-skins {background:linear-gradient(135deg,#fff,#ba7bff 20%,#553788 60%,#e5b3ff);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row #home-arcade {background:linear-gradient(135deg,#fff,#6cddff 18%,#31577d 60%,#b6ffff);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button:not([hidden]) {clip-path:polygon(15px 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,15px 100%,0 50%);}
+}
+@media(orientation:portrait) and (min-height:740px) {
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row :is(#continueBtn,#startBtn) {min-height:68px;font-size:1.12rem;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:not([hidden]) {min-height:72px;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-utility-row :is(#home-arcade,#home-skins) {min-height:62px;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card img {width:min(100%,56px);}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section {padding:11px 6px;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links button:not([hidden]) {min-height:54px;}
+ /* Preserve visible crystal floor under the independently clickable dock. */
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {padding-bottom:clamp(26px,7vh,60px);}
+}
+@media(orientation:portrait) and (max-width:365px) {
+ :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-progress-label {font-size:.53rem;}
+ :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-world-level {font-size:.58rem;}
+}
