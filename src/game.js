@@ -135,7 +135,10 @@ export const Game = {
     canvasEl.addEventListener('pointerdown', (e) => {
       if (!e.isPrimary || e.button !== 0) return;
       e.preventDefault();
-      this.hoverMove = null;
+      if (this.hoverMove) {
+        this.hoverMove = null;
+        this.requestRender();
+      }
       this.processInput(e.clientX, e.clientY);
     });
     // Hover is informative only; no move is committed until pointerdown.
@@ -143,7 +146,9 @@ export const Game = {
       if (!e.isPrimary || !['mouse', 'pen'].includes(e.pointerType) ||
           e.buttons) return;
       const move = this.canHumanMove() ? this.findLine(e.clientX, e.clientY) : null;
-      if (JSON.stringify(move) !== JSON.stringify(this.hoverMove)) {
+      const previous = this.hoverMove;
+      if (!(move === previous || (move && previous &&
+          move.t === previous.t && move.r === previous.r && move.c === previous.c))) {
         this.hoverMove = move;
         this.requestRender();
       }
@@ -532,6 +537,7 @@ export const Game = {
       this.ui.undoBtn.title = 'Undo last move';
       this.ui.undoBtn.setAttribute?.('aria-label', 'Undo last move');
     }
+    this.requestRender();
   },
 
   loop() {
@@ -542,7 +548,10 @@ export const Game = {
 
     this.renderer.draw(this.board, this.lastMove, this.canHumanMove() ? this.hoverMove : null);
 
-    if (!this.gameOver || this.renderer.particles.length > 0)
+    // A settled board needs no continuous animation. Moves, undo, resize,
+    // hover and resume explicitly invalidate it; capture effects continue to
+    // request frames until the last particle expires.
+    if (this.renderer.particles.length > 0)
       this.requestRender();
   },
 
