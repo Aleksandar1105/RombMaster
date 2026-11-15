@@ -507,3 +507,25 @@ test('guided capture teaches the winning point without replacing the saved game'
   assert.deepEqual([...h.storage.entries()], before);
 });
 
+
+test('in-match sound control immediately syncs the preference, persists and never changes the board or haptics', async () => {
+  const h = await boot();
+  const board = h.game.board;
+  const before = JSON.stringify(board);
+  const saves = [...h.storage.entries()].filter(([key]) => key !== 'rombmaster.comfort.v1');
+  assert.equal(h.el('game-sound-btn')['aria-pressed'], 'true');
+  h.el('game-sound-btn').click();
+  assert.equal(h.el('game-sound-btn')['aria-pressed'], 'false');
+  assert.equal(h.el('game-sound-label').textContent, 'Sound off');
+  assert.equal(h.el('sound-toggle').checked, false);
+  assert.equal(h.nativeEvents.hapticsEnabled, true);
+  assert.equal(h.game.board, board);
+  assert.equal(JSON.stringify(board), before);
+  assert.deepEqual([...h.storage.entries()].filter(([key]) => key !== 'rombmaster.comfort.v1'), saves);
+  const next = await boot({ autoStart:false, storage:h.storage });
+  assert.equal(next.el('game-sound-btn')['aria-pressed'], 'false');
+  next.el('game-sound-btn').click();
+  assert.equal(next.el('sound-toggle').checked, true);
+  assert.equal(next.el('game-sound-label').textContent, 'Sound on');
+  assert.deepEqual(JSON.parse(h.storage.get('rombmaster.comfort.v1')), {sound:true,haptics:true});
+});
