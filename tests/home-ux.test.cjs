@@ -36,3 +36,18 @@ test('home uses touch sized targets, focus outlines and neon branding', () => {
   assert.equal(mark.toString('ascii', 0, 4), 'RIFF');
   assert.equal(mark.toString('ascii', 8, 12), 'WEBP');
 });
+
+test('premium home uses original brand and active profile progress', () => {
+  const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
+  const skins = fs.readFileSync(path.resolve(__dirname, '../src/skins.js'), 'utf8');
+  for (const id of ['premium-home-progress','premium-player-name','premium-player-xp','premium-player-stars','premium-rival-icon','premium-rival-name','premium-world-name','premium-world-level','premium-career-count','premium-career-progress']) {
+    assert.equal(count(id), 1, id);
+    assert.ok(main.includes(id), id);
+  }
+  assert.match(main, /refreshPremiumHome\(p, summary\)/);
+  assert.match(main, /refreshPremiumHome\(null, null\)/);
+  assert.match(main, /progress\.value = summary\?\.clearedLevels/);
+  assert.match(skins, /'neon','Neon Arena','Included','#071729','#FB7185','#22D3EE'/);
+  assert.ok(css.includes(':root[data-skin="neon"] #home-hub [hidden]'));
+  assert.ok(css.includes(':root[data-skin]:not([data-skin="neon"]) .premium-home-progress'));
+});
