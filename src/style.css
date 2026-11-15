@@ -2054,11 +2054,11 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 }
 @media (orientation:landscape) and (min-width:600px) {
  :root[data-skin] #view-menu > .home-shell:has(#home-hub[data-home-revision="3"]:not([hidden])) {max-width:1000px;}
- :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"]:not([hidden]) {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:auto minmax(0,1fr) auto auto auto auto auto;gap:4px 8px;}
+ :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"]:not([hidden]) {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:auto minmax(44px,1fr) auto auto auto auto auto;align-items:stretch;gap:4px 8px;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .home-actions {display:contents;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .home-hero {grid-column:1;grid-row:1;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .premium-home-progress {grid-column:2;grid-row:1;}
- :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .premium-hero-stage {grid-column:1;grid-row:2/6;min-height:0;}
+ :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .premium-hero-stage {grid-column:1;grid-row:2/6;min-height:0;align-self:stretch;height:auto;max-height:none;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .play-row {grid-column:2;grid-row:2;align-content:center;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .mode-grid {grid-column:2;grid-row:3;}
  :root[data-skin] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"] .home-utility-row {grid-column:2;grid-row:4;}
