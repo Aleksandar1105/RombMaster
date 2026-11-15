@@ -147,7 +147,9 @@ const skinState = () => {
         key: LocalSlots.storageKey(SKIN_KEY) };
 };
 function applySkin(id) {
-    const skin = setActiveSkin(id);
+    renderSkinVariables(setActiveSkin(id));
+}
+function renderSkinVariables(skin) {
     const root = document.documentElement;
     if (!root) return; // headless input tests
     root.dataset.skin = skin.id;
@@ -156,6 +158,8 @@ function applySkin(id) {
         '--skin-accent': skin.accent, '--skin-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
         '--skin-panel': skin.id === 'white' ? '#ffffff' : skin.colors.bg,
         '--skin-gold': skin.colors.lastMove,
+        '--home-bg': skin.colors.bg,
+        '--home-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
     })) root.style.setProperty(name,value);
 }
 function syncSkin() {
@@ -163,6 +167,7 @@ function syncSkin() {
     applySkin(readSkin(localStorage,key,profile,daily));
 }
 let previewSkinId = 'neon';
+let homePreviewSkin = null;
 let collectionOnly = false;
 let seasonalOnly = false;
 let skinPreviewFrame = null;
@@ -336,11 +341,15 @@ function refreshRivalPortraits(profile) {
         }
     }
 }
-function refreshPremiumHome(profile, summary) {
+function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
     const panel = el('premium-home-progress');
     if (!panel) return;
-    panel.hidden = !profile || !summary || activeSkin().id !== 'neon';
+    panel.hidden = !profile || !summary;
     const world = profile ? careerWorld(profile.unlockedLevel) : null;
+    const skinName = el('premium-skin-name');
+    if (skinName) skinName.textContent = visualSkin.name;
+    const home = el('home-hub');
+    if (home) home.dataset.world = world ? world.name.toLowerCase().replace(/ /g, '-') : '';
     refreshRivalPortraits(profile);
     const hero = el('premium-hero-stage');
     const gallery = el('premium-rivals-section');
@@ -358,7 +367,7 @@ function refreshPremiumHome(profile, summary) {
     if (rivalIcon) rivalIcon.dataset.rival = world?.rival.toLowerCase() ?? '';
     const heroTitle = el('premium-hero-title');
     if (heroTitle) heroTitle.textContent = world ? world.name + ' · Level ' + profile.unlockedLevel : '';
-    if (!panel.hidden && profile) drawOpening(el('premium-hero-board'), careerLevel(profile.unlockedLevel));
+    if (!panel.hidden && profile) drawOpening(el('premium-hero-board'), careerLevel(profile.unlockedLevel), visualSkin);
     for (const [id, value] of Object.entries({
         'premium-player-name': profile?.name ?? '',
         'premium-player-xp': profile ? profile.xp + ' XP' : '',
@@ -369,10 +378,47 @@ function refreshPremiumHome(profile, summary) {
         'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
         'premium-career-count': summary ? summary.clearedLevels + ' / ' + CAREER_LEVEL_COUNT : '',
     })) el(id).textContent = value;
+    const points = el('premium-brain-points');
+    const daily = DailyProgress.read(localDateKey());
+    if (points) points.textContent = daily.status === 'ready' ? daily.progress.brainPoints + ' Brain Points' : 'Brain Points unavailable';
     const progress = el('premium-career-progress');
     progress.max = CAREER_LEVEL_COUNT;
     progress.value = summary?.clearedLevels ?? 0;
 }
+function closeHomePreview() {
+    if (!homePreviewSkin) return false;
+    homePreviewSkin = null;
+    const hub = el('home-hub');
+    for (const area of hub.querySelectorAll('.home-hero, .home-actions')) area.inert = false;
+    el('home-preview-bar').hidden = true;
+    renderSkinVariables(activeSkin());
+    const profile = ProfileStore.read().profile;
+    refreshPremiumHome(profile, profile ? careerSummary(profile) : null);
+    hub.hidden = true;
+    el('menu-page').hidden = false;
+    ui.viewMenu.scrollTop = 0;
+    showSkinPreview();
+    el('skin-home-preview').focus?.();
+    return true;
+}
+el('skin-home-preview').onclick = () => {
+    if (homePreviewSkin || el('skin-page').hidden || Game.paused) return;
+    stopSkinPreview();
+    const skin = getSkin(previewSkinId);
+    homePreviewSkin = skin.id;
+    const hub = el('home-hub');
+    for (const area of hub.querySelectorAll('.home-hero, .home-actions')) area.inert = true;
+    renderSkinVariables(skin);
+    const profile = ProfileStore.read().profile;
+    refreshPremiumHome(profile, profile ? careerSummary(profile) : null, skin);
+    el('menu-page').hidden = true;
+    hub.hidden = false;
+    el('home-preview-label').textContent = skin.name + ' · Preview only';
+    el('home-preview-bar').hidden = false;
+    ui.viewMenu.scrollTop = 0;
+    el('home-preview-close').focus?.();
+};
+el('home-preview-close').onclick = closeHomePreview;
 const refreshCareer = () => {
     syncSkin();
     const state = ProfileStore.read();
@@ -399,6 +445,13 @@ const refreshCareer = () => {
     else avatarPreview.classList.remove('neon-fox');
     avatarPreview.dataset.avatar = p.avatar;
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
+    for (const choice of document.querySelectorAll('[data-profile-avatar]')) {
+        const id = choice.dataset.profileAvatar;
+        choice.disabled = id === 'neon-fox' && !p.neonFoxUnlocked;
+        choice.setAttribute('aria-pressed', String(id === p.avatar));
+        const lock = choice.querySelector('[data-avatar-lock]');
+        if (lock) lock.hidden = !choice.disabled;
+    }
     el('identity-name').textContent = p.name;
     el('identity-art').dataset.avatar = p.avatar;
     el('identity-art').textContent = ['robot','spark','fox','neon-fox'].includes(p.avatar) ? '' : avatarPreview.textContent;
@@ -616,6 +669,13 @@ avatarSelect.onchange = () => {
         profileFeedback.textContent = 'Could not save avatar; profile unchanged.';
     }
 };
+document.querySelectorAll('[data-profile-avatar]').forEach(choice => {
+    choice.onclick = () => {
+        if (choice.disabled || homePreviewSkin) return;
+        avatarSelect.value = choice.dataset.profileAvatar;
+        avatarSelect.onchange();
+    };
+});
 careerSelect.onchange = () => {
     const stage = careerLevel(Number(careerSelect.value));
     drawOpening(el('mission-preview'), stage);
@@ -840,10 +900,14 @@ const refreshDailyMenu = () => {
     if (state.status !== 'ready') {
         el('daily-menu-status').textContent = dailyStatusMessage(state.status);
         el('daily-open-btn').disabled = true;
+        const homePoints = el('premium-brain-points');
+        if (homePoints) homePoints.textContent = 'Brain Points unavailable';
         return;
     }
     el('daily-open-btn').disabled = false;
     el('daily-points').textContent = `${state.progress.brainPoints} Brain Points`;
+    const homePoints = el('premium-brain-points');
+    if (homePoints) homePoints.textContent = state.progress.brainPoints + ' Brain Points';
     el('daily-menu-status').textContent = state.progress.solved === 3
         ? 'View today’s result →'
         : `${state.progress.solved} of 3 complete`;
@@ -1033,6 +1097,7 @@ Native.onStateChange(({ isActive }) => {
 Game.setActive('visibility', !document.hidden);
 
 Native.onBack(() => {
+    if (closeHomePreview()) return;
     if (confirmDialog.isOpen()) {
         confirmDialog.close();
     } else if (!careerResetModal.hidden) {
