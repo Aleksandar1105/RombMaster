@@ -49,7 +49,8 @@ test('premium home uses original brand and active profile progress', () => {
   assert.match(main, /progress\.value = summary\?\.clearedLevels/);
   assert.match(skins, /'neon','Neon Arena','Included','#071729','#FB7185','#22D3EE'/);
   assert.ok(css.includes(':root[data-skin="neon"] #home-hub [hidden]'));
-  assert.ok(css.includes(':root[data-skin]:not([data-skin="neon"]) .premium-home-progress'));
+  assert.ok(css.includes('.premium-home-progress[hidden]'));
+  assert.match(main, /panel\.hidden = !profile \|\| !summary;/);
 });
 
 test('premium home and Career expose six actual local rival portraits and preserve profile locks', () => {
@@ -65,4 +66,24 @@ test('premium home and Career expose six actual local rival portraits and preser
   assert.match(main, /profile\.unlockedLevel >= world\.start/);
   assert.match(css, /#helpBtn \.hub-glyph\s*\{[^}]*flex:0 0 22px/);
   assert.match(html, /<span>How to play<\/span>/);
+});
+
+test('all home themes share one real interface; preview cannot equip or save a skin', () => {
+  const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
+  assert.equal(count('skin-home-preview'), 1);
+  assert.equal(count('home-preview-close'), 1);
+  assert.equal(count('premium-brain-points'), 1);
+  assert.ok(html.includes('data-layout="premium"'));
+  const preview = main.slice(main.indexOf("el('skin-home-preview').onclick"), main.indexOf("el('home-preview-close').onclick"));
+  assert.match(preview, /renderSkinVariables\(skin\)/);
+  assert.match(preview, /area\.inert = true/);
+  assert.doesNotMatch(preview, /setActiveSkin|saveSkin|localStorage\.setItem/);
+  assert.match(main, /renderSkinVariables\(activeSkin\(\)\)/);
+  assert.match(main, /if \(closeHomePreview\(\)\) return;/);
+  for (const id of ['spark','neon-fox','fox','robot','rocket','dragon','shield']) {
+    assert.ok(html.includes('data-profile-avatar="' + id + '"'), id);
+    assert.ok(css.includes('[data-avatar=' + id + ']'), id);
+  }
+  for (const id of ['frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold'])
+    assert.ok(css.includes(':root[data-skin="' + id + '"]'), id);
 });
