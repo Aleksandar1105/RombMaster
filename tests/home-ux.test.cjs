@@ -100,7 +100,8 @@ test('Visual 3 makes collection and store independently reachable and uses a bou
  assert.match(main,/collectionOnly = ownedOnly/);
  assert.match(css,/data-home-revision="3"[^\n]*\{\s*padding:[^}]*overflow:hidden/);
  assert.match(css,/data-home-revision="3"[^\n]*\.premium-hero-stage\s*\{\s*flex:1 1 0;min-height:0/);
- assert.ok(html.indexOf('id="skin-equip"') < html.indexOf('id="skin-options"'));
+ assert.ok(html.indexOf('id="skin-options"') < html.indexOf('id="skin-stage"'));
+ assert.ok(html.indexOf('id="skin-stage"') < html.indexOf('id="skin-equip"'));
 });
 test('Gameplay sound button is a real accessible fourth control with a visible mute state', () => {
  assert.equal(count('game-sound-btn'),1);
@@ -126,4 +127,13 @@ test('approved Neon hero and floor are the supplied reference artwork, with sepa
  assert.equal(count('home-skin-store'),1);
  assert.equal(count('game-sound-btn'),1);
  assert.equal(count('premium-world-level'),1);
+});
+
+test('V3 keeps six framed portraits and bounded mode icons without duplicating controls', () => {
+ assert.equal((html.match(/class="reference-rival-frame"/g)||[]).length,6);
+ assert.ok(html.includes('reference-career-icon'));
+ assert.ok(html.includes('reference-daily-icon'));
+ assert.match(css,/\.reference-rival-frame\s*\{[^}]*aspect-ratio:1/);
+ assert.match(css,/\.reference-mode-icon\s*\{[^}]*width:30px;height:30px/);
+ assert.ok(html.indexOf('class="home-utility-row"') < html.indexOf('id="premium-rivals-section"'));
 });
