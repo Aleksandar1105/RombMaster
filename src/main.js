@@ -403,7 +403,9 @@ function closeHomePreview() {
     return true;
 }
 el('skin-home-preview').onclick = () => {
-    if (homePreviewSkin || el('skin-page').hidden || Game.paused) return;
+    // Static cosmetic previews neither run game timers nor play sound. A paused
+    // match must not prevent opening one from the visible store.
+    if (homePreviewSkin || el('skin-page').hidden || el('menu-page').hidden || ui.viewMenu.classList.contains('hidden')) return;
     stopSkinPreview();
     const skin = getSkin(previewSkinId);
     homePreviewSkin = skin.id;
