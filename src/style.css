@@ -2590,3 +2590,44 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  :root[data-skin]:not([data-skin="neon"]) #view-game #scoreboard .match-portrait {width:28px;}
  :root[data-skin]:not([data-skin="neon"]) #view-game #scoreboard .score-num {font-size:1.25rem;}
 }
+
+/* Victory & Defeat V1 — live scores/rewards, one-shot cosmetic presentation. */
+:root[data-skin]:not([data-skin="neon"]) #overlay.flex {
+ background:linear-gradient(180deg,var(--skin-bg),color-mix(in srgb,var(--skin-bg) 82%,transparent) 80%,var(--skin-bg)),var(--reference-floor) center bottom/cover no-repeat,var(--theme-art) center/cover no-repeat,var(--skin-bg);
+}
+#overlay.flex .center-panel {justify-content:flex-start;gap:8px;padding-bottom:12px;}
+#overlay.flex #result-title {text-align:center;overflow-wrap:anywhere;max-width:100%;}
+:root[data-skin]:not([data-skin="neon"]) #overlay.flex #result-title {
+ font-size:clamp(1.55rem,6vw,2.5rem);line-height:1.2;color:var(--skin-ink);height:auto;width:100%;background:none;
+}
+#overlay.flex[data-outcome="defeat"] #result-title {color:var(--skin-ink,#f8fafc);}
+#overlay.flex[data-outcome="draw"] #result-title {color:var(--skin-ink,#f8fafc);}
+#overlay.flex #result-score {font-variant-numeric:tabular-nums;max-width:100%;text-align:center;}
+:root[data-skin]:not([data-skin="neon"]) #overlay.flex #result-score {
+ background:linear-gradient(105deg,color-mix(in srgb,var(--skin-bg) 75%,var(--skin-x)),var(--skin-bg) 50%,color-mix(in srgb,var(--skin-bg) 75%,var(--skin-o)));
+ border:1px solid var(--skin-accent);border-radius:10px;clip-path:none;color:var(--skin-ink);
+}
+#overlay.flex #match-analysis:not([hidden]) {
+ width:100%;max-width:420px;text-align:start;background:color-mix(in srgb,var(--skin-bg) 90%,var(--skin-accent));color:var(--skin-ink);overflow-wrap:anywhere;
+}
+#overlay.flex #career-reward:not([hidden]) {max-width:100%;text-align:center;overflow-wrap:anywhere;}
+:root[data-skin]:not([data-skin="neon"]) #overlay.flex #career-reward {color:var(--skin-ink);}
+:root[data-skin]:not([data-skin="neon"]) #overlay.flex .result-actions button {
+ background:linear-gradient(145deg,color-mix(in srgb,var(--skin-panel) 85%,var(--skin-accent)),var(--skin-panel));
+ border:1px solid var(--skin-accent);color:var(--skin-ink);clip-path:none;min-height:44px;
+}
+#overlay.flex .result-actions button:focus-visible,#overlay.flex #nextCareerBtn:focus-visible {outline:2px solid var(--skin-accent,#22d3ee);outline-offset:2px;}
+#overlay.flex[data-outcome="defeat"] .center-panel,
+#overlay.flex[data-outcome="draw"] .center-panel {justify-content:center;}
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="frozen-christmas"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-frozen-christmas .75s ease-out both;}
+ :root[data-skin="golden-dragon"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-golden-dragon .75s ease-out both;}
+ :root[data-skin="spring-blossom"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-spring-blossom .75s ease-out both;}
+ :root[data-skin="summer-paradise"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-summer-paradise .75s ease-out both;}
+ :root[data-skin="autumn-kingdom"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-autumn-kingdom .75s ease-out both;}
+ :root[data-skin="halloween-curse"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-halloween-curse .75s ease-out both;}
+ :root[data-skin="midnight-gold"] #overlay.flex[data-outcome="victory"] #result-title {animation:season-midnight-gold .75s ease-out both;}
+}
+@media (prefers-reduced-motion:reduce) {
+ #overlay.flex #result-title,#overlay.flex #result-title::after {animation:none!important;}
+}
