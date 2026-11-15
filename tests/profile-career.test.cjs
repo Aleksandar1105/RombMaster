@@ -211,7 +211,11 @@ test('achievements unlock only at thresholds and cannot be earned twice', async 
   assert.deepEqual([...after.newAchievements], []);
   const summary = h.careerSummary(after.profile);
   assert.equal(summary.bestStreak, 12);
-  assert.equal(summary.earnedAchievements, 5);
+  assert.equal(summary.earnedAchievements, 9);
+  for (const id of ['boss-10', 'stars-25', 'streak-5', 'streak-10']) {
+    assert.equal(newIds.filter(item => item === id).length, 1);
+  }
+  assert.equal(new Set(newIds).size, newIds.length);
 });
 
 test('draw or loss resets current streak while preserving previous best', async () => {

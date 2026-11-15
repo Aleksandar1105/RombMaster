@@ -15,7 +15,11 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     // Match src/index.html: the game view is hidden while the menu is open.
     if (id === 'view-game') classes.add('hidden');
     const element = {
-      style: {}, dataset: {}, children: [], setAttribute(key,value) { this[key] = value; },
+      style: { setProperty(key, value) { this[key] = value; } },
+      dataset: {}, children: [],
+      querySelectorAll() { return []; },
+      querySelector() { return null; },
+      focus() {}, setAttribute(key,value) { this[key] = value; },
       append(...nodes) { this.children.push(...nodes); }, replaceChildren(...nodes) { this.children = nodes; },
       textContent: '', width: 400, height: 400,
       getBoundingClientRect: () => ({ left: 0, top: 0, width: 400, height: 400 }),
@@ -269,8 +273,8 @@ test('statistics from local Career can be displayed without network or a login',
   assert.equal(h.el('stat-played').textContent, '3');
   assert.equal(h.el('stat-wins').textContent, '2');
   assert.equal(h.el('stat-win-rate').textContent, '67%');
-  assert.equal(h.el('stat-stars').textContent, '3 / 90');
-  assert.equal(h.el('achievement-count').textContent, '1 / 7');
+  assert.equal(h.el('stat-stars').textContent, '3 / 300');
+  assert.equal(h.el('achievement-count').textContent, '1 / 24');
 });
 
 
@@ -354,7 +358,7 @@ test('multiple local players keep match saves and Career progress independent', 
   h.el('create-local-player-btn').click();
   assert.equal(h.el('local-player-select').value, 'slot-1');
   assert.equal(h.el('profile-name').value, 'Lina');
-  assert.equal(h.el('career-progress').textContent, 'Level 1 / 30');
+  assert.equal(h.el('career-progress').textContent, 'Level 1 / 100');
   assert.equal(h.el('continueBtn').hidden, true);
   h.game.start(4, 'pvp', 'normal');
   h.el('menuBtn').click();

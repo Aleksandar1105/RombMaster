@@ -21,8 +21,20 @@ async function setup() {
   }
   const context = vm.createContext({ window: { AudioContext },
     setTimeout(callback) { timers.set(++id, callback); return id; }, clearTimeout(id) { timers.delete(id); } });
-  const mod = new vm.SourceTextModule(fs.readFileSync(path.join(__dirname, '../src/audio.js'), 'utf8'), { context });
-  await mod.link(() => {}); await mod.evaluate();
+  const modules = new Map();
+  function load(filename) {
+    if (!modules.has(filename)) {
+      modules.set(filename, new vm.SourceTextModule(
+        fs.readFileSync(filename, 'utf8'),
+        { context, identifier: filename }
+      ));
+    }
+    return modules.get(filename);
+  }
+  const mod = load(path.resolve(__dirname, '../src/audio.js'));
+  await mod.link((specifier, parent) =>
+    load(path.resolve(path.dirname(parent.identifier), specifier)));
+  await mod.evaluate();
   const audio = new mod.namespace.AudioController(); audio.init();
   return { audio, timers, oscillators };
 }

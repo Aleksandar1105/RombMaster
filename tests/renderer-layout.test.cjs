@@ -18,14 +18,19 @@ async function createRenderer({ width, height, dpr = 1, parts = {} }) {
   const context = vm.createContext({
     window: { innerWidth: width, innerHeight: height, devicePixelRatio: dpr },
   });
-  const constants = new vm.SyntheticModule(['CONSTANTS'], function () {
-    this.setExport('CONSTANTS', { COLORS: {} });
-  }, { context });
-  const module = new vm.SourceTextModule(
-    fs.readFileSync(path.resolve(__dirname, '../src/renderer.js'), 'utf8'),
-    { context }
-  );
-  await module.link(() => constants);
+  const modules = new Map();
+  function load(filename) {
+    if (!modules.has(filename)) {
+      modules.set(filename, new vm.SourceTextModule(
+        fs.readFileSync(filename, 'utf8'),
+        { context, identifier: filename }
+      ));
+    }
+    return modules.get(filename);
+  }
+  const module = load(path.resolve(__dirname, '../src/renderer.js'));
+  await module.link((specifier, parent) =>
+    load(path.resolve(path.dirname(parent.identifier), specifier)));
   await module.evaluate();
   const Renderer = module.namespace.Renderer;
   const renderer = new Renderer(canvas);

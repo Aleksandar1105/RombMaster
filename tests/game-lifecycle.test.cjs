@@ -12,7 +12,7 @@ async function harness({ storage = new Map(), autoStart = true } = {}) {
   let timerId = 0;
   const element = () => {
     const classes = new Set();
-    return { textContent: '', classList: {
+    return { textContent: '', dataset: {}, classList: {
       add: value => classes.add(value),
       remove: value => classes.delete(value),
       contains: value => classes.has(value),
