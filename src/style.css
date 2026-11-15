@@ -1742,3 +1742,80 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
     :root[data-skin="neon"] #view-menu .home-shell:has(#home-hub:not([hidden])) {max-width:900px;}
     :root[data-skin="neon"] #home-hub:not([hidden]) {display:grid;grid-template-columns:minmax(175px,1fr) minmax(0,2fr);align-items:start;}
 }
+
+
+/* QA-A premium visual correction: live HTML controls, local artwork and no changes to rules. */
+:root[data-skin] #home-hub .home-hero #helpBtn {
+  display:inline-flex; flex-direction:row; align-items:center; justify-content:center;
+  gap:7px; box-sizing:border-box; width:max-content; max-width:100%; min-width:0;
+  min-height:44px; height:auto; padding:7px 12px; margin:0; white-space:normal;
+  text-align:center; position:static; grid-column:1/-1; justify-self:end;
+  color:var(--skin-ink,#f8fafc); background:linear-gradient(145deg,var(--skin-panel,#154459),var(--skin-bg,#0b1c32));
+  border:1px solid var(--skin-accent,#22d3ee); border-radius:10px; clip-path:none;
+  font:700 .78rem/1.2 var(--font-main),system-ui,sans-serif;
+}
+:root[data-skin] #home-hub .home-hero #helpBtn .hub-glyph {
+  position:static; display:block; flex:0 0 22px; width:22px; height:22px; max-width:22px; overflow:visible;
+}
+:root[data-skin] #home-hub #helpBtn > span {display:block; min-width:0; max-width:100%; overflow-wrap:anywhere; position:static; transform:none;}
+:root[data-skin] #home-hub #helpBtn::before,
+:root[data-skin] #home-hub #helpBtn::after {content:none;display:none;}
+.premium-hero-stage[hidden],.premium-rivals-section[hidden] {display:none!important;}
+.premium-hero-stage {
+  --world-image:url('/assets/premium/arenas/first-steps.webp');
+  isolation:isolate; display:grid; place-items:center; position:relative;
+  min-height:140px; height:clamp(145px,24vh,220px);
+  border:1px solid #22d3ee80; border-radius:13px; overflow:hidden;
+  background:linear-gradient(0deg,#071729e8 0%,#07172912 36%,#07172940 100%),var(--world-image) center 48% / cover;
+  box-shadow:inset 0 0 22px #22d3ee44,0 3px 14px #02061788;
+}
+.premium-hero-stage[data-world="neon-city"] {--world-image:url('/assets/premium/arenas/neon-city.webp');}
+.premium-hero-stage[data-world="crystal-world"] {--world-image:url('/assets/premium/arenas/crystal-world.webp');}
+.premium-hero-stage[data-world="ancient-kingdom"] {--world-image:url('/assets/premium/arenas/ancient-kingdom.webp');}
+.premium-hero-stage[data-world="cyber-arena"] {--world-image:url('/assets/premium/arenas/cyber-arena.webp');}
+.premium-hero-stage[data-world="master-realm"] {--world-image:url('/assets/premium/arenas/master-realm.webp');}
+#premium-hero-board {display:block;width:auto;height:calc(100% - 28px);max-width:90%;aspect-ratio:1;mix-blend-mode:screen;}
+#premium-hero-title {position:absolute;bottom:5px;left:9px;right:9px;text-align:center;font-size:.73rem;font-weight:800;color:#f8fafc;text-shadow:0 1px 5px #000;}
+:root[data-skin="neon"] #home-hub .home-hero {grid-template-columns: minmax(58px,72px) minmax(0,1fr);gap:4px 12px;}
+:root[data-skin="neon"] #home-hub .home-hero .home-mark {max-width:72px;}
+:root[data-skin="neon"] #home-hub .home-actions {gap:9px;}
+:root[data-skin="neon"] #home-hub .play-row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+:root[data-skin="neon"] #home-hub .play-row:has(#continueBtn[hidden]) {grid-template-columns:minmax(0,1fr);background:none;}
+:root[data-skin="neon"] #home-hub .play-row button:not([hidden]) {min-width:0;min-height:64px;padding:9px 5px;line-height:1.18;font-size:clamp(.83rem,3.8vw,1.05rem);box-shadow:inset 0 0 12px #ffffff70,inset 0 -5px #07172935,0 0 12px #22d3ee33;border-radius:12px;white-space:normal;overflow-wrap:anywhere;}
+:root[data-skin="neon"] #home-hub .play-row small {max-width:100%;line-height:1.2;margin-top:4px;font-size:.68rem;}
+:root[data-skin="neon"] #home-hub .play-row .home-continue:not([hidden]) {background:linear-gradient(150deg,#ffb7c0,#fb7185 40%,#bc385d 90%);color:#071729;border:2px solid #ffbdc6;box-shadow:inset 0 0 9px #fff8,0 0 12px #fb718555;}
+:root[data-skin="neon"] #home-hub .play-row .home-play:not([hidden]) {background:linear-gradient(150deg,#baf7ff,#22d3ee 45%,#0892af 90%);border:2px solid #a5f3fc;}
+:root[data-skin="neon"] #home-hub .mode-grid .nav-tile:not([hidden]) {min-height:102px;background:radial-gradient(ellipse at 20% 0,#315577,#111e39 65%);border:1px solid #67e8f9;box-shadow:inset 0 0 12px #22d3ee44,0 0 8px #22d3ee33;}
+:root[data-skin="neon"] #home-hub .mode-grid #daily-open-btn:not([hidden]) {background:radial-gradient(ellipse at 75% 0,#663c69,#20172e 65%);border:1px solid #fb7185;box-shadow:inset 0 0 12px #fb718544,0 0 8px #fb718533;}
+:root[data-skin="neon"] #home-hub .home-links button:not([hidden]) {min-height:52px;margin:0;padding:5px 2px;}
+:root[data-skin="neon"] #home-hub .home-links .hub-glyph {width:23px;height:23px;flex:none;}
+:root[data-skin="neon"] #home-hub .home-links strong {font-size:.72rem;}
+.premium-home-progress {background:linear-gradient(145deg,#142e49e8,#091a2e);padding:9px;gap:7px;box-shadow:inset 0 0 14px #22d3ee18;}
+.premium-profile-row > .premium-player-avatar {width:38px;height:38px;flex:0 0 38px;border-radius:9px;padding:0;background-size:cover;background-position:center;display:grid;place-items:center;font-size:1.2rem;}
+#premium-rival-icon,.profile-avatar-preview,#identity-art {background-size:cover;background-position:center;}
+#premium-rival-icon[data-rival=rookie] {background-image:url('/assets/premium/rivals/rookie.webp');}
+#premium-rival-icon[data-rival=trickster] {background-image:url('/assets/premium/rivals/trickster.webp');}
+#premium-rival-icon[data-rival=predator] {background-image:url('/assets/premium/rivals/predator.webp');}
+#premium-rival-icon[data-rival=phantom] {background-image:url('/assets/premium/rivals/phantom.webp');}
+#premium-rival-icon[data-rival=grandmaster] {background-image:url('/assets/premium/rivals/grandmaster.webp');}
+#premium-rival-icon[data-rival=omega] {background-image:url('/assets/premium/rivals/omega.webp');}
+#premium-rival-icon:is([data-rival=rookie],[data-rival=trickster],[data-rival=predator],[data-rival=phantom],[data-rival=grandmaster],[data-rival=omega]) {font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art)[data-avatar=robot] {background-image:url('/assets/premium/rivals/rookie.webp');font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art)[data-avatar=neon-fox] {background-image:url('/assets/premium/rivals/trickster.webp');font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art)[data-avatar=dragon] {background-image:url('/assets/premium/rivals/predator.webp');font-size:0;}
+#identity-art[data-avatar=dragon] {font-size:0;}
+.premium-rivals-section {padding:8px;border:1px solid #22d3ee80;border-radius:12px;background:linear-gradient(110deg,#0c2940,#211531);box-shadow:inset 0 0 9px #22d3ee33;}
+.premium-rivals-section h2 {font-size:.9rem;line-height:1.2;margin:0 0 8px;text-align:center;color:#e4faff;}
+.premium-rivals-strip {display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;}
+.premium-rivals-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;}
+.premium-rival-card {min-width:0;display:grid;justify-items:center;align-content:start;gap:3px;text-align:center;}
+.premium-rival-card img {display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;border:1px solid #7796b8;border-radius:10px;}
+.premium-rival-card[data-state=available] img {border-color:#22d3ee;box-shadow:0 0 9px #22d3ee66;}
+.premium-rival-card[data-state=locked] img {filter:brightness(.67) saturate(.72);}
+.premium-rival-card[data-state=defeated] img {border-color:#f6c86a;}
+.premium-rival-card strong {font-size:clamp(.57rem,2.3vw,.8rem);line-height:1.15;overflow-wrap:anywhere;color:var(--skin-ink,#f8fafc);}
+.premium-rival-card small {font-size:.57rem;line-height:1.12;color:var(--skin-ink,#cbd5e1);}
+.premium-rivals-grid .premium-rival-card strong {font-size:.8rem;}
+.premium-rivals-grid .premium-rival-card small {font-size:.68rem;}
+@media(max-width:350px) {.premium-rivals-strip {grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}}
+@media(orientation:landscape) and (min-width:650px) {.premium-hero-stage {height:170px;}.premium-rivals-strip {grid-template-columns:repeat(6,minmax(0,1fr));}}
