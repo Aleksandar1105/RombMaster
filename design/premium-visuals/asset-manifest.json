@@ -1,0 +1,178 @@
+{
+  "project": "RombMaster",
+  "version": "1.0.0",
+  "date": "2026-11-15",
+  "status": "source-inventory; PNG archives not yet imported",
+  "source": "Picsart Drive",
+  "baseCommit": "8a3c99254cef2187d6239d4c7166417abad2ec93",
+  "brandLock": {
+    "skin": "neon",
+    "name": "Neon Arena",
+    "playerX": "#FB7185",
+    "playerO": "#22D3EE",
+    "background": "#071729",
+    "logo": "Preserve the existing application logo from the code and original design. Do not regenerate or replace it.",
+    "geometry": "Preserve exact rhombus geometry with one shared edge and the existing two player colors.",
+    "runtime": "All final artwork is reference/source only until optimized, integrated and tested. Home mockup is not a functional screen."
+  },
+  "worlds": [
+    {
+      "levels": "1–10",
+      "rival": "rookie",
+      "arena": "first-steps"
+    },
+    {
+      "levels": "11–25",
+      "rival": "trickster",
+      "arena": "neon-city"
+    },
+    {
+      "levels": "26–40",
+      "rival": "predator",
+      "arena": "crystal-world"
+    },
+    {
+      "levels": "41–60",
+      "rival": "phantom",
+      "arena": "ancient-kingdom"
+    },
+    {
+      "levels": "61–80",
+      "rival": "grandmaster",
+      "arena": "cyber-arena"
+    },
+    {
+      "levels": "81–100",
+      "rival": "omega",
+      "arena": "master-realm"
+    }
+  ],
+  "assets": [
+    {
+      "path": "concepts/arenas/ancient-kingdom-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/cf184a95-ec0c-4968-af45-f9976511873e.png",
+      "picsartUid": "c0bc69eb-46e6-4309-9648-b8372b541d77",
+      "bytes": 2114083
+    },
+    {
+      "path": "concepts/arenas/crystal-world-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/02988fa9-a177-437b-a28b-baeecc411276.png",
+      "picsartUid": "cd9fa25f-677a-447f-a339-d1ef5f24556e",
+      "bytes": 2092037
+    },
+    {
+      "path": "concepts/arenas/cyber-arena-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/0705773c-e73d-4c06-b153-c99850b6f4c4.png",
+      "picsartUid": "edaffc3b-6e7a-4e10-a98e-f7573050306e",
+      "bytes": 1977448
+    },
+    {
+      "path": "concepts/arenas/first-steps-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/d21c6b60-67b9-4d06-b28c-2f0df172a759.png",
+      "picsartUid": "6bfdab4b-7f3d-480a-a68c-e9775c1767fe",
+      "bytes": 1991924
+    },
+    {
+      "path": "concepts/arenas/master-realm-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/74afeaed-e8e4-4224-9a46-83a19746fe78.png",
+      "picsartUid": "bbd249f8-11dd-4dd4-8176-43034b2f65bd",
+      "bytes": 2053361
+    },
+    {
+      "path": "concepts/arenas/neon-city-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/2653c0d9-5bd6-46e7-a95d-b02fcf25075e.png",
+      "picsartUid": "fb1906ae-b02d-4d26-a81f-f1280784283a",
+      "bytes": 2111459
+    },
+    {
+      "path": "concepts/home/premium-home-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/618ebf5f-81db-4d73-b752-187a2d6756e3.png",
+      "picsartUid": "1525ebc5-e963-4f05-bbb4-d956555adb9d",
+      "bytes": 2589915
+    },
+    {
+      "path": "concepts/rivals/rookie-concept-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/0258cdfe-9675-4056-8c28-91ca4cacb535.png",
+      "picsartUid": "8d7dbe6c-58f4-434a-940e-1a703f0613ea",
+      "bytes": 1294207
+    },
+    {
+      "path": "final/arenas/ancient-kingdom-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/d4f63103-ab91-45aa-85ae-3d1b345239ae.png",
+      "picsartUid": "ca24dfbf-a681-4d32-bf35-2394d2367657",
+      "bytes": 4313703
+    },
+    {
+      "path": "final/arenas/crystal-world-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/a02d3991-b330-48ca-b588-e802311aa1d7.png",
+      "picsartUid": "7fdba68f-9ff9-441b-ae04-7ffd3ee0187f",
+      "bytes": 4296374
+    },
+    {
+      "path": "final/arenas/cyber-arena-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/66d9a67b-6c54-42c9-9161-da7e85521e89.png",
+      "picsartUid": "4feb0ad3-a25b-40d6-95bc-f2e25b9d192f",
+      "bytes": 4149171
+    },
+    {
+      "path": "final/arenas/first-steps-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/89d5c470-857d-40cb-a9cb-d55ac2b10400.png",
+      "picsartUid": "01582e49-4547-4226-aadb-b2b938a3b993",
+      "bytes": 3977129
+    },
+    {
+      "path": "final/arenas/master-realm-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/548db130-1c46-48eb-9619-d4894aea000f.png",
+      "picsartUid": "567af8a1-dee0-46e8-901a-7a1e85885fcb",
+      "bytes": 4250188
+    },
+    {
+      "path": "final/arenas/neon-city-2k-final-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/3bcccc75-c7b9-43c3-a3e3-e3b823051671.png",
+      "picsartUid": "5d634e72-3380-438e-9f4a-c5c2c0cf9cd1",
+      "bytes": 4343212
+    },
+    {
+      "path": "final/home/premium-home-final-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/bdcac4b2-0ef6-4db5-ba73-187ec7018808.png",
+      "picsartUid": "aa34c708-263e-4bd0-8545-2a5929c31f68",
+      "bytes": 4699293
+    },
+    {
+      "path": "final/rivals/grandmaster-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/84771331-baaa-4d57-a41d-b7d1f75ed671.png",
+      "picsartUid": "05ac4207-98e7-42b8-8491-7246282668a9",
+      "bytes": 5100041
+    },
+    {
+      "path": "final/rivals/omega-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/ea7b49c3-ea6d-483e-9b6e-a75fd0c03f0c.png",
+      "picsartUid": "fb953db8-ba4f-4969-936a-72e603163ee0",
+      "bytes": 5115083
+    },
+    {
+      "path": "final/rivals/phantom-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/db5243e7-38dc-45e4-8644-e103ed4f2cda.png",
+      "picsartUid": "7467733f-f207-44ea-850d-a3352eef2b9b",
+      "bytes": 5204509
+    },
+    {
+      "path": "final/rivals/predator-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/6db450d4-0c13-42f6-86b8-3467f8aec213.png",
+      "picsartUid": "1c929941-3db8-4e5e-b17a-86b4b87da249",
+      "bytes": 4548531
+    },
+    {
+      "path": "final/rivals/rookie-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/9521d3ca-5d33-4404-92c5-aa2cc337968a.png",
+      "picsartUid": "5695a902-7240-4faa-ac42-604c1f84ca75",
+      "bytes": 5497502
+    },
+    {
+      "path": "final/rivals/trickster-2k-v01.png",
+      "sourceUrl": "https://gcdn.picsart.com/pipeline-output/07bd6b62-19ba-4a18-baee-def10c94402a.png",
+      "picsartUid": "c1387a59-1d01-4253-bd5b-0ca668ca281e",
+      "bytes": 4826250
+    }
+  ]
+}
