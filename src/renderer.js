@@ -270,9 +270,9 @@ export class Renderer {
     if (skin.offer) {
       // Distinct material accents stay away from the X/O symbol and cell edges.
       const g=ctx.createLinearGradient(x,y,x+size,y+size);
-      for(const [at,alpha] of [[0,'54'],[.32,'22'],[.65,'35'],[1,'50']])g.addColorStop(at,color+alpha);
+      for(const [at,alpha] of [[0,'70'],[.32,'32'],[.65,'48'],[1,'60']])g.addColorStop(at,color+alpha);
       ctx.fillStyle=g;ctx.fillRect(x,y,size,size);
-      ctx.strokeStyle=color+'43';ctx.fillStyle=color+'24';ctx.lineWidth=Math.max(.5,size*.012);
+      ctx.strokeStyle=color+'50';ctx.fillStyle=color+'2c';ctx.lineWidth=Math.max(.5,size*.012);
       const pt=(a,b)=>[x+size*a,y+size*b];
       const line=(points,close=false,fill=false)=>{ctx.beginPath();ctx.moveTo(...pt(...points[0]));for(const p of points.slice(1))ctx.lineTo(...pt(...p));if(close)ctx.closePath();if(fill)ctx.fill();else ctx.stroke();};
       if(material==='frost'){
@@ -295,20 +295,20 @@ export class Renderer {
         line([[.07,.73],[.07,.83],[.17,.93],[.83,.93],[.93,.83],[.93,.73]]);
       }
     } else if (material === 'matte') {
-      ctx.fillStyle = color + '16';
+      ctx.fillStyle = color + '22';
       ctx.fillRect(x, y, size, size);
     } else {
       const g = ctx.createLinearGradient(x, y, x + size, y + size);
-      const stops = material === 'metal' ? [[0,'60'],[.22,'28'],[.46,'50'],[.54,'20'],[1,'55']] :
-        material === 'crystal' ? [[0,'62'],[.4,'26'],[.68,'52'],[1,'24']] :
-        material === 'grain' ? [[0,'38'],[.5,'20'],[1,'50']] :
-        [[0,'52'],[.5,'20'],[1,'48']];
+      const stops = material === 'metal' ? [[0,'78'],[.22,'38'],[.46,'68'],[.54,'30'],[1,'68']] :
+        material === 'crystal' ? [[0,'80'],[.4,'38'],[.68,'69'],[1,'34']] :
+        material === 'grain' ? [[0,'50'],[.5,'30'],[1,'64']] :
+        [[0,'68'],[.5,'32'],[1,'60']];
       for (const [at,alpha] of stops) g.addColorStop(at,color + alpha);
       ctx.fillStyle = g;
       ctx.fillRect(x,y,size,size);
       ctx.lineWidth = Math.max(.5,size*.012);
-      ctx.strokeStyle = color + '32';
-      ctx.fillStyle = color + '16';
+      ctx.strokeStyle = color + '42';
+      ctx.fillStyle = color + '24';
       // Sparse, deterministic accents; no per-frame randomness or external art.
       if (material === 'grain') {
         for (let i=1;i<=4;i++) {
