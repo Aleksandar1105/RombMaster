@@ -2984,3 +2984,38 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row :is(#continueBtn,#startBtn):not([hidden])::before {
  background:linear-gradient(100deg,#075d78,#12243e 49%,#74283d);
 }
+
+/* V2.2c Visual QA: restore a wordmark above the ten artwork crops that
+   do not contain baked-in branding. Preserve the accessible original h1. */
+@media(orientation:portrait) {
+ :root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"],[data-skin="frozen-christmas"],[data-skin="golden-dragon"],[data-skin="spring-blossom"],[data-skin="summer-paradise"],[data-skin="autumn-kingdom"],[data-skin="midnight-gold"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .premium-hero-stage {
+  padding-top:clamp(22px,3.7dvh,38px);
+  background-origin:content-box;
+  background-position:center center;
+  box-sizing:border-box;
+ }
+ :root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"],[data-skin="frozen-christmas"],[data-skin="golden-dragon"],[data-skin="spring-blossom"],[data-skin="summer-paradise"],[data-skin="autumn-kingdom"],[data-skin="midnight-gold"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) .premium-hero-stage::before {
+  content:"RombMaster";position:absolute;top:1px;left:0;right:0;
+  font:italic 900 clamp(1.12rem,5.7vw,1.85rem)/1.08 var(--font-main),system-ui,sans-serif;
+  letter-spacing:-.045em;text-align:center;color:#fff;
+  text-shadow:0 1px 2px #080f1c,0 0 7px var(--premium-rim);
+  pointer-events:none;
+ }
+}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] {
+ --premium-back:#dce5ef;--premium-rim:#68839e;
+ --premium-face:#f4f8fc;--premium-alt:#e9e6f4;--premium-text:#182334;
+}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-hero-stage::before {color:#182334;text-shadow:0 1px 0 #fff;}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-home-progress,
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section {color:#182334;background:linear-gradient(140deg,#f2f6fb,#dce5ef);}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden]) {
+ color:#182334;text-shadow:none;
+ background:linear-gradient(145deg,#ffffff80 0 9%,transparent 9% 86%,#ffffff60 86%),linear-gradient(155deg,#fff,#e7edf4 45%,#dce5ef) padding-box,linear-gradient(145deg,#fff,#68839e,#fff) border-box;
+}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button:not([hidden]) {
+ background:linear-gradient(115deg,#ddecf6,#fff 48%,#eee4f1) padding-box,linear-gradient(145deg,#68839e,#a28ab4,#68839e) border-box;
+}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links,.premium-home-progress,.premium-rivals-section) :is(strong,small,label,span):not(.reference-rival-frame):not(.premium-player-avatar) {color:#182334;text-shadow:none;}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-player-stars {color:#79530b;}
+:root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #helpBtn {color:#182334;}
