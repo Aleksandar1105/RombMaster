@@ -57,6 +57,16 @@ export class Renderer {
 
     
 
+    // V2.3: a calm, continuous playing surface, without cell outlines.
+    // Only playable squares receive the wash; the existing edge pass is
+    // still the single source of truth for all played/available edges.
+    this.ctx.fillStyle = colors.dot + (skin.id === 'white' ? '0a' : '0c');
+    for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
+      if (board.active(r, c)) {
+        this.ctx.fillRect(dx(c), dy(r), this.CELL, this.CELL);
+      }
+    }
+
     // Owners
     for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
       if (board.active(r, c) && board.owner[r][c] != null) {
@@ -64,8 +74,17 @@ export class Renderer {
         const x = dx(c), y = dy(r), size = this.CELL;
         const color = owner === CONSTANTS.X ? colors.x : colors.o;
         if (skin.fill === 'inset') {
-          const inset = size * .15;
-          this.ctx.fillStyle = color + '2b';
+          // Preserve Neon’s inset identity, but give the entire conquered
+          // cell a restrained owner tint so territory is readable at a glance.
+          // Fill only: no added outline, glow or duplicated shared stroke.
+          const territory = this.ctx.createLinearGradient(x, y, x + size, y + size);
+          territory.addColorStop(0, color + '48');
+          territory.addColorStop(.48, color + '24');
+          territory.addColorStop(1, color + '38');
+          this.ctx.fillStyle = territory;
+          this.ctx.fillRect(x, y, size, size);
+          const inset = size * .19;
+          this.ctx.fillStyle = color + '18';
           this.roundRect(x + inset, y + inset, size - 2 * inset, size - 2 * inset, size * .14);
           this.ctx.fill();
         } else {
