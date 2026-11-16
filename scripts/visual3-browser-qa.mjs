@@ -235,6 +235,18 @@ try{
   for(const id of ids)await check('Home preview '+id,async()=>{
    try{
     await click('[data-skin-id="'+id+'"]',true);
+    await check('Capture material '+id,async()=>{
+     const d=await evaluate(`(()=>{const c=document.getElementById('skin-preview'),stage=document.getElementById('skin-stage');
+       const p=c.getContext('2d').getImageData(0,0,c.width,c.height).data;
+       const cell=(c.width-16)/5, sample=(r,col)=>{const x=Math.floor(8+(col+.3)*cell),y=Math.floor(8+(r+.3)*cell);return Array.from(p.slice((y*c.width+x)*4,(y*c.width+x)*4+3));};
+       return {skin:stage.dataset.previewSkin,width:c.width,height:c.height,x:sample(2,2),o:sample(1,2),o2:sample(2,3),png:c.toDataURL('image/png')};})()`);
+     assert.equal(d.skin,id);assert.ok(d.width>=120&&d.height>=120);
+     assert.notDeepEqual(d.x,d.o,'Opposite captured cells have identical sample colors');
+     assert.notDeepEqual(d.x,d.o2,'Horizontal opposing cells have identical sample colors');
+     assert.ok(d.png.startsWith('data:image/png;base64,'));
+     await fs.writeFile(path.join(out,'v23-board-'+id+'.png'),Buffer.from(d.png.split(',')[1],'base64'));
+     return d.width+'x'+d.height+' renderer fixture, opposing captures';
+    });
     await click('#skin-home-preview',true);
     const state=await evaluate("({skin:document.documentElement.dataset.skin,homeHidden:document.getElementById('home-hub').hidden,storeHidden:document.getElementById('skin-page').hidden,menuHidden:document.getElementById('menu-page').hidden,previewHidden:document.getElementById('home-preview-bar').hidden,selected:document.getElementById('skin-stage').dataset.previewSkin,visibility:document.visibilityState})");
     if(state.skin!==id||state.homeHidden||state.previewHidden) {
