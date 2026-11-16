@@ -2708,12 +2708,12 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 
 /* V2.1 compact menu pages. Intrinsic content can still expand for accessibility;
    on normal phone viewports these pages fit without scrolling. */
-#view-menu:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
+#view-menu:has(#menu-page:not([hidden]) :is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
  padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right))
          max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
  overflow-x:hidden;overflow-y:auto;touch-action:pan-y;
 }
-#view-menu > .home-shell:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
+#view-menu > .home-shell:has(#menu-page:not([hidden]) :is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
  width:100%;max-width:560px;min-height:100%;flex:0 0 auto;
  margin:0 auto;padding:0;gap:0;display:flex;flex-direction:column;align-items:stretch;
 }
@@ -2778,7 +2778,7 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  #view-menu #menu-page #quick-settings .home-drawer-content {gap:5px;padding:6px;}
 }
 @media(orientation:landscape) and (max-height:540px) {
- #view-menu > .home-shell:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {max-width:920px;}
+ #view-menu > .home-shell:has(#menu-page:not([hidden]) :is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {max-width:920px;}
  #view-menu #menu-page #career-page:not([hidden]) {
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto;
   grid-template-areas:"chapter chapter" "rival rival" "route portraits" "route mission" "status status";
