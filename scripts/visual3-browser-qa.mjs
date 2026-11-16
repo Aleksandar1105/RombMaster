@@ -50,6 +50,30 @@ function inspectHome(){
  if(getComputedStyle(menu).overflowY!=='hidden')failures.push('Home scroll enabled');
  return {failures,width:innerWidth,height:innerHeight,hero:Math.round(hero.getBoundingClientRect().height),skin:document.documentElement.dataset.skin};
 }
+// Real DOM geometry, including clipping by scroll containers and hit testing.
+function inspectControls(scope, selectors, requireFit=true) {
+ const root=document.querySelector(scope), failures=[];
+ if(!root)return {failures:['Missing scope '+scope]};
+ const bounds=root.getBoundingClientRect();
+ for(const selector of selectors) {
+  const elements=[...root.querySelectorAll(selector)];
+  if(!elements.length){failures.push('Missing '+selector);continue;}
+  for(const e of elements){
+   const r=e.getBoundingClientRect(),name=e.id||e.getAttribute('aria-label')||e.textContent.trim()||selector;
+   if(e.closest('[hidden]')||!r.width||!r.height){failures.push(name+': hidden');continue;}
+   if(r.width<43||r.height<43||r.left<Math.max(0,bounds.left)-1||r.top<Math.max(0,bounds.top)-1||
+    r.right>Math.min(innerWidth,bounds.right)+1||r.bottom>Math.min(innerHeight,bounds.bottom)+1)
+     failures.push(name+': too small or outside viewport '+JSON.stringify(r.toJSON()));
+   if(!e.disabled&&!e.closest('[inert]')){
+    const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    if(hit!==e&&!e.contains(hit))failures.push(name+': obscured by '+(hit?.id||hit?.tagName));
+   }
+  }
+ }
+ if(requireFit&&root.scrollHeight>root.clientHeight+2)failures.push('Vertical overflow '+root.scrollHeight+'/'+root.clientHeight);
+ if(root.scrollWidth>root.clientWidth+2)failures.push('Horizontal overflow '+root.scrollWidth+'/'+root.clientWidth);
+ return {failures,width:innerWidth,height:innerHeight,scrollTop:root.scrollTop,scope};
+}
 try{
  await fs.access(path.join(dist,'index.html'));
  const candidates=[process.env.ROMBMASTER_BROWSER,...[process.env['ProgramFiles(x86)'],process.env.ProgramFiles,process.env.LOCALAPPDATA].filter(Boolean).flatMap(p=>[path.join(p,'Microsoft','Edge','Application','msedge.exe'),path.join(p,'Google','Chrome','Application','chrome.exe')])].filter(Boolean);
@@ -129,6 +153,64 @@ try{
  for(const [w,h] of [[320,568],[360,640],[412,860],[480,900],[844,390]]){
   await viewport(w,h);await shot('home-neon-'+w+'x'+h);await check('Home '+w+'x'+h,homeLayout);
  }
+ const sizes=[[320,568],[360,640],[412,860],[480,900],[844,390]];
+ const controls=async(scope,selectors,fit=true)=>{
+  const d=await evaluate('('+inspectControls.toString()+')('+JSON.stringify(scope)+','+JSON.stringify(selectors)+','+fit+')');
+  assert.equal(d.failures.length,0,JSON.stringify(d));assert.equal(d.scrollTop,0,JSON.stringify(d));
+  return d.width+'x'+d.height+' '+d.scope;
+ };
+ // Exercise actual navigation, not just CSS visibility. No scrollIntoView for primary actions.
+ for(const [w,h] of sizes){
+  await viewport(w,h);
+  for(const [page,name,selectors] of [
+   ['career-page','Career',['#page-back','#previous-chapter','#next-chapter','#chapter-route button','#career-start-btn']],
+   ['quick-settings','Quick Play',['#page-back','[data-size]','[data-ai]','[data-diff]','#setup-play']],
+   ['player-settings','Profile Players',['#page-back','.profile-switcher label','#local-player-select','#new-local-player-name','#create-local-player-btn','#profile-name','#save-profile-btn']],
+   ['comfort-settings','Settings',['#page-back','.comfort-toggle']]
+  ]){
+   await check(name+' '+w+'x'+h,async()=>{
+    try{
+     await click('[data-page="'+page+'"]');
+     if(page==='quick-settings')await click('[data-ai="ai"]');
+     if(page==='player-settings')await click('label:has(#profile-section-players)');
+     await shot('v21-'+page+'-'+w+'x'+h);
+     return await controls('#view-menu',selectors);
+    }finally{
+     if(await evaluate("!document.getElementById('menu-page').hidden"))await click('#page-back',true);
+    }
+   });
+  }
+  await check('Profile Avatars '+w+'x'+h,async()=>{
+   try{
+    await click('[data-page="player-settings"]');await click('label:has(#profile-section-avatar)');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-profile-pane=players]')).display"),'none');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-profile-pane=stats]')).display"),'none');
+    await shot('v21-avatars-'+w+'x'+h);
+    return await controls('#view-menu',['#page-back','.profile-switcher label','#profile-avatar','.avatar-choice']);
+   }finally{
+    if(await evaluate("!document.getElementById('menu-page').hidden")){
+     await click('label:has(#profile-section-players)',true);await click('#page-back',true);
+    }
+   }
+  });
+ }
+ await viewport(412,860);
+ await check('Profile statistics and reset remain accessible',async()=>{
+  try{
+   await click('[data-page="player-settings"]');await click('label:has(#profile-section-stats)');
+   assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-profile-pane=stats]')).display"),'flex');
+   assert.equal(await evaluate("document.querySelectorAll('#achievement-list li').length"),24);
+   await shot('v21-profile-statistics');
+   // Verify reset is reachable, but never activate a destructive action.
+   await evaluate("document.getElementById('reset-career-btn').scrollIntoView({block:'center'})");
+   const d=await evaluate('('+inspectControls.toString()+')("#view-menu",["#reset-career-btn"],false)');
+   assert.equal(d.failures.length,0,JSON.stringify(d));
+  }finally{
+   if(await evaluate("!document.getElementById('menu-page').hidden")){
+    await click('label:has(#profile-section-players)',true);await click('#page-back',true);
+   }
+  }
+ });
  await viewport(412,860);
  await check('Skins opens My Collection',async()=>{
   await click('#home-skins');
@@ -225,6 +307,53 @@ try{
   assert.equal(await evaluate("document.getElementById('undoBtn').classList.contains('disabled')"),false,'Played move must survive reload');
   assert.equal(await evaluate("document.getElementById('game-sound-btn').getAttribute('aria-pressed')"),'false');
   await click('#game-sound-btn');assert.equal((await settings()).sound,true);
+ });
+ // Outcome layout fixtures use the actual packaged DOM and styles. They do not
+ // simulate legal wins or write Career progress. Existing unit tests cover result logic.
+ await cdp('Page.reload');await loaded();
+ for(const [w,h] of sizes){
+  await viewport(w,h);
+  for(const outcome of ['victory','defeat','draw']){
+   await check('Result fixture '+outcome+' '+w+'x'+h,async()=>{
+    try{
+     await evaluate(`(()=>{const e=id=>document.getElementById(id),o=${JSON.stringify(outcome)},win=o==='victory';
+      const overlay=e('overlay');overlay.dataset.outcome=o;
+      e('result-title').textContent=win?'Victory!':o==='defeat'?'Game Over':'Draw';
+      e('result-score').textContent=win?'16 - 5':o==='defeat'?'5 - 16':'10 - 10';
+      e('result-stars').hidden=!win;e('result-stars').textContent=win?'★★★':'';
+      e('result-stars').style.setProperty('--stars','3');
+      e('career-reward').hidden=false;e('career-reward').textContent=win?'+100 XP\\nAchievement unlocked: Long chain, First win, Master tactician':'Career level 12: Try again';
+      e('nextCareerBtn').hidden=!win;e('nextCareerBtn').textContent='Play level 13';
+      e('next-level-label').textContent='Up next · Level 13';e('next-career-title').textContent='Control the board';
+      e('next-clue').textContent='Look ahead before opening a new chain.';
+      e('match-analysis').hidden=false;e('match-analysis').textContent='Match analysis · 17 moves · 16 cells · 3 double captures · Best chain 6 · Immediate concessions 2';
+      overlay.classList.add('flex');overlay.scrollTop=0;overlay.querySelector('.result-details').scrollTop=0;
+      return true;})()`);
+     await shot('v21-result-'+outcome+'-'+w+'x'+h);
+     assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display==='none'"),outcome!=='victory');
+     assert.equal(await evaluate("getComputedStyle(document.getElementById('overlay')).overflowY"),'hidden');
+     const selectors=['#againBtn','#backMenuBtn',...(outcome==='victory'?['#nextCareerBtn']:[])];
+     const details=await controls('#overlay',selectors);
+     // Even when optional details overflow, the actual action rectangles must not move.
+     const before=await evaluate("document.querySelector('#overlay .result-actions').getBoundingClientRect().top");
+     await evaluate("(()=>{const p=document.querySelector('#overlay .result-details');p.scrollTop=p.scrollHeight;return true;})()");
+     assert.equal(await evaluate("document.querySelector('#overlay .result-actions').getBoundingClientRect().top"),before);
+     await controls('#overlay',selectors);
+     return details;
+    }finally{await evaluate("document.getElementById('overlay').classList.remove('flex')");}
+   });
+  }
+ }
+ await cdp('Page.reload');await loaded();
+ await viewport(412,860);
+ await check('Static preview canvases accept swipe; gameplay canvas retains touch input',async()=>{
+  try{
+   await click('#home-skin-store');
+   const d=await evaluate("(()=>{const e=document.querySelector('.skin-card-symbols canvas'),p=document.getElementById('skin-preview'),g=document.getElementById('canvas');return {card:e&&getComputedStyle(e).pointerEvents,preview:getComputedStyle(p).pointerEvents,game:getComputedStyle(g).touchAction};})()");
+   assert.deepEqual(d,{card:'none',preview:'none',game:'none'});
+   // Native touch scrolling is additionally checked on physical Android.
+   await shot('v21-static-store-preview');
+  }finally{if(await evaluate("!document.getElementById('menu-page').hidden"))await click('#page-back',true);}
  });
 }catch(e){record('Browser QA execution','BLOCKED',e.stack||e.message);}
 finally{
