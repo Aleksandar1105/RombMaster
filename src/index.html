@@ -157,6 +157,13 @@
                     <button type="button" data-page="skin-page" class="btn-secondary">Skin Store &amp; Collection</button>
                     <div class="home-drawer-content">
                     <div class="identity-banner"><span id="identity-art" aria-hidden="true"></span><strong id="identity-name"></strong></div><div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <fieldset class="profile-switcher">
+                        <legend class="profile-switcher-legend">Profile sections</legend>
+                        <label><input type="radio" name="profile-section" id="profile-section-players" checked><span>Players</span></label>
+                        <label><input type="radio" name="profile-section" id="profile-section-avatar"><span>Avatars</span></label>
+                        <label><input type="radio" name="profile-section" id="profile-section-stats"><span>Statistics</span></label>
+                    </fieldset>
+                    <div class="profile-pane" data-profile-pane="players">
                     <div class="local-player-toolbar">
                         <label for="local-player-select">Active local player</label>
                         <select id="local-player-select" aria-label="Switch local player"></select>
@@ -172,6 +179,8 @@
                             aria-label="Your player name" autocomplete="nickname">
                         <button id="save-profile-btn" type="button" class="btn-secondary">Save</button>
                     </div>
+                    </div>
+                    <div class="profile-pane" data-profile-pane="avatar">
                     <div class="profile-avatar-row">
                         <span id="profile-avatar-preview" class="profile-avatar-preview" aria-hidden="true">✨</span>
                         <label for="profile-avatar" class="profile-avatar-label">Avatar</label>
@@ -186,8 +195,10 @@
                         </select>
                     </div>
                     <div class="premium-avatar-grid" aria-label="Player avatars"><button class="avatar-choice" data-profile-avatar="spark" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong>Spark</strong></button><button class="avatar-choice" data-profile-avatar="neon-fox" type="button" aria-pressed="false" disabled><span class="avatar-art" data-avatar="neon-fox" aria-hidden="true"></span><strong>Neon Fox</strong><small data-avatar-lock>Win level 5</small></button><button class="avatar-choice" data-profile-avatar="fox" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="fox" aria-hidden="true"></span><strong>Fox</strong></button><button class="avatar-choice" data-profile-avatar="robot" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="robot" aria-hidden="true"></span><strong>Robot</strong></button><button class="avatar-choice" data-profile-avatar="rocket" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="rocket" aria-hidden="true"></span><strong>Rocket</strong></button><button class="avatar-choice" data-profile-avatar="dragon" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="dragon" aria-hidden="true"></span><strong>Dragon</strong></button><button class="avatar-choice" data-profile-avatar="shield" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="shield" aria-hidden="true"></span><strong>Shield</strong></button></div>
+                    </div>
                     <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
-                    <details id="player-stats" class="profile-stats">
+                    <div class="profile-pane" data-profile-pane="stats">
+                    <details id="player-stats" class="profile-stats" open>
                         <summary>Career statistics &amp; achievements</summary>
                         <div class="stats-grid">
                             <div><span>Career matches</span><strong id="stat-played">0</strong></div>
@@ -204,6 +215,7 @@
                         <p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
                     </details>
                     <button id="reset-career-btn" type="button" class="btn-secondary career-reset-trigger">Reset Career Progress</button>
+                    </div>
                     </div>
                 </section>
                 <section id="comfort-settings" class="home-drawer" hidden>
