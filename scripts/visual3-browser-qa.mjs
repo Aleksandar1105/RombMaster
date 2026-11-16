@@ -224,6 +224,7 @@ try{
   assert.equal(await evaluate("document.querySelectorAll('#skin-options .skin-card').length"),6);
   await shot('skin-store');
  });
+ const resultThemes=new Map(); // local fixtures only, never equip locked skins
  const storageSkin=()=>evaluate("JSON.stringify(Object.keys(localStorage).filter(k=>k.includes('rombmaster_skin_v1')).sort().map(k=>[k,localStorage.getItem(k)]))");
  const priorSkin=await evaluate("document.documentElement.dataset.skin"),priorPrefs=await storageSkin();
  for(const [tab,ids] of [
@@ -235,6 +236,9 @@ try{
   for(const id of ids)await check('Home preview '+id,async()=>{
    try{
     await click('[data-skin-id="'+id+'"]',true);
+    const theme=await evaluate("(()=>{const e=document.getElementById('skin-stage');return Object.fromEntries(['--skin-bg','--skin-x','--skin-o','--skin-accent','--skin-ink','--skin-panel','--skin-gold'].map(k=>[k,e.style.getPropertyValue(k)]));})()");
+    assert.ok(Object.values(theme).every(Boolean),'Missing theme variables: '+id);
+    resultThemes.set(id,theme);
     await check('Capture material '+id,async()=>{
      const d=await evaluate(`(()=>{const c=document.getElementById('skin-preview'),stage=document.getElementById('skin-stage');
        const p=c.getContext('2d').getImageData(0,0,c.width,c.height).data;
@@ -336,10 +340,13 @@ try{
  // Outcome layout fixtures use the actual packaged DOM and styles. They do not
  // simulate legal wins or write Career progress. Existing unit tests cover result logic.
  await cdp('Page.reload');await loaded();
- for(const [w,h] of sizes){
+ assert.equal(resultThemes.size,13,'Expected all thirteen theme palettes');
+ const resultCases=[...sizes.map(([w,h])=>({w,h,id:'neon'})),...[...resultThemes.keys()].filter(id=>id!=='neon').map(id=>({w:412,h:860,id}))];
+ for(const {w,h,id} of resultCases){
   await viewport(w,h);
+  await evaluate(`(()=>{const root=document.documentElement;root.dataset.skin=${JSON.stringify(id)};for(const [k,v] of Object.entries(${JSON.stringify(resultThemes.get(id))}))root.style.setProperty(k,v);return true;})()`);
   for(const outcome of ['victory','defeat','draw']){
-   await check('Result fixture '+outcome+' '+w+'x'+h,async()=>{
+   await check('Result fixture '+(id==='neon'?'':id+' ')+outcome+' '+w+'x'+h,async()=>{
     try{
      await evaluate(`(()=>{const e=id=>document.getElementById(id),o=${JSON.stringify(outcome)},win=o==='victory';
       const overlay=e('overlay');overlay.dataset.outcome=o;
@@ -354,7 +361,11 @@ try{
       e('match-analysis').hidden=false;e('match-analysis').textContent='Match analysis · 17 moves · 16 cells · 3 double captures · Best chain 6 · Immediate concessions 2';
       overlay.classList.add('flex');overlay.scrollTop=0;overlay.querySelector('.result-details').scrollTop=0;
       return true;})()`);
-     await shot('v21-result-'+outcome+'-'+w+'x'+h);
+     await shot((id==='neon'?'v21-result-':'v23-result-'+id+'-')+outcome+'-'+w+'x'+h);
+     if(outcome!=='victory'){
+      const badge=await evaluate("(()=>{const c=getComputedStyle(document.getElementById('result-title'),'::before');return {content:c.content,display:c.display,width:parseFloat(c.width)};})()");
+      assert.ok(badge.content!=='none'&&badge.display!=='none'&&badge.width>=30,JSON.stringify(badge));
+     }
      assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display==='none'"),outcome!=='victory');
      assert.equal(await evaluate("getComputedStyle(document.getElementById('overlay')).overflowY"),'hidden');
      const selectors=['#againBtn','#backMenuBtn',...(outcome==='victory'?['#nextCareerBtn']:[])];
