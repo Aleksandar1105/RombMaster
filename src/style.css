@@ -2708,31 +2708,31 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 
 /* V2.1 compact menu pages. Intrinsic content can still expand for accessibility;
    on normal phone viewports these pages fit without scrolling. */
-#view-menu:has(:is(#career-page,#quick-settings):not([hidden])) {
+#view-menu:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
  padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right))
          max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
  overflow-x:hidden;overflow-y:auto;touch-action:pan-y;
 }
-#view-menu > .home-shell:has(:is(#career-page,#quick-settings):not([hidden])) {
+#view-menu > .home-shell:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
  width:100%;max-width:560px;min-height:100%;flex:0 0 auto;
  margin:0 auto;padding:0;gap:0;display:flex;flex-direction:column;align-items:stretch;
 }
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) {
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {
  flex:1 0 auto;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;
  grid-template-rows:44px 1fr;align-items:start;gap:6px;padding:0;min-width:0;
 }
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden]))::before {content:none;}
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > .section-brand {display:none;}
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-back {
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden]))::before {content:none;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) > .section-brand {display:none;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) > #page-back {
  position:relative;top:auto;left:auto;grid-column:1;grid-row:1;width:44px;min-height:44px;
  margin:0;padding:4px;font-size:0;
 }
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-back::after {content:'‹';font-size:1.6rem;line-height:1;}
-#view-menu #menu-page:has(:is(#career-page,#quick-settings):not([hidden])) > #page-title {
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) > #page-back::after {content:'‹';font-size:1.6rem;line-height:1;}
+#view-menu #menu-page:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) > #page-title {
  grid-column:2;grid-row:1;align-self:center;width:100%;margin:0;padding:4px;
  font-size:clamp(1.05rem,4vw,1.4rem);line-height:1.15;
 }
-#view-menu #menu-page > :is(#career-page,#quick-settings):not([hidden]) {
+#view-menu #menu-page > :is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden]) {
  grid-column:1/-1;grid-row:2;min-width:0;width:100%;align-self:stretch;margin:0;
 }
 #view-menu #menu-page #career-page:not([hidden]) {
@@ -2778,7 +2778,7 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  #view-menu #menu-page #quick-settings .home-drawer-content {gap:5px;padding:6px;}
 }
 @media(orientation:landscape) and (max-height:540px) {
- #view-menu > .home-shell:has(:is(#career-page,#quick-settings):not([hidden])) {max-width:920px;}
+ #view-menu > .home-shell:has(:is(#career-page,#quick-settings,#player-settings,#comfort-settings):not([hidden])) {max-width:920px;}
  #view-menu #menu-page #career-page:not([hidden]) {
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto;
   grid-template-areas:"chapter chapter" "rival rival" "route portraits" "route mission" "status status";
@@ -2798,4 +2798,73 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
  #quick-settings .home-drawer-content > div {grid-column:1;}
  #quick-settings #setup-preview {grid-column:2;grid-row:1/4;align-self:center;width:min(28vw,44dvh,160px);}
  #view-menu #quick-settings #setup-play {grid-column:1/-1;grid-row:4;}
+}
+
+/* V2.1 profile tabs: native radio controls, no storage or navigation mutations. */
+#view-menu #menu-page #player-settings:not([hidden]) {padding:8px;min-width:0;}
+#view-menu #player-settings > button[data-page="skin-page"] {width:100%;margin:0;min-height:44px;}
+#view-menu #player-settings .home-drawer-content {
+ display:flex;flex-direction:column;gap:6px;padding:8px 0 0;min-width:0;
+}
+#player-settings .identity-banner {gap:8px;font-size:clamp(1rem,4vw,1.35rem);min-width:0;}
+#player-settings #identity-art {width:44px;height:44px;flex:0 0 44px;border-radius:8px;}
+#player-settings #identity-name {min-width:0;overflow-wrap:anywhere;}
+#player-settings .career-heading {font-size:.72rem;}
+#player-settings .profile-switcher {
+ border:0;margin:0;padding:0;min-inline-size:0;width:100%;
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;
+}
+#player-settings .profile-switcher-legend {
+ position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);
+}
+#player-settings .profile-switcher label {
+ position:relative;display:flex;align-items:center;justify-content:center;min-height:44px;
+ margin:0;padding:5px 3px;min-width:0;border:1px solid var(--skin-accent);
+ border-radius:8px;background:var(--skin-panel);color:var(--skin-ink);
+ font-size:.72rem;letter-spacing:0;text-transform:none;text-align:center;cursor:pointer;
+}
+#player-settings .profile-switcher input {
+ position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;
+}
+#player-settings .profile-switcher label:has(input:checked) {
+ border-color:var(--skin-o);box-shadow:inset 0 0 0 1px var(--skin-o);
+ background:color-mix(in srgb,var(--skin-panel) 84%,var(--skin-o));
+}
+#player-settings .profile-switcher label:has(input:focus-visible) {outline:2px solid var(--skin-o);outline-offset:2px;}
+#player-settings .profile-pane {display:none;min-width:0;flex-direction:column;gap:8px;}
+#player-settings:has(#profile-section-players:checked) [data-profile-pane="players"],
+#player-settings:has(#profile-section-avatar:checked) [data-profile-pane="avatar"],
+#player-settings:has(#profile-section-stats:checked) [data-profile-pane="stats"] {display:flex;}
+#player-settings :is(.local-player-add,.profile-name-row) {display:flex;flex-wrap:nowrap;gap:5px;}
+#player-settings :is(.local-player-add,.profile-name-row) input {flex:1 1 0;width:0;min-width:0;padding:7px;font-size:.85rem;}
+#player-settings :is(.local-player-add,.profile-name-row) button {flex:0 0 auto;width:auto;min-height:44px;margin:0;padding:6px 9px;}
+#player-settings .local-player-toolbar {gap:5px;}
+#player-settings .profile-avatar-row {gap:5px;}
+#player-settings .profile-avatar-preview {width:36px;height:36px;flex:0 0 36px;}
+#player-settings .profile-avatar-label {font-size:.65rem;letter-spacing:0;}
+#player-settings #profile-avatar {font-size:.78rem;padding:5px;}
+#player-settings .premium-avatar-grid {grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;}
+#menu-page #player-settings .premium-avatar-grid .avatar-choice {min-height:68px;gap:2px;padding:4px 2px;font-size:.63rem;}
+#player-settings .avatar-art {width:min(36px,100%);}
+#player-settings .avatar-choice small {font-size:.56rem;line-height:1.15;}
+#player-settings .profile-stats {padding:8px;}
+#player-settings .profile-stats summary {min-height:44px;align-content:center;}
+#player-settings .stats-grid {gap:4px;}
+#player-settings .stats-grid > div {padding:6px;gap:2px;}
+#player-settings .stats-grid strong {font-size:1rem;}
+#player-settings #reset-career-btn {min-height:44px;}
+#view-menu #menu-page #comfort-settings .comfort-options {gap:8px;padding:8px;}
+#comfort-settings .speaker-art {width:100%;max-height:min(24dvh,180px);}
+#comfort-settings .comfort-toggle {min-height:48px;margin:0;gap:8px;padding:8px 12px;}
+@media(orientation:landscape) and (max-height:540px) {
+ #player-settings .premium-avatar-grid {grid-template-columns:repeat(7,minmax(0,1fr));}
+ #player-settings .identity-banner {justify-content:center;}
+ #player-settings .profile-pane[data-profile-pane="players"] {gap:4px;}
+ #player-settings .profile-pane[data-profile-pane="players"] .local-player-toolbar {display:grid;grid-template-columns:1fr 1.2fr;align-items:center;}
+ #player-settings .local-player-toolbar > label {grid-column:1/-1;}
+ #player-settings #local-player-feedback {grid-column:1/-1;}
+ #view-menu #menu-page #comfort-settings .comfort-options {display:grid;grid-template-columns:1fr 1fr;align-items:center;}
+ #comfort-settings .speaker-art {grid-row:1/3;grid-column:1;max-height:160px;}
+ #comfort-settings .comfort-toggle {grid-column:2;}
+ #comfort-settings #comfort-status {grid-column:1/-1;}
 }
