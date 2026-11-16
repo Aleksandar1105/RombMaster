@@ -3117,3 +3117,50 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
   width:34px;margin-bottom:3px;font-size:1.15rem;
  }
 }
+
+/* V2.4a — separate artwork from catalog text and actual renderer samples.
+   Ownership and preview behavior are unchanged. Keep the shop scrollable. */
+#menu-page #skin-page .skin-collection {background:#0b1427;color:#f8fafc;}
+#menu-page #skin-page .skin-owned-count {
+ color:#dce7f6;background:#14243a;border:1px solid #405773;
+ border-radius:8px;padding:7px 8px;line-height:1.3;
+}
+#menu-page #skin-page .skin-catalog-heading {color:#f8fafc;}
+#menu-page #skin-page .skin-card[data-skin-id] {
+ background:linear-gradient(160deg,color-mix(in srgb,var(--card-bg) 45%,#142137),#0c1526 72%);
+ color:#f8fafc;gap:6px;padding:8px;min-height:0;overflow:hidden;
+}
+#menu-page #skin-page .skin-card[data-skin-id]::before {
+ content:"";display:block;position:static;inset:auto;z-index:auto;clip-path:none;
+ width:100%;height:auto;aspect-ratio:2/1;flex:none;order:-1;
+ border-radius:6px;border:1px solid color-mix(in srgb,var(--card-accent) 55%,#18243a);
+ box-sizing:border-box;background:var(--card-art) center/cover no-repeat,var(--card-bg);
+ box-shadow:none;pointer-events:none;
+}
+#menu-page #skin-page .skin-card[data-skin-id="neon"] {--card-art:url('/assets/premium/reference/neon-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="royal"] {--card-art:url('/assets/premium/reference/royal-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="cyber"] {--card-art:url('/assets/premium/reference/cyber-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="ice"] {--card-art:url('/assets/premium/reference/ice-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="wood"] {--card-art:url('/assets/premium/reference/wood-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="white"] {--card-art:url('/assets/premium/reference/white-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="frozen-christmas"] {--card-art:url('/assets/premium/reference/frozen-christmas-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="golden-dragon"] {--card-art:url('/assets/premium/reference/golden-dragon-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="spring-blossom"] {--card-art:url('/assets/premium/reference/spring-blossom-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="summer-paradise"] {--card-art:url('/assets/premium/reference/summer-paradise-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="autumn-kingdom"] {--card-art:url('/assets/premium/reference/autumn-kingdom-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="halloween-curse"] {--card-art:url('/assets/premium/reference/halloween-curse-reference-hero.webp');}
+#menu-page #skin-page .skin-card[data-skin-id="midnight-gold"] {--card-art:url('/assets/premium/reference/midnight-gold-reference-hero.webp');}
+#menu-page #skin-page .skin-card-rarity {font-size:.65rem;align-self:flex-start;}
+#menu-page #skin-page .skin-card-name {font-weight:800;text-align:left;text-shadow:none;}
+#menu-page #skin-page .skin-card-symbols {margin:0;align-self:center;}
+#menu-page #skin-page .skin-card-description {text-align:left;color:#dce7f6;font-size:.72rem;line-height:1.3;}
+#menu-page #skin-page .skin-card-status {text-align:left;color:#dce7f6;line-height:1.35;}
+#menu-page #skin-page .skin-card[data-ownership="equipped"] .skin-card-status,
+#menu-page #skin-page .skin-card[data-ownership="owned"] .skin-card-status {color:#8ff8e0;}
+#menu-page #skin-page .skin-card-action {margin-top:2px;line-height:1.2;}
+#menu-page #skin-page .skin-options:has(> .skin-card:only-child) {
+ grid-template-columns:minmax(0,240px);justify-content:center;
+}
+@media(max-width:340px) {
+ #menu-page #skin-page .skin-card[data-skin-id] {padding:6px;gap:5px;}
+}
