@@ -363,6 +363,13 @@ export const Game = {
     this.board.score = s.score;
     this.lastMove = s.lastMove;
     this.renderer.particles = [];
+    // Undo invalidates the prior capture announcement as well as its particles.
+    const combo = document.getElementById('capture-combo');
+    if (combo) {
+      combo.hidden = true;
+      combo.textContent = '';
+      combo.classList?.remove('combo-flash');
+    }
     this.updateUI();
     this.saveLocal();
     Native.vibrate('light');
