@@ -3019,3 +3019,38 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 :root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links,.premium-home-progress,.premium-rivals-section) :is(strong,small,label,span):not(.reference-rival-frame):not(.premium-player-avatar) {color:#182334;text-shadow:none;}
 :root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-player-stars {color:#79530b;}
 :root[data-skin="white"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #helpBtn {color:#182334;}
+
+/* V2.3c — gameplay HUD only. Keep the existing geometry and control heights. */
+:root[data-skin] #view-game #scoreboard #p1-card {--gem:var(--skin-x);}
+:root[data-skin] #view-game #scoreboard #p2-card {--gem:var(--skin-o);}
+:root[data-skin] #view-game #scoreboard .player-card {
+  border:1px solid color-mix(in srgb,var(--gem) 55%,var(--skin-panel))!important;
+  border-radius:10px;clip-path:none;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--skin-panel) 81%,var(--gem)),var(--skin-panel) 72%);
+  filter:none;box-shadow:inset 0 0 8px color-mix(in srgb,var(--gem) 13%,transparent);
+}
+:root[data-skin] #view-game #scoreboard .player-card::before {display:none;}
+:root[data-skin] #view-game #scoreboard .player-card.active {
+  border-color:var(--gem)!important;
+  box-shadow:inset 0 0 0 1px var(--gem),0 0 8px color-mix(in srgb,var(--gem) 35%,transparent);
+}
+:root[data-skin] #view-game #scoreboard .score-num {
+  font-variant-numeric:tabular-nums;font-weight:900;color:var(--gem)!important;
+}
+:root[data-skin] #view-game #scoreboard .p-label {color:var(--skin-ink)!important;}
+:root[data-skin] #view-game #turn-status[data-player="one"] {--gem:var(--skin-x);}
+:root[data-skin] #view-game #turn-status[data-player="two"] {--gem:var(--skin-o);}
+:root[data-skin] #view-game #turn-status {
+  clip-path:none;border-radius:10px;border:1px solid var(--gem)!important;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--skin-panel) 86%,var(--gem)),var(--skin-panel));
+}
+:root[data-skin] #view-game #turn-status::before {display:none;}
+:root[data-skin] #view-game #turn-status :is(.turn-label,.turn-hint) {color:var(--skin-ink);}
+:root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled) {
+  clip-path:none;border-radius:9px;border:1px solid color-mix(in srgb,var(--skin-accent) 78%,var(--skin-panel))!important;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--skin-panel) 82%,var(--skin-accent)),var(--skin-panel));
+  color:var(--skin-ink);box-shadow:inset 0 0 7px color-mix(in srgb,var(--skin-accent) 16%,transparent);
+}
+:root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled)::before {display:none;}
+:root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled) span {color:var(--skin-ink);}
+:root[data-skin] #view-game #controls .btn-icon:focus-visible {outline:2px solid var(--skin-accent);outline-offset:2px;}
