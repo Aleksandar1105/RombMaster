@@ -1,0 +1,27 @@
+{
+  "source_sha256": "81cdded1b86e0b0ddf86c62a0ba8e73e44235de06cd3bddfc1a901be71883fdc",
+  "source_size": [
+    941,
+    1672
+  ],
+  "files": [
+    {
+      "name": "neon-reference-floor.webp",
+      "sha256": "d4e55cd00e6c1e4212596451aad8939614fb18b993dd0b504428c625734a84e7",
+      "bytes": 19110,
+      "size": [
+        941,
+        145
+      ]
+    },
+    {
+      "name": "neon-reference-hero.webp",
+      "sha256": "ab8ab1e70be92fbeb8d9da06d1fe6623f0198d8529a797564057dd788146e729",
+      "bytes": 96436,
+      "size": [
+        941,
+        591
+      ]
+    }
+  ]
+}
