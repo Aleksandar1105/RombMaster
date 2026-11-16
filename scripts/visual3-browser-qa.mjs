@@ -337,6 +337,46 @@ try{
   assert.equal(await evaluate("document.getElementById('game-sound-btn').getAttribute('aria-pressed')"),'false');
   await click('#game-sound-btn');assert.equal((await settings()).sound,true);
  });
+ // Continue the real saved small PvP match from the preceding browser test.
+ // Its first move was h(2,1); the next four set up an actual two-cell capture.
+ await check('Live PvP double capture, extra turn, Undo and reload',async()=>{
+  const state=()=>evaluate("(()=>{const e=id=>document.getElementById(id);return {active:e('view-game').classList.contains('active-view'),scores:[Number(e('p1-score').textContent),Number(e('p2-score').textContent)],turn:e('turn-status').dataset.player,label:e('turn-label').textContent,comboHidden:e('capture-combo').hidden,combo:e('capture-combo').textContent,owner:e('capture-combo').dataset.owner};})()");
+  const tapEdge=async(t,row,col)=>{
+   const pos=await evaluate(`(()=>{const c=document.getElementById('canvas'),r=c.getBoundingClientRect(),w=parseFloat(c.style.width),cell=(w-14)/5,t=${JSON.stringify(t)},row=${row},col=${col};
+    const x=r.left+(7+(col+(t==='h'?.5:0))*cell)*r.width/w;
+    const y=r.top+(7+(row+(t==='v'?.5:0))*cell)*r.height/w;
+    return {x,y,hit:document.elementFromPoint(x,y)===c};})()`);
+   assert.ok(pos.hit,'Target edge is obscured: '+JSON.stringify([t,row,col]));
+   await cdp('Input.dispatchMouseEvent',{type:'mousePressed',x:pos.x,y:pos.y,button:'left',clickCount:1});
+   await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:pos.x,y:pos.y,button:'left',clickCount:1});
+   await sleep(100);
+  };
+  let d=await state();
+  assert.ok(d.active);assert.deepEqual(d.scores,[0,0]);assert.equal(d.turn,'two');
+  for(const [t,row,col,next] of [['h',3,1,'one'],['h',2,2,'two'],['h',3,2,'one'],['v',2,3,'two']]){
+   await tapEdge(t,row,col);d=await state();assert.deepEqual(d.scores,[0,0]);assert.equal(d.turn,next);
+  }
+  await tapEdge('v',2,2);
+  d=await state();assert.deepEqual(d.scores,[0,2]);assert.equal(d.turn,'two');
+  assert.match(d.label,/another turn/i);assert.equal(d.comboHidden,false);
+  assert.match(d.combo,/Double Capture.*2 cells/);assert.equal(d.owner,'0');
+  await shot('v23-live-double-capture');
+  await click('#undoBtn');d=await state();
+  assert.deepEqual(d.scores,[0,0]);assert.equal(d.turn,'two');
+  assert.equal(d.comboHidden,true);assert.equal(d.combo,'');
+  assert.doesNotMatch(d.label,/another turn/i);
+  await shot('v23-live-double-capture-undo');
+  await tapEdge('v',2,2);d=await state();
+  assert.deepEqual(d.scores,[0,2]);assert.equal(d.turn,'two');
+  assert.equal(d.comboHidden,false);
+  await click('#menuBtn');
+  await cdp('Page.reload');await loaded();await click('#continueBtn');await sleep(400);
+  d=await state();assert.ok(d.active);assert.deepEqual(d.scores,[0,2]);assert.equal(d.turn,'two');
+  assert.equal(d.comboHidden,true);
+  await click('#undoBtn');d=await state();
+  assert.deepEqual(d.scores,[0,0]);assert.equal(d.turn,'two');assert.equal(d.comboHidden,true);
+  return 'Two real captures, retained turn, Undo, recapture, persisted score and Undo';
+ });
  // Outcome layout fixtures use the actual packaged DOM and styles. They do not
  // simulate legal wins or write Career progress. Existing unit tests cover result logic.
  await cdp('Page.reload');await loaded();
