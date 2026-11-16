@@ -3054,3 +3054,33 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 :root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled)::before {display:none;}
 :root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled) span {color:var(--skin-ink);}
 :root[data-skin] #view-game #controls .btn-icon:focus-visible {outline:2px solid var(--skin-accent);outline-offset:2px;}
+
+/* V2.3d: live control glyphs, including disabled Undo, replace baked faces. */
+:root[data-skin] #view-game #controls .btn-icon {
+ color:var(--skin-ink);clip-path:none;border-radius:9px;
+ background:linear-gradient(150deg,color-mix(in srgb,var(--skin-panel) 82%,var(--skin-accent)),var(--skin-panel));
+ border:1px solid color-mix(in srgb,var(--skin-accent) 78%,var(--skin-panel))!important;
+}
+:root[data-skin] #view-game #controls .btn-icon::before {display:none;}
+:root[data-skin] #view-game #controls .btn-icon span {
+ opacity:1;display:block;color:var(--skin-ink);font-size:.67rem;line-height:1.05;white-space:nowrap;
+}
+:root[data-skin] #view-game #controls .btn-icon svg {
+ opacity:1;display:block;width:20px;height:20px;stroke:currentColor;fill:none;
+}
+:root[data-skin] #view-game #controls .btn-icon.disabled,
+:root[data-skin] #view-game #controls .btn-icon:disabled {opacity:.55;filter:none;}
+
+/* Capture feedback stays non-interactive and uses the true capturing owner. */
+:root[data-skin] #view-game #capture-combo {
+ --combo-owner:var(--skin-o);
+ background:var(--skin-panel);color:var(--skin-ink);
+ border:1px solid var(--combo-owner);border-radius:10px;
+ box-shadow:0 3px 14px color-mix(in srgb,var(--combo-owner) 28%,transparent);
+ max-width:calc(100% - 24px);white-space:normal;overflow-wrap:anywhere;
+ font-size:clamp(.75rem,3.6vw,.95rem);line-height:1.2;
+}
+:root[data-skin] #view-game #capture-combo[data-owner="1"] {--combo-owner:var(--skin-x);}
+@media(prefers-reduced-motion:no-preference) {
+ :root[data-skin] #view-game #capture-combo.combo-flash {animation:combo-flash .9s ease-out both;}
+}
