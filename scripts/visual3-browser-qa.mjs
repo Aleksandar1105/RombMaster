@@ -212,10 +212,28 @@ try{
   }
  });
  await viewport(412,860);
+ // The catalog uses actual local artwork in a separate region, not behind text.
+ const checkCatalogArt=async()=>{
+  const items=await evaluate(`(async()=>{
+   const cards=[...document.querySelectorAll('#skin-options .skin-card')];
+   return Promise.all(cards.map(async card=>{
+    const id=card.dataset.skinId,art=getComputedStyle(card,'::before'),bounds=card.getBoundingClientRect();
+    const name=card.querySelector('.skin-card-name'),desc=card.querySelector('.skin-card-description'),action=card.querySelector('.skin-card-action');
+    const src='/assets/premium/reference/'+id+'-reference-hero.webp';
+    const img=new Image();img.src=src;let decoded=true;try{await img.decode();}catch{decoded=false;}
+    const inside=[name,desc,action].every(el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=bounds.left-1&&b.right<=bounds.right+1&&b.top>=bounds.top-1&&b.bottom<=bounds.bottom+1;});
+    return {id,decoded,art:art.backgroundImage.includes(src)&&art.content!=='none'&&art.display!=='none',inside,overflow:card.scrollWidth>card.clientWidth+2,action:action.textContent.trim()};
+   }));
+  })()`);
+  assert.ok(items.length>0);
+  for(const item of items)assert.ok(item.decoded&&item.art&&item.inside&&!item.overflow&&item.action,JSON.stringify(item));
+  return items.length+' cards: decoded local hero, bounded metadata and action';
+ };
  await check('Skins opens My Collection',async()=>{
   await click('#home-skins');
   assert.equal(await evaluate("document.getElementById('page-title').textContent"),'My Collection');
   assert.equal(await evaluate("document.getElementById('skin-tab-collection').getAttribute('aria-pressed')"),'true');
+  await check('Collection artwork and card metadata',checkCatalogArt);
   await shot('my-collection');await click('#page-back',true);
  });
  await check('Skin Store opens six base skins',async()=>{
@@ -233,6 +251,8 @@ try{
  ]){
   await click(tab,true);
   await check('Catalog '+tab,async()=>assert.equal(await evaluate("document.querySelectorAll('#skin-options .skin-card').length"),ids.length));
+  await check('Catalog artwork and metadata '+tab,checkCatalogArt);
+  if(tab==='#skin-tab-seasonal')await shot('v24-seasonal-store');
   for(const id of ids)await check('Home preview '+id,async()=>{
    try{
     await click('[data-skin-id="'+id+'"]',true);
