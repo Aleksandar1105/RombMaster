@@ -292,6 +292,18 @@ try{
   await click('#startBtn');
   await until(()=>evaluate("document.getElementById('view-game').classList.contains('active-view')"),'quick match');
   await sleep(400);await shot('game-sound-on');
+  const controlGlyphs=async()=>{
+   const data=await evaluate(`(()=>['undoBtn','restartBtn','game-sound-btn','menuBtn'].map(id=>{
+    const e=document.getElementById(id),icon=e.querySelector('svg'),label=e.querySelector('span'),r=e.getBoundingClientRect(),a=getComputedStyle(icon),b=getComputedStyle(label);
+    return {id,width:r.width,height:r.height,iconOpacity:Number(a.opacity),labelOpacity:Number(b.opacity),iconVisible:a.display!=='none'&&a.visibility==='visible'&&icon.getBoundingClientRect().width>0,labelVisible:b.display!=='none'&&b.visibility==='visible'&&label.getBoundingClientRect().width>0&&!!label.textContent.trim(),stroke:a.stroke,color:b.color};
+   }))()`);
+   for(const item of data){
+    assert.ok(item.width>=43&&item.height>=43&&item.iconVisible&&item.labelVisible&&item.iconOpacity>=.9&&item.labelOpacity>=.9,JSON.stringify(item));
+    assert.ok(!['none','transparent','rgba(0, 0, 0, 0)'].includes(item.stroke)&&!['transparent','rgba(0, 0, 0, 0)'].includes(item.color),JSON.stringify(item));
+   }
+  };
+  await check('Gameplay control glyphs with disabled Undo',controlGlyphs);
+
   const liveBoard=await evaluate("(()=>{const c=document.getElementById('canvas'),ctx=c.getContext('2d'),p=ctx.getImageData(0,0,c.width,c.height).data;let painted=0;for(let i=0;i<p.length;i+=4)if(p[i]||p[i+1]||p[i+2])painted++;return {turn:document.getElementById('turn-label').textContent,visibility:document.visibilityState,width:c.width,height:c.height,painted:painted/(p.length/4)};})()");
   assert.equal(liveBoard.visibility,'visible',JSON.stringify(liveBoard));
   assert.doesNotMatch(liveBoard.turn,/paused/i,JSON.stringify(liveBoard));
@@ -302,6 +314,7 @@ try{
   await cdp('Input.dispatchMouseEvent',{type:'mouseReleased',x:edge.x,y:edge.y,button:'left',clickCount:1});
   await until(()=>evaluate("!document.getElementById('undoBtn').classList.contains('disabled')"),'legal PvP move enables Undo',4000);
   await shot('game-after-legal-move');
+  await check('Gameplay control glyphs with enabled Undo',controlGlyphs);
   const settings=()=>evaluate("JSON.parse(localStorage.getItem('rombmaster.comfort.v1')||'{\"sound\":true,\"haptics\":true}')");
   assert.equal((await settings()).sound,true);
   const score=await evaluate("[document.getElementById('p1-score').textContent,document.getElementById('p2-score').textContent]");
