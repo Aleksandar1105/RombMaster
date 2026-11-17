@@ -1,4 +1,5 @@
 import './style.css';
+import './skin-store-compact.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -66,6 +67,8 @@ let pageTrigger = null;
 function showHome() {
     arcade?.leave();
     stopSkinPreview();
+    skinDetailsOpen = false;
+    el('page-back').textContent = '← Home';
     el('menu-page').hidden = true;
     el('home-hub').hidden = false;
     ui.viewMenu.scrollTop = 0;
@@ -96,7 +99,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         el('page-back').focus();
     };
 });
-el('page-back').onclick = showHome;
+el('page-back').onclick = () => { if (!closeSkinDetails()) showHome(); };
 
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
@@ -167,6 +170,36 @@ function syncSkin() {
     applySkin(readSkin(localStorage,key,profile,daily));
 }
 let previewSkinId = 'neon';
+let skinCatalogPage = 0;
+let skinDetailsOpen = false;
+const SKIN_PAGE_SIZE = 6;
+function setSkinPanel(detail) {
+    skinDetailsOpen = detail;
+    el('skin-catalog-panel').hidden = detail;
+    el('skin-detail-panel').hidden = !detail;
+    el('page-back').textContent = detail ? '← Skins' : '← Home';
+    if (detail) {
+        el('page-title').textContent = 'Skin Details';
+        const skin = getSkin(previewSkinId);
+        const art = el('skin-detail-art');
+        art.src = '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
+        art.alt = skin.name;
+        el('skin-detail-description').textContent = skin.catalog.description + ' · ' + skin.catalog.rarity;
+        showSkinPreview();
+    } else stopSkinPreview();
+    ui.viewMenu.scrollTop = 0;
+}
+function closeSkinDetails() {
+    if (!skinDetailsOpen || el('skin-page').hidden || el('menu-page').hidden) return false;
+    setSkinPanel(false);
+    renderSkinCatalog();
+    el('skin-options').querySelector('[data-skin-id="' + previewSkinId + '"]')?.focus({preventScroll:true});
+    return true;
+}
+function changeSkinCatalogPage(delta) {
+    skinCatalogPage += delta;
+    renderSkinCatalog();
+}
 let homePreviewSkin = null;
 let collectionOnly = false;
 let seasonalOnly = false;
@@ -185,6 +218,7 @@ function stopSkinPreview() {
 }
 function showSkinPreview() {
     stopSkinPreview();
+    if (!skinDetailsOpen) return;
     const skin = getSkin(previewSkinId);
     const {profile,daily} = skinState();
     const unlocked = unlockedSkin(skin.id,profile,daily);
@@ -230,7 +264,6 @@ function showSkinPreview() {
         button.setAttribute('aria-pressed',String(button.dataset.skinId === skin.id));
     }
 }
-const skinSampleCache = new Map(); // bounded by the fixed skin catalog
 function renderSkinCatalog() {
     const {profile,daily} = skinState();
     const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
@@ -241,7 +274,13 @@ function renderSkinCatalog() {
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
     el('page-title').textContent = seasonalOnly ? 'Seasonal Collection' : collectionOnly ? 'My Collection' : 'Skin Store';
     if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = entries[0]?.skin.id || activeSkin().id;
-    const buttons = entries.map(({skin,status,owned,active}) => {
+    const pageCount = Math.max(1, Math.ceil(entries.length / SKIN_PAGE_SIZE));
+    skinCatalogPage = Math.max(0, Math.min(skinCatalogPage, pageCount - 1));
+    el('skin-pagination').hidden = pageCount === 1;
+    el('skin-page-prev').disabled = skinCatalogPage === 0;
+    el('skin-page-next').disabled = skinCatalogPage >= pageCount - 1;
+    el('skin-page-number').textContent = (skinCatalogPage + 1) + ' / ' + pageCount;
+    const buttons = entries.slice(skinCatalogPage * SKIN_PAGE_SIZE, (skinCatalogPage + 1) * SKIN_PAGE_SIZE).map(({skin,status,owned,active}) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'skin-card';
@@ -260,49 +299,34 @@ function renderSkinCatalog() {
             node.textContent = value;
             return node;
         };
-        const symbols = part('skin-card-symbols','');
-        symbols.setAttribute('aria-hidden','true');
-        // Immutable render samples are reused when switching tabs or equipping a skin.
-        // Moving the canvas into the new card avoids encoding images or another draw pass.
-        let sample = skinSampleCache.get(skin.id);
-        if (!sample) {
-            sample = document.createElement('canvas');
-            sample.width=144; sample.height=72;
-            if (sample.getContext?.('2d')) {
-                const iconRenderer=new Renderer(sample,skin);
-                const ctx=iconRenderer.ctx;
-                ctx.fillStyle=skin.colors.bg;
-                ctx.fillRect(0,0,144,72);
-                for(const [owner,x] of [[1,4],[0,76]]) {
-                    const color=owner===1?skin.colors.x:skin.colors.o;
-                    iconRenderer.paintCapture(skin,x,4,64,color);
-                    iconRenderer.drawSymbol(skin,owner,x+32,36,64);
-                }
-                skinSampleCache.set(skin.id,sample);
-            } else sample=null;
-        }
-        if(sample) symbols.append(sample);
-        else symbols.append(part('skin-card-x','X'),part('skin-card-o','O'));
         button.append(part('skin-card-rarity',skin.catalog.rarity),
-            part('skin-card-name',skin.name),symbols,
-            part('skin-card-description',skin.catalog.description),
-            part('skin-card-status',skin.offer ? status + ' · '+seasonalPriceLabel(skin)+' (target)' : status),
+            part('skin-card-name',skin.name),
+            part('skin-card-status',status),
             part('skin-card-action','View skin ›'));
-        button.onclick = () => { previewSkinId = skin.id; showSkinPreview(); el('skin-preview-name').scrollIntoView?.({block:'nearest'}); };
+        button.setAttribute('aria-pressed',String(skin.id === activeSkin().id));
+        button.onclick = () => {
+            previewSkinId = skin.id;
+            setSkinPanel(true);
+            el('page-back').focus({preventScroll:true});
+        };
         return button;
     });
     el('skin-options').replaceChildren(...buttons);
-    showSkinPreview();
+    if (skinDetailsOpen) { el('page-title').textContent = 'Skin Details'; showSkinPreview(); }
 }
 function openSkins(ownedOnly = false) {
     seasonalOnly = false;
     collectionOnly = ownedOnly;
     previewSkinId = activeSkin().id;
+    skinCatalogPage = 0;
+    setSkinPanel(false);
     renderSkinCatalog();
 }
-el('skin-tab-store').onclick = () => { seasonalOnly=false; collectionOnly = false; renderSkinCatalog(); };
-el('skin-tab-collection').onclick = () => { seasonalOnly=false; collectionOnly = true; renderSkinCatalog(); };
-if(el('skin-tab-seasonal')) el('skin-tab-seasonal').onclick = () => { collectionOnly=false; seasonalOnly=true; renderSkinCatalog(); };
+el('skin-page-prev').onclick = () => changeSkinCatalogPage(-1);
+el('skin-page-next').onclick = () => changeSkinCatalogPage(1);
+el('skin-tab-store').onclick = () => { seasonalOnly=false; collectionOnly = false; skinCatalogPage=0; renderSkinCatalog(); };
+el('skin-tab-collection').onclick = () => { seasonalOnly=false; collectionOnly = true; skinCatalogPage=0; renderSkinCatalog(); };
+if(el('skin-tab-seasonal')) el('skin-tab-seasonal').onclick = () => { collectionOnly=false; seasonalOnly=true; skinCatalogPage=0; renderSkinCatalog(); };
 el('skin-effect-preview').onclick = () => {
     if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
     if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
@@ -1132,6 +1156,8 @@ Native.onBack(() => {
         el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
+    } else if (closeSkinDetails()) {
+        return;
     } else if (pageTrigger) {
         showHome();
     } else {
