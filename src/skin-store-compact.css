@@ -34,3 +34,17 @@
  #menu-page #skin-page .skin-card[data-skin-id] {gap:2px;padding:4px;}
 }
 /* At very small heights or enlarged accessibility text, retain natural overflow. */
+
+/* V25.1.2 — keep the shop header and every catalog page anchored at the top.
+   A single card occupies the first column, at the same width as a full grid. */
+#view-menu:has(#menu-page:not([hidden]) #skin-page:not([hidden])) {
+  justify-content:flex-start;
+}
+#view-menu > .home-shell:has(#menu-page:not([hidden]) #skin-page:not([hidden])) {
+  margin-block:0;
+}
+#menu-page #skin-page .skin-options:has(> .skin-card:only-child) {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  justify-content:start;
+  align-content:start;
+}
