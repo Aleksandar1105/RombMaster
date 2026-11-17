@@ -52,6 +52,8 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
       resize() {} spawnParticles() {} draw() {}
     } },
     'style.css': {},
+    // Styles are bundled by Vite, not evaluated as JavaScript in the VM harness.
+    'skin-store-compact.css': {},
   };
   function load(filename) {
     if (modules.has(filename)) return modules.get(filename);
