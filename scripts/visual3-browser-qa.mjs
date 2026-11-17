@@ -218,10 +218,10 @@ try{
    const cards=[...document.querySelectorAll('#skin-options .skin-card')];
    return Promise.all(cards.map(async card=>{
     const id=card.dataset.skinId,art=getComputedStyle(card,'::before'),bounds=card.getBoundingClientRect();
-    const name=card.querySelector('.skin-card-name'),desc=card.querySelector('.skin-card-description'),action=card.querySelector('.skin-card-action');
+    const name=card.querySelector('.skin-card-name'),status=card.querySelector('.skin-card-status'),rarity=card.querySelector('.skin-card-rarity'),action=card.querySelector('.skin-card-action');
     const src='/assets/premium/reference/'+id+'-reference-hero.webp';
     const img=new Image();img.src=src;let decoded=true;try{await img.decode();}catch{decoded=false;}
-    const inside=[name,desc,action].every(el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=bounds.left-1&&b.right<=bounds.right+1&&b.top>=bounds.top-1&&b.bottom<=bounds.bottom+1;});
+    const inside=[name,status,rarity].every(el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=bounds.left-1&&b.right<=bounds.right+1&&b.top>=bounds.top-1&&b.bottom<=bounds.bottom+1;});
     return {id,decoded,art:art.backgroundImage.includes(src)&&art.content!=='none'&&art.display!=='none',inside,overflow:card.scrollWidth>card.clientWidth+2,action:action.textContent.trim()};
    }));
   })()`);
@@ -250,12 +250,14 @@ try{
  ['#skin-tab-seasonal',['frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold']]
  ]){
   await click(tab,true);
-  await check('Catalog '+tab,async()=>assert.equal(await evaluate("document.querySelectorAll('#skin-options .skin-card').length"),ids.length));
+  await check('Catalog '+tab,async()=>assert.equal(await evaluate("document.querySelectorAll('#skin-options .skin-card').length"),Math.min(6,ids.length)));
   await check('Catalog artwork and metadata '+tab,checkCatalogArt);
   if(tab==='#skin-tab-seasonal')await shot('v24-seasonal-store');
   for(const id of ids)await check('Home preview '+id,async()=>{
    try{
+    if(!await evaluate("!!document.querySelector('[data-skin-id=\""+id+"\"]')"))await click('#skin-page-next',true);
     await click('[data-skin-id="'+id+'"]',true);
+    assert.equal(await evaluate("document.getElementById('skin-catalog-panel').hidden && !document.getElementById('skin-detail-panel').hidden"),true);
     const theme=await evaluate("(()=>{const e=document.getElementById('skin-stage');return Object.fromEntries(['--skin-bg','--skin-x','--skin-o','--skin-accent','--skin-ink','--skin-panel','--skin-gold'].map(k=>[k,e.style.getPropertyValue(k)]));})()");
     assert.ok(Object.values(theme).every(Boolean),'Missing theme variables: '+id);
     resultThemes.set(id,theme);
@@ -298,12 +300,15 @@ try{
     if(await evaluate("!document.getElementById('home-preview-bar').hidden"))await click('#home-preview-close');
     assert.equal(await evaluate("document.documentElement.dataset.skin"),priorSkin);
     assert.equal(await storageSkin(),priorPrefs,'Preview changed stored skin');
+    if(await evaluate("!document.getElementById('skin-detail-panel').hidden"))await click('#page-back',true);
    }
   });
  }
  await check('Locked seasonal skin cannot be equipped',async()=>{
+  await click('#skin-tab-seasonal',true);
   await click('[data-skin-id="halloween-curse"]',true);
   assert.equal(await evaluate("document.getElementById('skin-equip').disabled"),true);
+  await click('#page-back',true);
   await click('#page-back',true);
  });
  await check('In-match sound toggle and persistence',async()=>{
@@ -445,8 +450,8 @@ try{
  await check('Static preview canvases accept swipe; gameplay canvas retains touch input',async()=>{
   try{
    await click('#home-skin-store');
-   const d=await evaluate("(()=>{const e=document.querySelector('.skin-card-symbols canvas'),p=document.getElementById('skin-preview'),g=document.getElementById('canvas');return {card:e&&getComputedStyle(e).pointerEvents,preview:getComputedStyle(p).pointerEvents,game:getComputedStyle(g).touchAction};})()");
-   assert.deepEqual(d,{card:'none',preview:'none',game:'none'});
+   const d=await evaluate("(()=>{const p=document.getElementById('skin-preview'),g=document.getElementById('canvas');return {cards:document.querySelectorAll('#skin-options .skin-card').length,canvases:document.querySelectorAll('#skin-options canvas').length,detailHidden:document.getElementById('skin-detail-panel').hidden,preview:getComputedStyle(p).pointerEvents,game:getComputedStyle(g).touchAction};})()");
+   assert.deepEqual(d,{cards:6,canvases:0,detailHidden:true,preview:'none',game:'none'});
    // Native touch scrolling is additionally checked on physical Android.
    await shot('v21-static-store-preview');
   }finally{if(await evaluate("!document.getElementById('menu-page').hidden"))await click('#page-back',true);}
