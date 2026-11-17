@@ -1,0 +1,36 @@
+/* V25 compact cosmetic catalog. Scope all layout changes to the shop. */
+#view-menu:has(#menu-page:not([hidden]) #skin-page:not([hidden])) {padding-block:6px max(8px,env(safe-area-inset-bottom));}
+#menu-page:has(#skin-page:not([hidden])) {padding-block:4px;}
+#menu-page:has(#skin-page:not([hidden])) > .section-brand {width:min(45%,156px);margin:0 auto 4px;}
+#menu-page:has(#skin-page:not([hidden])) > h2 {font-size:clamp(1.25rem,5vw,1.7rem);margin:4px 0 8px;}
+#menu-page:has(#skin-page:not([hidden])) #page-back {top:4px;min-height:40px;}
+#menu-page #skin-page .skin-collection {padding:8px;gap:6px;}
+#menu-page #skin-page :is(#skin-catalog-panel,#skin-detail-panel) {width:100%;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:7px;}
+#menu-page #skin-page :is(#skin-catalog-panel,#skin-detail-panel,.skin-card,#skin-pagination)[hidden] {display:none!important;}
+#menu-page #skin-page .skin-store-intro {display:none;}
+#menu-page #skin-page .skin-catalog-heading {display:none;}
+#menu-page #skin-page .skin-owned-count {align-self:center;padding:3px 8px;font-size:.72rem;}
+#menu-page #skin-page .skin-options {gap:7px;}
+#menu-page #skin-page .skin-card[data-skin-id] {min-height:0;gap:3px;padding:5px;justify-content:flex-start;touch-action:manipulation;}
+#menu-page #skin-page .skin-card[data-skin-id]::before {height:clamp(40px,9.3dvh,88px);aspect-ratio:auto;}
+#menu-page #skin-page .skin-card-rarity {font-size:.6rem;padding:1px 5px;}
+#menu-page #skin-page .skin-card-name {font-size:clamp(.8rem,3.6vw,1rem);line-height:1.15;}
+#menu-page #skin-page .skin-card-status {font-size:.7rem;margin-top:auto;padding:3px 0 0;line-height:1.15;}
+#menu-page #skin-page .skin-card-action {position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap;padding:0;border:0;margin:0;}
+#menu-page #skin-page #skin-pagination {display:flex;align-items:center;justify-content:center;gap:10px;}
+#menu-page #skin-page #skin-pagination button {min-height:44px;min-width:62px;clip-path:none;border-radius:8px;border:1px solid #536d91;background:#213551;color:white;}
+#menu-page #skin-page #skin-pagination button:disabled {opacity:.42;}
+#menu-page #skin-page #skin-page-number {font-size:.78rem;}
+#menu-page #skin-page #skin-detail-panel {gap:8px;}
+#menu-page #skin-page #skin-detail-art {width:100%;height:clamp(64px,15dvh,132px);object-fit:cover;border:1px solid #536d91;border-radius:8px;}
+#menu-page #skin-page #skin-detail-description {margin:0;color:#dce7f6;font-size:.8rem;}
+#menu-page #skin-page #skin-detail-panel #skin-preview {width:min(100%,24dvh,174px);}
+#menu-page #skin-page #skin-detail-panel #skin-stage {gap:5px;padding:7px;}
+#menu-page #skin-page #skin-detail-panel :is(#skin-home-preview,#skin-effect-preview,#skin-victory-preview,#skin-equip) {min-height:44px;}
+#menu-page #skin-page #skin-detail-panel :is(.skin-effect-label,#skin-status) {margin:0;}
+@media (max-height:660px) and (orientation:portrait) {
+ #menu-page #skin-page .skin-card[data-skin-id]::before {height:clamp(30px,7.8dvh,52px);}
+ #menu-page #skin-page .skin-options {gap:5px;}
+ #menu-page #skin-page .skin-card[data-skin-id] {gap:2px;padding:4px;}
+}
+/* At very small heights or enlarged accessibility text, retain natural overflow. */
