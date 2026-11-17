@@ -129,6 +129,7 @@
  </section>
  <section id="skin-page" class="home-drawer" hidden>
                     <div class="home-drawer-content skin-collection">
+                        <div id="skin-catalog-panel">
                         <div class="skin-store-intro"><p>Discover your next arena.</p><small>Cosmetics never change the rules or difficulty.</small></div>
                         <div class="skin-store-tabs" role="group" aria-label="Skin catalog view">
                             <button id="skin-tab-store" type="button" aria-pressed="true">Skin Store</button>
@@ -137,6 +138,11 @@
                         </div>
                         <p id="skin-owned-count" class="skin-owned-count" aria-live="polite"></p>
                         <h3 class="skin-catalog-heading">Choose your skin</h3><div id="skin-options" class="skin-options" aria-label="Choose a skin"></div>
+                        <nav id="skin-pagination" aria-label="Skin catalog pages" hidden><button type="button" id="skin-page-prev" aria-label="Previous skins">‹ Prev</button><span id="skin-page-number" aria-live="polite"></span><button type="button" id="skin-page-next" aria-label="Next skins">Next ›</button></nav>
+                        </div>
+                        <div id="skin-detail-panel" hidden>
+                        <img id="skin-detail-art" alt="" decoding="async">
+                        <p id="skin-detail-description"></p>
                         <div id="skin-stage" class="skin-stage" data-preview-skin="neon">
                             <div id="seasonal-crest" aria-hidden="true" hidden></div>
                             <h3 id="skin-preview-name">Neon Arena</h3>
@@ -151,6 +157,7 @@
                         <button id="skin-victory-preview" class="btn-secondary" type="button" hidden>▶ Preview victory &amp; sound</button>
                         <button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
                         <p id="skin-status" class="profile-feedback" role="status" aria-live="polite"></p>
+                        </div>
                     </div>
                 </section>
                 <section id="player-settings" class="home-drawer" hidden>
