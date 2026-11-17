@@ -70,3 +70,39 @@ workflows:
       - artifacts/*.apk
       - artifacts/source-commit.txt
       - artifacts/SHA256SUMS.txt
+
+  rombmaster-asset-import:
+    name: RombMaster Picsart Asset Import
+    instance_type: mac_mini_m2
+    max_build_duration: 15
+    environment:
+      groups:
+        - rombmaster_asset_write
+    scripts:
+      - name: Validate branch and source revision
+        script: |
+          set -eu
+          case "${CM_BRANCH:-}" in feat/v25-*) ;; *) echo "Only V25 feature branches are allowed"; exit 1;; esac
+          test -n "${ROMBMASTER_ASSET_TOKEN:-}"
+          test "$(git rev-parse HEAD)" = "$CM_COMMIT"
+          test -z "$(git status --porcelain)"
+      - name: Optimize and validate Picsart images
+        script: |
+          set -eu
+          python3 -m venv /tmp/rombmaster-assets-venv
+          /tmp/rombmaster-assets-venv/bin/pip install --disable-pip-version-check Pillow==12.0.0
+          /tmp/rombmaster-assets-venv/bin/python scripts/picsart-assets.py
+      - name: Commit generated assets to the same feature branch
+        script: |
+          set -eu
+          git add -- src/public/assets/premium/master/
+          if git diff --cached --quiet; then echo "ASSETS ALREADY CURRENT"; exit 0; fi
+          git diff --cached --name-only
+          git -c user.name="RombMaster Asset Bot" -c user.email="rombmaster-assets@users.noreply.github.com" commit -m "chore(assets): import optimized Picsart artwork [skip ci]"
+          export GIT_TERMINAL_PROMPT=0
+          ASKPASS="$(mktemp)"
+          trap 'rm -f "$ASKPASS"' EXIT
+          printf '%s\n' '#!/bin/sh' 'case "$1" in *Username*) printf "%s\\n" "x-access-token";; *) printf "%s\\n" "$ROMBMASTER_ASSET_TOKEN";; esac' > "$ASKPASS"
+          chmod 700 "$ASKPASS"
+          GIT_ASKPASS="$ASKPASS" git -c credential.helper= push https://github.com/Aleksandar1105/RombMaster.git "HEAD:refs/heads/$CM_BRANCH"
+          echo "ASSET PUSH: PASS"
