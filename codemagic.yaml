@@ -1,0 +1,72 @@
+# Manual builds only. Upload the persistent test keystore before the first run.
+workflows:
+  rombmaster-cloud-test:
+    name: RombMaster Cloud Test APK
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      node: "22"
+      java: 17
+      android_signing:
+        - rombmaster_cloud_test
+    scripts:
+      - name: Install dependencies
+        script: npm ci --no-audit --no-fund
+      - name: Run regression tests
+        script: npm test
+      - name: Build web app and sync Android
+        script: |
+          set -e
+          npm run build
+          npx cap sync android
+      - name: Prepare isolated signed test app
+        script: |
+          set -e
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          for name in ('CM_KEYSTORE_PATH', 'CM_KEYSTORE_PASSWORD', 'CM_KEY_ALIAS', 'CM_KEY_PASSWORD'):
+              if not os.environ.get(name):
+                  raise SystemExit('Missing signing variable: ' + name)
+          sdk = os.environ.get('ANDROID_SDK_ROOT') or os.environ.get('ANDROID_HOME')
+          if not sdk:
+              raise SystemExit('Android SDK location is missing')
+          Path('android/local.properties').write_text('sdk.dir=' + sdk + '\n')
+          build = int(os.environ['BUILD_NUMBER']) + 10000
+          p = Path('android/app/build.gradle')
+          s = p.read_text()
+          assert s.count('applicationIdSuffix ".test"') == 1
+          assert s.count('versionCode 1\n') == 1
+          assert s.count('    buildTypes {') == 1
+          s = s.replace('versionCode 1\n', 'versionCode ' + str(build) + '\n')
+          s = s.replace('applicationIdSuffix ".test"', 'applicationIdSuffix ".cloudtest"\n            versionNameSuffix "-cloud-' + str(build) + '"\n            signingConfig signingConfigs.cloudTest')
+          signing = """    signingConfigs {
+                  cloudTest {
+                      storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                      storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("CM_KEY_ALIAS")
+                      keyPassword System.getenv("CM_KEY_PASSWORD")
+                  }
+              }
+          """
+          s = s.replace('    buildTypes {', signing + '    buildTypes {')
+          p.write_text(s)
+          p = Path('android/app/src/debug/res/values/strings.xml')
+          p.write_text(p.read_text().replace('RombMaster Test', 'RombMaster Cloud Test'))
+          PY
+      - name: Build installable APK
+        script: |
+          set -e
+          cd android
+          bash gradlew assembleDebug --no-daemon --stacktrace
+      - name: Name APK and record source revision
+        script: |
+          set -e
+          mkdir -p artifacts
+          cp android/app/build/outputs/apk/debug/app-debug.apk "artifacts/RombMaster-Cloud-Test-${BUILD_NUMBER}.apk"
+          git rev-parse HEAD > artifacts/source-commit.txt
+          shasum -a 256 artifacts/*.apk > artifacts/SHA256SUMS.txt
+    artifacts:
+      - artifacts/*.apk
+      - artifacts/source-commit.txt
+      - artifacts/SHA256SUMS.txt
