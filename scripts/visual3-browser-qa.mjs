@@ -219,7 +219,7 @@ try{
    return Promise.all(cards.map(async card=>{
     const id=card.dataset.skinId,art=getComputedStyle(card,'::before'),bounds=card.getBoundingClientRect();
     const name=card.querySelector('.skin-card-name'),status=card.querySelector('.skin-card-status'),rarity=card.querySelector('.skin-card-rarity'),action=card.querySelector('.skin-card-action');
-    const src='/assets/premium/reference/'+id+'-reference-hero.webp';
+    const src='/assets/premium/reference/'+(id==='neon'?'neon-master-store.png':id+'-reference-hero.webp');
     const img=new Image();img.src=src;let decoded=true;try{await img.decode();}catch{decoded=false;}
     const inside=[name,status,rarity].every(el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=bounds.left-1&&b.right<=bounds.right+1&&b.top>=bounds.top-1&&b.bottom<=bounds.bottom+1;});
     return {id,decoded,art:art.backgroundImage.includes(src)&&art.content!=='none'&&art.display!=='none',inside,overflow:card.scrollWidth>card.clientWidth+2,action:action.textContent.trim()};
