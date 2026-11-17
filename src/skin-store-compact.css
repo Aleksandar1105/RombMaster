@@ -51,8 +51,8 @@
 
 /* V25.2.1 Neon Master: bundled artwork, independent of the approved home hero. */
 :root[data-skin="neon"] #view-game {
-  background:linear-gradient(180deg,#07172930,#07172936),url('/assets/premium/reference/neon-master-arena.png') center/cover no-repeat,#071729;
+  background:linear-gradient(180deg,#07172930,#07172936),url('/assets/premium/master/neon-master-arena.webp') center/cover no-repeat,#071729;
 }
 #menu-page #skin-page .skin-card[data-skin-id="neon"] {
-  --card-art:url('/assets/premium/reference/neon-master-store.png');
+  --card-art:url('/assets/premium/master/neon-master-store.webp');
 }
