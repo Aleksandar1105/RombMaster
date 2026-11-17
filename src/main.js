@@ -182,7 +182,7 @@ function setSkinPanel(detail) {
         el('page-title').textContent = 'Skin Details';
         const skin = getSkin(previewSkinId);
         const art = el('skin-detail-art');
-        art.src = '/assets/premium/reference/' + (skin.id === 'neon' ? 'neon-master-store.png' : skin.id + '-reference-hero.webp');
+        art.src = skin.id === 'neon' ? '/assets/premium/master/neon-master-store.webp' : '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
         art.alt = skin.name;
         el('skin-detail-description').textContent = skin.catalog.description + ' · ' + skin.catalog.rarity;
         showSkinPreview();
