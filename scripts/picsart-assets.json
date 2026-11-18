@@ -1,17 +1,27 @@
 [
   {
-    "name": "royal-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/55edd8d0-f9dc-478e-b41c-38f42970ef3f.png",
-    "max_side": 2048
-  },
-  {
-    "name": "royal-master-store.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/fb80ccf4-058f-4e3b-8b02-ba38347ae9e1.png",
+    "name": "arena-puzzle.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/5b33f916-a744-4639-a2c5-a8704506b4bc.png",
     "max_side": 1024
   },
   {
-    "name": "royal-master-hero.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/6297f16f-d34a-4ac5-b437-78c4cfac1bcd.png",
-    "max_side": 2048
+    "name": "arena-perfect.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/d1999c46-5fe7-4750-abd5-943e21e1c3f9.png",
+    "max_side": 1024
+  },
+  {
+    "name": "arena-blitz.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/1c17adb0-f7f6-42eb-9e45-08ab341b268b.png",
+    "max_side": 1024
+  },
+  {
+    "name": "arena-survival.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/0defe545-280f-40fe-ae5f-b94972fda6ef.png",
+    "max_side": 1024
+  },
+  {
+    "name": "arena-infinity.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/b22854a7-bc47-41f2-94d2-af689fa40e17.png",
+    "max_side": 1024
   }
 ]
