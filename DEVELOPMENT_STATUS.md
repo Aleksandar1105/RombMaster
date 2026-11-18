@@ -74,3 +74,7 @@ package from production/older debug installs; it need not share their progress.
 ## Challenge Arena · 2026-11-18
 
 Updated the home entry to Challenge Arena. The mode picker uses illustrated cards, active-skin colors and an explicit Career Level 100 unlock condition for Infinity.
+
+## Development direction · 2026-11-18
+
+The earlier roadmap remains the development baseline. The next device review covers the updated Challenge Arena, home utilities and player creation alongside the outstanding Neon and Royal visual checks.

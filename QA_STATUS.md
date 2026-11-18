@@ -79,3 +79,7 @@ in-game approval remains separate until a valid test path is agreed.
 ## Challenge Arena · 2026-11-18
 
 Challenge Arena changes on base db4dfc7 passed 177 automated tests, the Vite build, Capacitor Android sync and asset verification. On-device checks pending for mode labels, selected state and Infinity at locked and unlocked stages.
+
+## Development direction · 2026-11-18
+
+The roadmap confirmation is a planning decision. Device verification of the latest Arena UI and Royal previews remains pending.

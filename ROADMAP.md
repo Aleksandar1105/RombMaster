@@ -65,3 +65,7 @@ Royal feedback is resolved.
 ## Challenge Arena · 2026-11-18
 
 V25 now explicitly includes visual approval of the Challenge Arena mode cards, selected state and Infinity unlock presentation across skins. Verify on Android before closing the visual gate.
+
+## Development direction · 2026-11-18
+
+The owner confirmed the earlier development proposal as the baseline through V30. Place improvements in the relevant milestone and use APK feedback to refine them. Changes to scope or milestone order should be agreed explicitly. The exact V29 scope remains open.
