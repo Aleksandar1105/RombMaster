@@ -22,7 +22,7 @@ async function load() {
     skins:[...get('skins.js').namespace.SKINS,...get('skins.js').namespace.SEASONAL_SKINS]};
 }
 function fakeCanvas() {
-  const strokes=[], fills=[];
+  const strokes=[], fills=[], clears=[], contexts=[];
   let pts=[];
   const stack=[];
   const ctx={
@@ -30,11 +30,11 @@ function fakeCanvas() {
     restore(){Object.assign(this,stack.pop());},
     beginPath(){pts=[];},moveTo(x,y){pts.push([x,y]);},lineTo(x,y){pts.push([x,y]);},
     stroke(){strokes.push({pts:pts.slice(),style:this.strokeStyle,width:this.lineWidth});},
-    fill(){fills.push('path');},fillRect(){fills.push('rect');},setTransform(){},translate(){},
+    fill(){fills.push('path');},fillRect(...args){fills.push('rect');},clearRect(...args){clears.push(args);},setTransform(){},translate(){},
     arc(){},arcTo(){},rect(){},clip(){},closePath(){},bezierCurveTo(){},setLineDash(){},
     createLinearGradient(...coords){return {coords,stops:[],addColorStop(at,color){this.stops.push([at,color]);}};}
   };
-  return {width:320,height:320,getContext:()=>ctx,strokes,fills};
+  return {width:320,height:320,getContext:(type,options)=>{contexts.push({type,options});return ctx;},strokes,fills,clears,contexts};
 }
 test('all thirteen finished skins preserve one centered two-color line in both directions',async()=>{
   const {Renderer,Board,skins}=await load();
@@ -48,6 +48,10 @@ test('all thirteen finished skins preserve one centered two-color line in both d
     const snapshot=JSON.stringify(board);
     renderer.draw(board,null);
     assert.equal(JSON.stringify(board),snapshot);
+    assert.equal(canvas.contexts[0].type,'2d');
+    assert.equal(canvas.contexts[0].options.alpha,true);
+    // Neon alone clears the full canvas to show the arena; other skins retain their backgrounds.
+    assert.deepEqual(canvas.clears,skin.id==='neon'?[[0,0,320,320]]:[]);
     for(const [points,colors] of [
       [[[130,130],[190,130]],[skin.colors.x,skin.colors.o]],
       [[[190,130],[190,190]],[skin.colors.o,skin.colors.x]]
