@@ -21,7 +21,7 @@ const finishes = Object.freeze({
 // Rarity is presentation metadata, never a purchase entitlement.
 const catalog = Object.freeze({
   neon: Object.freeze({ rarity:'Default', description:'Crystalline neon energy', effect:'Neon pulse' }),
-  royal: Object.freeze({ rarity:'Epic', description:'Gilded metal and royal elegance', effect:'Golden sparks' }),
+  royal: Object.freeze({ rarity:'Epic', description:'Black marble, gold and platinum', effect:'Golden sparks', victory:'Royal crown' }),
   cyber: Object.freeze({ rarity:'Epic', description:'Angular digital circuitry', effect:'Scan wave' }),
   ice: Object.freeze({ rarity:'Rare', description:'Embers meet crystalline ice', effect:'Crystal shards' }),
   wood: Object.freeze({ rarity:'Rare', description:'Handcrafted natural wood', effect:'Wood dust' }),
