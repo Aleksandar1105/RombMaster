@@ -1,7 +1,7 @@
 // Original short synthesized UI cues: [frequency Hz, waveform, seconds, gain, delay ms].
 // No downloads or background music. Gains are deliberately low for phone speakers.
 const themes = {
-  neon: {move:[[300,'sine',.09,.045,0]],capture:[[600,'triangle',.11,.065,0],[800,'sine',.18,.065,85]],win:[[400,'triangle',.12,.06,0],[500,'triangle',.12,.06,100],[600,'triangle',.15,.06,200],[800,'sine',.22,.07,300]]},
+  neon: {move:[[330,'triangle',.055,.035,0],[660,'sine',.07,.018,18]],capture:[[165,'triangle',.12,.045,0],[660,'sine',.17,.05,20],[990,'triangle',.18,.035,80],[1320,'sine',.23,.025,145]],win:[[392,'triangle',.18,.045,0],[523,'sine',.18,.05,90],[659,'triangle',.20,.045,180],[784,'sine',.22,.045,270],[1047,'sine',.32,.04,360],[523,'triangle',.30,.025,360]]},
   royal: {move:[[523,'sine',.12,.04,0]],capture:[[659,'sine',.18,.065,0],[988,'sine',.16,.04,35],[1318,'sine',.23,.035,95]],win:[[523,'triangle',.18,.055,0],[659,'sine',.18,.06,100],[784,'sine',.22,.06,200],[1047,'sine',.30,.065,300]]},
   cyber: {move:[[230,'square',.055,.025,0],[460,'triangle',.055,.025,35]],capture:[[330,'sawtooth',.09,.028,0],[660,'square',.08,.025,65],[990,'triangle',.13,.055,120]],win:[[220,'triangle',.1,.05,0],[440,'square',.09,.025,90],[880,'triangle',.15,.055,180],[1320,'sine',.20,.05,265]]},
   ice: {move:[[440,'triangle',.085,.045,0]],capture:[[260,'triangle',.14,.055,0],[1046,'sine',.20,.045,70],[1568,'sine',.23,.028,130]],win:[[392,'triangle',.18,.055,0],[784,'sine',.20,.045,90],[1175,'sine',.22,.04,180],[1568,'sine',.28,.035,270]]},
