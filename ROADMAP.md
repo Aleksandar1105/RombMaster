@@ -79,3 +79,10 @@ The owner confirmed the earlier development proposal as the baseline through V30
 - The proposed 894-credit allocation was 240 for skin graphics, 180 for effects and animations, 110 for audio, 90 for icons/avatars/rewards, 120 for promotional assets and 154 in reserve. Spending requires separate authorization.
 - Original working estimates were 4–6 weeks to a complete beta and 6–8 weeks to release, assuming regular testing and timely approvals. These estimates do not set a launch date.
 - Release criteria cover all 16 skin visuals, 100 balanced levels, distinct AI strategies, daily challenges and rewards, a working store, verified purchase and restore flows, optimized animation and sound, no critical Android defects, successful beta testing, Play documentation and the production AAB.
+
+## Owner-approved adaptive board direction · 2026-11-18
+- V25.4: responsive phone/tablet UI; preserve non-scrolling Home and the approved layered premium visual references (Frozen Christmas, Royal Gold, Golden Dragon, Spring Blossom, Midnight Gold, Summer Paradise).
+- V26.1–V26.4: show board names alongside actual N × N dimensions; offer automatic recommendation and manual selection with previews. Existing sizes and save formats must be audited before changes. Larger boards are free functionality, gated by usable play area and touch accuracy rather than physical diagonal or device branding. Show unavailable sizes with a reason.
+- Candidate sizes 4, 6, 8, 10, 12, 16 and optionally 20 are proposals, not current engine capabilities. Validate available width AND height, board geometry, hit testing, AI latency, memory, save/resume and rotation before setting thresholds. Do not silently resize or discard saved matches. Landscape and foldable support are targets subject to QA; no cross-device sync promise.
+- V29: verify phone/tablet/foldable layouts and performance. Static themed visuals precede per-skin sound and animation production.
+- Current Arena asset import: owner logs confirm self-test, conversion and push PASS at 5ebc496 (five WebP files). APK and device UI/interaction QA still pending. Resume this gate before expanding gameplay scope.
