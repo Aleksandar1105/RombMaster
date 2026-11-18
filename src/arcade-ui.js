@@ -1,4 +1,4 @@
-import {createArcade,arcadeMove,timeoutArcade,BLITZ_MS,ARCADE_KEY,readArcade,recordArcade,arcadeSummary} from './arcade.js';
+import {createArcade,arcadeMove,arcadeReply,timeoutArcade,BLITZ_MS,ARCADE_KEY,readArcade,recordArcade,arcadeSummary} from './arcade.js';
 import {Renderer} from './renderer.js';
 import {nearestLegalLine,canvasPoint} from './input.js';
 import {LocalSlots,ProfileStore,careerSummary} from './profile.js';
@@ -20,6 +20,20 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
  function show(view){picker.hidden=view!=='picker';play.hidden=view!=='play';progress.hidden=view!=='progress';page.dataset.arenaView=view;}
  function select(mode){selectedMode=mode;highlightMode(mode);el('arcade-selection-title').textContent=modeNames[mode];el('arcade-selection-description').textContent=descriptions[mode];start.disabled=false;}
  let session=null,canAdvance=false,key=null,seed=1,last=null,timer=null,active=false,turnStart=0,elapsed=0,days=30;
+ let aiTimer=null;
+ function stopAI(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;}
+ function scheduleAI(delay=550){
+  if(aiTimer!==null||!session?.aiPending||game.paused||page.hidden)return;
+  el('arcade-feedback').textContent='Opponent turn';
+  aiTimer=setTimeout(()=>{
+   aiTimer=null;
+   if(!session?.aiPending||game.paused||page.hidden)return;
+   if(key!==LocalSlots.storageKey(ARCADE_KEY)){leave();return;}
+   try{const r=arcadeReply(session);last=r.last||last;draw();game.playCosmeticSound(r.points?'capture':'move');
+    if(session.finished)finish();else if(session.aiPending)scheduleAI(420);else{el('arcade-feedback').textContent='Your turn';resume();}
+   }catch{stopAI();el('arcade-feedback').textContent='Opponent move unavailable. Return to Arena.';}
+  },delay);
+ }
  const now=()=>performance.now();
  const currentElapsed=()=>elapsed+(active?Math.max(0,now()-turnStart):0);
  const stopClock=()=>{if(timer!==null)clearInterval(timer);timer=null;if(active)elapsed=currentElapsed();active=false;};
@@ -59,7 +73,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   el('arcade-score').textContent=session.puzzle?'Attempts: '+session.attempts:'You '+session.board.score[1]+' · AI '+session.board.score[0]+' · Round '+session.round;
  }
  function finish(){
-  stopClock();
+  stopAI();stopClock();
   const result=key===LocalSlots.storageKey(ARCADE_KEY)?recordArcade(localStorage,key,session):{status:'unavailable'};
   el('arcade-feedback').textContent=(session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
   canAdvance=result.status==='ready';
@@ -78,12 +92,13 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
  }
  function resume(){
   if(!session||session.finished||page.hidden||game.paused||active)return;
+  if(session.aiPending){scheduleAI();return;}
   active=true;turnStart=now();
   if(session.mode==='blitz')timer=setInterval(tick,100);
   tick();
  }
  function begin(mode,round=1){
-  stopClock();highlightMode(null);session=null;key=LocalSlots.storageKey(ARCADE_KEY);last=null;elapsed=0;canAdvance=false;canvas.hidden=true;el('arcade-next').hidden=true;
+  stopAI();stopClock();highlightMode(null);session=null;key=LocalSlots.storageKey(ARCADE_KEY);last=null;elapsed=0;canAdvance=false;canvas.hidden=true;el('arcade-next').hidden=true;
   if(mode==='infinity'){
    if(!unlockedInfinity()){el('arcade-selection-description').textContent='Win Career level 100 first.';return;}
    try{const read=readArcade(localStorage,key);if(read.status!=='ready')throw Error();const today=localDateKey(),view=engagementView(read.data.engagement||migrateEngagement(read.data.history,today),today);if(!view)throw Error();round=view.infinityNext;}
@@ -97,10 +112,14 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   el('arcade-feedback').textContent='Your turn';
   el('arcade-clock').textContent='';draw();resume();
  }
- function leave(){stopClock();selectedMode=null;show('picker');start.disabled=true;el('arcade-selection-title').textContent='Choose a challenge';el('arcade-selection-description').textContent='Select a mode to see its rules.';highlightMode(null);session=null;key=null;last=null;canvas.hidden=true;el('arcade-next').hidden=true;el('arcade-clock').textContent='';el('arcade-score').textContent='';el('arcade-title').textContent='Choose a challenge';el('arcade-instruction').textContent='Practice without changing Career or Daily progress.';el('arcade-feedback').textContent='';}
+ function leave(){stopAI();stopClock();selectedMode=null;show('picker');start.disabled=true;el('arcade-selection-title').textContent='Choose a challenge';el('arcade-selection-description').textContent='Select a mode to see its rules.';highlightMode(null);session=null;key=null;last=null;canvas.hidden=true;el('arcade-next').hidden=true;el('arcade-clock').textContent='';el('arcade-score').textContent='';el('arcade-title').textContent='Choose a challenge';el('arcade-instruction').textContent='Practice without changing Career or Daily progress.';el('arcade-feedback').textContent='';}
  modeButtons.forEach(b=>b.onclick=()=>select(b.dataset.arcade));
  start.onclick=()=>{if(selectedMode)begin(selectedMode);};
- el('arcade-back').onclick=()=>{leave();refresh();};
+ function back(){if(page.hidden||page.dataset.arenaView==='picker')return false;
+  if(session&&!session.finished&&!windowRef.confirm('Leave this unfinished challenge? Progress in this round will be lost.'))return true;
+  leave();refresh();return true;
+ }
+ el('arcade-back').onclick=back;
  el('arcade-progress-open').onclick=()=>{leave();show('progress');refresh();};
  el('arcade-progress-back').onclick=()=>{leave();refresh();};
  el('arcade-next').onclick=()=>{if(!session?.finished)return;begin(session.mode,session.mode==='survival'&&session.outcome==='win'?session.round+1:1);};
@@ -112,11 +131,11 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   const move=nearestLegalLine(session.board,renderer.CELL,renderer.offX,renderer.offY,point.x,point.y);if(!move)return;
   event.preventDefault();
   const time=currentElapsed();stopClock();
-  const result=arcadeMove(session,move,time);last=result.last||last;elapsed=0;draw();
+  const result=arcadeMove(session,move,time,Math.random,{deferAI:true});last=result.last||last;elapsed=0;draw();
   if(result.status==='retry')el('arcade-feedback').textContent=session.puzzle.retry;
   else if(result.status==='ready'){el('arcade-feedback').textContent=result.points?'Capture! Play again.':'Your turn';game.playCosmeticSound(result.points?'capture':'move');}
   if(session.finished)finish();else resume();
  });
  windowRef.addEventListener('resize',draw);
- return {enter(){leave();refresh();},leave,activity(){if(game.paused)stopClock();else resume();}};
+ return {enter(){leave();refresh();},leave,back,activity(){if(game.paused){stopAI();stopClock();}else resume();}};
 }
