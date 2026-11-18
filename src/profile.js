@@ -194,7 +194,8 @@ export const LocalSlots = {
     return result.index.slots.includes(chosen) ? scopedKey(base, chosen) : null;
   },
 
-  createPlayer(rawName) {
+  createPlayer(rawName, avatar = 'spark') {
+    if (!PLAYER_AVATARS.some(item => item.id === avatar && item.id !== 'neon-fox')) return { status: 'bad-avatar' };
     let name;
     try { name = cleanPlayerName(rawName); }
     catch { return { status: 'bad-name' }; }
@@ -221,7 +222,7 @@ export const LocalSlots = {
         if (SCOPED_KEYS.every(base => localStorage.getItem(scopedKey(base, id)) === null)) break;
       }
       if (nextId >= 10000) return { status: 'limit' };
-      localStorage.setItem(scopedKey(PROFILE_KEY, id), JSON.stringify(freshProfile(name)));
+      localStorage.setItem(scopedKey(PROFILE_KEY, id), JSON.stringify({ ...freshProfile(name), avatar }));
       localStorage.setItem(PLAYER_SLOTS_KEY, JSON.stringify({
         ...index, slots: [...index.slots, id], nextId: nextId + 1, activeId: id,
       }));

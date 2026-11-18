@@ -608,7 +608,7 @@ el('create-local-player-btn').onclick = () => {
         localPlayerFeedback.textContent = 'Close the current game or challenge before creating a player.';
         return;
     }
-    const result = LocalSlots.createPlayer(newLocalPlayerName.value);
+    const result = LocalSlots.createPlayer(newLocalPlayerName.value, el('new-local-player-avatar').value);
     if (result.status !== 'ready') {
         localPlayerFeedback.textContent = ({
             'bad-name': 'Enter a player name of 1–18 characters.',
@@ -619,8 +619,9 @@ el('create-local-player-btn').onclick = () => {
         return;
     }
     newLocalPlayerName.value = '';
+    el('new-local-player-avatar').value = 'spark';
     updateActivePlayerView();
-    localPlayerFeedback.textContent = 'New local player created with separate progress.';
+    localPlayerFeedback.textContent = profileName.value + ' is now the active player.';
 };
 refreshPlayerChooser();
 refreshCareer();
@@ -778,11 +779,14 @@ el('career-start-btn').onclick = () => {
     askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, el('career-start-btn'));
 };
 
-for (const avatar of PLAYER_AVATARS.filter(item => item.id !== 'neon-fox')) {
-    const option = document.createElement('option');
-    option.value = avatar.id;
-    option.textContent = avatar.icon + ' ' + avatar.label;
-    el('career-avatar').append(option);
+for (const id of ['career-avatar', 'new-local-player-avatar']) {
+    for (const avatar of PLAYER_AVATARS.filter(item => item.id !== 'neon-fox')) {
+        const option = document.createElement('option');
+        option.value = avatar.id;
+        option.textContent = avatar.icon + ' ' + avatar.label;
+        el(id).append(option);
+    }
+    el(id).value = 'spark';
 }
 el('career-identity').onsubmit = event => {
     event.preventDefault();

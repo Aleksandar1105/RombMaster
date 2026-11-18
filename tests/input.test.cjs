@@ -362,10 +362,12 @@ test('multiple local players keep match saves and Career progress independent', 
   const guestSave = h.storage.get('rhombus_save');
   const guestProfile = h.storage.get('rombmaster_profile_v1');
 
+  h.el('new-local-player-avatar').value = 'robot';
   h.el('new-local-player-name').value = 'Lina';
   h.el('create-local-player-btn').click();
   assert.equal(h.el('local-player-select').value, 'slot-1');
   assert.equal(h.el('profile-name').value, 'Lina');
+  assert.equal(h.el('profile-avatar').value, 'robot');
   assert.equal(h.el('career-progress').textContent, 'Level 1 / 100');
   assert.equal(h.el('continueBtn').hidden, true);
   h.game.start(4, 'pvp', 'normal');

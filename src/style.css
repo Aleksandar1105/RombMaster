@@ -3172,3 +3172,18 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #career-identity :is(input,select),#career-skin {min-height:44px;width:100%;}
 #career-skin-row:not([hidden]) {grid-column:1/-1;grid-row:2;}
 #view-menu #career-page .mission-detail:has(#career-skin-row:not([hidden])) #career-start-btn {grid-row:3;}
+
+/* All three home utilities share one row across arena themes. */
+#view-menu #home-hub #home-tools.home-links {
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto;
+}
+#view-menu #home-hub #home-tools > button:not([hidden]),
+#view-menu #home-hub #home-tools > #home-skin-store:not([hidden]) {
+ grid-column:auto;grid-row:1;justify-self:stretch;width:100%;max-width:none;min-width:0;
+}
+#player-settings .local-player-toolbar .local-player-add {
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;
+}
+#player-settings .local-player-add label {grid-row:1;}
+#player-settings .local-player-add :is(input,select) {grid-row:2;min-width:0;width:100%;min-height:44px;}
+#player-settings .local-player-add button {grid-column:1/-1;width:100%;}
