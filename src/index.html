@@ -114,6 +114,8 @@
                     </div>
                 </section>
                 <section id="arcade-page" hidden class="arcade-panel" aria-label="Challenge Arena">
+ <div id="arcade-picker" class="arena-view">
+ <p class="arena-eyebrow">TRAIN · COMPETE · MASTER</p>
  <div class="arcade-modes" role="group" aria-label="Choose an arena mode">
     <button type="button" data-arcade="puzzle" aria-pressed="false">
         <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M3 8h6V5a3 3 0 0 1 6 0v3h6v6h-3a3 3 0 0 0 0 6h-3v2H3Z"/></svg>
@@ -136,11 +138,20 @@
         <strong>Infinity</strong><small>Win Career Level 100 to unlock</small>
     </button>
  </div>
+ <div class="arena-selection"><h3 id="arcade-selection-title">Choose a challenge</h3><p id="arcade-selection-description">Select a mode to see its rules.</p></div>
+ <button id="arcade-start" class="btn-primary" type="button" disabled>Start Challenge</button>
+ <button id="arcade-progress-open" type="button">Progress &amp; Rewards</button>
+ </div>
+ <div id="arcade-play" class="arena-view" hidden>
+ <button id="arcade-back" type="button">Back to Arena</button>
  <h3 id="arcade-title">Choose a challenge</h3><p id="arcade-instruction"></p>
  <p id="arcade-clock" aria-live="off"></p><p id="arcade-score"></p>
  <canvas id="arcade-canvas" hidden aria-label="Challenge board. Tap between dots to draw a line."></canvas>
  <p id="arcade-feedback" role="status"></p>
  <button id="arcade-next" type="button" class="btn-primary" hidden>Play again</button>
+ </div>
+ <div id="arcade-progress" class="arena-view" hidden>
+ <button id="arcade-progress-back" type="button">Back to Arena</button>
  <section class="arcade-performance"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><p id="arcade-summary"></p><small>Local practice statistics, not a measurement of intelligence.</small></section>
  <section id="arcade-rewards" class="arcade-rewards" aria-label="Arena rewards">
  <details open><summary>Daily missions</summary><ul id="daily-arena-missions"></ul></details>
@@ -149,6 +160,7 @@
  <details><summary>My seasonal crests</summary><ul id="season-collection"></ul></details>
  <details><summary>Achievements · <span id="arena-achievement-count">0 / 50</span></summary><p>26 Arena achievements + 24 Career achievements</p><ul id="arcade-achievements"></ul></details>
  </section>
+ </div>
  </section>
  <section id="skin-page" class="home-drawer" hidden>
                     <div class="home-drawer-content skin-collection">
