@@ -383,6 +383,9 @@ export const Game = {
     const result = resultPresentation(s, this.settings.mode);
     const overlay = document.getElementById('overlay');
     overlay.dataset.outcome = result.outcome;
+    const replay = document.getElementById('againBtn');
+    if (replay) replay.textContent = this.settings.careerLevel && s[CONSTANTS.X] <= s[CONSTANTS.O]
+      ? 'Retry Level ' + this.settings.careerLevel : 'Replay';
     if (result.outcome === 'victory') audio.win();
     else audio.cue(result.outcome);
     Native.vibrate('heavy');

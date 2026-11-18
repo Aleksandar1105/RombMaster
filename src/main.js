@@ -57,7 +57,7 @@ const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
 const arcade=mountArcade({game:Game});
 const menuPages = {
     'career-page': 'Career',
-    'quick-settings': 'Quick Play settings',
+    'quick-settings': 'Quick Play',
     'player-settings': 'Player profile',
     'comfort-settings': 'Sound & feedback',
     'skin-page': 'Skin Store',
@@ -65,6 +65,8 @@ const menuPages = {
 };
 let pageTrigger = null;
 function showHome() {
+    readQuickSetup();
+    renderQuickSetup();
     arcade?.leave();
     stopSkinPreview();
     skinDetailsOpen = false;
@@ -82,14 +84,26 @@ document.querySelectorAll('[data-page]').forEach(button => {
         if(selected!=='arcade-page')arcade?.leave();
         if (selected !== 'skin-page') stopSkinPreview();
         if (selected === 'career-page') {
-            const profile = ProfileStore.read().profile;
+            const state = ProfileStore.read();
+            const profile = state.profile;
+            el('career-identity').hidden = state.status !== 'empty';
+            if (state.status === 'empty') {
+                el('career-name').value = profile.name;
+                el('career-avatar').value = profile.avatar;
+                el('identity-status').textContent = '';
+            }
+            refreshCareerSkins();
             if (profile) {
                 careerSelect.value = String(profile.unlockedLevel);
                 careerSelect.onchange();
             }
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
-        if (selected === 'quick-settings') refreshSetupPreview();
+        if (selected === 'quick-settings') {
+            readQuickSetup();
+            if (button.id === 'home-two-players') mode = 'pvp';
+            renderQuickSetup();
+        }
         el('page-title').textContent = menuPages[selected];
         if (selected === 'skin-page') openSkins(button.dataset.collection === 'true');
         el('home-hub').hidden = true;
@@ -120,7 +134,7 @@ function renderRoute(profile, selected) {
     if(rival)rival.textContent=world.icon+' '+world.rival+' · '+world.focus;
     el('previous-chapter').disabled = first === 1;
     el('next-chapter').disabled = first + 5 > profile.unlockedLevel;
-    el('career-start-btn').textContent = 'Play level ' + selected;
+    el('career-start-btn').textContent = 'Start match · Level ' + selected;
     const nodes = [];
     for (let level = first; level < first + 5; level++) {
         const button = document.createElement('button');
@@ -560,6 +574,8 @@ const refreshPlayerChooser = () => {
     localPlayerSelect.value = slots.index.activeId;
 };
 const updateActivePlayerView = () => {
+    readQuickSetup();
+    renderQuickSetup();
     Game.stop();
     // A stopped board from the previous player must not be autosaved under
     // the newly selected player on background/pause lifecycle events.
@@ -762,55 +778,97 @@ el('career-start-btn').onclick = () => {
     askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, el('career-start-btn'));
 };
 
-// Inputs
-const setupGroup = (sel, cb) => {
-    document.querySelectorAll(sel).forEach(b => b.onclick = () => {
-        document.querySelectorAll(sel).forEach(x => x.classList.remove("selected"));
-        b.classList.add("selected"); cb(b);
-        refreshQuickSummary();
-    });
+for (const avatar of PLAYER_AVATARS.filter(item => item.id !== 'neon-fox')) {
+    const option = document.createElement('option');
+    option.value = avatar.id;
+    option.textContent = avatar.icon + ' ' + avatar.label;
+    el('career-avatar').append(option);
+}
+el('career-identity').onsubmit = event => {
+    event.preventDefault();
+    const result = ProfileStore.createCareerPlayer(el('career-name').value, el('career-avatar').value);
+    if (result.status !== 'ready') {
+        el('identity-status').textContent = result.status === 'bad-name' ? 'Choose a name of 1–18 characters.' : 'Could not save player.';
+        return;
+    }
+    el('career-identity').hidden = true;
+    refreshCareer();
+    refreshCareerSkins();
+    el('career-start-btn').focus();
 };
 
-let size = 6, mode = 'ai', diff = 'normal';
-function refreshQuickSummary() {
+function refreshCareerSkins() {
+    const {profile, daily} = skinState();
+    const select = el('career-skin');
+    const owned = skinCatalog(profile, daily, activeSkin().id, true);
+    select.replaceChildren();
+    for (const {skin} of owned) {
+        const option = document.createElement('option');
+        option.value = skin.id;
+        option.textContent = skin.name;
+        select.append(option);
+    }
+    select.value = activeSkin().id;
+    el('career-skin-row').hidden = owned.length < 2;
+}
+el('career-skin').onchange = () => {
+    const {profile, daily, key} = skinState();
+    const id = el('career-skin').value;
+    if (saveSkin(localStorage, key, id, profile, daily) === 'ready') {
+        applySkin(id);
+        refreshCareer();
+    } else {
+        el('career-skin').value = activeSkin().id;
+        careerStatus.textContent = 'Could not equip this skin.';
+    }
+};
+
+let size, mode, diff;
+function readQuickSetup() {
+    let saved;
+    const key = LocalSlots.storageKey('rombmaster_quick_setup');
+    try { if (key) saved = JSON.parse(localStorage.getItem(key)); } catch {}
+    size = [4,6,8,10].includes(saved?.size) ? saved.size : 6;
+    mode = saved?.mode === 'pvp' ? 'pvp' : 'ai';
+    diff = ['easy','normal','hard'].includes(saved?.diff) ? saved.diff : 'normal';
+}
+function renderQuickSetup() {
     const board = { 4: 'Small', 6: 'Classic', 8: 'Large', 10: 'Grand' }[size];
     const difficulty = { easy: 'Casual', normal: 'Smart', hard: 'Master' }[diff];
     el('quick-summary').textContent = board + ' · ' + (mode === 'pvp' ? 'Two players' : difficulty + ' AI');
+    for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
+        for (const button of document.querySelectorAll(`[data-${key}]`)) {
+            const selected = button.dataset[key] === String(value);
+            button.classList[selected ? 'add' : 'remove']('selected');
+            button.setAttribute('aria-pressed', String(selected));
+        }
+    }
+    el('difficulty-wrapper').hidden = mode === 'pvp';
+    drawOpening(el('setup-preview'), { size });
 }
-refreshQuickSummary();
-const refreshSetupPreview = () => drawOpening(el('setup-preview'), { size });
-setupGroup("[data-size]", b => { size = +b.dataset.size; refreshSetupPreview(); });
-el('setup-play').onclick = () => el('startBtn').click();
-refreshSetupPreview();
-setupGroup("[data-ai]", b => {
-    mode = b.dataset.ai;
-    el('difficulty-wrapper').style.opacity = mode === 'pvp' ? '0.3' : '1';
-    el('difficulty-wrapper').style.pointerEvents = mode === 'pvp' ? 'none' : 'auto';
-});
-setupGroup("[data-diff]", b => diff = b.dataset.diff);
-
-el('startBtn').onclick = () => {
+for (const button of document.querySelectorAll('[data-size],[data-ai],[data-diff]')) {
+    button.onclick = () => {
+        if (button.dataset.size) size = Number(button.dataset.size);
+        if (button.dataset.ai) mode = button.dataset.ai;
+        if (button.dataset.diff) diff = button.dataset.diff;
+        renderQuickSetup();
+    };
+}
+readQuickSetup();
+renderQuickSetup();
+el('setup-play').onclick = () => {
     const requested = { size, mode, diff };
     const activeId = LocalSlots.read().index?.activeId;
     const startNew = () => {
         if (LocalSlots.read().index?.activeId !== activeId) return;
-        Game.start(requested.size, requested.mode, requested.diff);
+        if (Game.start(requested.size, requested.mode, requested.diff)) {
+            const key = LocalSlots.storageKey('rombmaster_quick_setup');
+            try { if (key) localStorage.setItem(key, JSON.stringify(requested)); } catch {}
+        }
     };
-    askBeforeReplacing('Start New Game?', 'Your currently saved match for this player will be replaced. Career XP and Daily Brain Points stay safe.', startNew, el('startBtn'));
+    askBeforeReplacing('Start New Game?', 'Your currently saved match for this player will be replaced. Career XP and Daily Brain Points stay safe.', startNew, el('setup-play'));
 };
-el('continueBtn').onclick = () => {
-    if (!Game.resume() || Game.settings.careerLevel != null) return;
-    ({ size, mode, diff } = Game.settings);
-    refreshQuickSummary();
-    for (const [key, value] of [['size', size], ['ai', mode], ['diff', diff]]) {
-        document.querySelectorAll(`[data-${key}]`).forEach(button => {
-            if (button.dataset[key] === String(value)) button.classList.add('selected');
-            else button.classList.remove('selected');
-        });
-    }
-    el('difficulty-wrapper').style.opacity = mode === 'pvp' ? '0.3' : '1';
-    el('difficulty-wrapper').style.pointerEvents = mode === 'pvp' ? 'none' : 'auto';
-};
+el('continueBtn').onclick = () => Game.resume();
 el('undoBtn').onclick = () => Game.undo();
 el('restartBtn').onclick = () => {
     const settings = { ...Game.settings };

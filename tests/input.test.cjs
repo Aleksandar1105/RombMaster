@@ -34,10 +34,16 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     elements.set(id, element);
     return element;
   }
+  const pages = Object.entries({ startBtn: 'quick-settings', 'home-two-players': 'quick-settings', career: 'career-page' }).map(([id,page]) => {
+    const button = el(id);
+    button.id = id;
+    button.dataset.page = page;
+    return button;
+  });
   const context = vm.createContext({
     console,
     window: { devicePixelRatio: 1, addEventListener(type, callback) { events.set(type, callback); }, confirm },
-    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el, querySelectorAll: () => [],
+    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el, querySelectorAll: selector => selector === '[data-page]' ? pages : [],
       addEventListener(type, callback) { events.set(type, callback); } },
     localStorage: { getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
@@ -134,7 +140,7 @@ test('menu and Continue retain the game, and a declined new game preserves the s
   h.el('menuBtn').click();
   assert.equal(h.game.gameOver, true);
   assert.equal(h.el('continueBtn').hidden, false);
-  h.el('startBtn').click();
+  h.el('setup-play').click();
   assert.equal(h.el('confirm-dialog').hidden, false);
   assert.equal(h.storage.get('rhombus_save'), raw);
   h.el('confirm-dialog-cancel').click();
@@ -418,14 +424,14 @@ test('new game confirmation keeps original save on Android Back and replaces it 
   const saved = h.storage.get('rhombus_save');
   const originalBoard = JSON.stringify(h.game.board);
   h.el('menuBtn').click();
-  h.el('startBtn').click();
+  h.el('setup-play').click();
   assert.equal(h.el('confirm-dialog').hidden, false);
   assert.equal(h.el('confirm-dialog-title').textContent, 'Start New Game?');
   h.nativeEvents.back();
   assert.equal(h.el('confirm-dialog').hidden, true);
   assert.equal(h.storage.get('rhombus_save'), saved);
   assert.equal(h.exits, 0);
-  h.el('startBtn').click();
+  h.el('setup-play').click();
   h.el('confirm-dialog-accept').click();
   assert.equal(h.game.gameOver, false);
   assert.notEqual(JSON.stringify(h.game.board), originalBoard);
@@ -530,4 +536,36 @@ test('in-match sound control immediately syncs the preference, persists and neve
   assert.equal(next.el('sound-toggle').checked, true);
   assert.equal(next.el('game-sound-label').textContent, 'Sound on');
   assert.deepEqual(JSON.parse(h.storage.get('rombmaster.comfort.v1')), {sound:true,haptics:true});
+});
+
+test('local multiplayer shortcut opens setup and remembers the mode after starting', async () => {
+  const h = await boot({ autoStart: false });
+  h.el('home-two-players').click();
+  assert.equal(h.el('quick-settings').hidden, false);
+  assert.equal(h.el('difficulty-wrapper').hidden, true);
+  assert.equal(h.storage.has('rhombus_save'), false);
+  h.el('setup-play').click();
+  assert.equal(h.game.settings.mode, 'pvp');
+  const resumed = await boot({ storage: h.storage, autoStart: false });
+  resumed.el('startBtn').click();
+  assert.equal(resumed.el('difficulty-wrapper').hidden, true);
+  assert.equal(JSON.parse(h.storage.get('rombmaster_quick_setup')).mode, 'pvp');
+});
+
+test('Career introduces a fresh player once and preserves an existing quick match during setup', async () => {
+  const h = await boot();
+  h.el('menuBtn').click();
+  const original = h.storage.get('rhombus_save');
+  h.el('career').click();
+  assert.equal(h.el('career-identity').hidden, false);
+  h.el('career-name').value = 'Ace';
+  h.el('career-avatar').value = 'robot';
+  h.el('career-identity').onsubmit({ preventDefault() {} });
+  assert.equal(h.el('career-identity').hidden, true);
+  assert.equal(JSON.parse(h.storage.get('rombmaster_profile_v1')).avatar, 'robot');
+  h.el('page-back').click();
+  h.el('career').click();
+  assert.equal(h.el('career-identity').hidden, true);
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  assert.equal(h.storage.get('rhombus_save'), original);
 });

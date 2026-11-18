@@ -148,7 +148,7 @@ const DEFAULT_SLOTS = () => ({
   version: 1, activeId: 'guest', nextId: 1, slots: ['guest'],
 });
 const SLOT_ID = /^slot-([1-9][0-9]{0,3})$/;
-const SCOPED_KEYS = [PROFILE_KEY, 'rhombus_save', 'rombmaster_daily_progress_v1', 'rombmaster_skin_v1', 'rombmaster_arcade_v1'];
+const SCOPED_KEYS = [PROFILE_KEY, 'rhombus_save', 'rombmaster_daily_progress_v1', 'rombmaster_skin_v1', 'rombmaster_arcade_v1', 'rombmaster_quick_setup'];
 const scopedKey = (base, id) => id === 'guest' ? base : `${base}:${id}`;
 
 function parseSlotIndex(raw) {
@@ -278,6 +278,16 @@ export const ProfileStore = {
     }
     try { return { status: 'ready', profile: parseProfile(raw) }; }
     catch { return { status: 'invalid' }; }
+  },
+
+  createCareerPlayer(rawName, avatar) {
+    const current = this.read();
+    if (current.status !== 'empty') return { status: 'unavailable' };
+    if (!PLAYER_AVATARS.some(item => item.id === avatar && item.id !== 'neon-fox')) return { status: 'bad-avatar' };
+    let name;
+    try { name = cleanPlayerName(rawName); }
+    catch { return { status: 'bad-name' }; }
+    return persist({ ...current.profile, name, avatar });
   },
 
   saveName(rawName) {

@@ -88,12 +88,12 @@ test('all home themes share one real interface; preview cannot equip or save a s
     assert.ok(css.includes(':root[data-skin="' + id + '"]'), id);
 });
 
-test('Visual 3 makes collection and store independently reachable and uses a bounded home layout', () => {
+test('Home offers a single collection entrance and local multiplayer and uses a bounded home layout', () => {
  const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
- assert.equal(count('home-skins'),1);
+ assert.equal(count('home-two-players'),1);
  assert.equal(count('home-skin-store'),1);
- assert.match(html,/id="home-skins"[^>]*data-page="skin-page"[^>]*data-collection="true"/);
- assert.match(html,/id="home-skin-store"[^>]*data-page="skin-page"/);
+ assert.match(html,/id="home-two-players"[^>]*data-page="quick-settings"/);
+ assert.match(html,/data-collection="true" id="home-skin-store"[^>]*data-page="skin-page"/);
  assert.ok(html.indexOf('id="home-skin-store"') < html.indexOf('id="menu-page"'));
  assert.match(main,/openSkins\(button\.dataset\.collection === 'true'\)/);
  assert.match(main,/function openSkins\(ownedOnly = false\)/);
@@ -123,7 +123,7 @@ test('approved Neon hero and floor are the supplied reference artwork, with sepa
   assert.ok(css.includes('/assets/premium/reference/'+file));
  }
  assert.ok(html.includes('data-neon-reference="1"'));
- assert.equal(count('home-skins'),1);
+ assert.equal(count('home-two-players'),1);
  assert.equal(count('home-skin-store'),1);
  assert.equal(count('game-sound-btn'),1);
  assert.equal(count('premium-world-level'),1);
