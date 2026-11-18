@@ -113,7 +113,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         el('page-back').focus();
     };
 });
-el('page-back').onclick = () => { if (!closeSkinDetails()) showHome(); };
+el('page-back').onclick = () => { if (!closeSkinDetails() && !arcade?.back()) showHome(); };
 
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
@@ -1219,6 +1219,8 @@ Native.onBack(() => {
     } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
     } else if (closeSkinDetails()) {
+        return;
+    } else if (arcade?.back()) {
         return;
     } else if (pageTrigger) {
         showHome();
