@@ -48,7 +48,7 @@ export class Renderer {
     const colors = skin.colors;
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    if (skin.id === 'neon') {
+    if (skin.id === 'neon' || skin.id === 'royal') {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     } else {
       this.ctx.fillStyle = colors.bg;
@@ -64,7 +64,7 @@ export class Renderer {
     // V2.3: a calm, continuous playing surface, without cell outlines.
     // Only playable squares receive the wash; the existing edge pass is
     // still the single source of truth for all played/available edges.
-    this.ctx.fillStyle = colors.dot + (skin.id === 'neon' ? '1c' : skin.id === 'white' ? '0a' : '0c');
+    this.ctx.fillStyle = colors.dot + (skin.id === 'royal' ? '24' : skin.id === 'neon' ? '1c' : skin.id === 'white' ? '0a' : '0c');
     for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
       if (board.active(r, c)) {
         this.ctx.fillRect(dx(c), dy(r), this.CELL, this.CELL);
@@ -248,7 +248,21 @@ export class Renderer {
       ctx.strokeStyle=color;
       ctx.lineWidth=Math.max(.55,width*.30);
       trace();ctx.stroke();
-    } else if(skin.id==='royal'||skin.id==='wood'||skin.id==='ice') {
+    } else if(skin.id==='royal') {
+      const width=ctx.lineWidth;
+      ctx.shadowBlur=0;
+      ctx.strokeStyle='#0b0806bb';
+      ctx.lineWidth=width*1.22;
+      trace();ctx.stroke();
+      const metal=ctx.createLinearGradient(-r,-r,r,r);
+      metal.addColorStop(0,x?'#fff0b5':'#ffffff');
+      metal.addColorStop(.35,x?'#a77426':'#8d99ad');
+      metal.addColorStop(.58,x?'#fff1bf':'#fff8ef');
+      metal.addColorStop(1,x?'#c18d35':'#c2cbd9');
+      ctx.strokeStyle=metal;
+      ctx.lineWidth=width;
+      trace();ctx.stroke();
+    } else if(skin.id==='wood'||skin.id==='ice') {
       ctx.lineCap=skin.id==='ice'?'square':'round';
       trace();ctx.stroke();
       ctx.shadowBlur=0;
