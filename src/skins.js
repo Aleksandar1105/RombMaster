@@ -11,7 +11,7 @@ const items = [
 ];
 // Surface finish, symbol weight and lighting are cosmetic only.
 const finishes = Object.freeze({
-  neon: Object.freeze({material:'inset', symbolWeight:.105, glow:0, frame:'round', particles:15, effect:'ring', duration:360}),
+  neon: Object.freeze({material:'inset', symbolWeight:.105, glow:7, frame:'round', particles:12, effect:'neon-pulse', duration:520}),
   royal: Object.freeze({material:'metal', symbolWeight:.086, glow:4, frame:'bevel', particles:18, effect:'spark', duration:580}),
   cyber: Object.freeze({material:'circuit', symbolWeight:.079, glow:8, frame:'angular', particles:20, effect:'scan', duration:380}),
   ice: Object.freeze({material:'crystal', symbolWeight:.085, glow:5, frame:'bevel', particles:16, effect:'shard', duration:480}),
@@ -20,7 +20,7 @@ const finishes = Object.freeze({
 });
 // Rarity is presentation metadata, never a purchase entitlement.
 const catalog = Object.freeze({
-  neon: Object.freeze({ rarity:'Default', description:'The original neon arena', effect:'Neon ring' }),
+  neon: Object.freeze({ rarity:'Default', description:'Crystalline neon energy', effect:'Neon pulse' }),
   royal: Object.freeze({ rarity:'Epic', description:'Gilded metal and royal elegance', effect:'Golden sparks' }),
   cyber: Object.freeze({ rarity:'Epic', description:'Angular digital circuitry', effect:'Scan wave' }),
   ice: Object.freeze({ rarity:'Rare', description:'Embers meet crystalline ice', effect:'Crystal shards' }),
