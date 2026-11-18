@@ -219,7 +219,7 @@ try{
    return Promise.all(cards.map(async card=>{
     const id=card.dataset.skinId,art=getComputedStyle(card,'::before'),bounds=card.getBoundingClientRect();
     const name=card.querySelector('.skin-card-name'),status=card.querySelector('.skin-card-status'),rarity=card.querySelector('.skin-card-rarity'),action=card.querySelector('.skin-card-action');
-    const src=id==='neon'?'/assets/premium/master/neon-master-store.webp':'/assets/premium/reference/'+id+'-reference-hero.webp';
+    const src=['neon','royal'].includes(id)?'/assets/premium/master/'+id+'-master-store.webp':'/assets/premium/reference/'+id+'-reference-hero.webp';
     const img=new Image();img.src=src;let decoded=true;try{await img.decode();}catch{decoded=false;}
     const inside=[name,status,rarity].every(el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&b.left>=bounds.left-1&&b.right<=bounds.right+1&&b.top>=bounds.top-1&&b.bottom<=bounds.bottom+1;});
     return {id,decoded,art:art.backgroundImage.includes(src)&&art.content!=='none'&&art.display!=='none',inside,overflow:card.scrollWidth>card.clientWidth+2,action:action.textContent.trim()};
@@ -283,12 +283,14 @@ try{
     assert.equal(await evaluate("document.querySelector('.home-actions').inert"),true);
     await shot('preview-'+id);
     const art=await evaluate(`(async()=>{
-      const name=${JSON.stringify(id)}+'-reference-hero.webp';
+      const skinId=${JSON.stringify(id)};
+      const name=skinId==='royal'?'royal-master-hero.webp':skinId+'-reference-hero.webp';
+      const folder=skinId==='royal'?'master':'reference';
       const hero=document.getElementById('premium-hero-stage');
       const background=getComputedStyle(hero).backgroundImage;
       const urls=Array.from(background.matchAll(/url\\(["']?([^"')]+)["']?\\)/g),m=>m[1]);
       const first=urls[0]||'';
-      if(!first.endsWith('/assets/premium/reference/'+name))return {ok:false,background,name};
+      if(!first.endsWith('/assets/premium/'+folder+'/'+name))return {ok:false,background,name};
       const image=new Image();
       image.src=first;
       try{await image.decode();}catch(e){return {ok:false,background,name,error:String(e)};}
