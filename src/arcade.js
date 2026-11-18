@@ -37,8 +37,8 @@ export function timeoutArcade(s){
  if(s.mode!=='blitz'||s.finished)return false;
  s.finished=true;s.outcome='loss';return true;
 }
-export function arcadeMove(s,move,elapsed=0,random=Math.random){
- if(s.finished||!s.board.getFreeMoves().some(m=>same(m,move)))return {status:'invalid'};
+export function arcadeMove(s,move,elapsed=0,random=Math.random,{deferAI=false}={}){
+ if(s.aiPending||s.finished||!s.board.getFreeMoves().some(m=>same(m,move)))return {status:'invalid'};
  if(s.mode==='blitz'&&elapsed>=BLITZ_MS){timeoutArcade(s);return {status:'timeout'};}
  s.attempts++;s.decisionMs+=Math.max(0,Math.min(600000,Math.round(Number.isFinite(elapsed)?elapsed:0)));
  if(s.puzzle){
@@ -52,6 +52,7 @@ export function arcadeMove(s,move,elapsed=0,random=Math.random){
  s.cells+=result.points;s.doubles+=Number(result.points===2);
  s.chain=result.points?s.chain+result.points:0;s.bestChain=Math.max(s.bestChain,s.chain);
  let last=move;
+ if(!result.points&&deferAI&&!s.board.isGameOver()){s.aiPending=true;s.aiFirst=true;return {status:'ready',last,points:result.points};}
  if(!result.points){
   const diff=s.mode==='blitz'?'normal':s.round<=2?'easy':s.round<=4?'normal':'hard';
   let first=true;
@@ -107,4 +108,17 @@ export function arcadeSummary(data,days=30,date=localDateKey()){
  meanSeconds:moves?Math.round(sum(games,'decisionMs')/moves/100)/10:null,
  doubles:sum(rows,'doubles'),bestChain:Math.max(0,...rows.map(r=>r.bestChain)),
  concessions:sum(games,'concessions'),survival:Math.max(0,...rows.filter(r=>r.mode==='survival'&&r.outcome==='win').map(r=>r.round))};
+}
+
+// Advance exactly one opponent edge; UI owns pacing and cancellation.
+export function arcadeReply(s,random=Math.random){
+ if(!s.aiPending||s.finished)return {status:'invalid'};
+ const diff=s.mode==='blitz'?'normal':s.round<=2?'easy':s.round<=4?'normal':'hard';
+ const move=AI.getBestMove(s.board,diff,null,random);
+ if(!move)throw Error('AI could not find a legal move');
+ const r=s.board.makeMove(move.t,move.r,move.c,O);
+ if(s.aiFirst&&r.points)s.concessions++;s.aiFirst=false;
+ if(s.board.isGameOver()){s.finished=true;s.outcome=s.board.score[X]>s.board.score[O]?'win':s.board.score[X]===s.board.score[O]?'draw':'loss';}
+ s.aiPending=Boolean(r.points&&!s.finished);
+ return {status:s.finished?'complete':'ready',last:move,points:r.points};
 }
