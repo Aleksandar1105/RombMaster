@@ -50,8 +50,8 @@ test('all thirteen finished skins preserve one centered two-color line in both d
     assert.equal(JSON.stringify(board),snapshot);
     assert.equal(canvas.contexts[0].type,'2d');
     assert.equal(canvas.contexts[0].options.alpha,true);
-    // Neon alone clears the full canvas to show the arena; other skins retain their backgrounds.
-    assert.deepEqual(canvas.clears,skin.id==='neon'?[[0,0,320,320]]:[]);
+    // Master skins clear the full canvas to reveal their local arena artwork.
+    assert.deepEqual(canvas.clears,['neon','royal'].includes(skin.id)?[[0,0,320,320]]:[]);
     for(const [points,colors] of [
       [[[130,130],[190,130]],[skin.colors.x,skin.colors.o]],
       [[[190,130],[190,190]],[skin.colors.o,skin.colors.x]]
