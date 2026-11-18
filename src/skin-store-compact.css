@@ -56,3 +56,44 @@
 #menu-page #skin-page .skin-card[data-skin-id="neon"] {
   --card-art:url('/assets/premium/master/neon-master-store.webp');
 }
+
+/* V25.2.1B — Neon Master gameplay and catalog polish. Do not modify Home. */
+:root[data-skin="neon"] #view-game {
+  background:radial-gradient(ellipse at 50% 55%,#07172910 20%,#080e2022 65%),url('/assets/premium/master/neon-master-arena.webp') center/cover no-repeat,#071729;
+}
+:root[data-skin="neon"] #view-game #canvas-wrapper,
+:root[data-skin="neon"] #view-game #canvas {
+  background:transparent;border:0;box-shadow:none;
+}
+:root[data-skin="neon"] #view-game #scoreboard .player-card {padding:6px 8px;gap:6px;min-width:0;}
+:root[data-skin="neon"] #view-game #scoreboard .match-portrait {width:clamp(28px,8vw,40px);max-width:none;}
+:root[data-skin="neon"] #view-game #scoreboard .score-meta {display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:1px;align-content:center;}
+:root[data-skin="neon"] #view-game #scoreboard .p-label {
+  font-size:clamp(.66rem,3vw,.88rem);line-height:1.18;text-align:center;white-space:normal;overflow-wrap:anywhere;text-overflow:clip;
+}
+:root[data-skin="neon"] #view-game #scoreboard .score-num {font-size:clamp(1.25rem,5vw,1.8rem);line-height:1;}
+:root[data-skin="neon"] #view-game #controls .btn-icon:not(.disabled):not(:disabled) {
+  border-color:#539eae!important;background:linear-gradient(155deg,#184255,#151b37 65%,#422858);
+  box-shadow:inset 0 0 9px #22d3ee20,0 0 7px #22d3ee18;
+}
+#menu-page #skin-page .skin-card[data-skin-id]::before {background-size:contain;background-color:#080f20;height:clamp(48px,10.7dvh,102px);}
+#menu-page #skin-page .skin-card[data-skin-id="neon"] {
+  background:linear-gradient(150deg,#15364b,#14172c 66%,#35204a);
+  border-color:#54d7df;box-shadow:inset 0 0 10px #22d3ee26,0 0 8px #22d3ee20;
+}
+#menu-page #skin-page #skin-detail-art {object-fit:contain;background:#080f20;height:clamp(80px,18dvh,160px);}
+@media(max-height:660px) and (orientation:portrait) {
+  #menu-page #skin-page .skin-card[data-skin-id]::before {height:clamp(30px,7.8dvh,52px);}
+}
+:root[data-skin="neon"] #overlay.flex[data-outcome="victory"] .center-panel {
+  background:radial-gradient(ellipse at 50% 22%,#3f1f6a99,transparent 65%),#08192f;
+}
+:root[data-skin="neon"] #overlay.flex[data-outcome="victory"] #result-title::after {
+  background:radial-gradient(circle at 15% 25%,#22d3ee 0 2px,transparent 3px),radial-gradient(circle at 85% 30%,#fb7185 0 3px,transparent 4px),radial-gradient(circle at 28% 80%,#a775fa 0 2px,transparent 3px),radial-gradient(circle at 72% 75%,#f6c86a 0 2px,transparent 3px),radial-gradient(ellipse,#22d3ee66,transparent 70%);
+}
+@media(prefers-reduced-motion:no-preference) {
+  :root[data-skin="neon"] #overlay.flex[data-outcome="victory"] #result-title::after {animation:neon-master-burst .95s ease-out both;}
+  :root[data-skin="neon"] #overlay.flex[data-outcome="victory"] #result-title::before {animation:neon-master-medal .75s cubic-bezier(.2,.8,.3,1) both;}
+}
+@keyframes neon-master-burst {0%{opacity:0;transform:scale(.3)}25%{opacity:1}100%{opacity:0;transform:scale(1.3)}}
+@keyframes neon-master-medal {0%{opacity:0;transform:scale(.65) rotate(-15deg)}65%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
