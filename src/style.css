@@ -3204,3 +3204,14 @@ button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
 #arcade-page[data-arena-view=play]{gap:0;padding:8px;}
 #arcade-page #arcade-play{gap:6px;}
 #arcade-page #arcade-play p:empty{display:none;}
+
+/* V25.3.1B premium Arena artwork; gradient fallback remains visible. */
+#menu-page #arcade-page .arcade-modes button[data-arcade="puzzle"]{--arena-art:url('/assets/premium/master/arena-puzzle.webp');}
+#menu-page #arcade-page .arcade-modes button[data-arcade="perfect"]{--arena-art:url('/assets/premium/master/arena-perfect.webp');}
+#menu-page #arcade-page .arcade-modes button[data-arcade="blitz"]{--arena-art:url('/assets/premium/master/arena-blitz.webp');}
+#menu-page #arcade-page .arcade-modes button[data-arcade="survival"]{--arena-art:url('/assets/premium/master/arena-survival.webp');}
+#menu-page #arcade-page .arcade-modes button[data-arcade="infinity"]{--arena-art:url('/assets/premium/master/arena-infinity.webp');}
+#menu-page #arcade-page .arcade-modes button{min-height:122px;background-image:linear-gradient(180deg,transparent 5%,rgba(5,10,22,.32) 42%,rgba(5,10,22,.96) 100%),var(--arena-art,none);background-size:cover;background-position:center;justify-content:flex-end;color:#fff;text-shadow:0 1px 5px #000;overflow:hidden;}
+#menu-page #arcade-page .arcade-modes button svg{display:none;}
+#menu-page #arcade-page .arcade-modes button small{color:#e0e7f0;}
+#menu-page #arcade-page .arcade-modes button[data-arcade=infinity]{min-height:94px;background-position:center 44%;}
