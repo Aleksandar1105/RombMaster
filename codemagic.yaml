@@ -14,11 +14,14 @@ workflows:
         script: npm ci --no-audit --no-fund
       - name: Run regression tests
         script: npm test
+      - name: Verify local theme assets
+        script: node scripts/verify-theme-assets.mjs
       - name: Build web app and sync Android
         script: |
           set -e
           npm run build
           npx cap sync android
+          node scripts/verify-theme-assets.mjs --dist --android
       - name: Prepare isolated signed test app
         script: |
           set -e
