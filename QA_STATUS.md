@@ -83,3 +83,5 @@ Challenge Arena changes on base db4dfc7 passed 177 automated tests, the Vite bui
 ## Development direction · 2026-11-18
 
 The roadmap confirmation is a planning decision. Device verification of the latest Arena UI and Royal previews remains pending.
+
+Roadmap reconciliation on 2026-11-18 updated planning documents only. Existing Android device checks remain pending.

@@ -67,7 +67,7 @@ package from production/older debug installs; it need not share their progress.
 1. Royal phone visual acceptance; actual Royal gameplay cannot currently be
    reached via ordinary equip. Decide a scoped test-preview approach only if
    full Royal in-game approval is required before the entitlement milestone.
-2. Recover/confirm exact V29 phase scope before that phase begins.
+2. Original milestone definitions recovered. Track device quality in V29, Play preparation in V29.5 and closed beta in V29.9.
 3. Commercial audience, countries, prices, monetization, release credentials and
    publication are later gates, not authorized activations in this batch.
 

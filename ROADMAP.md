@@ -9,10 +9,7 @@ This document restores the November 18 conversation plan, reconciled with source
 at `11433fcd6a8600e8cb8daddf02fd130f510f81c6`. Earlier plans in
 `docs/RELEASE-ROADMAP.md` and `docs/PROFESSIONAL-GAME-ROADMAP.md` are historical:
 their old step numbers are not the current V25–V30 milestones.
-V25–V28.5 and the 16-skin list were recovered from the prior discussion.
-The exact agreed V29/V30 phase text was not recovered. The rows below explicitly
-separate a proposed V29 work package from the user-confirmed V30 release goal;
-do not represent the proposed scope as an earlier approval.
+The owner supplied the [original development proposal](https://chatgpt.com/s/t_6afe1ea1341c819183f71018b0790553). Its nine milestones are the baseline. Its progress percentages, prices, budget allocations and calendar estimates are planning examples. Use fresh QA evidence for current status.
 
 ## Delivery rules
 
@@ -41,8 +38,10 @@ do not represent the proposed scope as an earlier approval.
 | V27 | Daily Streak, Missions, rewards, achievements and seasonal events | Existing daily/engagement modules are foundations, not acceptance evidence for the whole milestone. Validate reset and reward integrity. |
 | V28 | Cosmetic monetization, no pay-to-win | Purchase/restore and commercial decisions remain pending. Current locked previews do not represent purchases. No live billing or advertising activation at this stage. |
 | V28.5 | Local RombMaster Ranks and statistics | Planned offline progression; preserve player isolation and save compatibility. |
-| V29 | Proposed: release hardening, Android compatibility, performance, accessibility, store assets, privacy and release testing | Exact prior phase scope missing; obtain owner decision before committing to this phase. Verify current official Play requirements when approaching release. |
-| V30.0 | Commercial production version for Google Play | User-confirmed destination. Requires approved visuals, device QA, release signing/versioning, Play requirements, accurate disclosures, tested monetization and explicit publication approval. Exact prior subphase text still missing. |
+| V29 | Performance & Quality | Optimize and test stability and performance across Android phones. |
+| V29.5 | Google Play Preparation | Prepare the privacy policy, production AAB, app icon, marketing materials and store listing. |
+| V29.9 | Closed Beta Testing | Run a closed beta with real players, fix reported issues and verify fixes. |
+| V30.0 | Production Release | Publish on Google Play after device QA, beta acceptance, release checks and owner approval. |
 | V31 (deferred) | Online multiplayer, global tournaments and server rankings | Outside V30 scope. Do not introduce servers/subscriptions during current work. |
 
 ## Agreed 16-skin target
@@ -68,4 +67,15 @@ V25 now explicitly includes visual approval of the Challenge Arena mode cards, s
 
 ## Development direction · 2026-11-18
 
-The owner confirmed the earlier development proposal as the baseline through V30. Place improvements in the relevant milestone and use APK feedback to refine them. Changes to scope or milestone order should be agreed explicitly. The exact V29 scope remains open.
+The owner confirmed the earlier development proposal as the baseline through V30. Place improvements in the relevant milestone and use APK feedback to refine them. Changes to scope or milestone order should be agreed explicitly.
+
+## Product details recovered from the original proposal
+
+- V25 covers each skin's Home, arena, store card, board material, X/O, typography, buttons, capture and victory animations, sound and results screen.
+- V26 proposes ten chapters of ten levels. In order: First Steps, Tactical Mind, Territory Wars, The Challenger, Strategic Control, Arena Elite, Grand Tactics, Legendary Battles, Master League and RombMaster. Vary opening layouts, move limits, tactical objectives and opponents.
+- V27 includes streaks, daily and weekly missions, achievements, collectibles and seasonal events. Reward amounts in the mockups are illustrative.
+- V28 proposes a free base game, virtual currency, cosmetic purchases, purchase restoration and mostly voluntary rewarded ads outside matches. Indicative EUR prices: Royal Gold 1.99, premium skin 2.99, seasonal skin 3.99, Prestige skin 4.99, three-skin pack 6.99, Remove Ads 3.99 and Ultimate Collection 19.99.
+- V28.5 proposes Bronze, Silver, Gold, Platinum, Diamond and RombMaster ranks for local progression and AI competition.
+- The proposed 894-credit allocation was 240 for skin graphics, 180 for effects and animations, 110 for audio, 90 for icons/avatars/rewards, 120 for promotional assets and 154 in reserve. Spending requires separate authorization.
+- Original working estimates were 4–6 weeks to a complete beta and 6–8 weeks to release, assuming regular testing and timely approvals. These estimates do not set a launch date.
+- Release criteria cover all 16 skin visuals, 100 balanced levels, distinct AI strategies, daily challenges and rewards, a working store, verified purchase and restore flows, optimized animation and sound, no critical Android defects, successful beta testing, Play documentation and the production AAB.
