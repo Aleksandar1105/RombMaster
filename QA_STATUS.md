@@ -85,3 +85,6 @@ Challenge Arena changes on base db4dfc7 passed 177 automated tests, the Vite bui
 The roadmap confirmation is a planning decision. Device verification of the latest Arena UI and Royal previews remains pending.
 
 Roadmap reconciliation on 2026-11-18 updated planning documents only. Existing Android device checks remain pending.
+
+## V25.3.1B — Challenge Arena device QA (2026-11-19)
+Owner reported 8/8 PASS after the eef9d87 build instructions: five mode graphics, mode selection, explicit Start Challenge, Blitz timer, board touch accuracy, return navigation, Progress & Rewards, Infinity lock/display. Exact installed APK hash not independently verified. Five imported WebPs at 5ebc496. Functional gate passed on owner report; final premium visual polish, background/rewards artwork, per-skin animations and audio remain open. Picsart phase allocation 75, quoted spend 20, remaining allocation 55. Next: V25.3.2 Profile and V25.3.3 Avatars; consolidate final visual polish in V25 premium engine. No automated test result inferred from device report.
