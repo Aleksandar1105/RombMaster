@@ -182,7 +182,7 @@ function setSkinPanel(detail) {
         el('page-title').textContent = 'Skin Details';
         const skin = getSkin(previewSkinId);
         const art = el('skin-detail-art');
-        art.src = skin.id === 'neon' ? '/assets/premium/master/neon-master-store.webp' : '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
+        art.src = ['neon','royal'].includes(skin.id) ? '/assets/premium/master/' + skin.id + '-master-store.webp' : '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
         art.alt = skin.name;
         el('skin-detail-description').textContent = skin.catalog.description + ' · ' + skin.catalog.rarity;
         showSkinPreview();
@@ -229,7 +229,7 @@ function showSkinPreview() {
     const crest=el('seasonal-crest');
     if(crest)crest.hidden=!skin.offer;
     const victoryButton=el('skin-victory-preview');
-    if(victoryButton)victoryButton.hidden=!skin.offer;
+    if(victoryButton)victoryButton.hidden=!skin.catalog.victory;
     if (stage.style.setProperty) {
         for (const [name,value] of Object.entries({
             '--skin-bg':skin.colors.bg,'--skin-x':skin.colors.x,'--skin-o':skin.colors.o,
@@ -245,7 +245,7 @@ function showSkinPreview() {
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
     } else el('skin-status').textContent = skin.condition;
-    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect + (skin.offer ? ' · Victory: '+skin.catalog.victory : '');
+    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
         // A read-only sample with both orientations of contrasting shared edges.
@@ -345,7 +345,7 @@ el('skin-effect-preview').onclick = () => {
 };
 if(el('skin-victory-preview')) el('skin-victory-preview').onclick=()=>{
     const skin=getSkin(previewSkinId), victory=el('seasonal-victory');
-    if(!skin.offer || el('skin-page').hidden || Game.paused || !victory)return;
+    if(!skin.catalog.victory || el('skin-page').hidden || Game.paused || !victory)return;
     victory.dataset.victorySkin=skin.id;
     victory.textContent='Victory · '+skin.catalog.victory;
     victory.classList.remove('playing');
