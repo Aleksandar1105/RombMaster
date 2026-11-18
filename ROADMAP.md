@@ -61,3 +61,7 @@ change unlock rules to make Royal equipable for testing. Its existing store,
 Home and victory previews can be approved first; full in-match Royal phone QA
 remains a separate unresolved gate. Do not start Cyberpunk generation until
 Royal feedback is resolved.
+
+## Challenge Arena · 2026-11-18
+
+V25 now explicitly includes visual approval of the Challenge Arena mode cards, selected state and Infinity unlock presentation across skins. Verify on Android before closing the visual gate.

@@ -70,3 +70,7 @@ package from production/older debug installs; it need not share their progress.
 2. Recover/confirm exact V29 phase scope before that phase begins.
 3. Commercial audience, countries, prices, monetization, release credentials and
    publication are later gates, not authorized activations in this batch.
+
+## Challenge Arena · 2026-11-18
+
+Updated the home entry to Challenge Arena. The mode picker uses illustrated cards, active-skin colors and an explicit Career Level 100 unlock condition for Infinity.

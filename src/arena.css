@@ -1,0 +1,52 @@
+#menu-page #arcade-page {
+    --arena-line: color-mix(in srgb, var(--skin-accent) 42%, var(--skin-panel));
+    gap: 10px;
+    border-color: var(--arena-line);
+}
+#arcade-page .arcade-modes { gap: 8px; --mode-color: var(--skin-o); }
+#menu-page #arcade-page .arcade-modes button {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    align-content: center;
+    align-items: center;
+    column-gap: 8px;
+    min-height: 66px;
+    padding: 8px 10px;
+    text-align: start;
+    white-space: normal;
+    border-color: var(--arena-line);
+    border-inline-start: 3px solid var(--mode-color);
+    background: linear-gradient(115deg, color-mix(in srgb, var(--mode-color) 13%, var(--skin-panel)), var(--skin-panel) 80%);
+}
+#menu-page #arcade-page [data-arcade="perfect"] { --mode-color: var(--skin-x); }
+#menu-page #arcade-page [data-arcade="blitz"],
+#menu-page #arcade-page #arcade-infinity { --mode-color: var(--skin-gold); }
+#arcade-page .arcade-modes svg {
+    grid-row: span 2;
+    width: 26px;
+    fill: none;
+    stroke: var(--mode-color);
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+#arcade-page .arcade-modes strong { font-size: .88rem; line-height: 1.15; }
+#arcade-page .arcade-modes small { grid-column: 2; margin-top: 3px; line-height: 1.2; }
+#menu-page #arcade-page #arcade-infinity {
+    grid-column: 1/-1;
+    background-image: linear-gradient(90deg,var(--skin-panel) 45%, transparent 135%), var(--premium-floor-art, var(--reference-floor, url("/assets/premium/reference/neon-reference-floor.webp")));
+    background-size: cover;
+    background-position: center;
+}
+#menu-page #arcade-page #arcade-infinity:disabled { opacity: .85; }
+#menu-page #arcade-page .arcade-modes button[aria-pressed="true"] {
+    border-color: var(--mode-color);
+    box-shadow: inset 0 0 0 1px var(--mode-color);
+}
+#arcade-page :is(#arcade-clock,#arcade-score,#arcade-feedback):empty { display: none; }
+#arcade-page #arcade-canvas { border-color: var(--arena-line); }
+#arcade-page .arcade-performance { border-color: var(--arena-line); }
+@media (max-width:360px) {
+    #menu-page #arcade-page .arcade-modes button { grid-template-columns:20px minmax(0,1fr); column-gap:5px; padding-inline:6px; }
+    #arcade-page .arcade-modes svg { width:20px; }
+}

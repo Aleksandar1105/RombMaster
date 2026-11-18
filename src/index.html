@@ -8,6 +8,7 @@
     <title>RombMaster — Strategic Board Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./arena.css">
 </head>
 
 <body>
@@ -43,7 +44,7 @@
                     <button type="button" data-page="career-page" class="nav-tile"><canvas id="home-opening" class="opening-mini" width="96" height="96" aria-hidden="true"></canvas><svg class="reference-mode-icon reference-career-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M5 10 13 18 20 5 27 18 35 10 31 29H9Z" fill="currentColor" fill-opacity=".23" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M10 33H30M5 27Q6 36 17 37M35 27Q34 36 23 37" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="20" cy="5" r="2" fill="currentColor"/></svg><strong>Career</strong><small id="home-level"></small></button>
                     <button id="daily-open-btn" class="nav-tile" type="button"><span id="daily-diamonds" aria-hidden="true"><i></i><i></i><i></i></span><svg class="reference-mode-icon reference-daily-icon" viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="9" width="28" height="26" rx="4" fill="currentColor" fill-opacity=".13" stroke="currentColor" stroke-width="2.2"/><path d="M13 5V14M27 5V14M6 17H34" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/><path d="m20 20 2.5 5 5.5.6-4 3.8 1 5.3-5-2.8-5 2.8 1-5.3-4-3.8 5.5-.6Z" fill="currentColor"/></svg><strong>Daily Challenge</strong><small id="daily-menu-status"></small><small id="daily-points"></small></button>
                     </div>
-                    <div class="home-utility-row"><button id="home-arcade" type="button" data-page="arcade-page" class="skin-store-entry"><span class="reference-infinity" aria-hidden="true">∞</span><strong>Infinity / Arena</strong></button><button id="home-two-players" type="button" data-page="quick-settings" aria-label="2 Players on this device" class="skin-store-entry"><svg class="reference-skins-icon" aria-hidden="true" viewBox="0 0 32 32"><path d="M13 9a4 4 0 1 1-8 0a4 4 0 1 1 8 0 M2 25v-3a7 7 0 0 1 14 0v3Z M26 9a4 4 0 1 1-8 0a4 4 0 1 1 8 0 M19 16q10-3 11 9H19" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><strong>2 Players</strong></button></div>
+                    <div class="home-utility-row"><button id="home-arcade" type="button" data-page="arcade-page" class="skin-store-entry"><span class="reference-infinity" aria-hidden="true">∞</span><strong>Challenge Arena</strong></button><button id="home-two-players" type="button" data-page="quick-settings" aria-label="2 Players on this device" class="skin-store-entry"><svg class="reference-skins-icon" aria-hidden="true" viewBox="0 0 32 32"><path d="M13 9a4 4 0 1 1-8 0a4 4 0 1 1 8 0 M2 25v-3a7 7 0 0 1 14 0v3Z M26 9a4 4 0 1 1-8 0a4 4 0 1 1 8 0 M19 16q10-3 11 9H19" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><strong>2 Players</strong></button></div>
                     <section id="premium-rivals-section" class="premium-rivals-section" aria-label="Career rivals" hidden><h2>Career Rivals</h2><div class="premium-rivals-strip" aria-label="Career rivals"><div class="premium-rival-card" id="home-rival-0" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/rookie.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Rookie</strong><small id="home-rival-status-0">Locked</small></div><div class="premium-rival-card" id="home-rival-1" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/trickster.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Trickster</strong><small id="home-rival-status-1">Locked</small></div><div class="premium-rival-card" id="home-rival-2" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/predator.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Predator</strong><small id="home-rival-status-2">Locked</small></div><div class="premium-rival-card" id="home-rival-3" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/phantom.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Phantom</strong><small id="home-rival-status-3">Locked</small></div><div class="premium-rival-card" id="home-rival-4" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/grandmaster.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Grandmaster</strong><small id="home-rival-status-4">Locked</small></div><div class="premium-rival-card" id="home-rival-5" data-state="locked"><span class="reference-rival-frame"><img src="/assets/premium/rivals/omega.webp" alt="" loading="lazy" width="768" height="768"></span><strong>Omega</strong><small id="home-rival-status-5">Locked</small></div></div></section>
                     <nav id="home-tools" class="home-links" aria-label="Home navigation">
                         <button type="button" data-page="player-settings" class="nav-tile"><svg class="hub-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2L16 4V9L12 12L8 9V4Z M3 21L5 15L9 13L12 16L15 13L19 15L21 21Z"/></svg><strong>Profile</strong></button>
@@ -113,12 +114,27 @@
                     </div>
                 </section>
                 <section id="arcade-page" hidden class="arcade-panel" aria-label="Challenge Arena">
- <div class="arcade-modes">
- <button type="button" data-arcade="puzzle">Puzzle Master<small>Find the right tactic</small></button>
- <button type="button" data-arcade="perfect">Perfect Move<small>Maximum capture</small></button>
- <button type="button" data-arcade="blitz">Blitz<small>10 seconds per move</small></button>
- <button type="button" data-arcade="survival">Survival<small>Win successive rounds</small></button>
- <button type="button" id="arcade-infinity" data-arcade="infinity" disabled>Infinity<small>Win Career level 100</small></button>
+ <div class="arcade-modes" role="group" aria-label="Choose an arena mode">
+    <button type="button" data-arcade="puzzle" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M3 8h6V5a3 3 0 0 1 6 0v3h6v6h-3a3 3 0 0 0 0 6h-3v2H3Z"/></svg>
+        <strong>Puzzle Master</strong><small>Find the right tactic</small>
+    </button>
+    <button type="button" data-arcade="perfect" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M21 12a9 9 0 1 1-9-9 M17 12a5 5 0 1 1-5-5 M12 12l8-8 M16 4h4v4"/></svg>
+        <strong>Perfect Move</strong><small>Find the biggest capture</small>
+    </button>
+    <button type="button" data-arcade="blitz" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M14 2 4 14h7l-1 8 10-13h-7Z"/></svg>
+        <strong>Blitz</strong><small>10 seconds per move</small>
+    </button>
+    <button type="button" data-arcade="survival" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M12 2 21 6v5c0 5-4 9-9 12-5-3-9-7-9-12V6Z M8 12l3 3 5-6"/></svg>
+        <strong>Survival</strong><small>Win successive rounds</small>
+    </button>
+    <button type="button" data-arcade="infinity" aria-pressed="false" id="arcade-infinity" disabled>
+        <svg aria-hidden="true" viewBox="-1 0 26 25"><path d="M12 12c-3-5-4-6-6-6a6 6 0 0 0 0 12c2 0 4-2 6-6s4-6 6-6a6 6 0 0 1 0 12c-2 0-4-2-6-6Z"/></svg>
+        <strong>Infinity</strong><small>Win Career Level 100 to unlock</small>
+    </button>
  </div>
  <h3 id="arcade-title">Choose a challenge</h3><p id="arcade-instruction"></p>
  <p id="arcade-clock" aria-live="off"></p><p id="arcade-score"></p>
