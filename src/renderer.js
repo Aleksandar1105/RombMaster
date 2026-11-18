@@ -5,7 +5,7 @@ export class Renderer {
   constructor(canvas, skin = null) {
     this.skin = skin;
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d", { alpha: false });
+    this.ctx = canvas.getContext("2d", { alpha: true });
     this.particles = [];
     this.CELL = 0;
     this.offX = 0;
@@ -48,8 +48,12 @@ export class Renderer {
     const colors = skin.colors;
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.fillStyle = colors.bg;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    if (skin.id === 'neon') {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    } else {
+      this.ctx.fillStyle = colors.bg;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
     this.ctx.restore();
 
     const dx = i => this.offX + i * this.CELL;
@@ -60,7 +64,7 @@ export class Renderer {
     // V2.3: a calm, continuous playing surface, without cell outlines.
     // Only playable squares receive the wash; the existing edge pass is
     // still the single source of truth for all played/available edges.
-    this.ctx.fillStyle = colors.dot + (skin.id === 'white' ? '0a' : '0c');
+    this.ctx.fillStyle = colors.dot + (skin.id === 'neon' ? '1c' : skin.id === 'white' ? '0a' : '0c');
     for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
       if (board.active(r, c)) {
         this.ctx.fillRect(dx(c), dy(r), this.CELL, this.CELL);
@@ -78,14 +82,22 @@ export class Renderer {
           // cell a restrained owner tint so territory is readable at a glance.
           // Fill only: no added outline, glow or duplicated shared stroke.
           const territory = this.ctx.createLinearGradient(x, y, x + size, y + size);
-          territory.addColorStop(0, color + '48');
-          territory.addColorStop(.48, color + '24');
-          territory.addColorStop(1, color + '38');
+          territory.addColorStop(0, color + '78');
+          territory.addColorStop(.48, color + '30');
+          territory.addColorStop(1, color + '60');
           this.ctx.fillStyle = territory;
           this.ctx.fillRect(x, y, size, size);
           const inset = size * .19;
           this.ctx.fillStyle = color + '18';
           this.roundRect(x + inset, y + inset, size - 2 * inset, size - 2 * inset, size * .14);
+          this.ctx.fill();
+          // Interior glass highlight, never an extra cell border.
+          this.ctx.beginPath();
+          this.ctx.moveTo(x+size*.08,y+size*.08);
+          this.ctx.lineTo(x+size*.44,y+size*.08);
+          this.ctx.lineTo(x+size*.08,y+size*.36);
+          this.ctx.closePath();
+          this.ctx.fillStyle = '#ffffff24';
           this.ctx.fill();
         } else {
           this.paintCapture(skin, x, y, size, color);
@@ -243,6 +255,14 @@ export class Renderer {
       ctx.strokeStyle=skin.id==='wood'?'#39261c80':'#ffffff85';
       ctx.lineWidth=Math.max(.7,size*.018);
       trace();ctx.stroke();
+    } else if (skin.id==='neon') {
+      const width=ctx.lineWidth;
+      ctx.shadowBlur=Math.min(9,size*.16);
+      trace();ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle='#ffffffb8';
+      ctx.lineWidth=Math.max(.6,width*.24);
+      trace();ctx.stroke();
     } else {
       if(skin.id==='cyber')ctx.lineCap='square';
       trace();ctx.stroke();
@@ -397,6 +417,23 @@ export class Renderer {
               ctx.moveTo(xx,yy);ctx.lineTo(xx+h*2*Math.cos(theta),yy+h*2*Math.sin(theta));ctx.stroke();
             }else{ctx.arc(xx,yy,h,0,Math.PI*2);ctx.stroke();}
           }
+        }
+      } else if (p.effect==='neon-pulse') {
+        ctx.globalAlpha=.28*a;
+        ctx.fillRect(x+margin,y+margin,size-2*margin,size-2*margin);
+        for(let j=0;j<2;j++){
+          ctx.globalAlpha=.9*a*(1-j*.30);
+          ctx.lineWidth=Math.max(.8,size*.035*(1-j*.35));
+          ctx.shadowColor=p.color;ctx.shadowBlur=Math.min(6,size*.10);
+          ctx.beginPath();ctx.arc(cx,cy,size*(.10+.31*ease+j*.065),0,Math.PI*2);ctx.stroke();
+        }
+        ctx.shadowBlur=0;
+        ctx.globalAlpha=.85*a;
+        for(let j=0;j<p.count;j++){
+          const angle=j*2.399963,rad=size*(.12+.29*ease),h=size*.04*a;
+          const px=cx+Math.cos(angle)*rad,py=cy+Math.sin(angle)*rad;
+          ctx.beginPath();ctx.moveTo(px,py-h);ctx.lineTo(px+h*.55,py);
+          ctx.lineTo(px,py+h);ctx.lineTo(px-h*.55,py);ctx.closePath();ctx.fill();
         }
       } else if (p.effect==='scan') {
         const yy=y+size*(.1+.8*ease);
