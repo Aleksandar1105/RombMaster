@@ -1,12 +1,17 @@
 [
   {
-    "name": "neon-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/8ddfcd1d-291a-4666-b0ce-b6228187f53e.png",
+    "name": "royal-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/55edd8d0-f9dc-478e-b41c-38f42970ef3f.png",
     "max_side": 2048
   },
   {
-    "name": "neon-master-store.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/1d176923-c9fd-4a13-9caa-803a75bd8d1c.png",
+    "name": "royal-master-store.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/fb80ccf4-058f-4e3b-8b02-ba38347ae9e1.png",
     "max_side": 1024
+  },
+  {
+    "name": "royal-master-hero.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/6297f16f-d34a-4ac5-b437-78c4cfac1bcd.png",
+    "max_side": 2048
   }
 ]
