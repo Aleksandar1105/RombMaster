@@ -107,7 +107,10 @@ function renderAvatarPage(){
     const rows=all.filter(row=>filter==='all'||(filter==='owned'?row.dataset.entitlement==='owned':getCharacter(row.dataset.profileAvatar)?.category===filter));
     all.forEach(row=>{row.hidden=true;});
     if(el('character-empty'))el('character-empty').hidden=rows.length!==0;
-    const size=window.innerHeight<620?4:window.innerWidth>=600?8:6;
+    // Match the actual grid columns; no incomplete second row at short heights.
+    const w=window.innerWidth,h=window.innerHeight;
+    const size=h<=540?(w>=600?6:2):h<700?(w>=600?4:3):(w>=600?8:6);
+    if(el('character-count'))el('character-count').textContent=rows.length+' / '+all.length;
     const result=paginateRows(rows,avatarPage,size,'profile-avatar-prev','profile-avatar-next','profile-avatar-page');
     avatarPage=result.current;el('profile-avatar-pager').hidden=result.count===1;
 }
@@ -120,7 +123,7 @@ function setCreatePlayer(show=false){
 function backSubpage(){
     if(el('menu-page').hidden)return false;
     if(!el('skin-page').hidden&&skinDetailsOpen&&skinDetailScreen>0){setSkinDetailScreen(skinDetailScreen-1);return true;}
-    if(!el('career-page').hidden&&careerScreen>0){setCareerScreen(0);return true;}
+    if(!el('career-page').hidden&&careerScreen>0){setCareerScreen(careerScreen-1);return true;}
     if(!el('player-settings').hidden){
         if(creatingPlayer&&el('profile-section-players').checked){setCreatePlayer(false);return true;}
         if(achievementView&&el('profile-section-stats').checked){setAchievementView(false);return true;}
@@ -139,6 +142,7 @@ bindPage('profile-achievements-next',()=>{achievementPage++;renderAchievementPag
 bindPage('profile-avatar-prev',()=>{avatarPage--;renderAvatarPage();});
 bindPage('profile-avatar-next',()=>{avatarPage++;renderAvatarPage();});
 if(el('character-filter'))el('character-filter').onchange=()=>{avatarPage=0;renderAvatarPage();};
+if(el('profile-section-avatar'))el('profile-section-avatar').onchange=()=>{avatarPage=0;renderAvatarPage();};
 window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
     readQuickSetup();
@@ -177,7 +181,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if(selected==='career-page')setCareerScreen(0);
-        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;refreshCareer();renderAvatarPage();}
+        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;el('character-filter').value='all';refreshCareer();renderAvatarPage();}
         if (selected === 'quick-settings') {
             readQuickSetup();
             renderQuickSetup();
@@ -646,7 +650,10 @@ const refreshCareer = () => {
         el('career-start-btn').disabled = true;
         el('reset-career-btn').disabled = true;
         if(el('character-coins'))el('character-coins').textContent='Wallet unavailable';
-        for(const card of document.querySelectorAll('[data-profile-avatar]')){card.disabled=true;card.dataset.entitlement='unknown';card.setAttribute('aria-pressed','false');}
+        for(const card of document.querySelectorAll('[data-profile-avatar]')){
+            card.disabled=true;card.dataset.entitlement='unknown';card.setAttribute('aria-pressed','false');
+            const label=card.querySelector('[data-avatar-lock]');if(label){label.hidden=false;label.textContent='Unavailable';}
+        }
         renderAvatarPage();
         refreshPremiumHome(null, null);
         return;
@@ -672,12 +679,12 @@ const refreshCareer = () => {
         const c=getCharacter(id);
         if(!c)continue;
         const entitlement=characterEntitlement(id,p,characterWallet);
-        choice.disabled=entitlement!=='owned'&&entitlement!=='coins';
+        choice.disabled=entitlement!=='owned'&&(entitlement!=='coins'||walletState.status!=='ready');
         choice.dataset.entitlement=entitlement;
         choice.setAttribute('aria-pressed', String(id === p.avatar&&entitlement==='owned'));
         const lock=choice.querySelector('[data-avatar-lock]');
         if(lock){lock.textContent=id===p.avatar&&entitlement==='owned'?'Equipped':characterStatus(c,entitlement,characterWallet);lock.hidden=false;}
-        choice.setAttribute('aria-label',c.label+(entitlement==='owned'?'':', '+characterStatus(c,entitlement,characterWallet)));
+        choice.setAttribute('aria-label',c.label+', '+(id===p.avatar&&entitlement==='owned'?'Equipped':characterStatus(c,entitlement,characterWallet)));
     
     }
     renderAvatarPage();
