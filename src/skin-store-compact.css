@@ -597,3 +597,45 @@
 @media(prefers-reduced-motion:reduce){
  #overlay.flex .rm-result-trophy,#overlay.flex #result-stars,#overlay.flex .rm-result-progress progress{animation:none!important;}
 }
+
+
+/* V25.5A2 — one-page results; existing Home button artwork, no extra panel outlines. */
+:root[data-skin] #overlay.flex .center-panel {
+ border:0;box-shadow:none;border-radius:0;
+ background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--skin-accent) 20%,transparent),transparent 58%),linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 38%,transparent),color-mix(in srgb,var(--skin-bg) 80%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+ justify-content:center;gap:clamp(4px,1.1dvh,12px);
+}
+#overlay.flex #result-page-nav,#overlay.flex .up-next,#overlay.flex #match-analysis {display:none!important;}
+#overlay.flex[data-result-page="overview"] #career-reward:not([hidden]){display:block!important;color:var(--skin-ink);font-size:.78rem;}
+:root[data-skin] #overlay.flex #result-title {font-family:var(--rm-display-font,var(--rm-font));font-weight:800;letter-spacing:.075em;text-transform:uppercase;text-shadow:0 2px 12px color-mix(in srgb,var(--skin-accent) 60%,transparent);}
+:root[data-skin] #overlay.flex #result-score {background:none;clip-path:none;border:0;box-shadow:none;color:var(--skin-ink);font-family:var(--rm-display-font,var(--rm-font));}
+#overlay.flex .rm-result-metric {border:0;background:none;box-shadow:none;border-radius:0;padding:2px 4px;}
+#overlay.flex .rm-result-metric strong {font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(1.05rem,3.6dvh,1.85rem);font-weight:800;color:var(--skin-ink);text-shadow:0 0 10px color-mix(in srgb,var(--skin-accent) 50%,transparent);}
+#overlay.flex #premium-result-summary {gap:clamp(4px,1dvh,9px);}
+#overlay.flex .rm-result-achievements{font-size:clamp(.65rem,1.5dvh,.8rem);color:var(--skin-ink);line-height:1.2;}
+#overlay.flex .rm-result-progress progress {height:8px;}
+#overlay.flex .result-details {overflow:hidden;touch-action:auto;justify-content:center;}
+:root[data-skin] #overlay.flex :is(#againBtn,#backMenuBtn,#nextCareerBtn):not(:disabled) {
+ border:0;border-image:none;background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);box-shadow:none;
+ font-family:var(--rm-display-font,var(--rm-font));font-weight:800;letter-spacing:.015em;color:var(--rm-chrome-ink);padding:8px 12px;
+}
+:root[data-skin] #overlay.flex #nextCareerBtn:not([hidden]){min-height:clamp(44px,8dvh,68px);}
+:root[data-skin] #overlay.flex .result-actions button{min-height:clamp(44px,7dvh,60px);}
+:root[data-skin="neon"]{--rm-display-font:Montserrat,"Trebuchet MS",system-ui,sans-serif;}
+:root[data-skin="royal"],:root[data-skin="golden-dragon"],:root[data-skin="midnight-gold"]{--rm-display-font:Georgia,"Times New Roman",serif;}
+:root[data-skin="cyber"],:root[data-skin="synthwave-sunset"]{--rm-display-font:"Courier New",monospace;}
+:root[data-skin="frozen-christmas"],:root[data-skin="ice"],:root[data-skin="celestial-void"]{--rm-display-font:"Palatino Linotype",Georgia,serif;}
+:root[data-skin="wood"],:root[data-skin="autumn-kingdom"],:root[data-skin="spring-blossom"],:root[data-skin="halloween-curse"]{--rm-display-font:Georgia,serif;}
+:root[data-skin="white"],:root[data-skin="summer-paradise"],:root[data-skin="obsidian-neon"]{--rm-display-font:"Trebuchet MS",system-ui,sans-serif;}
+/* Shared secondary screens: remove duplicate decorative outer frames, retain state/focus borders. */
+:root[data-skin] #menu-page > :is(#career-page,#quick-settings,#player-settings) {
+ border:0;box-shadow:none;background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 42%,transparent),color-mix(in srgb,var(--skin-bg) 80%,transparent));
+}
+:root[data-skin] :is(#menu-page,#daily-modal,#help-modal,#confirm-dialog,#career-reset-modal) :is(.btn-primary,.btn-secondary):not(:disabled):not(#skin-stage *) {
+ border:0;border-image:none;background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);box-shadow:none;
+ font-family:var(--rm-display-font,var(--rm-font));font-weight:700;color:var(--rm-chrome-ink);
+}
+:root[data-skin] :is(#menu-page,#daily-modal,#help-modal) :is(h2,h3,legend):not(#skin-stage *) {font-family:var(--rm-display-font,var(--rm-font));letter-spacing:.035em;}
+:root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled) {border:0;border-image:none;background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);box-shadow:none;font-family:var(--rm-display-font,var(--rm-font));color:var(--rm-chrome-ink);}
+@media(max-height:650px){#overlay.flex #premium-result-summary{gap:3px;}#overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(44vw,20dvh,150px);}}
+@media(max-height:480px){#overlay.flex .arena-brand{display:none;}#overlay.flex #result-title{font-size:1.25rem;}#overlay.flex #result-score{font-size:1.25rem;}#overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(32vw,13dvh,80px);}#overlay.flex #premium-result-summary{gap:2px;}#overlay.flex .rm-result-metric strong{font-size:1rem;}}
