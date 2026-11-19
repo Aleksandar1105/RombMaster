@@ -456,3 +456,25 @@
  #overlay.flex[data-outcome="victory"] .rm-result-trophy,#arcade-page[data-result="victory"] #arcade-feedback::before,#daily-modal[data-result="victory"] #daily-title::before{width:min(40vw,17dvh,100px);}
  #overlay.flex #result-stars:not([hidden]){height:20px;width:calc(var(--stars,3)*20px);background-size:20px 100%;}
 }
+
+/* V25.4D6A: a single original portrait per player character, shared across all skins and screens. */
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="spark"] {background-image:url('/assets/premium/master/avatar-spark-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="fox"] {background-image:url('/assets/premium/master/avatar-fox-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="robot"] {background-image:url('/assets/premium/master/avatar-robot-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="rocket"] {background-image:url('/assets/premium/master/avatar-rocket-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="dragon"] {background-image:url('/assets/premium/master/avatar-dragon-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="shield"] {background-image:url('/assets/premium/master/avatar-shield-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="neon-fox"] {background-image:url('/assets/premium/master/avatar-neon-fox-master.webp');background-size:cover;background-position:center;font-size:0;}
+#menu-page :is(#career-avatar,#new-local-player-avatar,#profile-avatar)[hidden]{display:none!important;}
+#menu-page .rm-starter-picker{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;width:100%;padding:5px;border:1px solid var(--rm-chrome-rim);border-radius:10px;background:var(--rm-panel);}
+#menu-page .rm-starter-picker>button{min-width:44px;min-height:44px;width:44px;padding:4px;margin:0;font-size:1.35rem;}
+#menu-page .rm-starter-current{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;align-items:center;gap:2px 8px;text-align:left;min-width:0;}
+#menu-page .rm-starter-current .avatar-art{grid-row:1/3;width:clamp(44px,12dvh,78px);border:1px solid var(--rm-chrome-rim);border-radius:9px;box-shadow:0 0 8px color-mix(in srgb,var(--rm-chrome-rim) 35%,transparent);}
+#menu-page .rm-starter-current strong{align-self:end;font-family:var(--rm-font);color:var(--skin-ink);overflow-wrap:anywhere;}
+#menu-page .rm-starter-current small{align-self:start;color:var(--skin-ink);font-size:.75rem;}
+#menu-page #player-settings #profile-create-form input{width:100%;min-width:0;}
+#menu-page #player-settings .premium-avatar-grid .avatar-choice{background:var(--rm-panel);border:1px solid var(--rm-chrome-rim);min-height:clamp(70px,13dvh,116px);padding:5px 3px;gap:4px;}
+#menu-page #player-settings .premium-avatar-grid .avatar-art{width:min(100%,clamp(38px,8dvh,68px));border-color:var(--rm-chrome-rim);border-radius:8px;}
+#menu-page #player-settings .avatar-choice[aria-pressed="true"]{outline:2px solid var(--rm-chrome-rim);outline-offset:-3px;}
+#menu-page #player-settings .avatar-choice:disabled .avatar-art{filter:brightness(.75) saturate(.7);}
+@media(max-height:540px){#menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:64px;}#menu-page #player-settings .premium-avatar-grid .avatar-art{width:38px;}#menu-page .rm-starter-current .avatar-art{width:44px;}}
