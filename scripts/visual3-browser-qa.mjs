@@ -483,6 +483,10 @@ try{
       assert.ok(badge.content!=='none'&&badge.display!=='none'&&badge.width>=30,JSON.stringify(badge));
      }
      assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display"),'none');
+     assert.equal(await evaluate("getComputedStyle(document.getElementById('result-page-nav')).display"),'none');
+     assert.equal(await evaluate("getComputedStyle(document.getElementById('match-analysis')).display"),'none');
+     assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .result-details')).overflowY"),'hidden');
+
      assert.equal(await evaluate("document.querySelectorAll('#premium-result-summary .rm-result-metric').length"),2);
      if(outcome==='victory')assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .rm-result-trophy')).borderTopWidth"),'0px');
      const overviewOverflow=await evaluate("(()=>{const p=document.querySelector('#overlay .result-details');return p.scrollHeight-p.clientHeight;})()");
