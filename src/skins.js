@@ -272,6 +272,7 @@ let current = SKINS[0];
 export const activeSkin = () => current;
 export function setActiveSkin(id) { current = SKINS.find(s=>s.id===id) || SKINS[0]; return current; }
 export function unlockedSkin(id, profile, daily) {
+  if (profile && Object.hasOwn(profile,'skinWallet')) return id==='neon'||Boolean(profile.skinWallet?.owned.includes(id));
   switch(id) {
     case 'neon': return true;
     case 'white': return (profile?.unlockedLevel || 1) >= 5;
@@ -285,7 +286,7 @@ export function unlockedSkin(id, profile, daily) {
 export function skinCatalog(profile,daily,equippedId,collectionOnly=false) {
   return SKINS.map(skin => {
     const owned = unlockedSkin(skin.id,profile,daily);
-    return {skin,owned,status:owned ? (skin.id===equippedId ? 'Equipped' : 'Owned') : skin.id==='royal' ? 'Coming soon' : 'Locked'};
+    return {skin,owned,status:owned ? (skin.id===equippedId ? 'Equipped' : 'Owned') : profile && Object.hasOwn(profile,'skinWallet') ? skinUnlockLabel(skin.id) : skin.id==='royal' ? 'Coming soon' : 'Locked'};
   }).filter(entry => !collectionOnly || entry.owned);
 }
 export function readSkin(storage,key,profile,daily) {
@@ -306,4 +307,44 @@ export function resultPresentation(score, mode) {
   if (x === o) return {outcome:'draw',title:'Draw'};
   if (mode === 'pvp') return {outcome:'victory',title:x > o ? 'Player 1 wins' : 'Player 2 wins'};
   return x > o ? {outcome:'victory',title:'Victory'} : {outcome:'defeat',title:'Game Over'};
+}
+
+// Offline test economy, no real-money or competitive advantage.
+// One atomic wallet record stores both entitlement and debit.
+export const WALLET_KEY='rombmaster_wallet_v1';
+export const SKIN_REWARDS=Object.freeze({royal:30,wood:60,white:90});
+export const SKIN_PRICES=Object.freeze({cyber:600,ice:900});
+export function skinUnlockLabel(id){return SKIN_REWARDS[id]?'Win Career level '+SKIN_REWARDS[id]:SKIN_PRICES[id]?SKIN_PRICES[id]+' Coins':'Included';}
+const coreIds=SKINS.map(s=>s.id).filter(id=>id!=='neon');
+function earnedCoins(w){return Object.values(w.stars).reduce((n,s)=>n+60+s*20,0)+w.daily*100;}
+export function walletBalance(w){return w?earnedCoins(w)-w.spent:0;}
+function validWallet(w){
+ return w?.version===1&&w.stars&&typeof w.stars==='object'&&!Array.isArray(w.stars)&&Object.entries(w.stars).every(([k,v])=>/^(?:[1-9]|[1-9][0-9]|100)$/.test(k)&&Number.isInteger(v)&&v>=1&&v<=3)
+ &&Number.isSafeInteger(w.daily)&&w.daily>=0&&w.daily<=1000000&&Number.isSafeInteger(w.spent)&&w.spent>=0&&Array.isArray(w.owned)&&w.owned.every(id=>coreIds.includes(id))&&new Set(w.owned).size===w.owned.length&&walletBalance(w)>=0;
+}
+export function syncWallet(storage,key,profile,daily){
+ if(!key||!profile||!daily)return {status:'unavailable',wallet:null};
+ try{
+  const raw=storage.getItem(key);
+  if(raw!==null&&(typeof raw!=='string'||raw.length>20000))return {status:'invalid',wallet:null};
+  const w=raw===null?{version:1,stars:{},daily:0,spent:0,owned:coreIds.filter(id=>unlockedSkin(id,profile,daily))}:JSON.parse(raw);
+  if(!validWallet(w))return {status:'invalid',wallet:null};
+  for(const [level,stars] of Object.entries(profile.stars||{}))w.stars[level]=Math.max(w.stars[level]||0,stars);
+  w.daily=Math.max(w.daily,daily.completedTotal||0);
+  for(const [id,level] of Object.entries(SKIN_REWARDS))if(w.stars[level]&&!w.owned.includes(id))w.owned.push(id);
+  if(!validWallet(w))return {status:'invalid',wallet:null};
+  const serialized=JSON.stringify(w);
+  if(serialized!==raw)storage.setItem(key,serialized);
+  return {status:'ready',wallet:w};
+ }catch{return {status:'unavailable',wallet:null};}
+}
+export function buyWalletSkin(storage,key,id,profile,daily){
+ const price=SKIN_PRICES[id];if(!price)return {status:'not-for-sale'};
+ const state=syncWallet(storage,key,profile,daily);if(state.status!=='ready')return state;
+ const w=state.wallet;
+ if(w.owned.includes(id))return {status:'owned',wallet:w};
+ if(walletBalance(w)<price)return {status:'insufficient',wallet:w};
+ const next={...w,owned:[...w.owned,id],spent:w.spent+price};
+ try{storage.setItem(key,JSON.stringify(next));return {status:'ready',wallet:next};}
+ catch{return {status:'unavailable'};}
 }
