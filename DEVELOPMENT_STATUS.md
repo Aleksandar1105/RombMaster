@@ -84,3 +84,6 @@ Owner reported 8/8 PASS after the eef9d87 build instructions: five mode graphics
 
 ## V25.4F — test candidate (2026-11-19)
 D6 and E changes are integrated on this feature branch: 25 collectible characters, six Master rivals, 16 skin definitions and responsive catalog pagination. Asset import commit cf9cb5d records six rival assets. Ten new character economy tests were added at 9d1b2ea; browser QA updated at 3ed1ec2. No new gameplay functionality or live billing. The candidate is not approved for release: npm regression tests, expanded asset validation, Android build, browser geometry and device QA remain pending. Run the manual RombMaster Cloud Test APK workflow on the newest feature-branch HEAD; do not run Asset Import or GitHub Actions.
+
+## V25.4F — Asset reconciliation patch (2026-11-19)
+Compared 127 Drive entries to source inventory, recovered 50 imported target mappings, all matched to Drive. All 137 literal premium asset references have tracked counterparts in baseline comparison. Static victory preview now reachable for themes without bespoke effects; validator extended to Career assets. Source changes through 6acddb7, audit a5cc198. Tests/build/device gates remain pending; no generation or spending. See docs/PICSART-ASSET-AUDIT.md.
