@@ -4,7 +4,7 @@ import {nearestLegalLine,canvasPoint} from './input.js';
 import {LocalSlots,ProfileStore,careerSummary} from './profile.js';
 import {localDateKey} from './daily-challenge.js';
 import {migrateEngagement,engagementView,PASS_TIERS} from './engagement.js';
-export function mountArcade({documentRef=document,windowRef=window,game}){
+export function mountArcade({documentRef=document,windowRef=window,game,confirmLeave}){
  const el=id=>documentRef.getElementById(id);
  const page=el('arcade-page'),canvas=el('arcade-canvas');
  if(!page||!canvas)return null;
@@ -68,15 +68,15 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   summary.replaceChildren(...stats.map(([label,value])=>{const tile=documentRef.createElement('div');tile.className='arena-stat';const b=documentRef.createElement('b'),small=documentRef.createElement('small');b.textContent=String(value);small.textContent=label;tile.append(b,small);return tile;}));
  }
  function draw(){
-  if(!session||page.hidden)return;
-  renderer.resize({clientWidth:Math.min(windowRef.innerWidth-30,460),clientHeight:Math.max(180,Math.min(windowRef.innerHeight-300,460)),querySelector:()=>null},session.board.S);
+  if(!session||page.hidden||play.hidden)return;
+  renderer.resize({clientWidth:Math.min(play.clientWidth||windowRef.innerWidth-30,760),clientHeight:Math.max(120,Math.min(windowRef.innerHeight-340,640)),querySelector:()=>null},session.board.S);
   renderer.draw(session.board,last);
   el('arcade-score').textContent=session.puzzle?'Attempts: '+session.attempts:'You '+session.board.score[1]+' · AI '+session.board.score[0]+' · Round '+session.round;
  }
  function finish(){
-  stopAI();stopClock();page.dataset.turn='finished';
+  stopAI();stopClock();page.dataset.turn='finished';canvas.hidden=true;el('arcade-clock').textContent='';
   const result=key===LocalSlots.storageKey(ARCADE_KEY)?recordArcade(localStorage,key,session):{status:'unavailable'};
-  el('arcade-feedback').textContent=(session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
+  el('arcade-feedback').textContent=(session.puzzle&&session.outcome==='win'?'Puzzle solved!':session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
   canAdvance=result.status==='ready';
   el('arcade-next').hidden=session.mode==='infinity'&&!canAdvance;
   el('arcade-next').textContent=['survival','infinity'].includes(session.mode)&&session.outcome==='win'?'Next round':'Play again';
@@ -108,7 +108,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   try{session=createArcade(mode,seed,round);seed=seed%1000000+1;}
   catch{el('arcade-selection-description').textContent='Could not create a practice board. Try again.';return;}
   highlightMode(mode);show('play');canvas.hidden=false;el('arcade-next').hidden=true;
-  el('arcade-title').textContent=modeNames[mode]+(mode==='infinity'?' · Stage '+(100+round):'');
+  el('arcade-title').textContent=(session.puzzle?.title||modeNames[mode])+(mode==='infinity'?' · Stage '+(100+round):'');
   el('arcade-instruction').textContent=session.puzzle?.instruction||(mode==='blitz'?'You have 10 seconds per move. A timeout loses the round.':'Win successive rounds as board size and difficulty increase.');
   el('arcade-feedback').textContent='Your turn';
   el('arcade-clock').textContent='';draw();resume();
@@ -117,7 +117,9 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
  modeButtons.forEach(b=>b.onclick=()=>select(b.dataset.arcade));
  start.onclick=()=>{if(selectedMode)begin(selectedMode);};
  function back(){if(page.hidden||page.dataset.arenaView==='picker')return false;
-  if(session&&!session.finished&&!windowRef.confirm('Leave this unfinished challenge? Progress in this round will be lost.'))return true;
+  if(session&&!session.finished){
+   confirmLeave?.({heading:'Leave Challenge?',detail:'Progress in this unfinished round will be lost.',confirmLabel:'Leave Challenge',cancelLabel:'Continue Playing',onConfirm:()=>{leave();refresh();}});return true;
+  }
   leave();refresh();return true;
  }
  el('arcade-back').onclick=back;
