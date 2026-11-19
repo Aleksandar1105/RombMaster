@@ -87,3 +87,7 @@ D6 and E changes are integrated on this feature branch: 25 collectible character
 
 ## V25.4F — Asset reconciliation patch (2026-11-19)
 Compared 127 Drive entries to source inventory, recovered 50 imported target mappings, all matched to Drive. All 137 literal premium asset references have tracked counterparts in baseline comparison. Static victory preview now reachable for themes without bespoke effects; validator extended to Career assets. Source changes through 6acddb7, audit a5cc198. Tests/build/device gates remain pending; no generation or spending. See docs/PICSART-ASSET-AUDIT.md.
+
+
+## V25.5A — Premium Victory & Rewards implementation candidate
+Owner-approved plan recorded at df42a02; runtime through 2ed6560; visual fixture update 2c66bb5. Existing themed victory artwork is now frameless with reduced-motion-aware reveal. Overview displays measured wallet delta, persisted XP gain/total, character unlocks and next Career character milestone. No currency or reward formula changes; no new assets or credits, billing, or Actions. Existing detail/next-mission/analysis pages retained for compact layouts. Full tests and physical visual QA pending; no APK or browser run in this session.
