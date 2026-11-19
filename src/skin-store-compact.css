@@ -211,3 +211,47 @@
 @media(min-width:600px){#view-menu:has(#menu-page:not([hidden]))>.home-shell{width:min(96%,760px);max-width:760px;} #arcade-picker .arcade-modes{grid-template-columns:repeat(4,minmax(0,1fr));} #arcade-picker #arcade-infinity{grid-column:1/-1;}}
 @media(max-height:620px){#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > .section-brand{display:none;} #menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > h2{min-height:36px;padding-inline:70px;} #quick-settings #setup-preview{width:min(100%,20dvh,160px);} #arcade-page #arcade-picker{gap:4px;} #menu-page #arcade-page .arena-selection{padding:4px;} #menu-page #arcade-page .arcade-modes button:not(#arcade-infinity){height:clamp(74px,15dvh,100px);} #menu-page #arcade-page #arcade-infinity{height:58px;min-height:58px;}}
 /* Keep overflow accessible until each remaining long page has explicit pagination. */
+
+/* V25.4C2: page controls remain reachable; paginate content rather than clip it. */
+#menu-page [hidden] {display:none!important;}
+#menu-page .rm-page-nav {display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;width:100%;text-align:center;}
+#menu-page .rm-page-nav button {min-height:44px;min-width:44px;padding:6px 10px;white-space:nowrap;}
+#menu-page .rm-page-nav :is(strong,span){font-size:.84rem;overflow-wrap:anywhere;}
+#menu-page :is([data-career-screen],[data-skin-detail-screen]) {display:grid;gap:8px;min-width:0;}
+#menu-page #career-page .chapter-nav {margin:0;}
+#menu-page #career-page .premium-rivals-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+#menu-page #career-page .premium-rival-card img {width:min(100%,13dvh,100px);height:auto;aspect-ratio:1;object-fit:contain;}
+#menu-page #career-page #mission-preview {width:min(100%,30dvh,260px);height:auto;justify-self:center;}
+#menu-page #career-page .mission-detail {display:grid;grid-template-columns:minmax(0,1fr);gap:8px;justify-items:stretch;}
+#menu-page #career-page #career-open-mission {width:100%;min-height:44px;}
+#menu-page #skin-detail-panel [data-skin-detail-screen=overview] #skin-detail-art{height:clamp(100px,32dvh,300px);}
+#menu-page #skin-detail-panel [data-skin-detail-screen=board] #skin-preview {width:min(100%,30dvh,260px);}
+#menu-page #skin-detail-panel [data-skin-detail-screen=effects] .skin-effect-label {min-height:48px;}
+#menu-page #skin-detail-panel :is(#skin-equip,#skin-home-preview) {width:100%;}
+#menu-page #profile-achievements-page {display:grid;gap:6px;}
+#menu-page #achievement-list {display:grid;gap:5px;margin:0;padding:0;list-style:none;}
+#menu-page #achievement-list li {padding:8px;font-size:.82rem;line-height:1.25;}
+#menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+#menu-page #player-settings .local-player-add{display:grid;gap:6px;}
+#menu-page #player-settings .identity-banner{min-height:0;}
+#menu-page #player-settings .stats-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+#menu-page #player-settings .stats-grid > div {padding:5px;}
+#menu-page #player-settings .career-stats-note{font-size:.7rem;}
+#menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) {padding-block:4px;}
+#menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) > .section-brand {width:min(35%,125px);margin:0 auto 4px;}
+#menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) > h2{font-size:clamp(1.15rem,4.7vw,1.8rem);margin:6px 0;}
+#menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) #page-back {top:4px;}
+@media(min-width:600px){#menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(4,minmax(0,1fr));}#menu-page #player-settings .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media(max-height:620px){
+ #menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) > .section-brand {display:none;}
+ #menu-page:has(:is(#career-page,#player-settings,#skin-page):not([hidden])) > h2{min-height:36px;padding-inline:70px;}
+ #menu-page #career-page .premium-rival-card img{width:min(100%,10dvh,72px);}
+ #menu-page #career-page #mission-preview{width:min(100%,21dvh,180px);}
+ #menu-page #career-page #chapter-route{gap:4px;margin-bottom:4px;}
+ #menu-page #career-page #chapter-route button{min-height:36px;padding-block:4px;}
+ #menu-page #player-settings .home-drawer-content{gap:5px;padding:6px;}
+ #menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+ #menu-page #skin-detail-panel [data-skin-detail-screen=overview] #skin-detail-art{height:clamp(80px,25dvh,180px);}
+ #menu-page #skin-detail-panel [data-skin-detail-screen=board] #skin-preview{width:min(100%,22dvh,180px);}
+}
+/* No global overflow:hidden until viewport QA proves all controls fit. */
