@@ -91,3 +91,15 @@ test('three Prestige previews cannot be equipped or purchased',async()=>{
   assert.equal(bytes.toString('ascii',8,12),'WEBP');
  }
 });
+
+test('all sixteen skin victory artworks have a preview; unimplemented effects are still and Prestige remains locked',async()=>{
+ const s=await load();
+ const catalog=[...s.SKINS,...s.SEASONAL_SKINS,...s.PRESTIGE_SKINS];
+ assert.equal(catalog.length,16);
+ for(const skin of catalog){
+   const p=s.skinVictoryPreview(skin);
+   assert.ok(p.title.includes(skin.catalog.victory&&!skin.prestige?skin.catalog.victory:skin.name));
+   assert.equal(p.animated,Boolean(!skin.prestige&&skin.catalog.victory));
+   if(skin.prestige){assert.equal(p.animated,false);assert.equal(s.unlockedSkin(skin.id),false);}
+ }
+});
