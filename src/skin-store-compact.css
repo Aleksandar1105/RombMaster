@@ -478,3 +478,33 @@
 #menu-page #player-settings .avatar-choice[aria-pressed="true"]{outline:2px solid var(--rm-chrome-rim);outline-offset:-3px;}
 #menu-page #player-settings .avatar-choice:disabled .avatar-art{filter:brightness(.75) saturate(.7);}
 @media(max-height:540px){#menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:64px;}#menu-page #player-settings .premium-avatar-grid .avatar-art{width:38px;}#menu-page .rm-starter-current .avatar-art{width:44px;}}
+
+/* V25.4D6D: collectible character artwork and store states. */
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="azure-squire"] {background-image:url('/assets/premium/master/avatar-azure-squire-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="jade-huntress"] {background-image:url('/assets/premium/master/avatar-jade-huntress-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="crimson-sentinel"] {background-image:url('/assets/premium/master/avatar-crimson-sentinel-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="frost-oracle"] {background-image:url('/assets/premium/master/avatar-frost-oracle-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="onyx-warden"] {background-image:url('/assets/premium/master/avatar-onyx-warden-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="crown-ascendant"] {background-image:url('/assets/premium/master/avatar-crown-ascendant-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="circuit-valkyrie"] {background-image:url('/assets/premium/master/avatar-circuit-valkyrie-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="storm-raptor"] {background-image:url('/assets/premium/master/avatar-storm-raptor-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="ember-ronin"] {background-image:url('/assets/premium/master/avatar-ember-ronin-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="moon-weaver"] {background-image:url('/assets/premium/master/avatar-moon-weaver-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="coral-corsair"] {background-image:url('/assets/premium/master/avatar-coral-corsair-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="prism-golem"] {background-image:url('/assets/premium/master/avatar-prism-golem-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="solar-sovereign"] {background-image:url('/assets/premium/master/avatar-solar-sovereign-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="void-monarch"] {background-image:url('/assets/premium/master/avatar-void-monarch-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="celestial-empress"] {background-image:url('/assets/premium/master/avatar-celestial-empress-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="dragon-emperor"] {background-image:url('/assets/premium/master/avatar-dragon-emperor-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="aurora-seraph"] {background-image:url('/assets/premium/master/avatar-aurora-seraph-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-player-avatar,#profile-avatar-preview,#identity-art,.avatar-art,.match-portrait)[data-avatar="chronos-architect"] {background-image:url('/assets/premium/master/avatar-chronos-architect-master.webp');background-size:cover;background-position:center;font-size:0;}
+#menu-page #player-settings .rm-character-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;}
+#menu-page #player-settings #character-filter{width:100%;min-width:0;min-height:44px;font-size:.82rem;}
+#menu-page #player-settings #character-coins{font-size:.75rem;white-space:nowrap;color:var(--skin-ink);}
+#menu-page #player-settings .avatar-choice strong{font-size:.76rem;overflow-wrap:anywhere;line-height:1.1;}
+#menu-page #player-settings .avatar-choice small{font-size:.67rem;line-height:1.1;white-space:normal;}
+#menu-page #player-settings .avatar-choice[data-entitlement="coins"]{border-color:#c49a48;}
+#menu-page #player-settings .avatar-choice[data-entitlement="preview"] .avatar-art{filter:saturate(.85);}
+#menu-page #player-settings .avatar-choice[hidden],#menu-page #player-settings #character-empty[hidden]{display:none!important;}
+#menu-page #player-settings .rm-character-empty{font-size:.8rem;text-align:center;}
+@media(max-height:620px){#menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:64px;gap:2px;}#menu-page #player-settings .premium-avatar-grid .avatar-art{width:38px;}}
