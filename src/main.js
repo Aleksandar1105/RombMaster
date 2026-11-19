@@ -1035,9 +1035,9 @@ const refreshDailyMenu = () => {
 
 const drawDaily = () => {
     if (!dailyPuzzle) return;
-    const width = Math.min(window.innerWidth - 20, 420);
+    const width = Math.min(window.innerWidth - 32, 660);
     dailyRenderer.resize({
-        clientWidth: width, clientHeight: Math.max(400, Math.min(window.innerHeight, 640)),
+        clientWidth: width, clientHeight: Math.max(220, Math.min(window.innerHeight - 180, 720)),
         querySelector: () => null,
     }, dailyPuzzle.board.S);
     dailyRenderer.draw(dailyPuzzle.board, dailyLastMove);
