@@ -218,7 +218,7 @@ export const Game = {
     if (rivalPortrait) {
       rivalPortrait.hidden = !aiMatch;
       rivalPortrait.dataset.rival = this.settings.openingVersion && this.settings.careerLevel === 5
-        ? 'trickster' : world?.rival.toLowerCase() || 'rookie';
+        ? 'guided-fox' : world?.rival.toLowerCase() || 'rookie';
     }
     if (this.ui.viewGame.dataset) this.ui.viewGame.dataset.world = world?.name.toLowerCase().replace(/ /g, '-') || '';
     this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : world ? world.icon+' '+world.rival : 'Computer';
