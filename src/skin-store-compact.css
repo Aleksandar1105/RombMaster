@@ -147,3 +147,67 @@
   #skin-page .seasonal-victory.playing[data-victory-skin="royal"]::before {animation:royal-master-crown .7s ease-out both;}
 }
 @keyframes royal-master-crown {0%{opacity:0;transform:translateY(8px) scale(.8)}65%{opacity:1;transform:translateY(-2px) scale(1.06)}100%{opacity:1;transform:none}}
+
+/* V25.4: shared scene and metal/glass/material tokens for every existing theme.
+   Keep the approved home composition; inner controls share its palette.
+   Card artwork and preview samples retain their own independent skin colors. */
+:root[data-skin] {
+ --rm-scene:var(--reference-floor,none);
+ --rm-font:var(--arena-font,Montserrat,system-ui,sans-serif);
+ --rm-ink:var(--skin-ink,#f8fafc);
+ --rm-metal:var(--skin-accent,#52d9eb);
+ --rm-highlight:var(--skin-gold,#f6c86a);
+ --rm-face:linear-gradient(150deg,color-mix(in srgb,var(--rm-metal) 25%,var(--skin-bg)),var(--skin-bg) 60%,color-mix(in srgb,var(--rm-highlight) 15%,var(--skin-bg)));
+ --rm-panel:linear-gradient(155deg,color-mix(in srgb,var(--skin-bg) 88%,var(--rm-metal)),color-mix(in srgb,var(--skin-bg) 96%,#000));
+ --rm-radius:var(--arena-radius,10px);
+}
+:root[data-skin="neon"] {--rm-scene:url('/assets/premium/master/neon-master-arena.webp');--rm-font:Montserrat,system-ui,sans-serif;--rm-face:linear-gradient(145deg,#184255,#151b37 65%,#422858);}
+:root[data-skin="royal"] {--rm-scene:url('/assets/premium/master/royal-master-arena.webp');--rm-face:linear-gradient(145deg,#5b4322,#211a10 58%,#3f2c15);}
+:root[data-skin="cyber"] {--rm-radius:2px;--rm-face:linear-gradient(135deg,#451b65,#180b28 62%,#383046);}
+:root[data-skin="ice"] {--rm-face:linear-gradient(145deg,#563527,#111d2c 48%,#285775);}
+:root[data-skin="wood"] {--rm-face:repeating-linear-gradient(8deg,#6b452b 0 2px,#593823 3px 7px,#503320 8px 14px);}
+:root[data-skin="white"] {--rm-face:linear-gradient(145deg,#fff,#e1e7ef);--rm-panel:linear-gradient(145deg,#fff,#eff2f6);--rm-metal:#65758b;--rm-highlight:#946100;}
+:root[data-skin] #view-menu:has(#menu-page:not([hidden])),
+:root[data-skin] :is(#daily-modal,#help-modal,#confirm-dialog,#career-reset-modal) {
+ background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 52%,transparent),color-mix(in srgb,var(--skin-bg) 73%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+ font-family:var(--rm-font);color:var(--rm-ink);
+}
+:root[data-skin] :is(#menu-page > section:not(#arcade-page),#daily-modal .daily-content,#help-modal .help-content,.game-confirm-content,.career-reset-content,#overlay .center-panel){
+ background:var(--rm-panel);color:var(--rm-ink);font-family:var(--rm-font);border:1px solid var(--rm-metal);border-radius:var(--rm-radius);
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--rm-highlight) 60%,transparent),0 8px 32px #0005;
+}
+:root[data-skin] :is(#menu-page,#daily-modal,#help-modal,#confirm-dialog,#career-reset-modal,#overlay) :is(h2,h3,label,p,legend,summary):not(.skin-card-name):not(#skin-stage *) {color:var(--rm-ink);font-family:var(--rm-font);}
+:root[data-skin] :is(#menu-page,#daily-modal,#help-modal,#confirm-dialog,#career-reset-modal,#overlay) :is(button,input,select):not(.skin-card):not([data-arcade]):not(.avatar-choice):not(#skin-stage *){
+ color:var(--rm-ink);font-family:var(--rm-font);background:var(--rm-face);border:1px solid var(--rm-metal);border-radius:var(--rm-radius);clip-path:none;box-shadow:inset 0 1px 0 color-mix(in srgb,var(--rm-highlight) 45%,transparent);text-shadow:none;
+}
+:root[data-skin] :is(#menu-page,#daily-modal,#help-modal,#confirm-dialog,#career-reset-modal,#overlay) button:not(.skin-card):not([data-arcade]):not(.avatar-choice)::before {content:none;}
+:root[data-skin] :is(#menu-page,#daily-modal) :is(button.selected,button[aria-pressed=true]):not(.skin-card):not([data-arcade]) {outline:2px solid var(--rm-highlight);outline-offset:-3px;}
+:root[data-skin] #menu-page #skin-page :is(.skin-owned-count,#skin-detail-description,#skin-status,.skin-effect-label){color:var(--rm-ink);}
+:root[data-skin] #menu-page #arcade-page .arena-stat {background:var(--rm-panel);border-color:var(--rm-metal);}
+:root[data-skin] #menu-page #arcade-page .arena-card-copy{font-family:var(--rm-font);}
+:root[data-skin] #home-hub .home-utility-row:has(>button:only-child){grid-template-columns:minmax(0,1fr);}
+:root[data-skin] #home-hub .home-utility-row >button:only-child{grid-column:1/-1;width:100%;}
+:root[data-skin] #menu-page #quick-settings{padding:4px;}
+:root[data-skin] #quick-settings .home-drawer-content{gap:clamp(6px,1.2dvh,12px);padding:10px;}
+#quick-settings #setup-preview{width:min(76%,26dvh,230px);height:auto;justify-self:center;align-self:center;}
+#view-menu:has(#menu-page:not([hidden]) :is(#quick-settings,#arcade-page):not([hidden])) {padding-block:max(4px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-bottom));}
+#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])){padding-block:4px;}
+#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > .section-brand{width:min(35%,125px);margin:0 auto 4px;}
+#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > h2{font-size:clamp(1.15rem,4.7vw,1.8rem);margin:6px 0;}
+#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) #page-back{top:4px;}
+#arcade-page #arcade-picker{gap:6px;}
+#menu-page #arcade-page .arcade-modes{gap:7px;}
+#menu-page #arcade-page .arcade-modes button:not(#arcade-infinity){aspect-ratio:auto;height:clamp(86px,17dvh,160px);}
+#menu-page #arcade-page #arcade-infinity{aspect-ratio:auto;min-height:62px;height:clamp(62px,10dvh,100px);}
+#menu-page #arcade-page .arena-selection{padding:6px;}
+#menu-page #arcade-page .arena-card-copy{padding:4px;}
+#menu-page #arcade-page .arena-card-copy strong{font-family:var(--rm-font);font-size:clamp(.87rem,3.7vw,1.1rem);}
+#arcade-page[data-turn=finished][data-arena-view=play] #arcade-play{align-content:center;min-height:min(48dvh,380px);gap:12px;}
+#arcade-page[data-turn=finished] #arcade-feedback{font-size:1.3rem;font-weight:800;}
+#daily-modal .daily-content{max-width:min(94vw,660px);gap:8px;padding:clamp(8px,2vw,18px);}
+#daily-modal .daily-content h2{font-size:clamp(1.1rem,4vw,1.6rem);}
+#daily-modal #daily-feedback{min-height:0;line-height:1.3;}
+#arcade-page #arcade-play :is(#arcade-instruction,#arcade-feedback){font-size:.86rem;}
+@media(min-width:600px){#view-menu:has(#menu-page:not([hidden]))>.home-shell{width:min(96%,760px);max-width:760px;} #arcade-picker .arcade-modes{grid-template-columns:repeat(4,minmax(0,1fr));} #arcade-picker #arcade-infinity{grid-column:1/-1;}}
+@media(max-height:620px){#menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > .section-brand{display:none;} #menu-page:has(:is(#quick-settings,#arcade-page):not([hidden])) > h2{min-height:36px;padding-inline:70px;} #quick-settings #setup-preview{width:min(100%,20dvh,160px);} #arcade-page #arcade-picker{gap:4px;} #menu-page #arcade-page .arena-selection{padding:4px;} #menu-page #arcade-page .arcade-modes button:not(#arcade-infinity){height:clamp(74px,15dvh,100px);} #menu-page #arcade-page #arcade-infinity{height:58px;min-height:58px;}}
+/* Keep overflow accessible until each remaining long page has explicit pagination. */
