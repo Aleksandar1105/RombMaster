@@ -451,6 +451,7 @@
 #arcade-page[data-turn="finished"] #arcade-instruction{display:none;}
 #arcade-page[data-turn="finished"] #arcade-feedback{font-family:var(--rm-font);color:var(--skin-ink);}
 #skin-stage[data-preview-skin] .seasonal-victory::before{content:"";display:block;width:min(22dvh,120px);aspect-ratio:1;margin:0 auto 5px;border-radius:8px;background:var(--rm-victory-art) center/contain no-repeat;}
+#skin-stage[data-preview-skin] .seasonal-victory[data-victory-mode="static"]{background:var(--rm-panel,var(--skin-bg));border:1px solid var(--skin-accent);color:var(--skin-ink);animation:none;padding:8px;}
 @media(max-height:540px){
  #overlay.flex .arena-brand{display:none;}
  #overlay.flex[data-outcome="victory"] .rm-result-trophy,#arcade-page[data-result="victory"] #arcade-feedback::before,#daily-modal[data-result="victory"] #daily-title::before{width:min(40vw,17dvh,100px);}
