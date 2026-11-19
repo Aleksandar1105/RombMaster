@@ -95,3 +95,6 @@ Owner proposed character unlocks through Career progression, earned currencies a
 
 ## V25.4F — regression gate (2026-11-19)
 D6/E implementation is in code; V25.4F is testing only. Build candidate with the manual Cloud Test APK workflow after browser test updates and documentation reconciliation. Verification remains pending until actual logs and device evidence arrive. V26 gameplay expansion must not begin before reviewing the regression/device gate. Prestige themes remain previews; custom per-skin audio and animation refinement and final release approval are not implied by the static asset batch.
+
+## V25.4F — Picsart reconciliation (2026-11-19)
+Drive inventory and branch cross-check documented in `docs/PICSART-ASSET-AUDIT.md`. All 16 victory artworks are now accessible via animated or static store previews; Prestige remains locked and Home preview is intentionally pending. No new generation or gameplay expansion. Complete regression and phone QA before moving on.
