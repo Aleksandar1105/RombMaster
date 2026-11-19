@@ -30,7 +30,8 @@ def validate(item):
         raise ValueError("Invalid asset filename")
     u = urlsplit(url)
     if (u.scheme != "https" or u.netloc != "gcdn.picsart.com"
-            or not re.fullmatch(r"/pipeline-output/[a-zA-Z0-9-]+\.(png|jpe?g|webp)", u.path)
+            or not (re.fullmatch(r"/pipeline-output/[a-zA-Z0-9-]+\.(png|jpe?g|webp)", u.path)
+                    or re.fullmatch(r"/editing-temp/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(png|jpe?g|webp)", u.path))
             or u.query or u.fragment):
         raise ValueError("Only direct Picsart image URLs are allowed")
     if type(maximum) is not int or not 320 <= maximum <= 2048:
@@ -127,8 +128,20 @@ def self_test():
         for skin in BUTTON_CONTOURS:
             clean_button(synthetic,Path(tmp)/(skin+".webp"),skin)
         print("BUTTON MASK SELF TEST: PASS")
+        # Seedream can return a direct image under editing-temp rather than
+        # pipeline-output. Accept only UUID image paths on the same exact host.
+        direct = "https://gcdn.picsart.com/editing-temp/12345678-1234-1234-1234-123456789abc.jpeg"
+        for url in [direct, "https://gcdn.picsart.com/pipeline-output/a.png"]:
+            assert validate({"name": "test.webp", "url": url, "max_side": 320}) == ("test.webp", url, 320)
         for url in ["http://gcdn.picsart.com/pipeline-output/a.png", "https://evil.test/a.png",
-                    "https://gcdn.picsart.com@evil.test/pipeline-output/a.png"]:
+                    "https://gcdn.picsart.com@evil.test/pipeline-output/a.png",
+                    direct.replace("https:", "http:"),
+                    direct.replace("gcdn.picsart.com", "evil.test"),
+                    direct.replace("gcdn.picsart.com", "gcdn.picsart.com.evil.test"),
+                    direct.replace("gcdn.picsart.com", "gcdn.picsart.com:443"),
+                    direct.replace(".jpeg", ".html"), direct + "?x=1", direct + "#x",
+                    "https://gcdn.picsart.com/editing-temp/../pipeline-output/a.png",
+                    "https://gcdn.picsart.com/editing-temp/not-a-uuid.jpeg"]:
             try:
                 validate({"name": "test.webp", "url": url, "max_side": 320})
             except ValueError:
