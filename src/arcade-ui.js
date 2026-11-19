@@ -96,7 +96,7 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   el('arcade-score').textContent=session.puzzle?'Attempts: '+session.attempts:'You '+session.board.score[1]+' · AI '+session.board.score[0]+' · Round '+session.round;
  }
  function finish(){
-  stopAI();stopClock();page.dataset.turn='finished';canvas.hidden=true;el('arcade-clock').textContent='';
+  stopAI();stopClock();page.dataset.turn='finished';page.dataset.result=session.outcome==='win'?'victory':session.outcome==='draw'?'draw':'defeat';canvas.hidden=true;el('arcade-clock').textContent='';
   const result=key===LocalSlots.storageKey(ARCADE_KEY)?recordArcade(localStorage,key,session):{status:'unavailable'};
   el('arcade-feedback').textContent=(session.puzzle&&session.outcome==='win'?'Puzzle solved!':session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
   canAdvance=result.status==='ready';
@@ -121,6 +121,7 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   tick();
  }
  function begin(mode,round=1){
+  page.dataset.result='';
   stopAI();stopClock();highlightMode(null);session=null;key=LocalSlots.storageKey(ARCADE_KEY);last=null;elapsed=0;canAdvance=false;canvas.hidden=true;el('arcade-next').hidden=true;
   if(mode==='infinity'){
    if(!unlockedInfinity()){el('arcade-selection-description').textContent='Win Career level 100 first.';return;}
@@ -135,7 +136,7 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   el('arcade-feedback').textContent='Your turn';
   el('arcade-clock').textContent='';draw();resume();
  }
- function leave(){stopAI();stopClock();selectedMode=null;show('picker');start.disabled=true;el('arcade-selection-title').textContent='Choose a challenge';el('arcade-selection-description').textContent='Select a mode to see its rules.';highlightMode(null);session=null;key=null;last=null;canvas.hidden=true;el('arcade-next').hidden=true;el('arcade-clock').textContent='';el('arcade-score').textContent='';el('arcade-title').textContent='Choose a challenge';el('arcade-instruction').textContent='Practice without changing Career or Daily progress.';el('arcade-feedback').textContent='';}
+ function leave(){page.dataset.result='';stopAI();stopClock();selectedMode=null;show('picker');start.disabled=true;el('arcade-selection-title').textContent='Choose a challenge';el('arcade-selection-description').textContent='Select a mode to see its rules.';highlightMode(null);session=null;key=null;last=null;canvas.hidden=true;el('arcade-next').hidden=true;el('arcade-clock').textContent='';el('arcade-score').textContent='';el('arcade-title').textContent='Choose a challenge';el('arcade-instruction').textContent='Practice without changing Career or Daily progress.';el('arcade-feedback').textContent='';}
  modeButtons.forEach(b=>b.onclick=()=>select(b.dataset.arcade));
  start.onclick=()=>{if(selectedMode)begin(selectedMode);};
  function back(){if(page.hidden||page.dataset.arenaView==='picker')return false;
