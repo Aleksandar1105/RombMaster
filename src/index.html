@@ -152,14 +152,16 @@
  </div>
  <div id="arcade-progress" class="arena-view" hidden>
  <button id="arcade-progress-back" type="button">Back to Arena</button>
- <section class="arcade-performance"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><div id="arcade-summary" class="arena-stat-grid"></div><small>Local practice statistics, not a measurement of intelligence.</small></section>
- <h3 class="arena-rewards-heading">Missions &amp; Rewards</h3><section id="arcade-rewards" class="arcade-rewards" aria-label="Arena rewards">
- <details open><summary>Daily missions</summary><ul id="daily-arena-missions"></ul></details>
- <details><summary>Weekly missions</summary><ul id="weekly-arena-missions"></ul></details>
- <details><summary>Season Pass</summary><p id="season-progress"></p><ul id="season-tiers"></ul><p>Free crests are collected automatically. Premium preview · Purchases disabled.</p></details>
- <details><summary>My seasonal crests</summary><ul id="season-collection"></ul></details>
- <details><summary>Achievements · <span id="arena-achievement-count">0 / 50</span></summary><p>26 Arena achievements + 24 Career achievements</p><ul id="arcade-achievements"></ul></details>
+ <nav class="rm-page-nav" aria-label="Progress categories"><button id="arena-category-prev" type="button">‹</button><strong id="arena-category-label">Statistics</strong><button id="arena-category-next" type="button">›</button></nav>
+ <section class="arcade-performance" data-progress-pane="stats"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><div id="arcade-summary" class="arena-stat-grid"></div><small>Local practice statistics, not a measurement of intelligence.</small></section>
+ <section id="arcade-rewards" class="arcade-rewards" aria-label="Arena rewards">
+ <details open hidden data-progress-pane="daily"><summary>Daily missions</summary><ul id="daily-arena-missions"></ul></details>
+ <details open hidden data-progress-pane="weekly"><summary>Weekly missions</summary><ul id="weekly-arena-missions"></ul></details>
+ <details open hidden data-progress-pane="season"><summary>Season Pass</summary><p id="season-progress"></p><ul id="season-tiers"></ul><p>Free crests are collected automatically. Premium preview · Purchases disabled.</p></details>
+ <details open hidden data-progress-pane="crests"><summary>My seasonal crests</summary><ul id="season-collection"></ul></details>
+ <details open hidden data-progress-pane="achievements"><summary>Achievements · <span id="arena-achievement-count">0 / 50</span></summary><p>26 Arena achievements + 24 Career achievements</p><ul id="arcade-achievements"></ul></details>
  </section>
+ <nav id="arena-list-nav" class="rm-page-nav" hidden aria-label="Reward pages"><button id="arena-list-prev" type="button">‹ Prev</button><span id="arena-list-label"></span><button id="arena-list-next" type="button">Next ›</button></nav>
  </div>
  </section>
  <section id="skin-page" class="home-drawer" hidden>
@@ -255,9 +257,9 @@
                             <div><span>Levels cleared</span><strong id="stat-cleared">0 / 100</strong></div>
                             <div><span>Stars earned</span><strong id="stat-stars">0 / 300</strong></div>
                         </div>
-                        <h3 class="achievements-title">Achievements <span id="achievement-count">0 / 24</span></h3>
+                        <button id="profile-stats-toggle" type="button">View achievements</button><div id="profile-achievements-page" hidden><h3 class="achievements-title">Achievements <span id="achievement-count">0 / 24</span></h3>
                         <ul id="achievement-list" class="achievement-list" aria-label="Career achievements"></ul>
-                        <p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
+                        <nav class="rm-page-nav" aria-label="Achievement pages"><button id="profile-achievements-prev" type="button">‹ Prev</button><span id="profile-achievements-label"></span><button id="profile-achievements-next" type="button">Next ›</button></nav></div><p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
                     </details>
                     <button id="reset-career-btn" type="button" class="btn-secondary career-reset-trigger">Reset Career Progress</button>
                     </div>
