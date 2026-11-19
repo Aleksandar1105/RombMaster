@@ -1,17 +1,82 @@
 [
   {
-    "name": "obsidian-neon-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/f1a474d8-a06c-46dd-a951-972864f99f84.png",
-    "max_side": 2048
+    "name": "neon-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/0825205d-919d-4dc0-9883-8f88e02faf42.png",
+    "max_side": 1024
   },
   {
-    "name": "celestial-void-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/954d48c2-7b61-449e-a234-5bd81ae409c8.png",
-    "max_side": 2048
+    "name": "royal-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/046725ea-6442-422f-b90a-9648a0374ae0.png",
+    "max_side": 1024
   },
   {
-    "name": "synthwave-sunset-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/ba8f00dd-ec05-4651-a43c-353e120b0afa.png",
-    "max_side": 2048
+    "name": "cyber-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/833870cb-2b9c-4179-bcab-c1551e47f4dd.png",
+    "max_side": 1024
+  },
+  {
+    "name": "ice-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/59d9d369-f7c0-479c-b0c9-e47e2c58c0ee.png",
+    "max_side": 1024
+  },
+  {
+    "name": "wood-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/285064b3-7876-40af-b346-b5114de9146a.png",
+    "max_side": 1024
+  },
+  {
+    "name": "white-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/a49d27f9-139b-4bcc-a801-d75c6a0a266f.png",
+    "max_side": 1024
+  },
+  {
+    "name": "frozen-christmas-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/5802003f-3265-4f60-a6df-99b12afe4c35.png",
+    "max_side": 1024
+  },
+  {
+    "name": "golden-dragon-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/a8a4c222-c37c-4599-a76a-f24ccb77e94f.png",
+    "max_side": 1024
+  },
+  {
+    "name": "spring-blossom-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/251675da-5b26-455c-8dfd-05c4d1e80d33.png",
+    "max_side": 1024
+  },
+  {
+    "name": "summer-paradise-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/b08321c0-995f-44fb-95d8-f76f4691b4dd.png",
+    "max_side": 1024
+  },
+  {
+    "name": "autumn-kingdom-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/2f7d884f-7db4-4fa9-9083-902f68628f6b.png",
+    "max_side": 1024
+  },
+  {
+    "name": "halloween-curse-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/048295f3-6826-4f73-94fa-bebabfce53f3.png",
+    "max_side": 1024
+  },
+  {
+    "name": "midnight-gold-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/ca69e3f2-771e-4d79-b33b-ceba9b12822b.png",
+    "max_side": 1024
+  },
+  {
+    "name": "obsidian-neon-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/07409caf-aba8-427a-9f3c-06d6af7cde0c.png",
+    "max_side": 1024
+  },
+  {
+    "name": "celestial-void-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/d65fa8eb-bc0d-4789-b910-2c2fbdf3eb0a.png",
+    "max_side": 1024
+  },
+  {
+    "name": "synthwave-sunset-master-button.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/c3419ddf-28af-488d-a2c4-14d50e678fba.png",
+    "max_side": 1024
   }
 ]
