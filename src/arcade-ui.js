@@ -24,7 +24,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
  function stopAI(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;}
  function scheduleAI(delay=550){
   if(aiTimer!==null||!session?.aiPending||game.paused||page.hidden)return;
-  el('arcade-feedback').textContent='Opponent turn';
+  page.dataset.turn='ai';el('arcade-clock').textContent=session.mode==='blitz'?'AI turn — timer paused':'';el('arcade-feedback').textContent='Opponent turn';
   aiTimer=setTimeout(()=>{
    aiTimer=null;
    if(!session?.aiPending||game.paused||page.hidden)return;
@@ -64,7 +64,8 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;el('arcade-infinity').disabled=true;return;}
   el('arcade-rewards').hidden=false;rewards(result.data);
   const s=arcadeSummary(result.data,days);
-  summary.textContent='Sessions '+s.sessions+' · Puzzle accuracy '+(s.accuracy===null?'—':s.accuracy+'%')+' · Match wins '+s.wins+'/'+s.games+' · Mean move time '+(s.meanSeconds===null?'—':s.meanSeconds+' s')+' · Doubles '+s.doubles+' · Best chain '+s.bestChain+' · Immediate concessions '+s.concessions+' · Survival '+s.survival;
+  const stats=[['Sessions',s.sessions],['Puzzle accuracy',s.accuracy===null?'—':s.accuracy+'%'],['Match wins',s.wins+'/'+s.games],['Mean move time',s.meanSeconds===null?'—':s.meanSeconds+' s'],['Double captures',s.doubles],['Best chain',s.bestChain],['Concessions',s.concessions],['Survival round',s.survival]];
+  summary.replaceChildren(...stats.map(([label,value])=>{const tile=documentRef.createElement('div');tile.className='arena-stat';const b=documentRef.createElement('b'),small=documentRef.createElement('small');b.textContent=String(value);small.textContent=label;tile.append(b,small);return tile;}));
  }
  function draw(){
   if(!session||page.hidden)return;
@@ -73,7 +74,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
   el('arcade-score').textContent=session.puzzle?'Attempts: '+session.attempts:'You '+session.board.score[1]+' · AI '+session.board.score[0]+' · Round '+session.round;
  }
  function finish(){
-  stopAI();stopClock();
+  stopAI();stopClock();page.dataset.turn='finished';
   const result=key===LocalSlots.storageKey(ARCADE_KEY)?recordArcade(localStorage,key,session):{status:'unavailable'};
   el('arcade-feedback').textContent=(session.outcome==='win'?'Victory!':session.outcome==='draw'?'Draw.':'Round lost.')+(result.status==='ready'?'':' · Result not saved');
   canAdvance=result.status==='ready';
@@ -93,7 +94,7 @@ export function mountArcade({documentRef=document,windowRef=window,game}){
  function resume(){
   if(!session||session.finished||page.hidden||game.paused||active)return;
   if(session.aiPending){scheduleAI();return;}
-  active=true;turnStart=now();
+  page.dataset.turn='human';active=true;turnStart=now();
   if(session.mode==='blitz')timer=setInterval(tick,100);
   tick();
  }
