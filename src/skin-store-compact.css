@@ -639,3 +639,46 @@
 :root[data-skin] #view-game #controls .btn-icon:not(.disabled):not(:disabled) {border:0;border-image:none;background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);box-shadow:none;font-family:var(--rm-display-font,var(--rm-font));color:var(--rm-chrome-ink);}
 @media(max-height:650px){#overlay.flex #premium-result-summary{gap:3px;}#overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(44vw,20dvh,150px);}}
 @media(max-height:480px){#overlay.flex .arena-brand{display:none;}#overlay.flex #result-title{font-size:1.25rem;}#overlay.flex #result-score{font-size:1.25rem;}#overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(32vw,13dvh,80px);}#overlay.flex #premium-result-summary{gap:2px;}#overlay.flex .rm-result-metric strong{font-size:1rem;}}
+
+
+/* V25.5A3: targeted device-evidence fixes, without changing gameplay geometry. */
+#view-menu #menu-page #career-page .mission-detail:not([hidden]){
+ grid-template-columns:minmax(0,1fr);grid-template-rows:auto;align-content:start;justify-items:stretch;gap:clamp(6px,1.3dvh,14px);
+ border:0;background:none;box-shadow:none;padding:6px;
+}
+#view-menu #menu-page #career-page .mission-detail #mission-preview{
+ grid-column:1/-1;grid-row:auto;width:min(65vw,28dvh,240px);justify-self:center;margin:0 auto;
+}
+#view-menu #menu-page #career-page .mission-detail #career-description{
+ grid-column:1/-1;grid-row:auto;text-align:center;white-space:normal;overflow-wrap:anywhere;line-height:1.35;font-style:normal;
+}
+#view-menu #menu-page #career-page .mission-detail #career-skin-row:not([hidden]){
+ grid-column:1/-1;grid-row:auto;max-width:100%;min-width:0;
+}
+#view-menu #menu-page #career-page .mission-detail #career-start-btn{
+ grid-column:1/-1;grid-row:auto;min-width:0;width:100%;min-height:48px;margin:0;padding:8px 14px;white-space:normal;overflow-wrap:normal;
+}
+#overlay.flex .rm-result-progress progress{
+ appearance:none;-webkit-appearance:none;overflow:hidden;background:color-mix(in srgb,var(--skin-ink) 18%,var(--skin-bg));border-radius:99px;
+}
+#overlay.flex .rm-result-progress progress::-webkit-progress-bar{background:color-mix(in srgb,var(--skin-ink) 18%,var(--skin-bg));border-radius:99px;}
+#overlay.flex .rm-result-progress progress::-webkit-progress-value{background:linear-gradient(90deg,var(--skin-accent),var(--skin-gold));border-radius:99px;}
+#overlay.flex .rm-result-progress progress::-moz-progress-bar{background:linear-gradient(90deg,var(--skin-accent),var(--skin-gold));border-radius:99px;}
+:root[data-skin] #menu-page #arcade-page[data-arena-view="play"] #arcade-play{
+ background:none;border:0;box-shadow:none;
+}
+:root[data-skin] #menu-page #arcade-page :is(#arcade-score,#arcade-clock,#arcade-feedback){
+ border:0;background:none;box-shadow:none;border-radius:0;font-family:var(--rm-display-font,var(--rm-font));
+}
+:root[data-skin] #menu-page #arcade-page[data-turn="finished"] #arcade-feedback::before,
+:root[data-skin] #daily-modal[data-result="victory"] #daily-title::before{
+ border:0;border-radius:0;filter:drop-shadow(0 0 12px color-mix(in srgb,var(--skin-accent) 40%,transparent));
+}
+:root[data-skin] #menu-page #arcade-page :is(#arcade-back,#arcade-next,#arcade-start,#arcade-progress-open,#arcade-progress-back):not(:disabled),
+:root[data-skin] #view-menu #menu-page #career-page #career-open-mission:not(:disabled){
+ border:0;border-image:none;background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);box-shadow:none;
+ color:var(--rm-chrome-ink);font-family:var(--rm-display-font,var(--rm-font));font-weight:700;
+}
+@media(max-height:620px){
+ #view-menu #menu-page #career-page .mission-detail #mission-preview{width:min(42vw,21dvh,170px);}
+}
