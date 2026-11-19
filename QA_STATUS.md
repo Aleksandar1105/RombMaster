@@ -104,3 +104,19 @@ Do not infer visual PASS from asset presence or APK compilation. Keep real-money
 
 ## V25.4F — Asset reconciliation addendum (2026-11-19)
 Baseline 48a9dce, runtime/validator patch through 6acddb7. Source inventory/reference comparison PASS for 137 literal premium paths; this is not binary or device QA. New checks pending: all 16 victory previews (static where no authored effect, no ownership changes), six Career arenas and six legacy rival assets packaged-byte verification, and regression suite. Confirm static previews are legible, do not play audio and fit screen; test Android Back and store exit. No full tests or build executed by this audit.
+
+
+## V25.5A — pending acceptance
+Candidate runtime 2ed6560, visual test fixture 2c66bb5. Run npm test, npm run build, asset validation and visual3-browser-qa.mjs; then manual Cloud Test APK with free minutes. V25.4F remains open until verified.
+| ID | Check | Status |
+|---|---|---|
+| PR01 | Victory emblem frameless; correct active skin | PENDING |
+| PR02 | First Career win shows actual Coins and XP, total and next character | PENDING |
+| PR03 | Repeat equal-star win shows zero increment; no duplicate award or unlock | PENDING |
+| PR04 | Boss character/skin unlock shown only when newly earned | PENDING |
+| PR05 | Defeat/draw, Quick Play and local PvP show truthful results; no invented rewards | PENDING |
+| PR06 | Overview and actions fit small/large viewports; details, mission, analysis accessible without scroll | PENDING |
+| PR07 | Reduced-motion setting disables reveal/count-up; sound and Back unchanged | PENDING |
+| PR08 | Update preserves profile, wallet and saved matches; slot isolation | PENDING |
+| PR09 | Actual device visual approval on S24 Ultra | PENDING |
+No PASS asserted for tests not run. Gems remain inactive. All 16 artwork previews do not imply equippable themes; locked themes tested with isolated visual fixtures only.
