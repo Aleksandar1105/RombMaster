@@ -120,3 +120,8 @@ Candidate runtime 2ed6560, visual test fixture 2c66bb5. Run npm test, npm run bu
 | PR08 | Update preserves profile, wallet and saved matches; slot isolation | PENDING |
 | PR09 | Actual device visual approval on S24 Ultra | PENDING |
 No PASS asserted for tests not run. Gems remain inactive. All 16 artwork previews do not imply equippable themes; locked themes tested with isolated visual fixtures only.
+
+
+## V25.5A — device feedback and A2 candidate
+Owner report, Codemagic build 6aff67098f52ca2751290f01: PR01 PASS, PR02 FAIL (no visible count-up, duplicate XP and four result pages), PR04 PASS, PR09 FAIL (not at Frozen reference quality; generic buttons/fonts and redundant borders). PR03/05/06/07/08 PENDING. Summary 2 PASS / 2 FAIL / 0 BLOCKED / 5 PENDING. Exact tested source SHA not independently established.
+A2 runtime through a5e5b3f, fixture 6ba7a0f: one result screen, no analysis/mission pagination, delayed 1450 ms count-up for positive earned amounts, reduced-motion respected, shared button art/display font and selective outer-frame removal. No reward formula changes. Re-test all PR cases; PR02/09 remain open until accepted. Browser and APK tests not executed here. Check zero rewards are static, positive rewards count visibly, and storage failure remains visible. Whole-game visual consistency is still open.
