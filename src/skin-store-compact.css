@@ -349,3 +349,52 @@
 /* Preserve the approved Neon Home; other Home controls retain positions and original working labels. */
 :root[data-skin]:not([data-skin="neon"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row button,.mode-grid button,.home-utility-row button,#home-tools button):not(:disabled) {border-image:var(--rm-frame) 18 24 / 8px 11px / 0 stretch;font-family:var(--rm-font);}
 #skin-stage[data-preview-skin] :is(.skin-sample-score,.skin-sample-controls){border:2px solid var(--rm-chrome-rim);border-image:var(--rm-frame) 18 24 / 7px 10px / 0 stretch;background:var(--rm-chrome-face);color:var(--rm-chrome-ink);font-family:var(--rm-font);}
+
+/* V25.4D4C: validated cropped WebP button surfaces with real alpha.
+   Keep compact controls on scalable vector chrome, not stretched artwork.
+   Nine-slice fill preserves end ornaments and lets the centre expand.
+   No height/width/position changes to controls; no changes to approved Neon Home. */
+:root[data-skin="neon"],#skin-stage[data-preview-skin="neon"] {--rm-button-art:url('/assets/premium/master/neon-master-button-clean.webp');}
+:root[data-skin="royal"],#skin-stage[data-preview-skin="royal"] {--rm-button-art:url('/assets/premium/master/royal-master-button-clean.webp');}
+:root[data-skin="cyber"],#skin-stage[data-preview-skin="cyber"] {--rm-button-art:url('/assets/premium/master/cyber-master-button-clean.webp');}
+:root[data-skin="ice"],#skin-stage[data-preview-skin="ice"] {--rm-button-art:url('/assets/premium/master/ice-master-button-clean.webp');}
+:root[data-skin="wood"],#skin-stage[data-preview-skin="wood"] {--rm-button-art:url('/assets/premium/master/wood-master-button-clean.webp');}
+:root[data-skin="white"],#skin-stage[data-preview-skin="white"] {--rm-button-art:url('/assets/premium/master/white-master-button-clean.webp');}
+:root[data-skin="frozen-christmas"],#skin-stage[data-preview-skin="frozen-christmas"] {--rm-button-art:url('/assets/premium/master/frozen-christmas-master-button-clean.webp');}
+:root[data-skin="golden-dragon"],#skin-stage[data-preview-skin="golden-dragon"] {--rm-button-art:url('/assets/premium/master/golden-dragon-master-button-clean.webp');}
+:root[data-skin="spring-blossom"],#skin-stage[data-preview-skin="spring-blossom"] {--rm-button-art:url('/assets/premium/master/spring-blossom-master-button-clean.webp');}
+:root[data-skin="summer-paradise"],#skin-stage[data-preview-skin="summer-paradise"] {--rm-button-art:url('/assets/premium/master/summer-paradise-master-button-clean.webp');}
+:root[data-skin="autumn-kingdom"],#skin-stage[data-preview-skin="autumn-kingdom"] {--rm-button-art:url('/assets/premium/master/autumn-kingdom-master-button-clean.webp');}
+:root[data-skin="halloween-curse"],#skin-stage[data-preview-skin="halloween-curse"] {--rm-button-art:url('/assets/premium/master/halloween-curse-master-button-clean.webp');}
+:root[data-skin="midnight-gold"],#skin-stage[data-preview-skin="midnight-gold"] {--rm-button-art:url('/assets/premium/master/midnight-gold-master-button-clean.webp');}
+:root[data-skin="obsidian-neon"],#skin-stage[data-preview-skin="obsidian-neon"] {--rm-button-art:url('/assets/premium/master/obsidian-neon-master-button-clean.webp');}
+:root[data-skin="celestial-void"],#skin-stage[data-preview-skin="celestial-void"] {--rm-button-art:url('/assets/premium/master/celestial-void-master-button-clean.webp');}
+:root[data-skin="synthwave-sunset"],#skin-stage[data-preview-skin="synthwave-sunset"] {--rm-button-art:url('/assets/premium/master/synthwave-sunset-master-button-clean.webp');}
+/* Deliberately limited to major actions and wide home controls. */
+:root[data-skin] :is(#menu-page,#daily-modal,#overlay,#confirm-dialog,#career-reset-modal) :is(#career-start-btn,#setup-play,#arcade-start,#arcade-next,#skin-equip,#daily-next-btn,#nextCareerBtn,#confirm-dialog-accept,#career-reset-confirm):not(:disabled) {
+ background:var(--rm-chrome-face);border-color:transparent;border-style:solid;
+ border-image:var(--rm-button-art) 24% 21% fill / 24% 17% / 0 stretch;
+ color:var(--rm-chrome-ink);text-shadow:0 1px 2px #0009;
+ font-family:var(--rm-font);padding-inline:max(17%,10px);
+ box-shadow:none;clip-path:none;
+}
+:root[data-skin]:not([data-skin="neon"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row button,.mode-grid button,.home-utility-row button):not(:disabled) {
+ border-image:var(--rm-button-art) 24% 21% fill / 24% 17% / 0 stretch;
+ color:var(--rm-chrome-ink);background:var(--rm-chrome-face);border-color:transparent;
+ font-family:var(--rm-font);text-shadow:0 1px 2px #0009;
+}
+:root[data-skin="white"] :is(#menu-page,#daily-modal,#overlay,#confirm-dialog,#career-reset-modal,#home-hub) :is(.btn-primary,.btn-secondary,.nav-tile,.skin-store-entry) {text-shadow:none;}
+/* Compact portrait/landscape: keep labels and touch controls readable. */
+@media(max-width:360px),(max-height:460px) {
+ :root[data-skin] :is(#menu-page,#daily-modal,#overlay,#confirm-dialog,#career-reset-modal) :is(#career-start-btn,#setup-play,#arcade-start,#arcade-next,#skin-equip,#daily-next-btn,#nextCareerBtn,#confirm-dialog-accept,#career-reset-confirm):not(:disabled) {
+  border-image:var(--rm-frame) 18 24 / 8px 11px / 0 stretch;padding-inline:10px;
+ }
+ :root[data-skin]:not([data-skin="neon"]) #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row button,.mode-grid button,.home-utility-row button):not(:disabled) {
+  border-image:var(--rm-frame) 18 24 / 8px 11px / 0 stretch;
+ }
+}
+/* Display-only example: Prestige previews use artwork without granting ownership. */
+#menu-page #skin-page #skin-stage[data-preview-skin] .skin-sample-controls {
+ border-image:var(--rm-button-art) 24% 21% fill / 24% 17% / 0 stretch;
+ color:var(--rm-chrome-ink);
+}
