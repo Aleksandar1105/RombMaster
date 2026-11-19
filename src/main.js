@@ -284,7 +284,9 @@ configureCharacterEconomy({
 Game.rewardWalletSnapshot=()=>{
     const s=skinState();
     if(s.wallet.status!=='ready'||!s.walletKey||!s.wallet.wallet)return null;
-    return {key:s.walletKey,balance:walletBalance(s.wallet.wallet),owned:[...s.wallet.wallet.owned]};
+    return {key:s.walletKey,balance:walletBalance(s.wallet.wallet),owned:[...s.wallet.wallet.owned],
+        characters:CHARACTERS.filter(c=>characterEntitlement(c.id,s.originalProfile,s.wallet.wallet)==='owned').map(c=>c.id),
+        nextReward:CHARACTERS.filter(c=>c.category==='career'&&characterEntitlement(c.id,s.originalProfile,s.wallet.wallet)!=='owned').sort((a,b)=>a.level-b.level)[0]||null};
 };
 Game.rewardSkinName=id=>getSkin(id).name;
 let matchResultPages=[],matchResultPage=0;
@@ -298,9 +300,71 @@ function drawMatchResultPage(){
     el('result-page-label').textContent=label+' · '+(matchResultPage+1)+' / '+matchResultPages.length;
     el('result-prev').disabled=matchResultPage===0;el('result-next').disabled=matchResultPage===matchResultPages.length-1;
 }
+// Read-only result presentation. The final move remains the only reward writer.
+let resultAnimation=0;
+function renderPremiumResult(){
+    const overview=document.querySelector('#overlay .rm-result-overview');
+    if(!overview)return;
+    let summary=el('premium-result-summary');
+    if(!summary){
+        summary=document.createElement('div');summary.id='premium-result-summary';
+        overview.append(summary);
+    }
+    resultAnimation++;
+    const generation=resultAnimation;
+    summary.replaceChildren();
+    const outcome=Game.settings.careerLevel?Game.careerOutcome:null;
+    const wallet=outcome?.walletReward;
+    const ready=outcome?.status==='ready';
+    summary.hidden=!ready;
+    if(!ready)return;
+    const metrics=document.createElement('div');metrics.className='rm-result-metrics';
+    function metric(label,value){
+        const card=document.createElement('div');card.className='rm-result-metric';
+        const name=document.createElement('small');name.textContent=label;
+        const number=document.createElement('strong');
+        const target=Number.isSafeInteger(value)&&value>=0?value:null;
+        number.textContent=target===null?'Unavailable':'+'+target;
+        card.append(name,number);metrics.append(card);
+        if(target>0&&typeof requestAnimationFrame==='function'&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
+            const start=performance.now();
+            number.textContent='+0';
+            function tick(now){
+                if(generation!==resultAnimation||!number.isConnected||!el('overlay').classList.contains('flex'))return;
+                const t=Math.min(1,(now-start)/650);
+                number.textContent='+'+Math.round(target*(1-(1-t)**3));
+                if(t<1)requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+    }
+    metric('Coins earned',wallet?.coins);
+    metric('XP earned',outcome.earnedXP);
+    summary.append(metrics);
+    const total=document.createElement('small');total.className='rm-result-total';
+    total.textContent=outcome.profile.xp+' XP total';
+    summary.append(total);
+    const next=wallet?.nextReward;
+    if(next&&Number.isInteger(next.level)){
+        const progress=document.createElement('div');progress.className='rm-result-progress';
+        const label=document.createElement('small');
+        const cleared=Object.keys(outcome.profile.stars||{}).map(Number).filter(n=>n<=next.level).length;
+        label.textContent='Next character: '+next.label+' · Win level '+next.level;
+        const bar=document.createElement('progress');bar.max=next.level;bar.value=Math.min(cleared,next.level);
+        bar.setAttribute('aria-label','Career levels cleared toward '+next.label);
+        progress.append(label,bar);summary.append(progress);
+    }
+    const characterNames=(wallet?.characterUnlocks||[]).map(id=>getCharacter(id)?.label||id);
+    if(outcome.foxUnlocked&&!characterNames.includes('Neon Fox'))characterNames.push('Neon Fox');
+    if(characterNames.length){
+        const unlock=document.createElement('p');unlock.className='rm-result-character-unlock';
+        unlock.textContent='Character unlocked: '+characterNames.join(', ');summary.append(unlock);
+    }
+}
 Game.refreshResultPages=()=>{
+    renderPremiumResult();
     matchResultPages=[['overview','Result']];
-    if(!el('career-reward').hidden)matchResultPages.push(['rewards','Rewards']);
+    if(!el('career-reward').hidden)matchResultPages.push(['rewards','Details']);
     if(!el('nextCareerBtn').hidden)matchResultPages.push(['next','Next mission']);
     if(!el('match-analysis').hidden)matchResultPages.push(['analysis','Match analysis']);
     matchResultPage=0;drawMatchResultPage();
