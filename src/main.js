@@ -4,11 +4,11 @@ import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
+import { ProfileStore, LocalSlots, PLAYER_AVATARS, configureCharacterEconomy, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel, CHARACTERS, getCharacter, characterEntitlement, buyWalletCharacter } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -198,6 +198,28 @@ const careerDescription = el('career-description');
 const careerStatus = el('career-status');
 const avatarSelect = el('profile-avatar');
 const avatarPreview = el('profile-avatar-preview');
+// Reuse the existing non-scrolling avatar pane and its pagination.
+const avatarGrid=document.querySelector('.premium-avatar-grid');
+if(avatarGrid&&avatarSelect){
+    const cards=[],options=[];
+    for(const c of CHARACTERS){
+        const option=document.createElement('option');option.value=c.id;option.textContent=c.label;options.push(option);
+        const choice=document.createElement('button');choice.type='button';choice.className='avatar-choice';
+        choice.dataset.profileAvatar=c.id;choice.setAttribute('aria-pressed','false');
+        const art=document.createElement('span');art.className='avatar-art';art.dataset.avatar=c.id;art.setAttribute('aria-hidden','true');
+        const name=document.createElement('strong');name.textContent=c.label;
+        const status=document.createElement('small');status.dataset.avatarLock='';status.hidden=true;
+        choice.append(art,name,status);cards.push(choice);
+    }
+    avatarGrid.replaceChildren(...cards);avatarSelect.replaceChildren(...options);
+}
+function characterStatus(c,entitlement,wallet){
+    if(entitlement==='owned')return '';
+    if(entitlement==='locked')return 'Win level '+c.level;
+    if(entitlement==='coins')return c.price+' Coins';
+    if(c.currency==='gems')return c.price+' Gems · Later';
+    return 'Coming soon';
+}
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
@@ -237,6 +259,18 @@ const skinState = () => {
     const wallet=syncWallet(localStorage,walletKey,state.profile,daily);
     return { profile: state.profile?{...state.profile,skinWallet:wallet.wallet}:null, originalProfile:state.profile,daily,wallet,walletKey,key:LocalSlots.storageKey(SKIN_KEY) };
 };
+// Profile equip and Career reset use the same per-slot wallet as the store.
+configureCharacterEconomy({
+    entitlement(id,profile){
+        const daily=DailyProgress.read(localDateKey()).progress;
+        const result=syncWallet(localStorage,LocalSlots.storageKey(WALLET_KEY),profile,daily);
+        return characterEntitlement(id,profile,result.wallet);
+    },
+    preserve(profile){
+        const daily=DailyProgress.read(localDateKey()).progress;
+        return syncWallet(localStorage,LocalSlots.storageKey(WALLET_KEY),profile,daily).status;
+    }
+});
 // Presentation observes the persisted wallet; it never awards a second time.
 Game.rewardWalletSnapshot=()=>{
     const s=skinState();
@@ -613,23 +647,28 @@ const refreshCareer = () => {
     el('career-start-btn').disabled = false;
     el('reset-career-btn').disabled = false;
     profileName.value = p.name;
-    const fox = avatarSelect.querySelector?.('[value="neon-fox"]');
-    if (fox) {
-        fox.disabled = !p.neonFoxUnlocked;
-        fox.textContent = fox.disabled ? '🔒 Neon Fox · Win level 5' : '🦊 Neon Fox';
+    const walletState=skinState().wallet, characterWallet=walletState.wallet;
+    for(const option of avatarSelect.options){
+        option.disabled=characterEntitlement(option.value,p,characterWallet)!=='owned';
     }
     avatarSelect.value = p.avatar;
-    if(el('profile-avatar-name'))el('profile-avatar-name').textContent=PLAYER_AVATARS.find(item=>item.id===p.avatar)?.label||'Spark';
+    if(el('profile-avatar-name'))el('profile-avatar-name').textContent=getCharacter(p.avatar)?.label||'Spark';
     if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
     else avatarPreview.classList.remove('neon-fox');
     avatarPreview.dataset.avatar = p.avatar;
     avatarPreview.textContent = PLAYER_AVATARS.find(item => item.id === p.avatar)?.icon || '✨';
     for (const choice of document.querySelectorAll('[data-profile-avatar]')) {
         const id = choice.dataset.profileAvatar;
-        choice.disabled = id === 'neon-fox' && !p.neonFoxUnlocked;
-        choice.setAttribute('aria-pressed', String(id === p.avatar));
-        const lock = choice.querySelector('[data-avatar-lock]');
-        if (lock) lock.hidden = !choice.disabled;
+        const c=getCharacter(id);
+        if(!c)continue;
+        const entitlement=characterEntitlement(id,p,characterWallet);
+        choice.disabled=entitlement!=='owned'&&entitlement!=='coins';
+        choice.dataset.entitlement=entitlement;
+        choice.setAttribute('aria-pressed', String(id === p.avatar&&entitlement==='owned'));
+        const lock=choice.querySelector('[data-avatar-lock]');
+        if(lock){lock.textContent=characterStatus(c,entitlement,characterWallet);lock.hidden=entitlement==='owned';}
+        choice.setAttribute('aria-label',c.label+(entitlement==='owned'?'':', '+characterStatus(c,entitlement,characterWallet)));
+    
     }
     el('identity-name').textContent = p.name;
     el('identity-art').dataset.avatar = p.avatar;
@@ -863,8 +902,30 @@ avatarSelect.onchange = () => {
 document.querySelectorAll('[data-profile-avatar]').forEach(choice => {
     choice.onclick = () => {
         if (choice.disabled || homePreviewSkin) return;
-        avatarSelect.value = choice.dataset.profileAvatar;
-        avatarSelect.onchange();
+        const id=choice.dataset.profileAvatar,c=getCharacter(id);
+        if(!c)return;
+        const current=skinState(), entitlement=characterEntitlement(id,current.originalProfile,current.wallet.wallet);
+        if(entitlement==='owned'){
+            avatarSelect.value=id;
+            avatarSelect.onchange();
+            return;
+        }
+        if(entitlement!=='coins')return;
+        if(current.wallet.status!=='ready'||walletBalance(current.wallet.wallet)<c.price){
+            profileFeedback.textContent='Need '+c.price+' Coins to unlock '+c.label+'.';return;
+        }
+        const owner=LocalSlots.read().index?.activeId;
+        if(!owner)return;
+        confirmDialog.open({
+            heading:'Unlock '+c.label+'?',detail:'Spend '+c.price+' earned Coins on this cosmetic character?',
+            confirmLabel:'Buy character',cancelLabel:'Cancel',focusReturn:choice,
+            onConfirm:()=>{
+                if(LocalSlots.read().index?.activeId!==owner)return;
+                const fresh=skinState(),result=buyWalletCharacter(localStorage,fresh.walletKey,id,fresh.originalProfile,fresh.daily);
+                refreshCareer();
+                profileFeedback.textContent=['ready','owned'].includes(result.status)?'Unlocked '+c.label+'! Select again to equip.':'Purchase unavailable: '+result.status;
+            }
+        });
     };
 });
 careerSelect.onchange = () => {
