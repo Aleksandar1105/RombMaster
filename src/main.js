@@ -289,17 +289,6 @@ Game.rewardWalletSnapshot=()=>{
         nextReward:CHARACTERS.filter(c=>c.category==='career'&&characterEntitlement(c.id,s.originalProfile,s.wallet.wallet)!=='owned').sort((a,b)=>a.level-b.level)[0]||null};
 };
 Game.rewardSkinName=id=>getSkin(id).name;
-let matchResultPages=[],matchResultPage=0;
-function drawMatchResultPage(){
-    const overlay=el('overlay'),nav=el('result-page-nav');
-    if(!nav||!matchResultPages.length)return;
-    matchResultPage=Math.max(0,Math.min(matchResultPages.length-1,matchResultPage));
-    const [id,label]=matchResultPages[matchResultPage];
-    overlay.dataset.resultPage=id;
-    nav.hidden=matchResultPages.length<2;
-    el('result-page-label').textContent=label+' · '+(matchResultPage+1)+' / '+matchResultPages.length;
-    el('result-prev').disabled=matchResultPage===0;el('result-next').disabled=matchResultPage===matchResultPages.length-1;
-}
 // Read-only result presentation. The final move remains the only reward writer.
 let resultAnimation=0;
 function renderPremiumResult(){
@@ -326,16 +315,19 @@ function renderPremiumResult(){
         const target=Number.isSafeInteger(value)&&value>=0?value:null;
         number.textContent=target===null?'Unavailable':'+'+target;
         card.append(name,number);metrics.append(card);
-        if(target>0&&typeof requestAnimationFrame==='function'&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
-            const start=performance.now();
+        if(target>0&&typeof requestAnimationFrame==='function'&&!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches){
+            // Start after the first painted frame; the previous 650 ms reveal
+            // could finish during the transition into the result overlay.
             number.textContent='+0';
+            let startTime=null;
             function tick(now){
                 if(generation!==resultAnimation||!number.isConnected||!el('overlay').classList.contains('flex'))return;
-                const t=Math.min(1,(now-start)/650);
-                number.textContent='+'+Math.round(target*(1-(1-t)**3));
+                if(startTime===null)startTime=now;
+                const t=Math.max(0,Math.min(1,(now-startTime-250)/1450));
+                number.textContent='+'+Math.round(target*(1-(1-t)**2));
                 if(t<1)requestAnimationFrame(tick);
             }
-            requestAnimationFrame(tick);
+            requestAnimationFrame(()=>requestAnimationFrame(tick));
         }
     }
     metric('Coins earned',wallet?.coins);
@@ -356,21 +348,29 @@ function renderPremiumResult(){
     }
     const characterNames=(wallet?.characterUnlocks||[]).map(id=>getCharacter(id)?.label||id);
     if(outcome.foxUnlocked&&!characterNames.includes('Neon Fox'))characterNames.push('Neon Fox');
+    const achievements=outcome.newAchievements||[];
+    if(achievements.length){
+        const note=document.createElement('small');
+        note.className='rm-result-achievements';
+        note.textContent=achievements.length===1?'Achievement: '+achievements[0].title:achievements.length+' new achievements · View in Profile';
+        summary.append(note);
+    }
     if(characterNames.length){
         const unlock=document.createElement('p');unlock.className='rm-result-character-unlock';
         unlock.textContent='Character unlocked: '+characterNames.join(', ');summary.append(unlock);
     }
 }
 Game.refreshResultPages=()=>{
+    const overlay=el('overlay');
+    overlay.dataset.resultPage='overview';
+    if(el('result-page-nav'))el('result-page-nav').hidden=true;
     renderPremiumResult();
-    matchResultPages=[['overview','Result']];
-    if(!el('career-reward').hidden)matchResultPages.push(['rewards','Details']);
-    if(!el('nextCareerBtn').hidden)matchResultPages.push(['next','Next mission']);
-    if(!el('match-analysis').hidden)matchResultPages.push(['analysis','Match analysis']);
-    matchResultPage=0;drawMatchResultPage();
+    // A single result view. Keep a persistence failure visible, not duplicated XP.
+    const reward=el('career-reward');
+    if(reward)reward.hidden=!Game.settings.careerLevel||Game.careerOutcome?.status==='ready';
+    const analysis=el('match-analysis');
+    if(analysis)analysis.hidden=true;
 };
-if(el('result-prev'))el('result-prev').onclick=()=>{matchResultPage--;drawMatchResultPage();};
-if(el('result-next'))el('result-next').onclick=()=>{matchResultPage++;drawMatchResultPage();};
 function applySkin(id) {
     renderSkinVariables(setActiveSkin(id));
 }
