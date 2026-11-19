@@ -98,3 +98,19 @@ D6/E implementation is in code; V25.4F is testing only. Build candidate with the
 
 ## V25.4F — Picsart reconciliation (2026-11-19)
 Drive inventory and branch cross-check documented in `docs/PICSART-ASSET-AUDIT.md`. All 16 victory artworks are now accessible via animated or static store previews; Prestige remains locked and Home preview is intentionally pending. No new generation or gameplay expansion. Complete regression and phone QA before moving on.
+
+
+## V25.5–V25.9 — owner-approved premium visual completion (2026-11-19)
+The owner approved the following phased direction after gameplay video review. Frozen Christmas Home is the visual quality reference, not a replacement for each skin's own artwork. Preserve the V25.4F regression gate; do not mark it passed without evidence. V25.5A implementation may begin now by explicit owner instruction; release and V26 expansion remain gated.
+
+- V25.5A Premium Victory & Rewards: reuse existing victory emblems, remove unnecessary art frame, make the overview immediately useful, show actual persisted Coins and XP, new unlocks and next reachable Career reward; keep next mission and analysis accessible without scrolling. Distinct defeat/draw treatment; reduced motion; no second reward grant.
+- V25.5B Gameplay HUD: theme-aware portraits, scores, turn/goal indicator and controls; preserve single shared boundary, board geometry, hit testing, Undo and save/resume.
+- V25.5C Career & Rivals: improve six rival cards, locked/defeated states, chapter/progression visuals. AI and balance remain V26.
+- V25.5D Quick Play: improve selectors, active state, board preview and Play CTA; new sizes remain V26.
+- V25.5E Skin Store & Character Collection: common visual system, clear ownership/preview states, top-left short collections, single store; polish Profile/Daily/Challenge Arena consistently. Prestige Home remains pending until approved.
+- V25.6 Reward & Economy UX: display actual balances, earned rewards, XP and attainable milestones; no fabricated currencies or changed reward rules. Gems and billing stay inactive until V27/V28.
+- V25.7 Full Skin Adaptation: finalize coherent Home, arena, controls, results and effects for 16 skins.
+- V25.8 Premium Audio: distinct themed feedback, mute preference and lifecycle checks.
+- V25.9 Final Visual QA: viewport/device coverage and owner approval before V26.
+
+Use existing assets first (target zero new Picsart credits for V25.5A); no Actions, paid capacity, live billing or ads. No gameplay or economy changes. Keep all non-store screens non-scrolling, with accessible pagination and responsive layout. Save migration, repeat/replayed matches, unlock integrity, reduced motion and Android Back are acceptance gates. Manual Codemagic Cloud Test APK only, after code review and regression checks.
