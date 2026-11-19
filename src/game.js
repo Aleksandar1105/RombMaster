@@ -315,9 +315,17 @@ export const Game = {
       // Store career progress synchronously at the final move, not after the
       // delayed result animation, so background termination loses no reward.
       if (this.settings.careerLevel && this.careerOutcome === null) {
+        // Optional wallet presentation hooks never affect the actual match or profile save.
+        let beforeWallet=null;try{beforeWallet=this.rewardWalletSnapshot?.()||null;}catch{}
         this.careerOutcome = ProfileStore.recordCareer(
           this.settings.careerLevel, this.board.score[CONSTANTS.X], this.board.score[CONSTANTS.O], this.doubleCaptureGoal()
         );
+        if(this.careerOutcome.status==='ready')try{
+          const afterWallet=this.rewardWalletSnapshot?.();
+          if(beforeWallet&&afterWallet&&beforeWallet.key===afterWallet.key){
+            this.careerOutcome={...this.careerOutcome,walletReward:{coins:Math.max(0,afterWallet.balance-beforeWallet.balance),unlocks:afterWallet.owned.filter(id=>!beforeWallet.owned.includes(id))}};
+          }
+        }catch{}
       }
       this.scheduleAction(() => this.endGame(), 500);
       return;
@@ -383,6 +391,11 @@ export const Game = {
     const result = resultPresentation(s, this.settings.mode);
     const overlay = document.getElementById('overlay');
     overlay.dataset.outcome = result.outcome;
+    overlay.dataset.resultPage='overview';
+    const walletLabel=document.getElementById('result-wallet'),unlocksLabel=document.getElementById('result-unlocks');
+    const walletReward=this.settings.careerLevel&&this.careerOutcome?.status==='ready'?this.careerOutcome.walletReward:null;
+    if(walletLabel){walletLabel.hidden=!(walletReward?.coins>0);walletLabel.textContent=walletReward?.coins>0?'+'+walletReward.coins+' Coins':'';}
+    if(unlocksLabel){const names=walletReward?.unlocks?.map(id=>this.rewardSkinName?.(id)||id)||[];unlocksLabel.hidden=!names.length;unlocksLabel.textContent=names.length?'Skin unlocked: '+names.join(', '):'';}
     const replay = document.getElementById('againBtn');
     if (replay) replay.textContent = this.settings.careerLevel && s[CONSTANTS.X] <= s[CONSTANTS.O]
       ? 'Retry Level ' + this.settings.careerLevel : 'Replay';
@@ -448,6 +461,7 @@ export const Game = {
       analysis.textContent='Match analysis · '+moves+' moves · '+captured+' cells · '+doubles+' double captures · Best chain '+bestChain+' · Immediate concessions '+gifts;
     }
     overlay.classList.add('flex');
+    this.refreshResultPages?.();
     this.updateUI();
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
   },
