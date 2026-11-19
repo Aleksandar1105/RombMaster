@@ -1,37 +1,92 @@
 [
   {
-    "name": "avatar-spark-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/ac1bb02c-158f-45a7-8cb9-53c7b62f2d99.png",
+    "name": "avatar-azure-squire-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/13995ebb-6852-4cf6-bf7e-72880a184758.png",
     "max_side": 768
   },
   {
-    "name": "avatar-fox-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/e0ed4211-a9a3-45b9-ac39-6114aef6c061.png",
+    "name": "avatar-jade-huntress-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/b60ebaa9-6408-4e70-9baa-88ff72023ea5.png",
     "max_side": 768
   },
   {
-    "name": "avatar-robot-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/6478444d-a968-4ee3-8c22-f3fa27f4ae8c.png",
+    "name": "avatar-crimson-sentinel-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/57902ffc-f537-481b-aadc-af613d73a9b6.png",
     "max_side": 768
   },
   {
-    "name": "avatar-rocket-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/04b25907-ae2d-4b8c-9420-599c440b522b.png",
+    "name": "avatar-frost-oracle-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/f3ff4db5-829e-4088-92ce-1ac8f3028cce.png",
     "max_side": 768
   },
   {
-    "name": "avatar-dragon-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/59865ec7-02b1-42bf-876b-63cc0dc77da3.png",
+    "name": "avatar-onyx-warden-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/86c4c8e7-3855-4d35-acdd-792131af0fa0.png",
     "max_side": 768
   },
   {
-    "name": "avatar-shield-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/de55a97a-5914-43e6-a894-22c769794886.png",
+    "name": "avatar-crown-ascendant-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/5e5a4f9b-6910-4a41-9a69-9e77af3d8db3.png",
     "max_side": 768
   },
   {
-    "name": "avatar-neon-fox-master.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/89363f4b-7910-4151-be6e-61e222de1d1c.png",
+    "name": "avatar-circuit-valkyrie-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/dfa69232-812e-48da-8c5b-eaf0f562e630.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-storm-raptor-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/f7a55149-9184-4de6-be5c-bf2efd544046.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-ember-ronin-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/2c625d09-5889-4ba9-884a-e819d10fb96c.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-moon-weaver-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/5401abd9-be42-4bc9-a050-2e0d879f983a.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-coral-corsair-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/be1c8d05-f3f3-4eb1-a524-fb09c9d0e85b.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-prism-golem-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/324ac169-a3c6-482e-8427-44c3694b335d.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-solar-sovereign-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/50d85356-5aae-4833-b3fa-2259a7847e96.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-void-monarch-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/24bdb6fa-35f4-4b31-9f4e-3d0ab76c5003.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-celestial-empress-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/add9c697-2aee-4658-8d58-fdb597adbdc8.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-dragon-emperor-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/8736e13c-40de-4420-a38f-047c19b68d71.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-aurora-seraph-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/6cf63f06-c3ec-4276-9302-110389d0b291.png",
+    "max_side": 768
+  },
+  {
+    "name": "avatar-chronos-architect-master.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/821bec34-32b7-4c55-82e8-3a87a2ad006c.png",
     "max_side": 768
   }
 ]
