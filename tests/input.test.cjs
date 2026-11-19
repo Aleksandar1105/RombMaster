@@ -17,13 +17,21 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     const element = {
       style: { setProperty(key, value) { this[key] = value; } },
       dataset: {}, children: [],
-      querySelectorAll() { return []; },
-      querySelector() { return null; },
-      focus() {}, setAttribute(key,value) { this[key] = value; },
-      append(...nodes) { this.children.push(...nodes); }, replaceChildren(...nodes) { this.children = nodes; },
+      get options() { return this.children; },
+      querySelectorAll(selector) {
+        if(selector==='[data-profile-avatar]')return this.children.filter(e=>e.dataset.profileAvatar!==undefined);
+        return [];
+      },
+      querySelector(selector) {
+        if(selector==='[data-avatar-lock]')return this.children.find(e=>e.dataset.avatarLock!==undefined)||null;
+        if(selector==='.avatar-art')return this.children.find(e=>e.className==='avatar-art')||null;
+        return null;
+      },
+      focus() {}, setAttribute(key,value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; },
+      append(...nodes) { this.children.push(...nodes); }, appendChild(node) { this.children.push(node); return node; }, replaceChildren(...nodes) { this.children = nodes; },
       textContent: '', width: 400, height: 400,
       getBoundingClientRect: () => ({ left: 0, top: 0, width: 400, height: 400 }),
-      classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x) },
+      classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x), toggle(x,force) {const on=force===undefined?!classes.has(x):Boolean(force); if(on)classes.add(x);else classes.delete(x);return on;} },
       addEventListener(type, fn) {
         if (!listeners.has(type)) listeners.set(type, []);
         listeners.get(type).push(fn);
@@ -34,16 +42,29 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
     elements.set(id, element);
     return element;
   }
-  const pages = Object.entries({ startBtn: 'quick-settings', 'home-two-players': 'quick-settings', career: 'career-page' }).map(([id,page]) => {
+  const pages = Object.entries({ startBtn: 'quick-settings', career: 'career-page', profile: 'player-settings', 'home-skin-store':'skin-page' }).map(([id,page]) => {
     const button = el(id);
     button.id = id;
     button.dataset.page = page;
     return button;
   });
+  const avatarGrid=el('character-grid');
+  const setupButtons=[];
+  for(const [key,values] of [['size',['4','6','8','10']],['ai',['ai','pvp']],['diff',['easy','normal','hard']]]){
+    for(const value of values){const button=el('setup-'+key+'-'+value);button.dataset[key]=value;setupButtons.push(button);}
+  }
   const context = vm.createContext({
     console,
-    window: { devicePixelRatio: 1, addEventListener(type, callback) { events.set(type, callback); }, confirm },
-    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el, querySelectorAll: selector => selector === '[data-page]' ? pages : [],
+    window: { devicePixelRatio: 1, innerWidth:412, innerHeight:860, addEventListener(type, callback) { events.set(type, callback); }, confirm },
+    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el,
+      querySelector: selector=>selector==='.premium-avatar-grid'?avatarGrid:null,
+      querySelectorAll: selector=>{
+        if(selector==='[data-page]')return pages;
+        if(selector==='[data-profile-avatar]')return avatarGrid.children;
+        if(selector==='[data-size],[data-ai],[data-diff]')return setupButtons;
+        if(['[data-size]','[data-ai]','[data-diff]'].includes(selector))return setupButtons.filter(e=>e.dataset[selector.slice(6,-1)]!==undefined);
+        return [];
+      },
       addEventListener(type, callback) { events.set(type, callback); } },
     localStorage: { getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
@@ -262,8 +283,11 @@ test('help tutorial moves between steps without changing match or save', async (
 test('avatar choice persists through the real application menu without changing a game save', async () => {
   const h = await boot();
   const matchSave = h.storage.get('rhombus_save');
-  h.el('profile-avatar').value = 'dragon';
-  h.el('profile-avatar').onchange();
+  const cards=h.el('character-grid').children;
+  assert.equal(cards.length,25);
+  const dragon=cards.find(card=>card.dataset.profileAvatar==='dragon');
+  assert.ok(dragon&&!dragon.disabled&&!dragon.hidden);
+  dragon.click();
   const profile = JSON.parse(h.storage.get('rombmaster_profile_v1'));
   assert.equal(profile.avatar, 'dragon');
   assert.equal(profile.stats.played, 0);
@@ -540,10 +564,11 @@ test('in-match sound control immediately syncs the preference, persists and neve
   assert.deepEqual(JSON.parse(h.storage.get('rombmaster.comfort.v1')), {sound:true,haptics:true});
 });
 
-test('local multiplayer shortcut opens setup and remembers the mode after starting', async () => {
+test('Quick Play local multiplayer selection remembers the mode after starting', async () => {
   const h = await boot({ autoStart: false });
-  h.el('home-two-players').click();
+  h.el('startBtn').click();
   assert.equal(h.el('quick-settings').hidden, false);
+  h.el('setup-ai-pvp').click();
   assert.equal(h.el('difficulty-wrapper').hidden, true);
   assert.equal(h.storage.has('rhombus_save'), false);
   h.el('setup-play').click();
