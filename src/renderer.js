@@ -48,7 +48,7 @@ export class Renderer {
     const colors = skin.colors;
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    if (skin.id === 'neon' || skin.id === 'royal') {
+    if (['neon','royal','cyber','ice','wood','white'].includes(skin.id)) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     } else {
       this.ctx.fillStyle = colors.bg;
