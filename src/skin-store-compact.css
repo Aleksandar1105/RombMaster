@@ -557,3 +557,43 @@
 @media(prefers-reduced-motion:reduce){
  #menu-page #player-settings .avatar-choice,#menu-page #career-page .premium-rival-card{transition:none;animation:none;}
 }
+
+
+/* V25.5A: a floating, theme-aware result emblem and read-only reward summary. */
+:root[data-skin] #overlay.flex .center-panel {
+ background:radial-gradient(ellipse at 50% 28%,color-mix(in srgb,var(--skin-accent) 17%,transparent),transparent 60%),linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 72%,transparent),color-mix(in srgb,var(--skin-bg) 94%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+ gap:clamp(3px,.8dvh,8px);
+}
+#overlay.flex[data-outcome="victory"] .rm-result-trophy {
+ width:min(58vw,27dvh,220px);border:0;border-radius:0;margin:0;
+ filter:drop-shadow(0 0 13px color-mix(in srgb,var(--skin-accent) 45%,transparent));
+ animation:rm-result-reveal .65s cubic-bezier(.2,.8,.2,1) both;
+}
+#overlay.flex #result-stars:not([hidden]){animation:rm-result-reveal .45s ease-out both;}
+#overlay.flex .rm-result-overview{gap:clamp(3px,.7dvh,7px);}
+#overlay.flex #premium-result-summary[hidden]{display:none!important;}
+#overlay.flex #premium-result-summary{width:min(100%,380px);display:grid;gap:4px;text-align:center;min-width:0;}
+#overlay.flex .rm-result-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+#overlay.flex .rm-result-metric{display:grid;gap:1px;padding:5px 3px;border:1px solid color-mix(in srgb,var(--skin-accent) 42%,transparent);border-radius:9px;background:color-mix(in srgb,var(--rm-panel) 85%,transparent);min-width:0;}
+#overlay.flex .rm-result-metric small,#overlay.flex .rm-result-total,#overlay.flex .rm-result-progress small{font-size:clamp(.66rem,1.6dvh,.82rem);line-height:1.15;color:var(--skin-ink);}
+#overlay.flex .rm-result-metric strong{font-size:clamp(.85rem,2.5dvh,1.35rem);line-height:1.1;color:var(--skin-ink);font-variant-numeric:tabular-nums;}
+#overlay.flex .rm-result-progress{display:grid;gap:3px;min-width:0;}
+#overlay.flex .rm-result-progress progress{width:100%;height:6px;accent-color:var(--skin-accent);border:0;border-radius:8px;animation:rm-progress-reveal .65s ease-out both;transform-origin:left;}
+#overlay.flex #result-wallet:not([hidden]):has(~ #premium-result-summary:not([hidden])){display:none;}
+#overlay.flex #result-unlocks,#overlay.flex .rm-result-character-unlock{font-size:clamp(.65rem,1.6dvh,.82rem);line-height:1.2;padding:3px 5px;margin:0;background:none;border:0;color:var(--skin-ink);overflow-wrap:anywhere;}
+#overlay.flex[data-outcome="defeat"] #result-title{opacity:.9;}
+#overlay.flex[data-outcome="draw"] #result-title{letter-spacing:.06em;}
+@keyframes rm-result-reveal{from{opacity:0;transform:translateY(8px) scale(.94);}to{opacity:1;transform:none;}}
+@keyframes rm-progress-reveal{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@media(max-height:650px){
+ #overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(42vw,19dvh,130px);}
+ #overlay.flex .rm-result-metric{padding:3px;}
+ #overlay.flex #premium-result-summary{gap:3px;}
+}
+@media(max-height:480px){
+ #overlay.flex[data-outcome="victory"] .rm-result-trophy{width:min(34vw,14dvh,80px);}
+ #overlay.flex .rm-result-progress{gap:1px;}
+}
+@media(prefers-reduced-motion:reduce){
+ #overlay.flex .rm-result-trophy,#overlay.flex #result-stars,#overlay.flex .rm-result-progress progress{animation:none!important;}
+}
