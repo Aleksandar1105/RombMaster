@@ -267,11 +267,58 @@ export function seasonalCatalog(now=new Date()) {
 }
 export const seasonalPriceLabel = skin => new Intl.NumberFormat('en-IE',{style:'currency',currency:skin.offer.currency}).format(skin.offer.priceCents/100);
 
-export const getSkin = id => SKINS.find(s => s.id === id) || getSeasonalSkin(id) || SKINS[0];
+// Prestige entries are display-only; not part of the local earning or purchase wallet.
+const prestigeItems=[
+  [
+    "obsidian-neon",
+    "Obsidian Neon",
+    "#141a29",
+    "#ff7798",
+    "#63eaff",
+    "#a9c2ed",
+    "#b396ff",
+    "#e2eafc",
+    "obsidian",
+    "Obsidian crystal and iridescent neon"
+  ],
+  [
+    "celestial-void",
+    "Celestial Void",
+    "#131e39",
+    "#f2a6df",
+    "#70e1fc",
+    "#c1d4fe",
+    "#a3b6f9",
+    "#e4eaff",
+    "platinum",
+    "Platinum arches and celestial crystals"
+  ],
+  [
+    "synthwave-sunset",
+    "Synthwave Sunset",
+    "#321b3d",
+    "#ff9d69",
+    "#67f1e8",
+    "#e8c6f0",
+    "#df8fe3",
+    "#ffcf9a",
+    "metal",
+    "Rose chrome and luminous sunset"
+  ]
+];
+export const PRESTIGE_SKINS=Object.freeze(prestigeItems.map(([id,name,bg,x,o,dot,accent,lastMove,material,description])=>Object.freeze({
+ id,name,prestige:true,condition:'Prestige • preview only',fill:'full',accent,
+ colors:Object.freeze({...CONSTANTS.COLORS,bg,x,o,dot,lastMove,linePlayed:dot,glow:lastMove,lineActive:dot}),
+ finish:Object.freeze({material,symbolWeight:.087,glow:4,frame:'bevel',particles:12,effect:'spark',duration:580}),
+ catalog:Object.freeze({rarity:'Prestige',description,effect:'Planned'})
+})));
+export function prestigeCatalog(){return PRESTIGE_SKINS.map(skin=>({skin,owned:false,status:'Preview only'}));}
+export const getSkin = id => SKINS.find(s => s.id === id) || getSeasonalSkin(id) || PRESTIGE_SKINS.find(s=>s.id===id) || SKINS[0];
 let current = SKINS[0];
 export const activeSkin = () => current;
 export function setActiveSkin(id) { current = SKINS.find(s=>s.id===id) || SKINS[0]; return current; }
 export function unlockedSkin(id, profile, daily) {
+  if(PRESTIGE_SKINS.some(s=>s.id===id))return false;
   if (profile && Object.hasOwn(profile,'skinWallet')) return id==='neon'||Boolean(profile.skinWallet?.owned.includes(id));
   switch(id) {
     case 'neon': return true;
