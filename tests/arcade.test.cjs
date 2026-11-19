@@ -19,3 +19,29 @@ test('isolated history, duplicate prevention and invalid records preserved',asyn
  assert.equal(a.arcadeSummary(a.readArcade(storage,'guest').data,7,'2026-12-15').sessions,0);
  map.set('bad','{"version":1,"history":[{}]}');assert.equal(a.readArcade(storage,'bad').status,'invalid');
 });
+
+test('paced AI matches synchronous rules and applies exactly one edge per reply',async()=>{
+ const a=await load();
+ for(const mode of ['blitz','survival']){
+  const fast=a.createArcade(mode),paced=a.createArcade(mode);
+  let rounds=0;
+  while(!fast.finished){
+   assert.ok(++rounds<200);
+   const move=fast.board.getFreeMoves()[0],random=()=>0.42;
+   a.arcadeMove(fast,move,250,random);
+   const before=paced.board.getFreeMoves().length;
+   a.arcadeMove(paced,move,250,random,{deferAI:true});
+   assert.equal(paced.board.getFreeMoves().length,before-1);
+   if(paced.aiPending){
+    assert.equal(a.arcadeMove(paced,paced.board.getFreeMoves()[0]).status,'invalid');
+    while(paced.aiPending){
+     const free=paced.board.getFreeMoves().length;
+     a.arcadeReply(paced,random);
+     assert.equal(paced.board.getFreeMoves().length,free-1);
+    }
+   }
+   assert.equal(JSON.stringify(paced.board),JSON.stringify(fast.board));
+   for(const k of ['finished','outcome','attempts','cells','doubles','bestChain','concessions','decisionMs'])assert.equal(paced[k],fast[k],k);
+  }
+ }
+});
