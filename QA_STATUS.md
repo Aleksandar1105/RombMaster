@@ -101,3 +101,6 @@ Owner reported 8/8 PASS after the eef9d87 build instructions: five mode graphics
 | Career rivals, all accessible skin previews, HUD and result screens | PENDING | Device screenshots and observations |
 | Zero Scroll (except Skin Store) | PENDING | Measured geometry and physical device |
 Do not infer visual PASS from asset presence or APK compilation. Keep real-money purchases inactive; Prestige Home preview remains unavailable by design. Browser QA is a separate local Node 22/Edge or Chrome run after npm run build; it is not part of the current Codemagic workflow. Do not reset a real player's Career solely for QA.
+
+## V25.4F — Asset reconciliation addendum (2026-11-19)
+Baseline 48a9dce, runtime/validator patch through 6acddb7. Source inventory/reference comparison PASS for 137 literal premium paths; this is not binary or device QA. New checks pending: all 16 victory previews (static where no authored effect, no ownership changes), six Career arenas and six legacy rival assets packaged-byte verification, and regression suite. Confirm static previews are legible, do not play audio and fit screen; test Android Back and store exit. No full tests or build executed by this audit.
