@@ -39,7 +39,7 @@ function inspectHome(){
    if(!(hit===e||e.contains(hit)))failures.push(label+': covered or clipped');
   }
  }
- for(const id of ['home-skins','home-skin-store','startBtn','daily-open-btn','helpBtn'])
+ for(const id of ['home-skin-store','home-arcade','startBtn','daily-open-btn','helpBtn'])
   if(!visible(document.getElementById(id)))failures.push(id+': missing');
  const hero=document.getElementById('premium-hero-stage');
  if(visible(hero)&&hero.getBoundingClientRect().height<70)failures.push('Hero stage below 70px');
@@ -150,6 +150,15 @@ try{
   assert.equal(d.failures.length,0,JSON.stringify(d));return d.width+'x'+d.height+', hero '+d.hero+'px, '+d.skin;
  };
  await viewport(412,860);await cdp('Page.navigate',{url});await loaded();
+ // Initialize through the genuine first-run form in this disposable browser profile.
+ await check('Career first-run identity',async()=>{
+  await click('[data-page="career-page"]');
+  assert.equal(await evaluate("document.getElementById('career-identity').hidden"),false);
+  await evaluate("document.getElementById('career-name').value='QA Player'");
+  await click('#career-identity button[type=submit]');
+  assert.equal(await evaluate("document.getElementById('career-identity').hidden"),true);
+  await click('#page-back');await click('#page-back');
+ });
  for(const [w,h] of [[320,568],[360,640],[412,860],[480,900],[844,390]]){
   await viewport(w,h);await shot('home-neon-'+w+'x'+h);await check('Home '+w+'x'+h,homeLayout);
  }
@@ -163,9 +172,9 @@ try{
  for(const [w,h] of sizes){
   await viewport(w,h);
   for(const [page,name,selectors] of [
-   ['career-page','Career',['#page-back','#previous-chapter','#next-chapter','#chapter-route button','#career-start-btn']],
+   ['career-page','Career',['#page-back','#previous-chapter','#next-chapter','#chapter-route button','#career-open-mission','#career-screen-next']],
    ['quick-settings','Quick Play',['#page-back','[data-size]','[data-ai]','[data-diff]','#setup-play']],
-   ['player-settings','Profile Players',['#page-back','.profile-switcher label','#local-player-select','#new-local-player-name','#create-local-player-btn','#profile-name','#save-profile-btn']],
+   ['player-settings','Profile Players',['#page-back','.profile-switcher label','#local-player-select','#profile-create-toggle','#profile-name','#save-profile-btn']],
    ['comfort-settings','Settings',['#page-back','.comfort-toggle']]
   ]){
    await check(name+' '+w+'x'+h,async()=>{
@@ -180,13 +189,40 @@ try{
     }
    });
   }
-  await check('Profile Avatars '+w+'x'+h,async()=>{
+  await check('Career mission and rivals '+w+'x'+h,async()=>{
+   try{
+    await click('[data-page="career-page"]');await click('#career-open-mission');
+    await controls('#view-menu',['#page-back','#career-start-btn','#career-screen-prev','#career-screen-next']);
+    await click('#career-screen-next');await shot('v254-rivals-'+w+'x'+h);
+    const rivals=await evaluate("Array.from(document.querySelectorAll('[data-career-screen=rivals] img')).map(i=>({ok:i.complete&&i.naturalWidth>0,src:i.getAttribute('src'),width:i.getBoundingClientRect().width}))");
+    assert.equal(rivals.length,6);assert.ok(rivals.every(i=>i.ok&&i.src.includes('/master/rival-')&&i.width>0),JSON.stringify(rivals));
+    await controls('#view-menu',['#page-back','#career-screen-prev','#career-screen-next']);
+    await click('#page-back');assert.equal(await evaluate("document.querySelector('[data-career-screen=mission]').hidden"),false);
+    await click('#page-back');assert.equal(await evaluate("document.querySelector('[data-career-screen=levels]').hidden"),false);
+   }finally{
+    for(let n=0;n<3&&await evaluate("!document.getElementById('menu-page').hidden");n++)await click('#page-back',true);
+   }
+  });
+  await check('Profile Characters '+w+'x'+h,async()=>{
    try{
     await click('[data-page="player-settings"]');await click('label:has(#profile-section-avatar)');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-profile-pane=players]')).display"),'none');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-profile-pane=stats]')).display"),'none');
     await shot('v21-avatars-'+w+'x'+h);
-    return await controls('#view-menu',['#page-back','.profile-switcher label','#profile-avatar','.avatar-choice']);
+    const seen=new Set();
+    for(let page=0;page<25;page++){
+     const cards=await evaluate("Array.from(document.querySelectorAll('.avatar-choice:not([hidden])')).map(e=>({id:e.dataset.profileAvatar,art:getComputedStyle(e.querySelector('.avatar-art')).backgroundImage,status:e.querySelector('[data-avatar-lock]').textContent}))");
+     assert.ok(cards.length>0&&cards.every(c=>c.art.includes('avatar-'+c.id+'-master.webp')&&c.status),JSON.stringify(cards));
+     for(const c of cards){assert.ok(!seen.has(c.id),'Duplicate page ID '+c.id);seen.add(c.id);}
+     await controls('#view-menu',['#page-back','.profile-switcher label','#character-filter','.avatar-choice:not([hidden])','#profile-avatar-prev','#profile-avatar-next']);
+     if(await evaluate("document.getElementById('profile-avatar-next').disabled"))break;
+     await click('#profile-avatar-next');
+    }
+    assert.equal(seen.size,25);
+    await evaluate("(()=>{const e=document.getElementById('character-filter');e.value='legendary';e.dispatchEvent(new Event('change'));return true;})()");
+    assert.equal(await evaluate("document.getElementById('character-count').textContent"),'6 / 25');
+    assert.ok(await evaluate("Array.from(document.querySelectorAll('.avatar-choice:not([hidden])')).every(e=>e.disabled&&e.dataset.entitlement==='preview')"));
+    return '25 unique character cards across pages; Legendary preview-only';
    }finally{
     if(await evaluate("!document.getElementById('menu-page').hidden")){
      await click('label:has(#profile-section-players)',true);await click('#page-back',true);
@@ -230,14 +266,14 @@ try{
   return items.length+' cards: decoded local hero, bounded metadata and action';
  };
  await check('Skins opens My Collection',async()=>{
-  await click('#home-skins');
+  await click('#home-skin-store');
   assert.equal(await evaluate("document.getElementById('page-title').textContent"),'My Collection');
   assert.equal(await evaluate("document.getElementById('skin-tab-collection').getAttribute('aria-pressed')"),'true');
   await check('Collection artwork and card metadata',checkCatalogArt);
   await shot('my-collection');await click('#page-back',true);
  });
  await check('Skin Store opens six base skins',async()=>{
-  await click('#home-skin-store');
+  await click('#home-skin-store');await click('#skin-tab-store',true);
   assert.equal(await evaluate("document.getElementById('page-title').textContent"),'Skin Store');
   assert.equal(await evaluate("document.querySelectorAll('#skin-options .skin-card').length"),6);
   await shot('skin-store');
@@ -306,8 +342,17 @@ try{
    }
   });
  }
+ await check('Three Prestige skins remain preview-only',async()=>{
+  await click('#skin-tab-prestige',true);
+  for(const id of ['obsidian-neon','celestial-void','synthwave-sunset']){
+   await click('[data-skin-id="'+id+'"]',true);
+   assert.ok(await evaluate("document.getElementById('skin-equip').disabled&&document.getElementById('skin-home-preview').disabled"));
+   await shot('prestige-'+id);await click('#page-back',true);
+  }
+ });
  await check('Locked seasonal skin cannot be equipped',async()=>{
   await click('#skin-tab-seasonal',true);
+  if(!await evaluate("!!document.querySelector('[data-skin-id=halloween-curse]')"))await click('#skin-page-next',true);
   await click('[data-skin-id="halloween-curse"]',true);
   assert.equal(await evaluate("document.getElementById('skin-equip').disabled"),true);
   await click('#page-back',true);
@@ -318,9 +363,8 @@ try{
   await click('[data-page="quick-settings"]');
   await click('[data-size="4"]',true);
   await click('[data-ai="pvp"]',true);
-  await click('#page-back',true);
   await cdp('Page.bringToFront');
-  await click('#startBtn');
+  await click('#setup-play',true);
   await until(()=>evaluate("document.getElementById('view-game').classList.contains('active-view')"),'quick match');
   await sleep(400);await shot('game-sound-on');
   const controlGlyphs=async()=>{
@@ -416,7 +460,7 @@ try{
    await check('Result fixture '+(id==='neon'?'':id+' ')+outcome+' '+w+'x'+h,async()=>{
     try{
      await evaluate(`(()=>{const e=id=>document.getElementById(id),o=${JSON.stringify(outcome)},win=o==='victory';
-      const overlay=e('overlay');overlay.dataset.outcome=o;
+      const overlay=e('overlay');overlay.dataset.outcome=o;overlay.dataset.resultPage='overview';
       e('result-title').textContent=win?'Victory!':o==='defeat'?'Game Over':'Draw';
       e('result-score').textContent=win?'16 - 5':o==='defeat'?'5 - 16':'10 - 10';
       e('result-stars').hidden=!win;e('result-stars').textContent=win?'★★★':'';
@@ -433,7 +477,7 @@ try{
       const badge=await evaluate("(()=>{const c=getComputedStyle(document.getElementById('result-title'),'::before');return {content:c.content,display:c.display,width:parseFloat(c.width)};})()");
       assert.ok(badge.content!=='none'&&badge.display!=='none'&&badge.width>=30,JSON.stringify(badge));
      }
-     assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display==='none'"),outcome!=='victory');
+     assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display"),'none');
      assert.equal(await evaluate("getComputedStyle(document.getElementById('overlay')).overflowY"),'hidden');
      const selectors=['#againBtn','#backMenuBtn',...(outcome==='victory'?['#nextCareerBtn']:[])];
      const details=await controls('#overlay',selectors);
@@ -452,6 +496,7 @@ try{
  await check('Static preview canvases accept swipe; gameplay canvas retains touch input',async()=>{
   try{
    await click('#home-skin-store');
+   await click('#skin-tab-store',true);
    const d=await evaluate("(()=>{const p=document.getElementById('skin-preview'),g=document.getElementById('canvas');return {cards:document.querySelectorAll('#skin-options .skin-card').length,canvases:document.querySelectorAll('#skin-options canvas').length,detailHidden:document.getElementById('skin-detail-panel').hidden,preview:getComputedStyle(p).pointerEvents,game:getComputedStyle(g).touchAction};})()");
    assert.deepEqual(d,{cards:6,canvases:0,detailHidden:true,preview:'none',game:'none'});
    // Native touch scrolling is additionally checked on physical Android.
