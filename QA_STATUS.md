@@ -88,3 +88,16 @@ Roadmap reconciliation on 2026-11-18 updated planning documents only. Existing A
 
 ## V25.3.1B — Challenge Arena device QA (2026-11-19)
 Owner reported 8/8 PASS after the eef9d87 build instructions: five mode graphics, mode selection, explicit Start Challenge, Blitz timer, board touch accuracy, return navigation, Progress & Rewards, Infinity lock/display. Exact installed APK hash not independently verified. Five imported WebPs at 5ebc496. Functional gate passed on owner report; final premium visual polish, background/rewards artwork, per-skin animations and audio remain open. Picsart phase allocation 75, quoted spend 20, remaining allocation 55. Next: V25.3.2 Profile and V25.3.3 Avatars; consolidate final visual polish in V25 premium engine. No automated test result inferred from device report.
+
+## V25.4F — pending test gate (2026-11-19)
+| Check | Status | Evidence required |
+|---|---|---|
+| Full npm test, including ten new character tests | PENDING | Codemagic regression log |
+| Local assets and dist/Android SHA256 | PENDING | Both validator logs |
+| Vite, Capacitor and signed cloud test APK | PENDING | Build log, source-commit.txt, SHA256SUMS.txt |
+| Browser QA (five viewports, pagination/rivals, legacy flows) | PENDING | report.json and screenshots from isolated browser |
+| Existing Android profile and Continue migration | PENDING | Actual update installation and owner test |
+| Character filters, equip, Coin purchase and slot isolation | PENDING | Device QA using disposable test profile |
+| Career rivals, all accessible skin previews, HUD and result screens | PENDING | Device screenshots and observations |
+| Zero Scroll (except Skin Store) | PENDING | Measured geometry and physical device |
+Do not infer visual PASS from asset presence or APK compilation. Keep real-money purchases inactive; Prestige Home preview remains unavailable by design. Browser QA is a separate local Node 22/Edge or Chrome run after npm run build; it is not part of the current Codemagic workflow. Do not reset a real player's Career solely for QA.
