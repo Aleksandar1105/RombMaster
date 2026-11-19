@@ -76,3 +76,18 @@ test('all six skins have bundled art and victory animation definitions',async()=
   }
   assert.ok(css.includes('prefers-reduced-motion:no-preference'));
 });
+
+test('three Prestige previews cannot be equipped or purchased',async()=>{
+ const s=await load();const storage={getItem:()=>null,setItem:()=>{throw Error('must not write')}};
+ assert.equal(s.PRESTIGE_SKINS.length,3);
+ assert.equal(new Set([...s.SKINS,...s.SEASONAL_SKINS,...s.PRESTIGE_SKINS].map(x=>x.id)).size,16);
+ for(const {skin,owned,status} of s.prestigeCatalog()){
+  assert.equal(owned,false);assert.equal(status,'Preview only');assert.equal(s.getSkin(skin.id).id,skin.id);
+  assert.equal(s.unlockedSkin(skin.id,{skinWallet:{owned:[skin.id]}},{}),false);
+  assert.equal(s.saveSkin(storage,'skin',skin.id,{},{}),'locked');
+  assert.equal(s.buyWalletSkin(storage,'wallet',skin.id,{},{}).status,'not-for-sale');
+  assert.notEqual(s.setActiveSkin(skin.id).id,skin.id);
+  const bytes=fs.readFileSync(path.resolve(__dirname,'../src/public/assets/premium/master',skin.id+'-master-arena.webp'));
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ }
+});
