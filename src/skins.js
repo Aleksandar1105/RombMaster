@@ -267,6 +267,13 @@ export function seasonalCatalog(now=new Date()) {
 }
 export const seasonalPriceLabel = skin => new Intl.NumberFormat('en-IE',{style:'currency',currency:skin.offer.currency}).format(skin.offer.priceCents/100);
 
+// Every catalog skin has bundled victory art. Only an explicitly authored
+// victory effect enables the animated/sound preview; the rest are still art.
+export function skinVictoryPreview(skin){
+  const animated=Boolean(!skin.prestige&&skin.catalog.victory);
+  return {animated,title:animated?'Victory · '+skin.catalog.victory:'Victory artwork · '+skin.name};
+}
+
 // Prestige entries are display-only; not part of the local earning or purchase wallet.
 const prestigeItems=[
   [
