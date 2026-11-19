@@ -358,6 +358,33 @@ export function resultPresentation(score, mode) {
 
 // Offline test economy, no real-money or competitive advantage.
 // One atomic wallet record stores both entitlement and debit.
+// V25.4D6C — collectible cosmetics, shared per-player offline wallet.
+// All prices are balancing targets; Gems and real-money offers stay inactive.
+const characterArt=id=>'/assets/premium/master/avatar-'+id+'-master.webp';
+const makeCharacter=(id,label,category,extra={})=>Object.freeze({id,label,category,art:characterArt(id),...extra});
+export const CHARACTERS=Object.freeze([
+ ...[['spark','Spark'],['fox','Fox'],['robot','Robot'],['rocket','Rocket'],['dragon','Dragon'],['shield','Shield']].map(([id,label])=>makeCharacter(id,label,'starter')),
+ makeCharacter('neon-fox','Neon Fox','career',{level:5,legacy:true}),
+ ...[['azure-squire','Azure Squire',10],['jade-huntress','Jade Huntress',25],['crimson-sentinel','Crimson Sentinel',40],['frost-oracle','Frost Oracle',60],['onyx-warden','Onyx Warden',80],['crown-ascendant','Crown Ascendant',100]].map(([id,label,level])=>makeCharacter(id,label,'career',{level})),
+ ...[['circuit-valkyrie','Circuit Valkyrie',400],['storm-raptor','Storm Raptor',750],['ember-ronin','Ember Ronin',1500]].map(([id,label,price])=>makeCharacter(id,label,'elite',{currency:'coins',price})),
+ ...[['moon-weaver','Moon Weaver',100],['coral-corsair','Coral Corsair',200],['prism-golem','Prism Golem',300]].map(([id,label,price])=>makeCharacter(id,label,'elite',{currency:'gems',price})),
+ ...[['solar-sovereign','Solar Sovereign'],['void-monarch','Void Monarch'],['celestial-empress','Celestial Empress'],['dragon-emperor','Dragon Emperor'],['aurora-seraph','Aurora Seraph'],['chronos-architect','Chronos Architect']].map(([id,label])=>makeCharacter(id,label,'legendary',{currency:'eur'}))
+]);
+export function getCharacter(id){return CHARACTERS.find(c=>c.id===id)||null;}
+export function characterEntitlement(id,profile,wallet){
+ const c=getCharacter(id);
+ if(!c)return 'unknown';
+ if(c.category==='starter')return 'owned';
+ if(c.category==='career'){
+  return (c.legacy&&profile?.neonFoxUnlocked)||profile?.stars?.[c.level]>0||wallet?.stars?.[c.level]>0?'owned':'locked';
+ }
+ if(c.currency==='coins')return wallet?.characters?.includes(id)?'owned':'coins';
+ return 'preview';
+}
+export function characterCatalog(profile,wallet,equipped){
+ return CHARACTERS.map(character=>{const entitlement=characterEntitlement(character.id,profile,wallet);return {character,entitlement,equipped:entitlement==='owned'&&character.id===equipped};});
+}
+
 export const WALLET_KEY='rombmaster_wallet_v1';
 export const SKIN_REWARDS=Object.freeze({royal:30,wood:60,white:90});
 export const SKIN_PRICES=Object.freeze({cyber:600,ice:900});
@@ -367,7 +394,8 @@ function earnedCoins(w){return Object.values(w.stars).reduce((n,s)=>n+60+s*20,0)
 export function walletBalance(w){return w?earnedCoins(w)-w.spent:0;}
 function validWallet(w){
  return w?.version===1&&w.stars&&typeof w.stars==='object'&&!Array.isArray(w.stars)&&Object.entries(w.stars).every(([k,v])=>/^(?:[1-9]|[1-9][0-9]|100)$/.test(k)&&Number.isInteger(v)&&v>=1&&v<=3)
- &&Number.isSafeInteger(w.daily)&&w.daily>=0&&w.daily<=1000000&&Number.isSafeInteger(w.spent)&&w.spent>=0&&Array.isArray(w.owned)&&w.owned.every(id=>coreIds.includes(id))&&new Set(w.owned).size===w.owned.length&&walletBalance(w)>=0;
+ &&Number.isSafeInteger(w.daily)&&w.daily>=0&&w.daily<=1000000&&Number.isSafeInteger(w.spent)&&w.spent>=0&&Array.isArray(w.owned)&&w.owned.every(id=>coreIds.includes(id))&&new Set(w.owned).size===w.owned.length&&walletBalance(w)>=0
+ &&(w.characters===undefined||(Array.isArray(w.characters)&&w.characters.every(id=>getCharacter(id)?.currency==='coins')&&new Set(w.characters).size===w.characters.length));
 }
 export function syncWallet(storage,key,profile,daily){
  if(!key||!profile||!daily)return {status:'unavailable',wallet:null};
@@ -394,4 +422,19 @@ export function buyWalletSkin(storage,key,id,profile,daily){
  const next={...w,owned:[...w.owned,id],spent:w.spent+price};
  try{storage.setItem(key,JSON.stringify(next));return {status:'ready',wallet:next};}
  catch{return {status:'unavailable'};}
+}
+
+ 
+// Persist purchase and ownership together in the SAME slot wallet as skins.
+export function buyWalletCharacter(storage,key,id,profile,daily){
+ const c=getCharacter(id);
+ if(c?.currency!=='coins')return {status:'not-for-sale'};
+ const state=syncWallet(storage,key,profile,daily);if(state.status!=='ready')return state;
+ const w=state.wallet;
+ if(w.characters?.includes(id))return {status:'owned',wallet:w};
+ if(walletBalance(w)<c.price)return {status:'insufficient',wallet:w};
+ const next={...w,characters:[...(w.characters||[]),id],spent:w.spent+c.price};
+ if(!validWallet(next))return {status:'invalid',wallet:null};
+ try{storage.setItem(key,JSON.stringify(next));return {status:'ready',wallet:next};}
+ catch{return {status:'unavailable',wallet:null};}
 }
