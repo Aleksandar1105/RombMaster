@@ -102,8 +102,12 @@ function setAchievementView(show=false){
     if(show)renderAchievementPage();
 }
 function renderAvatarPage(){
-    const rows=Array.from(document.querySelectorAll('[data-profile-avatar]'));
-    const size=window.innerHeight<550?4:window.innerWidth>=600?7:6;
+    const filter=el('character-filter')?.value||'all';
+    const all=Array.from(document.querySelectorAll('[data-profile-avatar]'));
+    const rows=all.filter(row=>filter==='all'||(filter==='owned'?row.dataset.entitlement==='owned':getCharacter(row.dataset.profileAvatar)?.category===filter));
+    all.forEach(row=>{row.hidden=true;});
+    if(el('character-empty'))el('character-empty').hidden=rows.length!==0;
+    const size=window.innerHeight<620?4:window.innerWidth>=600?8:6;
     const result=paginateRows(rows,avatarPage,size,'profile-avatar-prev','profile-avatar-next','profile-avatar-page');
     avatarPage=result.current;el('profile-avatar-pager').hidden=result.count===1;
 }
@@ -134,6 +138,7 @@ bindPage('profile-achievements-prev',()=>{achievementPage--;renderAchievementPag
 bindPage('profile-achievements-next',()=>{achievementPage++;renderAchievementPage();});
 bindPage('profile-avatar-prev',()=>{avatarPage--;renderAvatarPage();});
 bindPage('profile-avatar-next',()=>{avatarPage++;renderAvatarPage();});
+if(el('character-filter'))el('character-filter').onchange=()=>{avatarPage=0;renderAvatarPage();};
 window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
     readQuickSetup();
@@ -172,7 +177,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if(selected==='career-page')setCareerScreen(0);
-        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;renderAvatarPage();}
+        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;refreshCareer();renderAvatarPage();}
         if (selected === 'quick-settings') {
             readQuickSetup();
             renderQuickSetup();
@@ -214,7 +219,7 @@ if(avatarGrid&&avatarSelect){
     avatarGrid.replaceChildren(...cards);avatarSelect.replaceChildren(...options);
 }
 function characterStatus(c,entitlement,wallet){
-    if(entitlement==='owned')return '';
+    if(entitlement==='owned')return 'Owned';
     if(entitlement==='locked')return 'Win level '+c.level;
     if(entitlement==='coins')return c.price+' Coins';
     if(c.currency==='gems')return c.price+' Gems · Later';
@@ -640,14 +645,19 @@ const refreshCareer = () => {
             : 'Profile storage is unavailable. Career progress cannot be saved.';
         el('career-start-btn').disabled = true;
         el('reset-career-btn').disabled = true;
+        if(el('character-coins'))el('character-coins').textContent='Wallet unavailable';
+        for(const card of document.querySelectorAll('[data-profile-avatar]')){card.disabled=true;card.dataset.entitlement='unknown';card.setAttribute('aria-pressed','false');}
+        renderAvatarPage();
         refreshPremiumHome(null, null);
         return;
     }
     const p = state.profile;
+    if(!p)return;
     el('career-start-btn').disabled = false;
     el('reset-career-btn').disabled = false;
     profileName.value = p.name;
     const walletState=skinState().wallet, characterWallet=walletState.wallet;
+    if(el('character-coins'))el('character-coins').textContent=walletState.status==='ready'?walletBalance(characterWallet)+' Coins':'Wallet unavailable';
     for(const option of avatarSelect.options){
         option.disabled=characterEntitlement(option.value,p,characterWallet)!=='owned';
     }
@@ -666,10 +676,11 @@ const refreshCareer = () => {
         choice.dataset.entitlement=entitlement;
         choice.setAttribute('aria-pressed', String(id === p.avatar&&entitlement==='owned'));
         const lock=choice.querySelector('[data-avatar-lock]');
-        if(lock){lock.textContent=characterStatus(c,entitlement,characterWallet);lock.hidden=entitlement==='owned';}
+        if(lock){lock.textContent=id===p.avatar&&entitlement==='owned'?'Equipped':characterStatus(c,entitlement,characterWallet);lock.hidden=false;}
         choice.setAttribute('aria-label',c.label+(entitlement==='owned'?'':', '+characterStatus(c,entitlement,characterWallet)));
     
     }
+    renderAvatarPage();
     el('identity-name').textContent = p.name;
     el('identity-art').dataset.avatar = p.avatar;
     el('identity-art').textContent = '';
@@ -905,13 +916,15 @@ document.querySelectorAll('[data-profile-avatar]').forEach(choice => {
         const id=choice.dataset.profileAvatar,c=getCharacter(id);
         if(!c)return;
         const current=skinState(), entitlement=characterEntitlement(id,current.originalProfile,current.wallet.wallet);
+        if(!current.originalProfile)return;
         if(entitlement==='owned'){
             avatarSelect.value=id;
             avatarSelect.onchange();
             return;
         }
         if(entitlement!=='coins')return;
-        if(current.wallet.status!=='ready'||walletBalance(current.wallet.wallet)<c.price){
+        if(current.wallet.status!=='ready'){profileFeedback.textContent='Wallet unavailable. No purchase made.';return;}
+        if(walletBalance(current.wallet.wallet)<c.price){
             profileFeedback.textContent='Need '+c.price+' Coins to unlock '+c.label+'.';return;
         }
         const owner=LocalSlots.read().index?.activeId;
