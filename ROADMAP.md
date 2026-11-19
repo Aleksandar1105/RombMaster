@@ -114,3 +114,7 @@ The owner approved the following phased direction after gameplay video review. F
 - V25.9 Final Visual QA: viewport/device coverage and owner approval before V26.
 
 Use existing assets first (target zero new Picsart credits for V25.5A); no Actions, paid capacity, live billing or ads. No gameplay or economy changes. Keep all non-store screens non-scrolling, with accessible pagination and responsive layout. Save migration, repeat/replayed matches, unlock integrity, reduced motion and Android Back are acceptance gates. Manual Codemagic Cloud Test APK only, after code review and regression checks.
+
+
+### V25.5A2 — owner correction
+One result page only; no duplicate XP, mission preview or match-statistics pages after a match. Keep score, stars, actual rewards, unlocks and actions together. Positive reward increments should visibly animate unless reduced motion enabled. Frozen Christmas Home remains quality benchmark for every screen; use existing full thematic button art, purposefully differentiated typography and fewer decorative outlines (retain functional state/focus boundaries and board edges). Do not close V25.5A or advance to B until the owner reviews the result fix; the broader all-screen visual redesign remains V25.5B–E/V25.7 scope.
