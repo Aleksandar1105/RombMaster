@@ -8,7 +8,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, C
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, seasonStatus, seasonalPriceLabel } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -37,7 +37,7 @@ const confirmDialog = createConfirmationController({
     acceptButton: el('confirm-dialog-accept'),
     cancelButton: el('confirm-dialog-cancel'),
     documentRef: document,
-    onVisibilityChange: open => Game.setActive('confirmation', !open),
+    onVisibilityChange: open => { Game.setActive('confirmation', !open); arcade?.activity(); },
 });
 const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
     const saved = Game.refreshSavedGame();
@@ -54,7 +54,7 @@ const askBeforeReplacing = (heading, detail, onConfirm, sourceButton) => {
     } else onConfirm();
 };
 
-const arcade=mountArcade({game:Game});
+const arcade=mountArcade({game:Game,confirmLeave: options=>confirmDialog.open(options)});
 const menuPages = {
     'career-page': 'Career',
     'quick-settings': 'Quick Play',
@@ -101,7 +101,6 @@ document.querySelectorAll('[data-page]').forEach(button => {
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if (selected === 'quick-settings') {
             readQuickSetup();
-            if (button.id === 'home-two-players') mode = 'pvp';
             renderQuickSetup();
         }
         el('page-title').textContent = menuPages[selected];
@@ -160,8 +159,9 @@ function renderRoute(profile, selected) {
 // Read preferences from the current local slot, independent of saved matches.
 const skinState = () => {
     const state = ProfileStore.read();
-    return { profile: state.profile, daily: DailyProgress.read(localDateKey()).progress,
-        key: LocalSlots.storageKey(SKIN_KEY) };
+    const daily=DailyProgress.read(localDateKey()).progress, walletKey=LocalSlots.storageKey(WALLET_KEY);
+    const wallet=syncWallet(localStorage,walletKey,state.profile,daily);
+    return { profile: state.profile?{...state.profile,skinWallet:wallet.wallet}:null, originalProfile:state.profile,daily,wallet,walletKey,key:LocalSlots.storageKey(SKIN_KEY) };
 };
 function applySkin(id) {
     renderSkinVariables(setActiveSkin(id));
@@ -252,13 +252,14 @@ function showSkinPreview() {
             '--skin-gold':skin.colors.lastMove,
         })) stage.style.setProperty(name,value);
     }
-    el('skin-equip').disabled = !unlocked || activeSkin().id === skin.id;
-    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : skin.id === 'royal' ? 'Coming soon' : 'Locked';
+    const price=SKIN_PRICES[skin.id],balance=walletBalance(profile?.skinWallet);
+    el('skin-equip').disabled = activeSkin().id === skin.id || (!unlocked&&(!price||!profile?.skinWallet||balance<price));
+    el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : price ? 'Buy · '+price+' Coins' : 'Locked';
     if (skin.offer) {
         const {active,daysLeft}=seasonStatus(skin.offer);
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
-    } else el('skin-status').textContent = skin.condition;
+    } else el('skin-status').textContent = (unlocked?'Owned':skinUnlockLabel(skin.id))+' · Balance '+balance+' Coins';
     el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
@@ -282,7 +283,7 @@ function renderSkinCatalog() {
     const {profile,daily} = skinState();
     const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
     const owned = skinCatalog(profile,daily,activeSkin().id,true);
-    el('skin-owned-count').textContent = seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked';
+    el('skin-owned-count').textContent = seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked · '+(profile?.skinWallet?walletBalance(profile.skinWallet)+' Coins':'Wallet unavailable');
     el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly));
     el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
@@ -369,7 +370,18 @@ if(el('skin-victory-preview')) el('skin-victory-preview').onclick=()=>{
     Game.playCosmeticSound('win',skin.id);
 };
 el('skin-equip').onclick = () => {
-    const {profile,daily,key} = skinState();
+    const {profile,daily,key,walletKey,originalProfile} = skinState();
+    if(!unlockedSkin(previewSkinId,profile,daily)&&SKIN_PRICES[previewSkinId]){
+      const id=previewSkinId, owner=LocalSlots.read().index?.activeId;
+      confirmDialog.open({heading:'Unlock '+getSkin(id).name+'?',detail:'Spend '+SKIN_PRICES[id]+' earned Coins on this cosmetic skin?',confirmLabel:'Buy skin',cancelLabel:'Cancel',onConfirm:()=>{
+        if(LocalSlots.read().index?.activeId!==owner)return;
+        const fresh=skinState(), result=buyWalletSkin(localStorage,fresh.walletKey,id,fresh.originalProfile,fresh.daily);
+        renderSkinCatalog();
+        if(!['ready','owned'].includes(result.status))el('skin-status').textContent='Purchase unavailable: '+result.status;
+        else el('skin-status').textContent='Unlocked! Equip this skin.';
+      }});
+      return;
+    }
     const result = saveSkin(localStorage,key,previewSkinId,profile,daily);
     if (result !== 'ready') {
         el('skin-status').textContent = result === 'locked' ? 'This skin is locked.' : 'Could not save skin. Previous selection preserved.';
