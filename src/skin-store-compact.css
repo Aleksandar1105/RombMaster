@@ -508,3 +508,15 @@
 #menu-page #player-settings .avatar-choice[hidden],#menu-page #player-settings #character-empty[hidden]{display:none!important;}
 #menu-page #player-settings .rm-character-empty{font-size:.8rem;text-align:center;}
 @media(max-height:620px){#menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:64px;gap:2px;}#menu-page #player-settings .premium-avatar-grid .avatar-art{width:38px;}}
+
+/* V25.4D6: shared Master rivals. Player avatars retain separate identities. */
+:is(#premium-rival-icon,.match-portrait)[data-rival="rookie"]{background-image:url('/assets/premium/master/rival-rookie-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-rival-icon,.match-portrait)[data-rival="trickster"]{background-image:url('/assets/premium/master/rival-trickster-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-rival-icon,.match-portrait)[data-rival="predator"]{background-image:url('/assets/premium/master/rival-predator-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-rival-icon,.match-portrait)[data-rival="phantom"]{background-image:url('/assets/premium/master/rival-phantom-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-rival-icon,.match-portrait)[data-rival="grandmaster"]{background-image:url('/assets/premium/master/rival-grandmaster-master.webp');background-size:cover;background-position:center;font-size:0;}
+:is(#premium-rival-icon,.match-portrait)[data-rival="omega"]{background-image:url('/assets/premium/master/rival-omega-master.webp');background-size:cover;background-position:center;font-size:0;}
+.match-portrait[data-rival="guided-fox"]{background-image:url('/assets/premium/master/avatar-neon-fox-master.webp');background-size:cover;background-position:center;}
+#menu-page #career-page .rm-rival-rank{color:var(--skin-gold);letter-spacing:0;white-space:nowrap;font-size:.65rem;}
+#menu-page #career-page .rm-rival-levels{font-size:.62rem;white-space:nowrap;}
+@media(max-height:620px){#menu-page #career-page .premium-rival-card img{width:min(100%,8dvh,58px);}}
