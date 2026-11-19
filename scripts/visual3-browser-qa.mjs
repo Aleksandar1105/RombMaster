@@ -470,6 +470,11 @@ try{
       e('next-level-label').textContent='Up next · Level 13';e('next-career-title').textContent='Control the board';
       e('next-clue').textContent='Look ahead before opening a new chain.';
       e('match-analysis').hidden=false;e('match-analysis').textContent='Match analysis · 17 moves · 16 cells · 3 double captures · Best chain 6 · Immediate concessions 2';
+      let summary=e('premium-result-summary');
+      if(!summary){summary=document.createElement('div');summary.id='premium-result-summary';overlay.querySelector('.rm-result-overview').append(summary);}
+      summary.hidden=false;
+      summary.innerHTML='<div class="rm-result-metrics"><div class="rm-result-metric"><small>Coins earned</small><strong>'+(win?'+120':'+0')+'</strong></div><div class="rm-result-metric"><small>XP earned</small><strong>'+(win?'+200':'+0')+'</strong></div></div><small class="rm-result-total">2400 XP total</small><div class="rm-result-progress"><small>Next character: Jade Huntress · Win level 25</small><progress max="25" value="12" aria-label="Career progress"></progress></div>';
+      if(win){const unlock=document.createElement('p');unlock.className='rm-result-character-unlock';unlock.textContent='Character unlocked: Azure Squire';summary.append(unlock);}
       overlay.classList.add('flex');overlay.scrollTop=0;overlay.querySelector('.result-details').scrollTop=0;
       return true;})()`);
      await shot((id==='neon'?'v21-result-':'v23-result-'+id+'-')+outcome+'-'+w+'x'+h);
@@ -478,6 +483,10 @@ try{
       assert.ok(badge.content!=='none'&&badge.display!=='none'&&badge.width>=30,JSON.stringify(badge));
      }
      assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .up-next')).display"),'none');
+     assert.equal(await evaluate("document.querySelectorAll('#premium-result-summary .rm-result-metric').length"),2);
+     if(outcome==='victory')assert.equal(await evaluate("getComputedStyle(document.querySelector('#overlay .rm-result-trophy')).borderTopWidth"),'0px');
+     const overviewOverflow=await evaluate("(()=>{const p=document.querySelector('#overlay .result-details');return p.scrollHeight-p.clientHeight;})()");
+     assert.ok(overviewOverflow<=2,'Premium overview vertical overflow: '+overviewOverflow+'px');
      assert.equal(await evaluate("getComputedStyle(document.getElementById('overlay')).overflowY"),'hidden');
      const selectors=['#againBtn','#backMenuBtn',...(outcome==='victory'?['#nextCareerBtn']:[])];
      const details=await controls('#overlay',selectors);
