@@ -334,15 +334,17 @@
             <span id="result-stars" aria-hidden="true" hidden></span>
             <h2 id="result-title">Winner!</h2>
             <p id="result-score">0 - 0</p>
-            <div class="result-details" tabindex="0" aria-label="Match rewards and details">
-                <p id="career-reward" class="career-reward" hidden></p>
-                <section class="up-next">
+            <nav id="result-page-nav" class="rm-page-nav" hidden aria-label="Match result pages"><button id="result-prev" type="button" aria-label="Previous result page">‹</button><strong id="result-page-label">Result</strong><button id="result-next" type="button" aria-label="Next result page">›</button></nav>
+            <div class="result-details" aria-label="Match rewards and details">
+                <section data-result-panel="overview" class="rm-result-overview"><div class="rm-result-trophy" aria-hidden="true"></div><p id="result-wallet" hidden></p><p id="result-unlocks" hidden></p></section>
+                <p id="career-reward" data-result-panel="rewards" class="career-reward" hidden></p>
+                <section class="up-next" data-result-panel="next">
                     <small id="next-level-label"></small>
                     <h3 id="next-career-title"></h3>
                     <p id="next-clue"></p>
                     <canvas id="next-opening" width="300" height="300" aria-label="Next mission opening"></canvas>
                 </section>
-                <section id="match-analysis" class="match-analysis" hidden aria-label="Match analysis"></section>
+                <section id="match-analysis" data-result-panel="analysis" class="match-analysis" hidden aria-label="Match analysis"></section>
             </div>
             <button id="nextCareerBtn" class="btn-primary full-width" hidden>Play next level</button>
             <div class="result-actions">
