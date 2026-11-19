@@ -398,3 +398,61 @@
  border-image:var(--rm-button-art) 24% 21% fill / 24% 17% / 0 stretch;
  color:var(--rm-chrome-ink);
 }
+
+/* V25.4D5B — genuine local victory artwork and explicit result detail pages. */
+:root[data-skin="neon"],#skin-stage[data-preview-skin="neon"] {--rm-victory-art:url('/assets/premium/master/neon-master-victory.webp');}
+:root[data-skin="royal"],#skin-stage[data-preview-skin="royal"] {--rm-victory-art:url('/assets/premium/master/royal-master-victory.webp');}
+:root[data-skin="cyber"],#skin-stage[data-preview-skin="cyber"] {--rm-victory-art:url('/assets/premium/master/cyber-master-victory.webp');}
+:root[data-skin="ice"],#skin-stage[data-preview-skin="ice"] {--rm-victory-art:url('/assets/premium/master/ice-master-victory.webp');}
+:root[data-skin="wood"],#skin-stage[data-preview-skin="wood"] {--rm-victory-art:url('/assets/premium/master/wood-master-victory.webp');}
+:root[data-skin="white"],#skin-stage[data-preview-skin="white"] {--rm-victory-art:url('/assets/premium/master/white-master-victory.webp');}
+:root[data-skin="frozen-christmas"],#skin-stage[data-preview-skin="frozen-christmas"] {--rm-victory-art:url('/assets/premium/master/frozen-christmas-master-victory.webp');}
+:root[data-skin="golden-dragon"],#skin-stage[data-preview-skin="golden-dragon"] {--rm-victory-art:url('/assets/premium/master/golden-dragon-master-victory.webp');}
+:root[data-skin="spring-blossom"],#skin-stage[data-preview-skin="spring-blossom"] {--rm-victory-art:url('/assets/premium/master/spring-blossom-master-victory.webp');}
+:root[data-skin="summer-paradise"],#skin-stage[data-preview-skin="summer-paradise"] {--rm-victory-art:url('/assets/premium/master/summer-paradise-master-victory.webp');}
+:root[data-skin="autumn-kingdom"],#skin-stage[data-preview-skin="autumn-kingdom"] {--rm-victory-art:url('/assets/premium/master/autumn-kingdom-master-victory.webp');}
+:root[data-skin="halloween-curse"],#skin-stage[data-preview-skin="halloween-curse"] {--rm-victory-art:url('/assets/premium/master/halloween-curse-master-victory.webp');}
+:root[data-skin="midnight-gold"],#skin-stage[data-preview-skin="midnight-gold"] {--rm-victory-art:url('/assets/premium/master/midnight-gold-master-victory.webp');}
+:root[data-skin="obsidian-neon"],#skin-stage[data-preview-skin="obsidian-neon"] {--rm-victory-art:url('/assets/premium/master/obsidian-neon-master-victory.webp');}
+:root[data-skin="celestial-void"],#skin-stage[data-preview-skin="celestial-void"] {--rm-victory-art:url('/assets/premium/master/celestial-void-master-victory.webp');}
+:root[data-skin="synthwave-sunset"],#skin-stage[data-preview-skin="synthwave-sunset"] {--rm-victory-art:url('/assets/premium/master/synthwave-sunset-master-victory.webp');}
+:root[data-skin] #overlay.flex .center-panel {
+ background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 82%,transparent),color-mix(in srgb,var(--skin-bg) 92%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+ border:1px solid var(--rm-chrome-rim);border-radius:12px;color:var(--skin-ink);font-family:var(--rm-font);
+ min-height:0;gap:clamp(3px,1dvh,9px);padding:clamp(6px,1.5dvh,14px);
+}
+:root[data-skin] #overlay.flex .arena-brand{max-height:48px;}
+:root[data-skin] #overlay.flex #result-title{background:none;color:var(--skin-ink);font-family:var(--rm-font);height:auto;text-shadow:none;}
+:root[data-skin] #overlay.flex[data-outcome="victory"] #result-title::before,
+:root[data-skin] #overlay.flex[data-outcome="victory"] #result-title::after {content:none;display:none;}
+:root[data-skin] #overlay.flex .result-details{flex:1 1 auto;justify-content:center;min-height:0;gap:4px;}
+#overlay.flex [data-result-panel][hidden],#overlay.flex #result-page-nav[hidden],#overlay.flex #result-wallet[hidden],#overlay.flex #result-unlocks[hidden]{display:none!important;}
+#overlay.flex[data-result-page="overview"] [data-result-panel]:not([data-result-panel="overview"]),
+#overlay.flex[data-result-page="rewards"] [data-result-panel]:not([data-result-panel="rewards"]),
+#overlay.flex[data-result-page="next"] [data-result-panel]:not([data-result-panel="next"]),
+#overlay.flex[data-result-page="analysis"] [data-result-panel]:not([data-result-panel="analysis"]){display:none!important;}
+#overlay.flex .rm-result-overview{width:100%;display:grid;justify-items:center;gap:5px;min-width:0;}
+#overlay.flex .rm-result-trophy{display:none;}
+#overlay.flex[data-outcome="victory"] .rm-result-trophy,
+#arcade-page[data-turn="finished"][data-result="victory"] #arcade-feedback::before,
+#daily-modal[data-result="victory"] #daily-title::before {
+ content:"";display:block;aspect-ratio:1;width:min(48vw,24dvh,180px);max-width:100%;
+ background:var(--rm-victory-art) center/contain no-repeat;
+ border:1px solid var(--rm-chrome-rim);border-radius:10px;margin:0 auto 4px;
+}
+#overlay.flex #result-wallet,#overlay.flex #result-unlocks{color:var(--skin-ink);background:var(--rm-panel);border:1px solid var(--rm-chrome-rim);border-radius:8px;padding:6px 9px;text-align:center;font-size:.9rem;margin:0;overflow-wrap:anywhere;max-width:100%;}
+#overlay.flex #result-page-nav{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;width:100%;text-align:center;font-size:.82rem;gap:5px;}
+#overlay.flex #result-page-nav button{min-height:44px;padding:4px;}
+:root[data-skin] #overlay.flex .up-next{background:var(--rm-panel);border-color:var(--rm-chrome-rim);color:var(--skin-ink);}
+:root[data-skin] #overlay.flex #next-clue{color:var(--skin-ink);}
+:root[data-skin] #overlay.flex .result-actions button {background:var(--rm-chrome-face);border:1px solid var(--rm-chrome-rim);border-image:var(--rm-button-art) 24% 21% fill / 24% 17% / 0 stretch;color:var(--rm-chrome-ink);font-family:var(--rm-font);text-shadow:none;}
+#daily-modal .daily-canvas-shell:has(canvas[hidden]){display:none;}
+#daily-modal[data-result] .daily-content{max-height:calc(100dvh - 12px);}
+#arcade-page[data-turn="finished"] #arcade-instruction{display:none;}
+#arcade-page[data-turn="finished"] #arcade-feedback{font-family:var(--rm-font);color:var(--skin-ink);}
+#skin-stage[data-preview-skin] .seasonal-victory::before{content:"";display:block;width:min(22dvh,120px);aspect-ratio:1;margin:0 auto 5px;border-radius:8px;background:var(--rm-victory-art) center/contain no-repeat;}
+@media(max-height:540px){
+ #overlay.flex .arena-brand{display:none;}
+ #overlay.flex[data-outcome="victory"] .rm-result-trophy,#arcade-page[data-result="victory"] #arcade-feedback::before,#daily-modal[data-result="victory"] #daily-title::before{width:min(40vw,17dvh,100px);}
+ #overlay.flex #result-stars:not([hidden]){height:20px;width:calc(var(--stars,3)*20px);background-size:20px 100%;}
+}
