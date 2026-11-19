@@ -1,22 +1,37 @@
 [
   {
-    "name": "cyber-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/d434ec3f-1a9f-4d68-b17c-1d6a283470be.png",
+    "name": "frozen-christmas-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/6612ee8d-7da7-48bb-a04a-6c90cbaf5a73.png",
     "max_side": 2048
   },
   {
-    "name": "ice-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/465e53d7-8143-4b4c-9a8a-17b7ac6b6d2e.png",
+    "name": "golden-dragon-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/d6113483-212f-4790-b2b7-c32244733253.png",
     "max_side": 2048
   },
   {
-    "name": "wood-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/2564c250-bcab-4d19-8246-562efc43706d.png",
+    "name": "spring-blossom-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/fb085610-360e-4972-9e51-2cac69496ffc.png",
     "max_side": 2048
   },
   {
-    "name": "white-master-arena.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/8383ab66-3dac-436a-a5c7-f8161be4d1df.png",
+    "name": "summer-paradise-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/1d0164a2-9a5d-4a19-92d3-d8db3b649f21.png",
+    "max_side": 2048
+  },
+  {
+    "name": "autumn-kingdom-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/7f4ed776-cf11-443f-af80-562ab6b9da25.png",
+    "max_side": 2048
+  },
+  {
+    "name": "halloween-curse-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/2ec58775-e112-4296-a1ee-c7512cc8b2a8.png",
+    "max_side": 2048
+  },
+  {
+    "name": "midnight-gold-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/847ff50d-d267-4326-bd96-b522631b8e8e.png",
     "max_side": 2048
   }
 ]
