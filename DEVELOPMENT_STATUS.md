@@ -91,3 +91,7 @@ Compared 127 Drive entries to source inventory, recovered 50 imported target map
 
 ## V25.5A — Premium Victory & Rewards implementation candidate
 Owner-approved plan recorded at df42a02; runtime through 2ed6560; visual fixture update 2c66bb5. Existing themed victory artwork is now frameless with reduced-motion-aware reveal. Overview displays measured wallet delta, persisted XP gain/total, character unlocks and next Career character milestone. No currency or reward formula changes; no new assets or credits, billing, or Actions. Existing detail/next-mission/analysis pages retained for compact layouts. Full tests and physical visual QA pending; no APK or browser run in this session.
+
+
+## V25.5A2 — one-page results and visual corrections
+Owner feedback on build 6aff67098f52ca2751290f01 documented in QA_STATUS.md. Runtime b4b74e6/a5e5b3f removes result pagination, lengthens visible count-up, simplifies panel/score outlines, uses existing button art and theme-specific display font stacks, and begins shared secondary-screen cleanup. No new Picsart assets or economy changes. Full Frozen-quality visual matching across all screens, custom bundled typography, actual animation/device validation and regression tests remain pending. Fixture updated at 6ba7a0f. No APK generated in this session; manual Cloud Test APK only, free minutes, no GitHub Actions.
