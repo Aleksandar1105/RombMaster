@@ -161,6 +161,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
             if (state.status === 'empty') {
                 el('career-name').value = profile.name;
                 el('career-avatar').value = profile.avatar;
+                renderStarterCharacter('career-avatar');
                 el('identity-status').textContent = '';
             }
             refreshCareerSkins();
@@ -618,6 +619,7 @@ const refreshCareer = () => {
         fox.textContent = fox.disabled ? '🔒 Neon Fox · Win level 5' : '🦊 Neon Fox';
     }
     avatarSelect.value = p.avatar;
+    if(el('profile-avatar-name'))el('profile-avatar-name').textContent=PLAYER_AVATARS.find(item=>item.id===p.avatar)?.label||'Spark';
     if (p.avatar === 'neon-fox') avatarPreview.classList.add('neon-fox');
     else avatarPreview.classList.remove('neon-fox');
     avatarPreview.dataset.avatar = p.avatar;
@@ -631,7 +633,7 @@ const refreshCareer = () => {
     }
     el('identity-name').textContent = p.name;
     el('identity-art').dataset.avatar = p.avatar;
-    el('identity-art').textContent = ['robot','spark','fox','neon-fox'].includes(p.avatar) ? '' : avatarPreview.textContent;
+    el('identity-art').textContent = '';
     const summary = careerSummary(p);
     refreshPremiumHome(p, summary);
     for (const [id, value] of Object.entries({
@@ -745,6 +747,7 @@ el('create-local-player-btn').onclick = () => {
     }
     newLocalPlayerName.value = '';
     el('new-local-player-avatar').value = 'spark';
+    renderStarterCharacter('new-local-player-avatar');
     updateActivePlayerView();
     localPlayerFeedback.textContent = profileName.value + ' is now the active player.';
 };
@@ -904,6 +907,23 @@ el('career-start-btn').onclick = () => {
     askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, el('career-start-btn'));
 };
 
+// Both new-player flows share the six free character IDs and the same art.
+function starterCharacters(){return PLAYER_AVATARS.filter(item=>item.id!=='neon-fox');}
+function renderStarterCharacter(id){
+    const select=el(id),choices=starterCharacters();
+    const index=Math.max(0,choices.findIndex(a=>a.id===select.value)),choice=choices[index];
+    select.value=choice.id;
+    const art=el(id+'-art'),name=el(id+'-name'),position=el(id+'-position');
+    if(art)art.dataset.avatar=choice.id;
+    if(name)name.textContent=choice.label;
+    if(position)position.textContent=(index+1)+' / '+choices.length;
+}
+function stepStarterCharacter(id,delta){
+    const select=el(id),choices=starterCharacters();
+    const index=Math.max(0,choices.findIndex(a=>a.id===select.value));
+    select.value=choices[(index+delta+choices.length)%choices.length].id;
+    renderStarterCharacter(id);
+}
 for (const id of ['career-avatar', 'new-local-player-avatar']) {
     for (const avatar of PLAYER_AVATARS.filter(item => item.id !== 'neon-fox')) {
         const option = document.createElement('option');
@@ -912,6 +932,10 @@ for (const id of ['career-avatar', 'new-local-player-avatar']) {
         el(id).append(option);
     }
     el(id).value = 'spark';
+    renderStarterCharacter(id);
+    el(id).onchange=()=>renderStarterCharacter(id);
+    bindPage(id+'-prev',()=>stepStarterCharacter(id,-1));
+    bindPage(id+'-next',()=>stepStarterCharacter(id,1));
 }
 el('career-identity').onsubmit = event => {
     event.preventDefault();
