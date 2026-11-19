@@ -1,27 +1,22 @@
 [
   {
-    "name": "arena-puzzle.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/5b33f916-a744-4639-a2c5-a8704506b4bc.png",
-    "max_side": 1024
+    "name": "cyber-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/d434ec3f-1a9f-4d68-b17c-1d6a283470be.png",
+    "max_side": 2048
   },
   {
-    "name": "arena-perfect.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/d1999c46-5fe7-4750-abd5-943e21e1c3f9.png",
-    "max_side": 1024
+    "name": "ice-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/465e53d7-8143-4b4c-9a8a-17b7ac6b6d2e.png",
+    "max_side": 2048
   },
   {
-    "name": "arena-blitz.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/1c17adb0-f7f6-42eb-9e45-08ab341b268b.png",
-    "max_side": 1024
+    "name": "wood-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/2564c250-bcab-4d19-8246-562efc43706d.png",
+    "max_side": 2048
   },
   {
-    "name": "arena-survival.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/0defe545-280f-40fe-ae5f-b94972fda6ef.png",
-    "max_side": 1024
-  },
-  {
-    "name": "arena-infinity.webp",
-    "url": "https://gcdn.picsart.com/pipeline-output/b22854a7-bc47-41f2-94d2-af689fa40e17.png",
-    "max_side": 1024
+    "name": "white-master-arena.webp",
+    "url": "https://gcdn.picsart.com/pipeline-output/8383ab66-3dac-436a-a5c7-f8161be4d1df.png",
+    "max_side": 2048
   }
 ]
