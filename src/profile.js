@@ -17,6 +17,22 @@ export const PLAYER_AVATARS = Object.freeze([
   { id: 'shield', icon: '🛡️', label: 'Shield' },
 ]);
 
+// Keep the legacy starter API stable for old consumers and saved profiles.
+// The collectible IDs are stable serialized identifiers, not entitlement grants.
+export const COLLECTIBLE_AVATAR_IDS = Object.freeze([
+ 'azure-squire','jade-huntress','crimson-sentinel','frost-oracle','onyx-warden','crown-ascendant',
+ 'circuit-valkyrie','storm-raptor','ember-ronin','moon-weaver','coral-corsair','prism-golem',
+ 'solar-sovereign','void-monarch','celestial-empress','dragon-emperor','aurora-seraph','chronos-architect'
+]);
+const knownAvatar=id=>PLAYER_AVATARS.some(item=>item.id===id)||COLLECTIBLE_AVATAR_IDS.includes(id);
+// The app supplies the same slot-scoped entitlement resolver used by the shop.
+// Fail closed for new collectibles if economy initialization/storage fails.
+let cosmeticEconomy=null;
+export function configureCharacterEconomy(economy){
+ if(typeof economy?.entitlement!=='function'||typeof economy?.preserve!=='function')throw new Error('Invalid character economy');
+ cosmeticEconomy=economy;
+}
+
 // Achievements are derived from validated Career stats; never trust claims
 // submitted by a client for future ranked/online leaderboards.
 export const ACHIEVEMENTS = Object.freeze([
@@ -129,7 +145,7 @@ function parseProfile(raw) {
   if (![played, wins, draws, losses, streak, bestStreak].every(validCounter) ||
       played !== wins + draws + losses ||
       streak > bestStreak || bestStreak > wins ||
-      !PLAYER_AVATARS.some(item => item.id === avatar)) {
+      !knownAvatar(avatar)) {
     throw new Error('Invalid game stats or avatar');
   }
   return {
@@ -303,13 +319,17 @@ export const ProfileStore = {
 
   saveAvatar(avatarId) {
     if (typeof avatarId !== 'string' ||
-        !PLAYER_AVATARS.some(item => item.id === avatarId)) {
+        !knownAvatar(avatarId)) {
       return { status: 'bad-avatar' };
     }
     const current = this.read();
     if (current.status === 'invalid' || current.status === 'unavailable') return current;
-    if (avatarId === 'neon-fox' && !current.profile.neonFoxUnlocked) {
-      return { status: 'locked' };
+    if (!current.profile) return current;
+    if (avatarId === 'neon-fox' && !current.profile.neonFoxUnlocked ||
+        COLLECTIBLE_AVATAR_IDS.includes(avatarId)) {
+      try {
+        if(cosmeticEconomy?.entitlement(avatarId,current.profile)!=='owned')return {status:'locked'};
+      } catch { return {status:'unavailable'}; }
     }
     return persist({ ...current.profile, avatar: avatarId });
   },
@@ -319,6 +339,13 @@ export const ProfileStore = {
     // Never silently replace corrupt or unsupported profile data.
     const current = this.read();
     if (current.status === 'invalid' || current.status === 'unavailable') return current;
+    // Snapshot earned milestones before clearing Career stars. Never silently
+    // destroy cosmetic entitlements if the shared wallet cannot be saved.
+    if(!current.profile)return current;
+    if(cosmeticEconomy){
+      try{if(cosmeticEconomy.preserve(current.profile)!=='ready')return {status:'unavailable'};}
+      catch{return {status:'unavailable'};}
+    }
     const next = freshProfile(current.profile.name);
     next.avatar = current.profile.avatar;
     next.neonFoxUnlocked = Boolean(current.profile.neonFoxUnlocked);
