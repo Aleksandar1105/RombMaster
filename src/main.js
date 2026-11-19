@@ -64,6 +64,77 @@ const menuPages = {
     ...(el('arcade-page')?{'arcade-page':'Challenge Arena'}:{}),
 };
 let pageTrigger = null;
+// All pages retain their original DOM controls and save handlers.
+const careerScreens=['levels','mission','rivals'],skinDetailScreens=['overview','board','effects'];
+let careerScreen=0,skinDetailScreen=0,achievementPage=0,avatarPage=0,achievementView=false,creatingPlayer=false;
+const bindPage=(id,action)=>{const node=el(id);if(node)node.onclick=action;};
+function setCareerScreen(index=0){
+    careerScreen=Math.max(0,Math.min(careerScreens.length-1,index));
+    const identityOpen=!el('career-identity').hidden;
+    el('career-screen-nav').hidden=identityOpen;
+    for(const pane of document.querySelectorAll('[data-career-screen]'))pane.hidden=identityOpen||pane.dataset.careerScreen!==careerScreens[careerScreen];
+    el('career-screen-prev').disabled=careerScreen===0;
+    el('career-screen-next').disabled=careerScreen===2;
+    el('career-screen-label').textContent=['Levels','Mission','Rivals'][careerScreen]+' · '+(careerScreen+1)+' / 3';
+}
+function setSkinDetailScreen(index=0){
+    skinDetailScreen=Math.max(0,Math.min(2,index));
+    for(const pane of document.querySelectorAll('[data-skin-detail-screen]'))pane.hidden=pane.dataset.skinDetailScreen!==skinDetailScreens[skinDetailScreen];
+    el('skin-detail-prev').disabled=skinDetailScreen===0;
+    el('skin-detail-next').disabled=skinDetailScreen===2;
+    el('skin-detail-page-label').textContent=['Overview','Board preview','Effects'][skinDetailScreen]+' · '+(skinDetailScreen+1)+' / 3';
+}
+function paginateRows(rows,page,size,prevId,nextId,labelId){
+    const count=Math.max(1,Math.ceil(rows.length/size)),current=Math.max(0,Math.min(count-1,page));
+    rows.forEach((row,i)=>row.hidden=i<current*size||i>=(current+1)*size);
+    el(prevId).disabled=current===0;el(nextId).disabled=current===count-1;
+    el(labelId).textContent=(current+1)+' / '+count;
+    return {current,count};
+}
+function renderAchievementPage(){
+    const rows=Array.from(el('achievement-list').children||[]);
+    const size=window.innerHeight<560?2:window.innerHeight<740?4:6;
+    achievementPage=paginateRows(rows,achievementPage,size,'profile-achievements-prev','profile-achievements-next','profile-achievements-label').current;
+}
+function setAchievementView(show=false){
+    achievementView=show;el('profile-stat-grid').hidden=show;el('profile-achievements-page').hidden=!show;
+    el('profile-stats-toggle').textContent=show?'‹ Statistics':'View achievements ›';
+    if(show)renderAchievementPage();
+}
+function renderAvatarPage(){
+    const rows=Array.from(document.querySelectorAll('[data-profile-avatar]'));
+    const size=window.innerHeight<550?4:window.innerWidth>=600?7:6;
+    const result=paginateRows(rows,avatarPage,size,'profile-avatar-prev','profile-avatar-next','profile-avatar-page');
+    avatarPage=result.current;el('profile-avatar-pager').hidden=result.count===1;
+}
+function setCreatePlayer(show=false){
+    creatingPlayer=show;el('profile-create-form').hidden=!show;
+    el('profile-create-toggle').setAttribute('aria-expanded',String(show));
+    el('profile-create-toggle').textContent=show?'‹ Existing players':'Create new player ›';
+    const nameRow=el('profile-name')?.parentElement;if(nameRow)nameRow.hidden=show;
+}
+function backSubpage(){
+    if(el('menu-page').hidden)return false;
+    if(!el('skin-page').hidden&&skinDetailsOpen&&skinDetailScreen>0){setSkinDetailScreen(skinDetailScreen-1);return true;}
+    if(!el('career-page').hidden&&careerScreen>0){setCareerScreen(0);return true;}
+    if(!el('player-settings').hidden){
+        if(creatingPlayer&&el('profile-section-players').checked){setCreatePlayer(false);return true;}
+        if(achievementView&&el('profile-section-stats').checked){setAchievementView(false);return true;}
+    }
+    return false;
+}
+bindPage('career-screen-prev',()=>setCareerScreen(careerScreen-1));
+bindPage('career-screen-next',()=>setCareerScreen(careerScreen+1));
+bindPage('career-open-mission',()=>setCareerScreen(1));
+bindPage('skin-detail-prev',()=>setSkinDetailScreen(skinDetailScreen-1));
+bindPage('skin-detail-next',()=>setSkinDetailScreen(skinDetailScreen+1));
+bindPage('profile-create-toggle',()=>setCreatePlayer(!creatingPlayer));
+bindPage('profile-stats-toggle',()=>{achievementPage=0;setAchievementView(!achievementView);});
+bindPage('profile-achievements-prev',()=>{achievementPage--;renderAchievementPage();});
+bindPage('profile-achievements-next',()=>{achievementPage++;renderAchievementPage();});
+bindPage('profile-avatar-prev',()=>{avatarPage--;renderAvatarPage();});
+bindPage('profile-avatar-next',()=>{avatarPage++;renderAvatarPage();});
+window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
     readQuickSetup();
     renderQuickSetup();
@@ -99,6 +170,8 @@ document.querySelectorAll('[data-page]').forEach(button => {
             }
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
+        if(selected==='career-page')setCareerScreen(0);
+        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;renderAvatarPage();}
         if (selected === 'quick-settings') {
             readQuickSetup();
             renderQuickSetup();
@@ -112,7 +185,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         el('page-back').focus();
     };
 });
-el('page-back').onclick = () => { if (!closeSkinDetails() && !arcade?.back()) showHome(); };
+el('page-back').onclick = () => { if (!backSubpage() && !closeSkinDetails() && !arcade?.back()) showHome(); };
 
 // Career mode is optional and offline-first. Quick Play remains available.
 const profileName = el('profile-name');
@@ -193,6 +266,7 @@ function setSkinPanel(detail) {
     el('skin-detail-panel').hidden = !detail;
     el('page-back').textContent = detail ? '← Skins' : '← Home';
     if (detail) {
+        setSkinDetailScreen(0);
         el('page-title').textContent = 'Skin Details';
         const skin = getSkin(previewSkinId);
         const art = el('skin-detail-art');
@@ -546,6 +620,7 @@ const refreshCareer = () => {
             achievementList.appendChild(li);
         }
     }
+    if(achievementView)renderAchievementPage();
     careerXP.textContent = `${p.xp} XP`;
     careerProgress.textContent = `Level ${p.unlockedLevel} / ${CAREER_LEVEL_COUNT}`;
     const mission = missionFor(p.unlockedLevel);
@@ -808,6 +883,7 @@ el('career-identity').onsubmit = event => {
         return;
     }
     el('career-identity').hidden = true;
+    setCareerScreen(1);
     refreshCareer();
     refreshCareerSkins();
     el('career-start-btn').focus();
@@ -1230,7 +1306,7 @@ Native.onBack(() => {
         el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
         el('menuBtn').click();
-    } else if (closeSkinDetails()) {
+    } else if (backSubpage() || closeSkinDetails()) {
         return;
     } else if (arcade?.back()) {
         return;
