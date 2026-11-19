@@ -64,17 +64,21 @@
                         <button class="btn-primary" type="submit">Continue to Level 1</button>
                         <p id="identity-status" role="status"></p>
                     </form>
+                    <nav id="career-screen-nav" class="rm-page-nav" aria-label="Career screens"><button id="career-screen-prev" type="button" aria-label="Previous career screen">‹</button><strong id="career-screen-label">Levels</strong><button id="career-screen-next" type="button" aria-label="Next career screen">›</button></nav>
+                    <div data-career-screen="levels">
                     <nav class="chapter-nav" aria-label="Career chapters">
                         <button id="previous-chapter" aria-label="Previous chapter">‹</button>
                         <strong id="chapter-label"></strong>
                         <button id="next-chapter" aria-label="Next chapter">›</button>
                     </nav>
                     <p id="career-rival" class="career-rival"></p>
-                    <div class="premium-rivals-grid" aria-label="Career rivals"><div class="premium-rival-card" id="career-rival-card-0" data-state="locked"><img src="/assets/premium/rivals/rookie.webp" alt="" loading="lazy" width="768" height="768"><strong>Rookie</strong><small id="career-rival-card-status-0">Locked</small></div><div class="premium-rival-card" id="career-rival-card-1" data-state="locked"><img src="/assets/premium/rivals/trickster.webp" alt="" loading="lazy" width="768" height="768"><strong>Trickster</strong><small id="career-rival-card-status-1">Locked</small></div><div class="premium-rival-card" id="career-rival-card-2" data-state="locked"><img src="/assets/premium/rivals/predator.webp" alt="" loading="lazy" width="768" height="768"><strong>Predator</strong><small id="career-rival-card-status-2">Locked</small></div><div class="premium-rival-card" id="career-rival-card-3" data-state="locked"><img src="/assets/premium/rivals/phantom.webp" alt="" loading="lazy" width="768" height="768"><strong>Phantom</strong><small id="career-rival-card-status-3">Locked</small></div><div class="premium-rival-card" id="career-rival-card-4" data-state="locked"><img src="/assets/premium/rivals/grandmaster.webp" alt="" loading="lazy" width="768" height="768"><strong>Grandmaster</strong><small id="career-rival-card-status-4">Locked</small></div><div class="premium-rival-card" id="career-rival-card-5" data-state="locked"><img src="/assets/premium/rivals/omega.webp" alt="" loading="lazy" width="768" height="768"><strong>Omega</strong><small id="career-rival-card-status-5">Locked</small></div></div>
                     <span id="career-progress" class="career-progress"></span>
                     <div id="chapter-route" aria-label="Career missions"></div>
+                    <button id="career-open-mission" type="button">Selected mission ›</button></div>
+                    <div data-career-screen="rivals" hidden><div class="premium-rivals-grid" aria-label="Career rivals"><div class="premium-rival-card" id="career-rival-card-0" data-state="locked"><img src="/assets/premium/rivals/rookie.webp" alt="" loading="lazy" width="768" height="768"><strong>Rookie</strong><small id="career-rival-card-status-0">Locked</small></div><div class="premium-rival-card" id="career-rival-card-1" data-state="locked"><img src="/assets/premium/rivals/trickster.webp" alt="" loading="lazy" width="768" height="768"><strong>Trickster</strong><small id="career-rival-card-status-1">Locked</small></div><div class="premium-rival-card" id="career-rival-card-2" data-state="locked"><img src="/assets/premium/rivals/predator.webp" alt="" loading="lazy" width="768" height="768"><strong>Predator</strong><small id="career-rival-card-status-2">Locked</small></div><div class="premium-rival-card" id="career-rival-card-3" data-state="locked"><img src="/assets/premium/rivals/phantom.webp" alt="" loading="lazy" width="768" height="768"><strong>Phantom</strong><small id="career-rival-card-status-3">Locked</small></div><div class="premium-rival-card" id="career-rival-card-4" data-state="locked"><img src="/assets/premium/rivals/grandmaster.webp" alt="" loading="lazy" width="768" height="768"><strong>Grandmaster</strong><small id="career-rival-card-status-4">Locked</small></div><div class="premium-rival-card" id="career-rival-card-5" data-state="locked"><img src="/assets/premium/rivals/omega.webp" alt="" loading="lazy" width="768" height="768"><strong>Omega</strong><small id="career-rival-card-status-5">Locked</small></div></div>
+                    </div>
                     <input id="career-level" type="hidden" value="1">
-                    <div class="mission-detail">
+                    <div class="mission-detail" data-career-screen="mission" hidden>
                     <canvas id="mission-preview" width="300" height="300" aria-label="Selected opening"></canvas>
                     <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
                     <label id="career-skin-row" hidden>Arena skin <select id="career-skin"></select></label>
@@ -178,8 +182,8 @@
                         <nav id="skin-pagination" aria-label="Skin catalog pages" hidden><button type="button" id="skin-page-prev" aria-label="Previous skins">‹ Prev</button><span id="skin-page-number" aria-live="polite"></span><button type="button" id="skin-page-next" aria-label="Next skins">Next ›</button></nav>
                         </div>
                         <div id="skin-detail-panel" hidden>
-                        <img id="skin-detail-art" alt="" decoding="async">
-                        <p id="skin-detail-description"></p>
+                        <nav class="rm-page-nav" aria-label="Skin detail screens"><button id="skin-detail-prev" type="button" aria-label="Previous detail screen">‹</button><strong id="skin-detail-page-label">Overview</strong><button id="skin-detail-next" type="button" aria-label="Next detail screen">›</button></nav><div data-skin-detail-screen="overview"><img id="skin-detail-art" alt="" decoding="async">
+                        <p id="skin-detail-description"></p><button id="skin-home-preview" class="btn-secondary" type="button">Preview complete home screen</button></div><div data-skin-detail-screen="board" hidden>
                         <div id="skin-stage" class="skin-stage" data-preview-skin="neon">
                             <div id="seasonal-crest" aria-hidden="true" hidden></div>
                             <h3 id="skin-preview-name">Neon Arena</h3>
@@ -187,12 +191,11 @@
                             <canvas id="skin-preview" width="320" height="320" aria-label="Preview of captured squares"></canvas>
                             <div class="skin-sample-controls" aria-hidden="true"><span>↶ Undo</span><span>↻ Restart</span><span>⌂ Home</span></div>
                         </div>
-                        <button id="skin-home-preview" class="btn-secondary" type="button">Preview complete home screen</button>
-                        <p id="skin-effect-label" class="skin-effect-label"></p>
+                        </div><div data-skin-detail-screen="effects" hidden><p id="skin-effect-label" class="skin-effect-label"></p>
                         <button id="skin-effect-preview" class="btn-secondary" type="button">▶ Preview capture &amp; sound</button>
                         <div id="seasonal-victory" class="seasonal-victory" role="status" hidden></div>
                         <button id="skin-victory-preview" class="btn-secondary" type="button" hidden>▶ Preview victory &amp; sound</button>
-                        <button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
+                        </div><button id="skin-equip" class="btn-primary" type="button">Equip skin</button>
                         <p id="skin-status" class="profile-feedback" role="status" aria-live="polite"></p>
                         </div>
                     </div>
@@ -211,7 +214,7 @@
                     <div class="local-player-toolbar">
                         <label for="local-player-select">Active local player</label>
                         <select id="local-player-select" aria-label="Switch local player"></select>
-                        <div class="local-player-add" role="group" aria-label="Create a new player">
+                        <button id="profile-create-toggle" type="button" aria-expanded="false">Create new player ›</button><div class="local-player-add" id="profile-create-form" hidden role="group" aria-label="Create a new player">
                             <label for="new-local-player-name">New player name</label>
                             <input id="new-local-player-name" type="text" maxlength="18"
                                 placeholder="New player name" aria-label="New local player name" autocomplete="off">
@@ -241,13 +244,13 @@
                             <option value="shield">🛡️ Shield</option>
                         </select>
                     </div>
-                    <div class="premium-avatar-grid" aria-label="Player avatars"><button class="avatar-choice" data-profile-avatar="spark" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong>Spark</strong></button><button class="avatar-choice" data-profile-avatar="neon-fox" type="button" aria-pressed="false" disabled><span class="avatar-art" data-avatar="neon-fox" aria-hidden="true"></span><strong>Neon Fox</strong><small data-avatar-lock>Win level 5</small></button><button class="avatar-choice" data-profile-avatar="fox" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="fox" aria-hidden="true"></span><strong>Fox</strong></button><button class="avatar-choice" data-profile-avatar="robot" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="robot" aria-hidden="true"></span><strong>Robot</strong></button><button class="avatar-choice" data-profile-avatar="rocket" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="rocket" aria-hidden="true"></span><strong>Rocket</strong></button><button class="avatar-choice" data-profile-avatar="dragon" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="dragon" aria-hidden="true"></span><strong>Dragon</strong></button><button class="avatar-choice" data-profile-avatar="shield" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="shield" aria-hidden="true"></span><strong>Shield</strong></button></div>
+                    <div class="premium-avatar-grid" aria-label="Player avatars"><button class="avatar-choice" data-profile-avatar="spark" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong>Spark</strong></button><button class="avatar-choice" data-profile-avatar="neon-fox" type="button" aria-pressed="false" disabled><span class="avatar-art" data-avatar="neon-fox" aria-hidden="true"></span><strong>Neon Fox</strong><small data-avatar-lock>Win level 5</small></button><button class="avatar-choice" data-profile-avatar="fox" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="fox" aria-hidden="true"></span><strong>Fox</strong></button><button class="avatar-choice" data-profile-avatar="robot" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="robot" aria-hidden="true"></span><strong>Robot</strong></button><button class="avatar-choice" data-profile-avatar="rocket" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="rocket" aria-hidden="true"></span><strong>Rocket</strong></button><button class="avatar-choice" data-profile-avatar="dragon" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="dragon" aria-hidden="true"></span><strong>Dragon</strong></button><button class="avatar-choice" data-profile-avatar="shield" type="button" aria-pressed="false"><span class="avatar-art" data-avatar="shield" aria-hidden="true"></span><strong>Shield</strong></button></div><nav id="profile-avatar-pager" class="rm-page-nav" aria-label="Avatar pages"><button id="profile-avatar-prev" type="button">‹ Prev</button><span id="profile-avatar-page"></span><button id="profile-avatar-next" type="button">Next ›</button></nav>
                     </div>
                     <p id="profile-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
                     <div class="profile-pane" data-profile-pane="stats">
                     <details id="player-stats" class="profile-stats" open>
                         <summary>Career statistics &amp; achievements</summary>
-                        <div class="stats-grid">
+                        <div class="stats-grid" id="profile-stat-grid">
                             <div><span>Career matches</span><strong id="stat-played">0</strong></div>
                             <div><span>Wins</span><strong id="stat-wins">0</strong></div>
                             <div><span>Draws</span><strong id="stat-draws">0</strong></div>
