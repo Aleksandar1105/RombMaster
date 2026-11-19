@@ -323,7 +323,7 @@ export const Game = {
         if(this.careerOutcome.status==='ready')try{
           const afterWallet=this.rewardWalletSnapshot?.();
           if(beforeWallet&&afterWallet&&beforeWallet.key===afterWallet.key){
-            this.careerOutcome={...this.careerOutcome,walletReward:{coins:Math.max(0,afterWallet.balance-beforeWallet.balance),unlocks:afterWallet.owned.filter(id=>!beforeWallet.owned.includes(id))}};
+            this.careerOutcome={...this.careerOutcome,walletReward:{coins:Math.max(0,afterWallet.balance-beforeWallet.balance),unlocks:afterWallet.owned.filter(id=>!beforeWallet.owned.includes(id)),characterUnlocks:(afterWallet.characters||[]).filter(id=>!(beforeWallet.characters||[]).includes(id)),nextReward:afterWallet.nextReward||null}};
           }
         }catch{}
       }
