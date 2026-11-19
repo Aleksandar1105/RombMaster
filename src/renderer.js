@@ -48,7 +48,7 @@ export class Renderer {
     const colors = skin.colors;
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    if (['neon','royal','cyber','ice','wood','white','frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold'].includes(skin.id)) {
+    if (['neon','royal','cyber','ice','wood','white','frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold','obsidian-neon','celestial-void','synthwave-sunset'].includes(skin.id)) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     } else {
       this.ctx.fillStyle = colors.bg;
