@@ -56,8 +56,13 @@ test('premium home uses original brand and active profile progress', () => {
 test('premium home and Career expose six actual local rival portraits and preserve profile locks', () => {
   const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
   for (const [i, name] of ['rookie','trickster','predator','phantom','grandmaster','omega'].entries()) {
-    assert.ok(fs.existsSync(path.resolve(__dirname, '../src/public/assets/premium/rivals', name + '.webp')), name);
-    assert.ok(html.includes('/assets/premium/rivals/' + name + '.webp'), name);
+    const art='rival-'+name+'-master.webp';
+    const bytes=fs.readFileSync(path.resolve(__dirname,'../src/public/assets/premium/master',art));
+    assert.equal(bytes.toString('ascii',0,4),'RIFF',name);
+    assert.equal(bytes.toString('ascii',8,12),'WEBP',name);
+    assert.equal(html.split('/assets/premium/master/'+art).length-1,2,name);
+    const compact=fs.readFileSync(path.resolve(__dirname,'../src/skin-store-compact.css'),'utf8');
+    assert.ok(compact.includes('/assets/premium/master/'+art),name);
     assert.equal(count('home-rival-' + i), 1);
     assert.equal(count('career-rival-card-' + i), 1);
   }
@@ -90,9 +95,12 @@ test('all home themes share one real interface; preview cannot equip or save a s
 
 test('Home offers a single collection entrance and local multiplayer and uses a bounded home layout', () => {
  const main = fs.readFileSync(path.resolve(__dirname, '../src/main.js'), 'utf8');
- assert.equal(count('home-two-players'),1);
+ assert.equal(count('home-two-players'),0);
+ assert.equal(count('home-arcade'),1);
  assert.equal(count('home-skin-store'),1);
- assert.match(html,/id="home-two-players"[^>]*data-page="quick-settings"/);
+ assert.match(html,/id="startBtn"[^>]*data-page="quick-settings"/);
+ assert.match(html,/data-ai="pvp"/);
+ assert.match(html,/id="home-arcade"[^>]*data-page="arcade-page"/);
  assert.match(html,/data-collection="true" id="home-skin-store"[^>]*data-page="skin-page"/);
  assert.ok(html.indexOf('id="home-skin-store"') < html.indexOf('id="menu-page"'));
  assert.match(main,/openSkins\(button\.dataset\.collection === 'true'\)/);
@@ -123,7 +131,8 @@ test('approved Neon hero and floor are the supplied reference artwork, with sepa
   assert.ok(css.includes('/assets/premium/reference/'+file));
  }
  assert.ok(html.includes('data-neon-reference="1"'));
- assert.equal(count('home-two-players'),1);
+ assert.equal(count('home-two-players'),0);
+ assert.equal(count('home-arcade'),1);
  assert.equal(count('home-skin-store'),1);
  assert.equal(count('game-sound-btn'),1);
  assert.equal(count('premium-world-level'),1);
