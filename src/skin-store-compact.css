@@ -255,3 +255,27 @@
  #menu-page #skin-detail-panel [data-skin-detail-screen=board] #skin-preview{width:min(100%,22dvh,180px);}
 }
 /* No global overflow:hidden until viewport QA proves all controls fit. */
+
+/* V25.4D1: four validated local Master Arena scenes. Home and shop art stay independent. */
+:root[data-skin="cyber"], #skin-stage[data-preview-skin="cyber"] {--rm-scene:url('/assets/premium/master/cyber-master-arena.webp');}
+:root[data-skin="ice"], #skin-stage[data-preview-skin="ice"] {--rm-scene:url('/assets/premium/master/ice-master-arena.webp');}
+:root[data-skin="wood"], #skin-stage[data-preview-skin="wood"] {--rm-scene:url('/assets/premium/master/wood-master-arena.webp');}
+:root[data-skin="white"], #skin-stage[data-preview-skin="white"] {--rm-scene:url('/assets/premium/master/white-master-arena.webp');}
+:root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"])[data-skin] #view-game {
+ background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 18%,transparent),color-mix(in srgb,var(--skin-bg) 10%,transparent) 55%,color-mix(in srgb,var(--skin-bg) 35%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+}
+:root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"])[data-skin] #view-game :is(#canvas-wrapper,#canvas) {
+ background:transparent;border:0;box-shadow:none;
+}
+:root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"]) #view-game :is(#scoreboard .player-card,#turn-status,#controls .btn-icon) {
+ background:var(--rm-face);border:1px solid var(--rm-metal)!important;border-radius:var(--rm-radius);color:var(--rm-ink);
+}
+:root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"]) #view-game #match-mode {color:var(--rm-ink);background:var(--rm-panel);padding:4px 10px;border-radius:var(--rm-radius);font-family:var(--rm-font);}
+:root:is([data-skin="cyber"],[data-skin="ice"],[data-skin="wood"],[data-skin="white"]) #daily-modal .daily-content {
+ background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 86%,transparent),color-mix(in srgb,var(--skin-bg) 65%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+}
+#menu-page #skin-page #skin-stage:is([data-preview-skin="cyber"],[data-preview-skin="ice"],[data-preview-skin="wood"],[data-preview-skin="white"]) {
+ background:linear-gradient(180deg,color-mix(in srgb,var(--skin-bg) 32%,transparent),color-mix(in srgb,var(--skin-bg) 22%,transparent)),var(--rm-scene) center/cover no-repeat,var(--skin-bg);
+}
+#menu-page #skin-page #skin-stage:is([data-preview-skin="cyber"],[data-preview-skin="ice"],[data-preview-skin="wood"],[data-preview-skin="white"]) #skin-preview {background:transparent;box-shadow:none;}
+:root[data-skin="white"] #arcade-page :is(#arcade-feedback,#arcade-clock,#arcade-score) {color:#182334;background:#f4f5f7;border-color:#65758b;}
