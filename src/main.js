@@ -8,7 +8,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, configureCharacterEconomy, ca
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel, CHARACTERS, getCharacter, characterEntitlement, buyWalletCharacter } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel, CHARACTERS, getCharacter, characterEntitlement, buyWalletCharacter, skinVictoryPreview } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -392,7 +392,10 @@ function showSkinPreview() {
     const crest=el('seasonal-crest');
     if(crest)crest.hidden=!skin.offer;
     const victoryButton=el('skin-victory-preview');
-    if(victoryButton)victoryButton.hidden=!skin.catalog.victory;
+    if(victoryButton){
+        victoryButton.hidden=false;
+        victoryButton.textContent=skinVictoryPreview(skin).animated?'▶ Preview victory & sound':'Preview victory artwork';
+    }
     if (stage.style.setProperty) {
         for (const [name,value] of Object.entries({
             '--skin-bg':skin.colors.bg,'--skin-x':skin.colors.x,'--skin-o':skin.colors.o,
@@ -413,7 +416,7 @@ function showSkinPreview() {
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
     } else el('skin-status').textContent = (unlocked?'Owned':skinUnlockLabel(skin.id))+' · Balance '+balance+' Coins';
-    el('skin-effect-label').textContent = skin.prestige ? 'Individual capture, victory and audio effects are planned.' : 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
+    el('skin-effect-label').textContent = skin.prestige ? 'Victory artwork available · Individual capture, victory and audio effects are planned.' : 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
         // A read-only sample with both orientations of contrasting shared edges.
@@ -516,11 +519,14 @@ el('skin-effect-preview').onclick = () => {
 };
 if(el('skin-victory-preview')) el('skin-victory-preview').onclick=()=>{
     const skin=getSkin(previewSkinId), victory=el('seasonal-victory');
-    if(!skin.catalog.victory || el('skin-page').hidden || Game.paused || !victory)return;
+    const preview=skinVictoryPreview(skin);
+    if(el('skin-page').hidden || !victory || (preview.animated&&Game.paused))return;
     victory.dataset.victorySkin=skin.id;
-    victory.textContent='Victory · '+skin.catalog.victory;
+    victory.dataset.victoryMode=preview.animated?'animated':'static';
+    victory.textContent=preview.title;
     victory.classList.remove('playing');
     victory.hidden=false;
+    if(!preview.animated)return; // Read-only art: no audio, animation, entitlement or progress changes.
     void victory.offsetWidth;
     victory.classList.add('playing');
     Game.playCosmeticSound('win',skin.id);
