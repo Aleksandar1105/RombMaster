@@ -60,7 +60,7 @@
                     <form id="career-identity" hidden>
                         <h3>Create your Career player</h3>
                         <label>Player name <input id="career-name" maxlength="18" required autocomplete="nickname"></label>
-                        <label>Avatar <select id="career-avatar"></select></label>
+                        <span>Starting character</span><select id="career-avatar" hidden aria-label="Starting character"></select><div class="rm-starter-picker" role="group" aria-label="Choose starting character"><button id="career-avatar-prev" type="button" aria-label="Previous character">‹</button><div class="rm-starter-current"><span id="career-avatar-art" class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong id="career-avatar-name" aria-live="polite">Spark</strong><small id="career-avatar-position">1 / 6</small></div><button id="career-avatar-next" type="button" aria-label="Next character">›</button></div>
                         <button class="btn-primary" type="submit">Continue to Level 1</button>
                         <p id="identity-status" role="status"></p>
                     </form>
@@ -219,8 +219,7 @@
                             <label for="new-local-player-name">New player name</label>
                             <input id="new-local-player-name" type="text" maxlength="18"
                                 placeholder="New player name" aria-label="New local player name" autocomplete="off">
-                            <label for="new-local-player-avatar">Starting avatar</label>
-                            <select id="new-local-player-avatar"></select>
+                            <span>Starting character</span><select id="new-local-player-avatar" hidden aria-label="Starting character"></select><div class="rm-starter-picker" role="group" aria-label="Choose starting character"><button id="new-local-player-avatar-prev" type="button" aria-label="Previous character">‹</button><div class="rm-starter-current"><span id="new-local-player-avatar-art" class="avatar-art" data-avatar="spark" aria-hidden="true"></span><strong id="new-local-player-avatar-name" aria-live="polite">Spark</strong><small id="new-local-player-avatar-position">1 / 6</small></div><button id="new-local-player-avatar-next" type="button" aria-label="Next character">›</button></div>
                             <button id="create-local-player-btn" type="button" class="btn-secondary">Create player</button>
                         </div>
                         <p id="local-player-feedback" class="profile-feedback" role="status" aria-live="polite"></p>
@@ -234,8 +233,8 @@
                     <div class="profile-pane" data-profile-pane="avatar">
                     <div class="profile-avatar-row">
                         <span id="profile-avatar-preview" class="profile-avatar-preview" aria-hidden="true">✨</span>
-                        <label for="profile-avatar" class="profile-avatar-label">Avatar</label>
-                        <select id="profile-avatar" aria-label="Choose a player avatar">
+                        <strong id="profile-avatar-name" class="profile-avatar-label">Spark</strong>
+                        <select id="profile-avatar" hidden aria-label="Choose a player avatar">
                             <option value="spark">✨ Spark</option>
                             <option value="neon-fox" disabled>🔒 Neon Fox · Win level 5</option>
                             <option value="fox">🦊 Fox</option>
