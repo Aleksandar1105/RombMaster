@@ -520,3 +520,39 @@
 #menu-page #career-page .rm-rival-rank{color:var(--skin-gold);letter-spacing:0;white-space:nowrap;font-size:.65rem;}
 #menu-page #career-page .rm-rival-levels{font-size:.62rem;white-space:nowrap;}
 @media(max-height:620px){#menu-page #career-page .premium-rival-card img{width:min(100%,8dvh,58px);}}
+
+/* V25.4E: readable, paginated collectibles; do not clip controls to fake zero-scroll. */
+#menu-page #player-settings .rm-character-toolbar{grid-template-columns:minmax(0,1fr) auto auto;gap:5px;}
+#menu-page #player-settings #character-count{font-size:.7rem;white-space:nowrap;color:var(--skin-ink);}
+#menu-page #player-settings .premium-avatar-grid{align-content:start;justify-content:start;gap:6px;grid-template-columns:repeat(3,minmax(0,1fr));}
+#menu-page #player-settings .premium-avatar-grid .avatar-choice{justify-content:center;min-height:88px;color:var(--skin-ink);}
+#menu-page #player-settings .avatar-choice:disabled{opacity:1;}
+#menu-page #player-settings .avatar-choice[data-entitlement="locked"] .avatar-art{filter:brightness(.64) saturate(.7);}
+#menu-page #player-settings .avatar-choice[data-entitlement="preview"] .avatar-art{filter:brightness(.87) saturate(.9);}
+#menu-page #player-settings .avatar-choice[data-entitlement="owned"] small{color:var(--skin-ink);}
+#menu-page #player-settings .avatar-choice[aria-pressed="true"]{outline:2px solid var(--skin-o);outline-offset:-3px;}
+#menu-page #player-settings .avatar-choice:focus-visible{outline:2px solid var(--skin-o);outline-offset:2px;}
+#menu-page #career-page .premium-rival-card{min-width:0;text-align:center;}
+#menu-page #career-page .premium-rival-card strong{overflow-wrap:anywhere;font-size:.76rem;line-height:1.15;}
+#menu-page #career-page .premium-rival-card small{line-height:1.2;}
+@media(min-width:600px){#menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media(max-height:699px){
+ #menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:76px;padding:3px;gap:3px;}
+ #menu-page #player-settings .premium-avatar-grid .avatar-art{width:min(100%,40px);}
+ #view-menu #player-settings:has(#profile-section-avatar:checked) .career-heading{display:none;}
+}
+@media(max-height:540px) and (max-width:599px){
+ #menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-height:540px) and (min-width:600px){
+ #menu-page #player-settings .premium-avatar-grid{grid-template-columns:repeat(6,minmax(0,1fr));}
+ #menu-page #career-page .premium-rivals-grid{grid-template-columns:repeat(6,minmax(0,1fr));}
+ #view-menu #menu-page #player-settings:not([hidden]){padding:4px;}
+ #view-menu #player-settings:has(#profile-section-avatar:checked) .identity-banner{display:none;}
+ #view-menu #player-settings .home-drawer-content{padding:4px 0 0;gap:4px;}
+ #menu-page #player-settings [data-profile-pane="avatar"]{gap:4px;}
+ #menu-page #player-settings .profile-avatar-row{margin:0;}
+}
+@media(prefers-reduced-motion:reduce){
+ #menu-page #player-settings .avatar-choice,#menu-page #career-page .premium-rival-card{transition:none;animation:none;}
+}
