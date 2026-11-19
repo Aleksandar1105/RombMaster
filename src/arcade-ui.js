@@ -20,6 +20,27 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
  function show(view){picker.hidden=view!=='picker';play.hidden=view!=='play';progress.hidden=view!=='progress';page.dataset.arenaView=view;}
  function select(mode){selectedMode=mode;highlightMode(mode);el('arcade-selection-title').textContent=modeNames[mode];el('arcade-selection-description').textContent=descriptions[mode];start.disabled=false;}
  let session=null,canAdvance=false,key=null,seed=1,last=null,timer=null,active=false,turnStart=0,elapsed=0,days=30;
+ const categories=[['stats','Statistics',null],['daily','Daily missions','daily-arena-missions'],['weekly','Weekly missions','weekly-arena-missions'],['season','Season Pass','season-tiers'],['crests','Seasonal crests','season-collection'],['achievements','Achievements','arcade-achievements']];
+ let category=0,listPage=0;
+ function renderPages(){
+  const [id,label,listId]=categories[category], rows=listId?Array.from(el(listId).children):[];
+  const pageSize=windowRef.innerHeight<540?2:windowRef.innerHeight<700?3:5;
+  const count=Math.max(1,Math.ceil(rows.length/pageSize));
+  listPage=Math.min(listPage,count-1);
+  for(const pane of progress.querySelectorAll('[data-progress-pane]'))pane.hidden=pane.dataset.progressPane!==id;
+  el('arena-category-label').textContent=label+' · '+(category+1)+' / '+categories.length;
+  el('arena-category-prev').disabled=category===0;
+  el('arena-category-next').disabled=category===categories.length-1||el('arcade-rewards').hidden;
+  rows.forEach((row,i)=>row.hidden=i<listPage*pageSize||i>=(listPage+1)*pageSize);
+  el('arena-list-nav').hidden=!listId||count===1;
+  el('arena-list-label').textContent=(listPage+1)+' / '+count;
+  el('arena-list-prev').disabled=listPage===0;el('arena-list-next').disabled=listPage>=count-1;
+ }
+ const shiftCategory=d=>{category=Math.max(0,Math.min(categories.length-1,category+d));listPage=0;renderPages();};
+ el('arena-category-prev').onclick=()=>shiftCategory(-1);
+ el('arena-category-next').onclick=()=>shiftCategory(1);
+ el('arena-list-prev').onclick=()=>{listPage=Math.max(0,listPage-1);renderPages();};
+ el('arena-list-next').onclick=()=>{listPage++;renderPages();};
  let aiTimer=null;
  function stopAI(){if(aiTimer!==null)clearTimeout(aiTimer);aiTimer=null;}
  function scheduleAI(delay=550){
@@ -61,15 +82,16 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   const result=readArcade(localStorage,LocalSlots.storageKey(ARCADE_KEY));
   el('arcade-period').textContent='Last '+days+' days';
   const summary=el('arcade-summary');
-  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;el('arcade-infinity').disabled=true;return;}
+  if(result.status!=='ready'){summary.textContent='Performance history unavailable. Previous data preserved.';el('arcade-rewards').hidden=true;el('arcade-infinity').disabled=true;category=0;listPage=0;renderPages();return;}
   el('arcade-rewards').hidden=false;rewards(result.data);
   const s=arcadeSummary(result.data,days);
   const stats=[['Sessions',s.sessions],['Puzzle accuracy',s.accuracy===null?'—':s.accuracy+'%'],['Match wins',s.wins+'/'+s.games],['Mean move time',s.meanSeconds===null?'—':s.meanSeconds+' s'],['Double captures',s.doubles],['Best chain',s.bestChain],['Concessions',s.concessions],['Survival round',s.survival]];
   summary.replaceChildren(...stats.map(([label,value])=>{const tile=documentRef.createElement('div');tile.className='arena-stat';const b=documentRef.createElement('b'),small=documentRef.createElement('small');b.textContent=String(value);small.textContent=label;tile.append(b,small);return tile;}));
+  renderPages();
  }
  function draw(){
-  if(!session||page.hidden||play.hidden)return;
-  renderer.resize({clientWidth:Math.min(play.clientWidth||windowRef.innerWidth-30,760),clientHeight:Math.max(120,Math.min(windowRef.innerHeight-340,640)),querySelector:()=>null},session.board.S);
+  if(!session||session.finished||page.hidden||play.hidden||canvas.hidden)return;
+  renderer.resize({clientWidth:Math.min(play.clientWidth||windowRef.innerWidth-30,760),clientHeight:Math.max(220,Math.min(windowRef.innerHeight-260,740)),querySelector:()=>null},session.board.S);
   renderer.draw(session.board,last);
   el('arcade-score').textContent=session.puzzle?'Attempts: '+session.attempts:'You '+session.board.score[1]+' · AI '+session.board.score[0]+' · Round '+session.round;
  }
@@ -123,7 +145,7 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   leave();refresh();return true;
  }
  el('arcade-back').onclick=back;
- el('arcade-progress-open').onclick=()=>{leave();show('progress');refresh();};
+ el('arcade-progress-open').onclick=()=>{leave();category=0;listPage=0;show('progress');refresh();};
  el('arcade-progress-back').onclick=()=>{leave();refresh();};
  el('arcade-next').onclick=()=>{if(!session?.finished)return;begin(session.mode,session.mode==='survival'&&session.outcome==='win'?session.round+1:1);};
  el('arcade-period').onclick=()=>{days=days===30?7:30;refresh();};
@@ -139,6 +161,6 @@ export function mountArcade({documentRef=document,windowRef=window,game,confirmL
   else if(result.status==='ready'){el('arcade-feedback').textContent=result.points?'Capture! Play again.':'Your turn';game.playCosmeticSound(result.points?'capture':'move');}
   if(session.finished)finish();else resume();
  });
- windowRef.addEventListener('resize',draw);
+ windowRef.addEventListener('resize',()=>{draw();if(!progress.hidden)renderPages();});
  return {enter(){leave();refresh();},leave,back,activity(){if(game.paused){stopAI();stopClock();}else resume();}};
 }
