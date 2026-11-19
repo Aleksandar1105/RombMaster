@@ -236,6 +236,33 @@ const skinState = () => {
     const wallet=syncWallet(localStorage,walletKey,state.profile,daily);
     return { profile: state.profile?{...state.profile,skinWallet:wallet.wallet}:null, originalProfile:state.profile,daily,wallet,walletKey,key:LocalSlots.storageKey(SKIN_KEY) };
 };
+// Presentation observes the persisted wallet; it never awards a second time.
+Game.rewardWalletSnapshot=()=>{
+    const s=skinState();
+    if(s.wallet.status!=='ready'||!s.walletKey||!s.wallet.wallet)return null;
+    return {key:s.walletKey,balance:walletBalance(s.wallet.wallet),owned:[...s.wallet.wallet.owned]};
+};
+Game.rewardSkinName=id=>getSkin(id).name;
+let matchResultPages=[],matchResultPage=0;
+function drawMatchResultPage(){
+    const overlay=el('overlay'),nav=el('result-page-nav');
+    if(!nav||!matchResultPages.length)return;
+    matchResultPage=Math.max(0,Math.min(matchResultPages.length-1,matchResultPage));
+    const [id,label]=matchResultPages[matchResultPage];
+    overlay.dataset.resultPage=id;
+    nav.hidden=matchResultPages.length<2;
+    el('result-page-label').textContent=label+' · '+(matchResultPage+1)+' / '+matchResultPages.length;
+    el('result-prev').disabled=matchResultPage===0;el('result-next').disabled=matchResultPage===matchResultPages.length-1;
+}
+Game.refreshResultPages=()=>{
+    matchResultPages=[['overview','Result']];
+    if(!el('career-reward').hidden)matchResultPages.push(['rewards','Rewards']);
+    if(!el('nextCareerBtn').hidden)matchResultPages.push(['next','Next mission']);
+    if(!el('match-analysis').hidden)matchResultPages.push(['analysis','Match analysis']);
+    matchResultPage=0;drawMatchResultPage();
+};
+if(el('result-prev'))el('result-prev').onclick=()=>{matchResultPage--;drawMatchResultPage();};
+if(el('result-next'))el('result-next').onclick=()=>{matchResultPage++;drawMatchResultPage();};
 function applySkin(id) {
     renderSkinVariables(setActiveSkin(id));
 }
@@ -1121,7 +1148,7 @@ const refreshDailyMenu = () => {
 };
 
 const drawDaily = () => {
-    if (!dailyPuzzle) return;
+    if (!dailyPuzzle || dailyCanvas.hidden) return;
     const width = Math.min(window.innerWidth - 32, 660);
     dailyRenderer.resize({
         clientWidth: width, clientHeight: Math.max(220, Math.min(window.innerHeight - 180, 720)),
@@ -1154,6 +1181,7 @@ const dailyCapture = (result,player) => {
 const closeDaily = () => {
     stopDailyEffects();
     dailyModal.hidden = true;
+    if(dailyModal.dataset)dailyModal.dataset.result='';
     dailyPuzzle = null;
     dailySolved = false;
     refreshDailyMenu();
@@ -1161,6 +1189,7 @@ const closeDaily = () => {
 
 const showDaily = () => {
     stopDailyEffects();
+    if(dailyModal.dataset)dailyModal.dataset.result='';
     const state = DailyProgress.read(dailyDate);
     if (state.status !== 'ready') {
         dailyPuzzle = null;
@@ -1179,6 +1208,7 @@ const showDaily = () => {
     dailyFeedback.textContent = '';
     dailyCanvas.hidden = index === 3;
     if (index === 3) {
+        if(dailyModal.dataset)dailyModal.dataset.result='victory';
         dailyPuzzle = null;
         el('daily-step').textContent = 'All 3 challenges complete';
         el('daily-title').textContent = 'Daily workout complete!';
@@ -1247,6 +1277,8 @@ dailyCanvas.addEventListener('pointerdown', event => {
         }
         if (board.score[1] <= board.score[0]) {
             duelLost = true;
+            if(dailyModal.dataset)dailyModal.dataset.result='defeat';
+            dailyCanvas.hidden=true;
             dailyFeedback.textContent = score + ' · ' + dailyPuzzle.retry;
             dailyNext.textContent = 'Retry duel';
             dailyNext.hidden = false;
@@ -1274,6 +1306,8 @@ dailyCanvas.addEventListener('pointerdown', event => {
         if (dailyIndex === 2) dailyFeedback.textContent += ' +30 Brain Points for today!';
     }
     dailySolved = true;
+    if(dailyModal.dataset)dailyModal.dataset.result='victory';
+    dailyCanvas.hidden=true;
     dailyNext.textContent = dailyIndex === 2 ? 'See Your Result' : 'Next Challenge';
     dailyNext.hidden = false;
     refreshDailyMenu();
