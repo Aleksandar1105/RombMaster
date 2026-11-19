@@ -8,7 +8,7 @@ import { ProfileStore, LocalSlots, PLAYER_AVATARS, careerSummary, careerLevel, C
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { Board } from './board.js';
-import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel } from './skins.js';
+import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
@@ -270,7 +270,7 @@ function setSkinPanel(detail) {
         el('page-title').textContent = 'Skin Details';
         const skin = getSkin(previewSkinId);
         const art = el('skin-detail-art');
-        art.src = ['neon','royal'].includes(skin.id) ? '/assets/premium/master/' + skin.id + '-master-store.webp' : '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
+        art.src = skin.prestige ? '/assets/premium/master/' + skin.id + '-master-arena.webp' : ['neon','royal'].includes(skin.id) ? '/assets/premium/master/' + skin.id + '-master-store.webp' : '/assets/premium/reference/' + skin.id + '-reference-hero.webp';
         art.alt = skin.name;
         el('skin-detail-description').textContent = skin.catalog.description + ' · ' + skin.catalog.rarity;
         showSkinPreview();
@@ -291,6 +291,7 @@ function changeSkinCatalogPage(delta) {
 let homePreviewSkin = null;
 let collectionOnly = false;
 let seasonalOnly = false;
+let prestigeOnly = false;
 let skinPreviewFrame = null;
 let skinPreviewRenderer = null;
 let skinPreviewBoard = null;
@@ -314,6 +315,9 @@ function showSkinPreview() {
     el('skin-preview-name').textContent = skin.name;
     const stage = el('skin-stage');
     stage.dataset.previewSkin = skin.id;
+    el('skin-home-preview').disabled=Boolean(skin.prestige);
+    el('skin-home-preview').textContent=skin.prestige?'Home preview coming soon':'Preview complete home screen';
+    el('skin-effect-preview').disabled=Boolean(skin.prestige);
     const crest=el('seasonal-crest');
     if(crest)crest.hidden=!skin.offer;
     const victoryButton=el('skin-victory-preview');
@@ -329,12 +333,16 @@ function showSkinPreview() {
     const price=SKIN_PRICES[skin.id],balance=walletBalance(profile?.skinWallet);
     el('skin-equip').disabled = activeSkin().id === skin.id || (!unlocked&&(!price||!profile?.skinWallet||balance<price));
     el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : price ? 'Buy · '+price+' Coins' : 'Locked';
-    if (skin.offer) {
+    if(skin.prestige){
+        el('skin-equip').disabled=true;
+        el('skin-equip').textContent='Prestige · Preview only';
+        el('skin-status').textContent='Premium cosmetic · No payment enabled';
+    } else if (skin.offer) {
         const {active,daysLeft}=seasonStatus(skin.offer);
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
     } else el('skin-status').textContent = (unlocked?'Owned':skinUnlockLabel(skin.id))+' · Balance '+balance+' Coins';
-    el('skin-effect-label').textContent = 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
+    el('skin-effect-label').textContent = skin.prestige ? 'Individual capture, victory and audio effects are planned.' : 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
         // A read-only sample with both orientations of contrasting shared edges.
@@ -355,13 +363,14 @@ function showSkinPreview() {
 }
 function renderSkinCatalog() {
     const {profile,daily} = skinState();
-    const entries = seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
+    const entries = prestigeOnly ? prestigeCatalog() : seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
     const owned = skinCatalog(profile,daily,activeSkin().id,true);
-    el('skin-owned-count').textContent = seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked · '+(profile?.skinWallet?walletBalance(profile.skinWallet)+' Coins':'Wallet unavailable');
-    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly));
+    el('skin-owned-count').textContent = prestigeOnly ? '3 Prestige skins · Preview only' : seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked · '+(profile?.skinWallet?walletBalance(profile.skinWallet)+' Coins':'Wallet unavailable');
+    el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly && !prestigeOnly));
     el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
-    el('page-title').textContent = seasonalOnly ? 'Seasonal Collection' : collectionOnly ? 'My Collection' : 'Skin Store';
+    el('skin-tab-prestige')?.setAttribute('aria-pressed',String(prestigeOnly));
+    el('page-title').textContent = prestigeOnly ? 'Prestige Collection' : seasonalOnly ? 'Seasonal Collection' : collectionOnly ? 'My Collection' : 'Skin Store';
     if (!entries.some(entry=>entry.skin.id===previewSkinId)) previewSkinId = entries[0]?.skin.id || activeSkin().id;
     const pageCount = Math.max(1, Math.ceil(entries.length / SKIN_PAGE_SIZE));
     skinCatalogPage = Math.max(0, Math.min(skinCatalogPage, pageCount - 1));
@@ -404,6 +413,7 @@ function renderSkinCatalog() {
     if (skinDetailsOpen) { el('page-title').textContent = 'Skin Details'; showSkinPreview(); }
 }
 function openSkins(ownedOnly = false) {
+    prestigeOnly=false;
     seasonalOnly = false;
     collectionOnly = ownedOnly;
     previewSkinId = activeSkin().id;
@@ -413,11 +423,12 @@ function openSkins(ownedOnly = false) {
 }
 el('skin-page-prev').onclick = () => changeSkinCatalogPage(-1);
 el('skin-page-next').onclick = () => changeSkinCatalogPage(1);
-el('skin-tab-store').onclick = () => { seasonalOnly=false; collectionOnly = false; skinCatalogPage=0; renderSkinCatalog(); };
-el('skin-tab-collection').onclick = () => { seasonalOnly=false; collectionOnly = true; skinCatalogPage=0; renderSkinCatalog(); };
-if(el('skin-tab-seasonal')) el('skin-tab-seasonal').onclick = () => { collectionOnly=false; seasonalOnly=true; skinCatalogPage=0; renderSkinCatalog(); };
+el('skin-tab-store').onclick = () => { prestigeOnly=false; seasonalOnly=false; collectionOnly = false; skinCatalogPage=0; renderSkinCatalog(); };
+el('skin-tab-collection').onclick = () => { prestigeOnly=false; seasonalOnly=false; collectionOnly = true; skinCatalogPage=0; renderSkinCatalog(); };
+if(el('skin-tab-seasonal')) el('skin-tab-seasonal').onclick = () => { prestigeOnly=false; collectionOnly=false; seasonalOnly=true; skinCatalogPage=0; renderSkinCatalog(); };
+if(el('skin-tab-prestige')) el('skin-tab-prestige').onclick = () => { collectionOnly=false; seasonalOnly=false; prestigeOnly=true; skinCatalogPage=0; renderSkinCatalog(); };
 el('skin-effect-preview').onclick = () => {
-    if (el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
+    if (getSkin(previewSkinId).prestige || el('skin-page').hidden || Game.paused || !skinPreviewRenderer || !skinPreviewBoard) return;
     if (skinPreviewFrame !== null) cancelAnimationFrame(skinPreviewFrame);
     skinPreviewFrame = null;
     const renderer = skinPreviewRenderer, board = skinPreviewBoard;
@@ -541,7 +552,7 @@ function closeHomePreview() {
 el('skin-home-preview').onclick = () => {
     // Static cosmetic previews neither run game timers nor play sound. A paused
     // match must not prevent opening one from the visible store.
-    if (homePreviewSkin || el('skin-page').hidden || el('menu-page').hidden || ui.viewMenu.classList.contains('hidden')) return;
+    if (getSkin(previewSkinId).prestige || homePreviewSkin || el('skin-page').hidden || el('menu-page').hidden || ui.viewMenu.classList.contains('hidden')) return;
     stopSkinPreview();
     const skin = getSkin(previewSkinId);
     homePreviewSkin = skin.id;
