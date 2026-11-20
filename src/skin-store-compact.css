@@ -917,3 +917,116 @@
  :root[data-skin][data-skin] #view-game #scoreboard .score-num{font-size:1.25rem;}
  :root[data-skin][data-skin] #view-game #turn-status{min-height:24px;padding:2px 6px;}
 }
+
+
+/* V25.5C — Career presentation; no progression, AI or economy changes. */
+#view-menu #menu-page #career-page:not([hidden]){
+ grid-template-columns:minmax(0,1fr);grid-template-rows:auto;grid-template-areas:none;
+ align-content:start;gap:clamp(4px,1dvh,10px);
+}
+#view-menu #menu-page #career-page > :not([hidden]){grid-area:auto;min-width:0;}
+#view-menu #menu-page #career-page [data-career-screen]:not([hidden]){
+ width:100%;min-width:0;align-content:start;gap:clamp(4px,1.1dvh,10px);
+}
+:root[data-skin] #view-menu #menu-page #career-page #chapter-label{
+ background:none;border:0;box-shadow:none;clip-path:none;
+ font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(.85rem,3.4vw,1.15rem);
+ color:var(--skin-ink);text-align:center;
+}
+#view-menu #menu-page #career-page #career-rival{
+ font-size:clamp(.7rem,2.7vw,.9rem);color:var(--skin-ink);margin:0;line-height:1.25;
+}
+#view-menu #menu-page #career-page .rm-career-progress{display:grid;gap:4px;min-width:0;width:100%;}
+#view-menu #menu-page #career-page .career-progress{
+ position:static;width:auto;height:auto;overflow:visible;clip-path:none;
+ font-size:clamp(.66rem,2.5vw,.85rem);line-height:1.2;color:var(--skin-ink);text-align:center;
+}
+#career-page #career-clear-progress{
+ width:100%;height:6px;border:0;border-radius:8px;appearance:none;accent-color:var(--skin-accent);
+ background:color-mix(in srgb,var(--skin-panel) 72%,var(--skin-ink));
+}
+#career-clear-progress::-webkit-progress-bar{border-radius:8px;background:color-mix(in srgb,var(--skin-panel) 72%,var(--skin-ink));}
+#career-clear-progress::-webkit-progress-value{border-radius:8px;background:linear-gradient(90deg,var(--skin-accent),var(--skin-gold));}
+#career-clear-progress::-moz-progress-bar{border-radius:8px;background:var(--skin-accent);}
+:root[data-skin] #view-menu #menu-page #career-page #chapter-route button{
+ display:flex;align-items:center;min-width:0;min-height:44px;
+ gap:7px;padding:5px 8px;text-align:left;clip-path:none;
+ background:linear-gradient(100deg,color-mix(in srgb,var(--skin-panel) 90%,var(--skin-accent)),var(--skin-panel));
+ border:1px solid color-mix(in srgb,var(--skin-accent) 25%,transparent)!important;
+ border-radius:var(--rm-radius,8px);box-shadow:none;color:var(--skin-ink);
+}
+#view-menu #menu-page #career-page #chapter-route button::before{display:none;}
+#view-menu #menu-page #career-page #chapter-route button b{
+ flex:0 0 28px;font-variant-numeric:tabular-nums;line-height:28px;
+ background:transparent;border:0;color:var(--skin-ink);font-family:var(--rm-display-font,var(--rm-font));
+}
+#view-menu #menu-page #career-page #chapter-route button > span{
+ flex:1;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.15;
+ font-size:clamp(.7rem,2.8vw,.9rem);
+}
+#view-menu #menu-page #career-page #chapter-route button > small{
+ flex:none;margin-left:auto;font-size:clamp(.64rem,2.6vw,.82rem);white-space:nowrap;color:var(--skin-ink);text-shadow:none;
+}
+#view-menu #menu-page #career-page #chapter-route button[data-level-state="cleared"] > small{color:var(--skin-gold);}
+#view-menu #menu-page #career-page #chapter-route button[data-boss="true"] b{color:var(--skin-gold);}
+#view-menu #menu-page #career-page #chapter-route button[data-level-state="locked"]{opacity:.65;}
+:root[data-skin] #view-menu #menu-page #career-page #chapter-route button[aria-pressed="true"]{
+ border-color:var(--skin-accent)!important;outline:0;
+ box-shadow:inset 3px 0 var(--skin-accent);
+ background:linear-gradient(100deg,color-mix(in srgb,var(--skin-panel) 72%,var(--skin-accent)),var(--skin-panel));
+}
+#view-menu #menu-page #career-page #chapter-route button:focus-visible{outline:2px solid var(--skin-accent);outline-offset:2px;}
+#view-menu #menu-page #career-page .rm-mission-header{
+ display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;width:100%;grid-column:1/-1;
+}
+#view-menu #menu-page #career-page .rm-mission-header .match-portrait{
+ width:clamp(40px,8dvh,76px);max-width:25%;border:1px solid var(--skin-accent);border-radius:var(--rm-radius,8px);
+}
+#view-menu #menu-page #career-page .rm-mission-copy{display:grid;gap:2px;min-width:0;text-align:left;}
+#view-menu #menu-page #career-page .rm-mission-copy strong{
+ font-size:clamp(.95rem,4vw,1.35rem);line-height:1.15;font-family:var(--rm-display-font,var(--rm-font));overflow-wrap:anywhere;
+}
+#view-menu #menu-page #career-page .rm-mission-copy small{font-size:clamp(.65rem,2.6vw,.85rem);line-height:1.2;color:var(--skin-ink);}
+#view-menu #menu-page #career-page .rm-mission-copy small:first-child{color:var(--skin-gold);}
+#view-menu #menu-page #career-page .premium-rivals-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:clamp(5px,1.8vw,12px);
+}
+#view-menu #menu-page #career-page .premium-rival-card{
+ display:grid;align-content:start;justify-items:center;gap:4px;padding:5px 2px;
+ border:0;box-shadow:none;min-width:0;
+}
+#view-menu #menu-page #career-page .premium-rival-card img{
+ width:min(100%,17dvh,130px);max-width:100%;height:auto;aspect-ratio:1;
+ object-fit:cover;clip-path:none;border-radius:var(--rm-radius,10px);
+ border:1px solid color-mix(in srgb,var(--skin-accent) 35%,transparent);
+}
+#view-menu #menu-page #career-page .premium-rival-card strong{
+ font-size:clamp(.72rem,2.7vw,1rem);font-family:var(--rm-display-font,var(--rm-font));line-height:1.15;
+}
+#view-menu #menu-page #career-page .premium-rival-card small{
+ font-size:clamp(.62rem,2.2vw,.78rem);line-height:1.15;color:var(--skin-ink);
+}
+#view-menu #menu-page #career-page .premium-rival-card .rm-rival-rank{color:var(--skin-gold);}
+#view-menu #menu-page #career-page .premium-rival-card[data-state="locked"] img{filter:brightness(.68) saturate(.65);}
+#view-menu #menu-page #career-page .premium-rival-card[data-state="defeated"] img{border-color:var(--skin-gold);}
+#view-menu #menu-page #career-page .premium-rival-card[data-state="defeated"] small:last-child{color:var(--skin-gold);}
+#view-menu #menu-page #career-page .premium-rival-card[data-state="available"][data-current="true"] img{
+ border-color:var(--skin-accent);box-shadow:0 0 11px color-mix(in srgb,var(--skin-accent) 50%,transparent);
+}
+@media(max-height:620px){
+ #view-menu #menu-page #career-page .premium-rival-card img{width:min(100%,11dvh,76px);}
+ #view-menu #menu-page #career-page .premium-rival-card{gap:2px;padding:2px;}
+ #view-menu #menu-page #career-page .mission-detail #mission-preview{width:min(42vw,18dvh,145px);}
+}
+@media(min-width:600px) and (max-height:540px){
+ #view-menu #menu-page #career-page .premium-rivals-grid{grid-template-columns:repeat(6,minmax(0,1fr));}
+ #view-menu #menu-page #career-page .premium-rival-card img{width:min(100%,18dvh,90px);}
+ #view-menu #menu-page #career-page #chapter-route{grid-template-columns:repeat(3,minmax(0,1fr));}
+ #view-menu #menu-page #career-page .mission-detail:not([hidden]){
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 12px;align-items:center;
+ }
+ #view-menu #menu-page #career-page .mission-detail #mission-preview{grid-column:1;grid-row:2/4;width:min(26vw,26dvh,130px);}
+ #view-menu #menu-page #career-page .mission-detail #career-description{grid-column:2;grid-row:2;text-align:left;}
+ #view-menu #menu-page #career-page .mission-detail #career-skin-row:not([hidden]){grid-column:2;grid-row:3;}
+ #view-menu #menu-page #career-page .mission-detail #career-start-btn{grid-column:1/-1;grid-row:4;min-height:44px;}
+}
