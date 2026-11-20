@@ -1199,6 +1199,10 @@ function renderQuickSetup() {
         }
     }
     el('difficulty-wrapper').hidden = mode === 'pvp';
+    const radius=Math.floor(size/2);
+    const playable=1+2*radius*(radius+1)-4;
+    const summary=el('quick-match-summary');
+    if(summary)summary.textContent=board+' · '+playable+' playable cells · '+(mode==='pvp'?'Local duel':difficulty+' AI');
     drawOpening(el('setup-preview'), { size });
 }
 for (const button of document.querySelectorAll('[data-size],[data-ai],[data-diff]')) {
