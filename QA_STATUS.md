@@ -162,3 +162,7 @@ Implemented at `df813c5` as Neon-scoped CSS only: catalog tabs use Neon master b
 
 ## V25.5G4 Neon Career visual candidate — 2026-11-21
 CSS-only Neon Career redesign at `fc5ddb4`: long full-width level rows changed to compact two-column mission tiles (three columns in short landscape); boss and selected states differentiated; themed navigation/start buttons, simplified background, borderless rival portraits, readable progress/mission typography and focus outlines. No Career progress, AI, rewards, purchases or save logic changed. This is an unverified implementation, NOT device/browser QA PASS. Verify chapter/level layout 1–100, selected/locked/boss states, missions/rivals, small-screen overflow and tap targets, and regression. G5 shared component consistency and G6 regression remain open.
+
+
+## V25.5G5 Neon shared controls candidate — 2026-11-21
+Commit `21508ad`: Neon-scoped visual normalization of secondary-screen actions (Profile, Quick Play, Sound, Skin Store, Career, help/confirmation/Daily dialogs), shared display font, button artwork, input focus/tap targets, accessible focus-visible outlines and reduced-motion override. Intentionally excludes game-board hit targets, character artwork, mission tiles, home navigation and other skins. CSS-only; no economy, persistence, audio or progression code changed. **Unverified** on device/browser: theme art rendering, visual specificity/cascade interactions, keyboard accessibility, 44px target fit and small-screen overflow. G6 QA is required before V25.5 closure and V25.6.
