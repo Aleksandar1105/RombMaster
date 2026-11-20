@@ -220,8 +220,8 @@
                     <div class="profile-pane" data-profile-pane="players">
                     <div class="local-player-toolbar">
                         <label for="local-player-select">Active local player</label>
-                        <select id="local-player-select" aria-label="Switch local player"></select>
-                        <button id="profile-create-toggle" type="button" aria-expanded="false">Create new player ›</button><div class="local-player-add" id="profile-create-form" hidden role="group" aria-label="Create a new player">
+                        <select id="local-player-select" hidden aria-label="Switch local player"></select><div id="rm-player-chooser" class="rm-player-chooser" role="group" aria-label="Choose active player"></div>
+                        <button id="profile-create-toggle" type="button" aria-expanded="false">＋ New player</button><div class="local-player-add" id="profile-create-form" hidden role="group" aria-label="Create a new player">
                             <label for="new-local-player-name">New player name</label>
                             <input id="new-local-player-name" type="text" maxlength="18"
                                 placeholder="New player name" aria-label="New local player name" autocomplete="off">
