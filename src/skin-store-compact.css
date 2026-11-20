@@ -1307,3 +1307,94 @@
  :root[data-skin] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice{min-height:68px;}
  :root[data-skin] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice .avatar-art{width:min(100%,42px);}
 }
+
+
+/* V25.5G1/G2 — Neon-only visual grammar. Do not reuse Frozen button chrome. */
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero{
+ grid-template-columns:minmax(42px,54px) minmax(0,1fr) auto;gap:5px 8px;align-items:center;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero :is(.home-title,#premium-skin-name){
+ font-family:var(--rm-display-font,var(--rm-font));letter-spacing:.06em;text-shadow:0 0 9px #22d3ee66;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero #helpBtn{
+ border:0!important;border-image:none!important;box-shadow:none!important;background:transparent!important;
+ color:#bdf9ff;font-family:var(--rm-display-font,var(--rm-font));font-weight:700;
+ text-shadow:0 0 7px #22d3ee77;min-height:44px;max-width:96px;padding:4px 3px;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero #helpBtn:focus-visible{
+ outline:2px solid #22d3ee;outline-offset:2px;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-home-progress{
+ border:0!important;box-shadow:none!important;border-radius:0;
+ background:linear-gradient(90deg,#08213aee,#0b1c32b8,transparent);padding:5px 8px;gap:4px;
+ border-left:2px solid #22d3ee!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-profile-row{
+ display:grid;grid-template-columns:32px minmax(0,1fr) auto auto;gap:3px 7px;align-items:center;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-profile-row #premium-player-name{
+ font-family:var(--rm-display-font,var(--rm-font));font-weight:800;letter-spacing:.035em;
+ color:#e7fbff;text-shadow:0 0 8px #22d3ee66;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-profile-row > span:not(.premium-player-avatar){
+ border:0!important;background:transparent!important;border-radius:0;padding:1px 2px;
+ color:#d8f8ff;font-family:var(--rm-display-font,var(--rm-font));font-weight:700;font-variant-numeric:tabular-nums;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-player-stars{color:#ffe19b;}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-brain-points{color:#9df4ff;}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-progress-label{
+ font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(.64rem,2.6vw,.82rem);letter-spacing:.035em;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-career-progress{
+ accent-color:#22d3ee;min-height:5px;max-height:8px;
+}
+/* Neon Profile: one button surface only, never a small button inside a border. */
+:root[data-skin="neon"] #view-menu #menu-page #player-settings:not([hidden]){
+ background:radial-gradient(ellipse at 50% 5%,#073b5880,transparent 60%),linear-gradient(180deg,#061a30e8,#070d20e8);
+ border:0!important;border-image:none!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher{
+ border:0!important;box-shadow:none!important;background:transparent!important;padding:0;gap:5px;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher label{
+ border:0!important;box-shadow:none!important;background:transparent!important;padding:0;min-width:0;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings :is(.profile-switcher label span,.rm-player-option,#profile-create-toggle,#create-local-player-btn,#save-profile-btn){
+ display:grid;place-items:center;min-height:44px;padding:7px 9px;min-width:0;
+ border:0!important;border-image:none!important;box-shadow:none!important;clip-path:none;
+ background:var(--rm-button-art) center/100% 100% no-repeat,#102e4c!important;
+ color:#dcfbff!important;font-family:var(--rm-display-font,var(--rm-font));font-weight:800;
+ font-size:clamp(.73rem,2.8vw,.98rem);text-align:center;text-shadow:0 0 6px #22d3ee66;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher input:checked + span,
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option[aria-pressed="true"]{
+ filter:brightness(1.25);background-color:#0c435b!important;color:#fff!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-chooser{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-content:start;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option{
+ overflow-wrap:anywhere;min-height:46px;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option:focus-visible{
+ outline:2px solid #22d3ee;outline-offset:2px;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #profile-create-form:not([hidden]){
+ border:0!important;box-shadow:none!important;background:linear-gradient(140deg,#0c2d45d9,#081b30dd);
+ border-left:2px solid #22d3ee!important;padding:10px;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #new-local-player-name{
+ min-height:44px;border:1px solid #22d3ee77;background:#071c30;color:#f1fdff;border-radius:7px;
+ font-family:var(--rm-font);font-size:1rem;padding:8px 12px;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-starter-picker{
+ border:0!important;box-shadow:none!important;background:transparent!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-starter-picker > button{
+ border:0!important;border-image:none!important;background:var(--rm-button-art) center/100% 100% no-repeat,#102e4c!important;
+ color:#bff9ff;box-shadow:none!important;min-width:44px;min-height:44px;font-size:1.3rem;
+}
+@media(max-width:390px){
+ :root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-profile-row{grid-template-columns:28px minmax(0,1fr) auto;}
+ :root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-brain-points{grid-column:3;}
+}
