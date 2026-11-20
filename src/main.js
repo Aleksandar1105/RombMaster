@@ -889,6 +889,26 @@ const refreshPlayerChooser = () => {
         return `<option value="${id}">${htmlText(label)}${id === 'guest' ? ' (Guest)' : ''}</option>`;
     }).join('');
     localPlayerSelect.value = slots.index.activeId;
+    const chooser=el('rm-player-chooser');
+    if(chooser){
+        chooser.replaceChildren();
+        for(const id of slots.index.slots){
+            const p=ProfileStore.readSlot(id);
+            const label=p.status==='ready'||p.status==='empty'?p.profile.name:'Unreadable player';
+            const button=document.createElement('button');
+            button.type='button';button.className='rm-player-option';
+            button.textContent=label+(id==='guest'?' (Guest)':'');
+            button.dataset.slot=id;
+            button.setAttribute('aria-pressed',String(id===slots.index.activeId));
+            button.disabled=localPlayerSelect.disabled;
+            button.addEventListener('click',()=>{
+                if(id===localPlayerSelect.value)return;
+                localPlayerSelect.value=id;
+                localPlayerSelect.dispatchEvent(new Event('change',{bubbles:true}));
+            });
+            chooser.append(button);
+        }
+    }
 };
 const updateActivePlayerView = () => {
     readQuickSetup();
