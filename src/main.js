@@ -315,6 +315,13 @@ Game.rewardWalletSnapshot=()=>{
 Game.rewardSkinName=id=>getSkin(id).name;
 // Read-only result presentation. The final move remains the only reward writer.
 let resultAnimation=0;
+// Infinity uses the existing Career Level 100 entitlement; no extra reward or unlock write.
+function isInfinityResult(){
+    const outcome=Game.careerOutcome;
+    return Game.settings.careerLevel===CAREER_LEVEL_COUNT &&
+        outcome?.status==='ready' && outcome.victory===true &&
+        Boolean(outcome.profile?.stars?.[CAREER_LEVEL_COUNT]);
+}
 function renderPremiumResult(){
     const overview=document.querySelector('#overlay .rm-result-overview');
     if(!overview)return;
@@ -383,12 +390,27 @@ function renderPremiumResult(){
         const unlock=document.createElement('p');unlock.className='rm-result-character-unlock';
         unlock.textContent='Character unlocked: '+characterNames.join(', ');summary.append(unlock);
     }
+    if(isInfinityResult()){
+        const milestone=document.createElement('div');milestone.className='rm-infinity-milestone';
+        const symbol=document.createElement('span');symbol.className='rm-infinity-symbol';symbol.setAttribute('aria-hidden','true');symbol.textContent='∞';
+        const copy=document.createElement('div');copy.className='rm-infinity-copy';
+        const title=document.createElement('strong');title.textContent='Career complete · Infinity unlocked';
+        const detail=document.createElement('small');detail.textContent='Congratulations! Your next challenge awaits in Infinity.';
+        copy.append(title,detail);milestone.append(symbol,copy);summary.append(milestone);
+    }
 }
 Game.refreshResultPages=()=>{
     const overlay=el('overlay');
     overlay.dataset.resultPage='overview';
     if(el('result-page-nav'))el('result-page-nav').hidden=true;
+    const infinity=isInfinityResult();
+    overlay.dataset.infinity=String(infinity);
     renderPremiumResult();
+    const next=el('nextCareerBtn');
+    if(next&&infinity){
+        next.textContent='Continue to Infinity ∞';
+        next.hidden=false;
+    }
     // A single result view. Keep a persistence failure visible, not duplicated XP.
     const reward=el('career-reward');
     if(reward)reward.hidden=!Game.settings.careerLevel||Game.careerOutcome?.status==='ready';
@@ -1241,6 +1263,16 @@ el('nextCareerBtn').onclick = () => {
     const current = Game.settings.careerLevel;
     if (!current) return;
     const state = ProfileStore.read();
+    if(current===CAREER_LEVEL_COUNT){
+        if(!isInfinityResult()||state.status!=='ready'||!state.profile.stars?.[CAREER_LEVEL_COUNT])return;
+        // Return through the normal match cleanup, then preselect the existing mode.
+        // The player confirms Start in the Arena; persisted Infinity progress is reused.
+        el('backMenuBtn').click();
+        el('home-arcade').click();
+        const infinity=el('arcade-infinity');
+        if(infinity&&!infinity.disabled)infinity.click();
+        return;
+    }
     if (state.status !== 'ready' || state.profile.unlockedLevel <= current) return;
     const next = careerLevel(current + 1);
     if (Game.start(next.size, 'ai', next.diff, next.level)) {
