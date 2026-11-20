@@ -103,6 +103,7 @@ function setAchievementView(show=false){
 }
 function renderAvatarPage(){
     const filter=el('character-filter')?.value||'all';
+    document.querySelectorAll('.rm-character-categories input').forEach(input=>{input.checked=input.value===filter;});
     const all=Array.from(document.querySelectorAll('[data-profile-avatar]'));
     const rows=all.filter(row=>filter==='all'||(filter==='owned'?row.dataset.entitlement==='owned':getCharacter(row.dataset.profileAvatar)?.category===filter));
     all.forEach(row=>{row.hidden=true;});
@@ -146,6 +147,7 @@ bindPage('profile-achievements-next',()=>{achievementPage++;renderAchievementPag
 bindPage('profile-avatar-prev',()=>{avatarPage--;renderAvatarPage();});
 bindPage('profile-avatar-next',()=>{avatarPage++;renderAvatarPage();});
 if(el('character-filter'))el('character-filter').onchange=()=>{avatarPage=0;renderAvatarPage();};
+document.querySelectorAll('.rm-character-categories input').forEach(input=>{input.onchange=()=>{if(input.checked){el('character-filter').value=input.value;avatarPage=0;renderAvatarPage();}};});
 if(el('profile-section-avatar'))el('profile-section-avatar').onchange=()=>{avatarPage=0;renderAvatarPage();};
 window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
