@@ -95,3 +95,7 @@ Owner-approved plan recorded at df42a02; runtime through 2ed6560; visual fixture
 
 ## V25.5A2 — one-page results and visual corrections
 Owner feedback on build 6aff67098f52ca2751290f01 documented in QA_STATUS.md. Runtime b4b74e6/a5e5b3f removes result pagination, lengthens visible count-up, simplifies panel/score outlines, uses existing button art and theme-specific display font stacks, and begins shared secondary-screen cleanup. No new Picsart assets or economy changes. Full Frozen-quality visual matching across all screens, custom bundled typography, actual animation/device validation and regression tests remain pending. Fixture updated at 6ba7a0f. No APK generated in this session; manual Cloud Test APK only, free minutes, no GitHub Actions.
+
+
+## V25.5A3–E — implementation candidates, 2026-11-20
+A3 `1edeb42`: starter form and feathered victory artwork. B `c4561b5`: responsive HUD, portraits, score, turn and controls. C `7c1d9c6`: mission identity, real completion meter and rival states. Infinity `ad5655f`: persisted Level 100 victory displays milestone and opens the existing Arena mode selection. D `8af325c`: structured Quick Play choices, playable-cell counts and live preview. E `c5f7536`: skin/character ownership, affordability cues, themed catalog and disabled seasonal purchases. All are implementation candidates, not QA-approved. No new assets or economy formula changes; no Actions or APK generated here. Full tests, browser geometry, asset audit and physical visual approval pending.
