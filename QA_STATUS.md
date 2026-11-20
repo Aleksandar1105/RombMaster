@@ -129,3 +129,24 @@ A2 runtime through a5e5b3f, fixture 6ba7a0f: one result screen, no analysis/miss
 
 ## V25.5A3–E — pending consolidated QA (2026-11-20)
 Source candidate `c5f75366ebaeb4370e62e314ca559c032a411bd2`. A2 device video 34377.mp4: visible count-up and single result view; profile creation layout, HUD name truncation and trophy integration needed correction. Exact installed revision not established. New candidate checks (all PENDING): A3 starter picker arrows/name and one-page rewards; B HUD long names, active turn, real control icons, board fit, Undo/mute; C Career completion count, mission portrait, boss/locked/cleared states; IN01 Level 100 persisted win shows Infinity action, IN02 losses/draws/non-Career/storage failure do not, IN03 replay preserves progress and uses existing Infinity stage, IN04 navigation/slot isolation; D all four board sizes, AI/local modes, hidden difficulty on PvP, save replacement confirmation; E all catalog tabs, single card top-left, owned/equipped and prices, insufficient balance, inactive seasonal/prestige/Gems offers, portrait pagination. Run existing npm regression, build, assets/browser geometry and manual device tests; no PASS inferred from code review. PR09 owner visual approval remains pending.
+
+
+## V25.5 consolidated owner device report — 2026-11-20
+Owner-submitted checklist labelled `2171a45`; installed APK source revision has not been independently confirmed (source-commit.txt pending). Results: 10 PASS / 1 FAIL / 1 PENDING / 0 BLOCKED.
+
+| ID | Check | Owner result |
+|---|---|---|
+| V255-01 | Home: no scroll | PASS |
+| V255-02 | New Player: name, portrait and arrows | PASS |
+| V255-03 | Gameplay HUD: scores, names, active player | PASS |
+| V255-04 | Career: levels, missions and rivals | PASS |
+| V255-05 | Quick Play: sizes and modes | PASS |
+| V255-06 | Skin Store: categories | PASS |
+| V255-07 | My Collection: top-left alignment | PASS |
+| V255-08 | Characters: portraits, prices and unlocks | FAIL — exact symptom pending |
+| V255-09 | Victory: artwork, Coins and XP animation | PASS |
+| V255-10 | Continue: saved match | PASS |
+| V255-11 | Sound, Undo and Android Back | PASS |
+| V255-12 | Preserved profiles, skins and Coins | PENDING |
+
+Uploaded regression log: 189/190 PASS, failure #125 was stale Career progress label assertion. Test-only repair and strengthened profile assertions at `07a96fd`; rerun result not yet received. Browser QA and dedicated Level 100-to-Infinity path verification remain pending. Hold V25.6 until character defect is diagnosed and retested, preservation is confirmed, and outstanding technical checks pass. No runtime change in this documentation update.
