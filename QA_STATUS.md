@@ -158,3 +158,7 @@ Owner videos 34427.mp4 and 34428.mp4 flagged unfinished Neon home HUD, mixed Fro
 
 ## V25.5G3 Neon Skin Store candidate — 2026-11-21
 Implemented at `df813c5` as Neon-scoped CSS only: catalog tabs use Neon master button art, card outer borders and nested rarity outlines removed, preview artwork emphasized, equipped state has a single bottom accent, catalog pagination and detail actions use Neon art, detail background and nav chrome simplified, and focus-visible outlines retained. No catalog IDs, prices, entitlement, purchase logic, Gems status, profile storage or non-Neon skins changed. NOT TESTED: CSS computed layout, preview artwork per skin, mobile no-scroll, tap targets, Skin Store/Seasonal/Prestige/My Collection, detail screens, visual comparison and APK regression. Keep G3 QA pending; G4–G6 remain outstanding.
+
+
+## V25.5G4 Neon Career visual candidate — 2026-11-21
+CSS-only Neon Career redesign at `fc5ddb4`: long full-width level rows changed to compact two-column mission tiles (three columns in short landscape); boss and selected states differentiated; themed navigation/start buttons, simplified background, borderless rival portraits, readable progress/mission typography and focus outlines. No Career progress, AI, rewards, purchases or save logic changed. This is an unverified implementation, NOT device/browser QA PASS. Verify chapter/level layout 1–100, selected/locked/boss states, missions/rivals, small-screen overflow and tap targets, and regression. G5 shared component consistency and G6 regression remain open.
