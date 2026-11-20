@@ -229,10 +229,30 @@ function characterStatus(c,entitlement,wallet){
     if(c.currency==='gems')return c.price+' Gems · Later';
     return 'Coming soon';
 }
+// Presentation only: derive progress from validated Career stars, never from wallet or unlocked level.
+function renderCareerProgress(profile) {
+    const cleared=profile?Object.keys(profile.stars||{}).length:0;
+    const meter=el('career-clear-progress');
+    if(meter){meter.max=CAREER_LEVEL_COUNT;meter.value=cleared;meter.hidden=!profile;}
+    if(careerProgress)careerProgress.textContent=profile
+        ? cleared+' / '+CAREER_LEVEL_COUNT+' levels cleared · Level '+profile.unlockedLevel+' unlocked'
+        : 'Career progress unavailable';
+}
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
     const world=careerWorld(selected);
+    if(!world)return;
+    renderCareerProgress(profile);
+    const mission=missionFor(selected);
+    const setText=(id,value)=>{const node=el(id);if(node)node.textContent=value;};
+    const portrait=el('career-mission-portrait');
+    const guidedFox=selected===5;
+    if(portrait)portrait.dataset.rival=guidedFox?'guided-fox':world.rival.toLowerCase();
+    setText('career-mission-level','LEVEL '+selected+' / '+CAREER_LEVEL_COUNT+(selected===world.end?' · BOSS BATTLE':''));
+    setText('career-mission-title',mission?.title||(selected===world.end?'Boss Battle':'Career mission'));
+    setText('career-mission-rival',guidedFox?'Fox · '+world.name:world.rival+' · '+world.name);
+    setText('career-open-mission','Level '+selected+' · View mission ›');
     el('chapter-label').textContent = world.name+' · '+(Math.floor((selected-1)/5)+1)+' / '+Math.ceil(CAREER_LEVEL_COUNT/5);
     const rival=el('career-rival');
     if(rival)rival.textContent=world.icon+' '+world.rival+' · '+world.focus;
@@ -244,13 +264,17 @@ function renderRoute(profile, selected) {
         const button = document.createElement('button');
         button.type = 'button';
         button.disabled = level > profile.unlockedLevel;
+        button.dataset.levelState=button.disabled?'locked':profile.stars[level]?'cleared':'available';
+        button.dataset.boss=String(careerWorld(level)?.end===level);
         button.setAttribute('aria-pressed', String(level === selected));
         const number = document.createElement('b');
         number.textContent = level;
         const title = document.createElement('span');
         title.textContent = careerWorld(level)?.end===level?'Boss Battle':missionFor(level)?.title ?? 'Level ' + level;
         const stars = document.createElement('small');
-        stars.textContent = button.disabled ? '🔒' : '★'.repeat(profile.stars[level] || 0);
+        const earned=profile.stars[level]||0;
+        stars.textContent=button.disabled?'🔒':earned?'★'.repeat(earned)+'☆'.repeat(3-earned):'Ready';
+        button.setAttribute('aria-label','Level '+level+' · '+title.textContent+' · '+(button.disabled?'Locked':earned?earned+' of 3 stars':'Available'));
         button.append(number, title, stars);
         button.onclick = () => {
             careerSelect.value = String(level);
@@ -625,7 +649,10 @@ function refreshRivalPortraits(profile) {
         for (const prefix of ['home-rival', 'career-rival-card']) {
             const card = el(prefix + '-' + i);
             const status = el(prefix + '-status-' + i);
-            if (card) card.dataset.state = state;
+            if (card) {
+                card.dataset.state=state;
+                card.dataset.current=String(Boolean(profile&&careerWorld(profile.unlockedLevel)===world));
+            }
             if (status) status.textContent = state === 'defeated' ? 'Defeated' : state === 'available' ? 'Available' : 'Locked';
         }
     }
@@ -714,6 +741,7 @@ const refreshCareer = () => {
     syncSkin();
     const state = ProfileStore.read();
     if (state.status === 'invalid' || state.status === 'unavailable') {
+        renderCareerProgress(null);
         profileFeedback.textContent = state.status === 'invalid'
             ? 'Profile data could not be read. Reset only if you want to replace it.'
             : 'Profile storage is unavailable. Career progress cannot be saved.';
@@ -789,7 +817,7 @@ const refreshCareer = () => {
     }
     if(achievementView)renderAchievementPage();
     careerXP.textContent = `${p.xp} XP`;
-    careerProgress.textContent = `Level ${p.unlockedLevel} / ${CAREER_LEVEL_COUNT}`;
+    renderCareerProgress(p);
     const mission = missionFor(p.unlockedLevel);
     el('home-level').textContent = mission ? `Level ${p.unlockedLevel} · ${mission.title}` : careerProgress.textContent;
     drawOpening(el('home-opening'), careerLevel(p.unlockedLevel));
