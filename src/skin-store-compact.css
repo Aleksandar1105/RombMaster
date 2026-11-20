@@ -1618,3 +1618,70 @@
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
  }
 }
+
+
+/* V25.5G5 — consistent Neon control language across secondary screens.
+   Scope avoids game-board hit targets, mission tiles, character art and home navigation. */
+:root[data-skin="neon"]{
+ --rm-neon-control-art:var(--rm-button-art);
+ --rm-neon-control-ink:#e3fbff;
+ --rm-neon-control-focus:#22d3ee;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(
+ #page-back,
+ #quick-settings button:not([data-arcade]),
+ #comfort-settings button:not([data-arcade]),
+ #player-settings button:not(.avatar-choice):not(.rm-player-option),
+ #skin-page button:not(.skin-card),
+ #career-page button:not(#chapter-route button)
+):not(:disabled),
+:root[data-skin="neon"] :is(#help-modal,#confirm-dialog,#career-reset-modal,#daily-modal) button:not(:disabled){
+ font-family:var(--rm-display-font,var(--rm-font));font-weight:800;
+ color:var(--rm-neon-control-ink);text-shadow:0 0 7px #22d3ee66;
+ border:0!important;border-image:none!important;border-radius:0!important;
+ box-shadow:none!important;clip-path:none!important;
+ background:var(--rm-neon-control-art) center/100% 100% no-repeat,#102e4b;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(
+ #page-back,#quick-settings button,#comfort-settings button,
+ #player-settings button,#skin-page button,#career-page button
+):not(.avatar-choice):not(.skin-card):not(#chapter-route button):not(.rm-player-option):not(:disabled){
+ min-height:44px;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(
+ #page-back,#quick-settings button,#comfort-settings button,
+ #player-settings button,#skin-page button,#career-page button
+):not(.avatar-choice):not(.skin-card):not(#chapter-route button):not(.rm-player-option):focus-visible,
+:root[data-skin="neon"] :is(#help-modal,#confirm-dialog,#career-reset-modal,#daily-modal) button:focus-visible{
+ outline:2px solid var(--rm-neon-control-focus)!important;outline-offset:2px;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(#quick-settings,#comfort-settings,#player-settings,#skin-page,#career-page) :is(
+ .home-drawer-content,.premium-panel,.panel-header,.section-heading
+){
+ border:0!important;border-image:none!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(#quick-settings,#comfort-settings,#player-settings,#skin-page,#career-page) :is(
+ h3,h4,legend,.section-title
+){
+ font-family:var(--rm-display-font,var(--rm-font));letter-spacing:.035em;
+ color:#e0faff;text-shadow:0 0 7px #22d3ee44;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(#quick-settings,#comfort-settings,#player-settings,#skin-page,#career-page) :is(
+ input[type="text"],input[type="number"],input:not([type]),textarea,select:not([hidden])
+){
+ min-height:44px;border:1px solid #22d3ee66!important;border-radius:6px!important;
+ background:#081d33!important;color:#e7fbff!important;
+ font-family:var(--rm-font);box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page :is(#quick-settings,#comfort-settings,#player-settings,#skin-page,#career-page) :is(
+ input[type="text"],input[type="number"],input:not([type]),textarea,select:not([hidden])
+):focus-visible{outline:2px solid #22d3ee;outline-offset:2px;}
+:root[data-skin="neon"] :is(#help-modal,#confirm-dialog,#career-reset-modal,#daily-modal) :is(h2,h3){
+ font-family:var(--rm-display-font,var(--rm-font));color:#e0faff;text-shadow:0 0 7px #22d3ee55;
+}
+@media(prefers-reduced-motion:reduce){
+ :root[data-skin="neon"] #view-menu #menu-page button,
+ :root[data-skin="neon"] :is(#help-modal,#confirm-dialog,#career-reset-modal,#daily-modal) button{
+ transition:none!important;animation:none!important;
+ }
+}
