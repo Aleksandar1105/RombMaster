@@ -180,7 +180,21 @@ try{
    await check(name+' '+w+'x'+h,async()=>{
     try{
      await click('[data-page="'+page+'"]');
-     if(page==='quick-settings')await click('[data-ai="ai"]');
+     if(page==='quick-settings'){
+      await click('[data-ai="ai"]');
+      for(const [size,cells] of [[4,9],[6,21],[8,37],[10,57]]){
+       await click('[data-size="'+size+'"]');
+       assert.ok((await evaluate("document.getElementById('quick-match-summary').textContent")).includes(cells+' playable cells'));
+      }
+      await click('[data-ai="pvp"]');
+      assert.equal(await evaluate("document.getElementById('difficulty-wrapper').hidden"),true);
+      assert.match(await evaluate("document.getElementById('quick-match-summary').textContent"),/Local duel/);
+      await controls('#view-menu',['#page-back','[data-ai]','[data-size]','#setup-play']);
+      await click('[data-ai="ai"]');
+      assert.equal(await evaluate("document.getElementById('difficulty-wrapper').hidden"),false);
+      await click('[data-size="6"]');
+      await click('[data-diff="normal"]');
+     }
      if(page==='player-settings')await click('label:has(#profile-section-players)');
      await shot('v21-'+page+'-'+w+'x'+h);
      return await controls('#view-menu',selectors);
@@ -191,7 +205,12 @@ try{
   }
   await check('Career mission and rivals '+w+'x'+h,async()=>{
    try{
-    await click('[data-page="career-page"]');await click('#career-open-mission');
+    await click('[data-page="career-page"]');
+    const meter=await evaluate("(()=>{const p=document.getElementById('career-clear-progress');return {max:p.max,value:p.value,text:document.getElementById('career-progress').textContent};})()");
+    assert.equal(meter.max,100);assert.ok(meter.value>=0&&meter.value<=100);assert.ok(meter.text.startsWith(meter.value+' / 100 levels cleared'));
+    await click('#career-open-mission');
+    const mission=await evaluate("(()=>{const portrait=document.getElementById('career-mission-portrait');return {name:document.getElementById('career-mission-title').textContent,level:document.getElementById('career-mission-level').textContent,art:getComputedStyle(portrait).backgroundImage};})()");
+    assert.ok(mission.name&&mission.level.includes('LEVEL ')&&mission.art.includes('.webp'),JSON.stringify(mission));
     await controls('#view-menu',['#page-back','#career-start-btn','#career-screen-prev','#career-screen-next']);
     await click('#career-screen-next');await shot('v254-rivals-'+w+'x'+h);
     const rivals=await evaluate("Array.from(document.querySelectorAll('[data-career-screen=rivals] img')).map(i=>({ok:i.complete&&i.naturalWidth>0,src:i.getAttribute('src'),width:i.getBoundingClientRect().width}))");
@@ -219,6 +238,8 @@ try{
      await click('#profile-avatar-next');
     }
     assert.equal(seen.size,25);
+    const owned=await evaluate("document.querySelectorAll('.avatar-choice[data-entitlement=owned]').length");
+    assert.equal(await evaluate("document.getElementById('character-count').textContent"),owned+' / 25 owned');
     await evaluate("(()=>{const e=document.getElementById('character-filter');e.value='legendary';e.dispatchEvent(new Event('change'));return true;})()");
     assert.equal(await evaluate("document.getElementById('character-count').textContent"),'6 / 25');
     assert.ok(await evaluate("Array.from(document.querySelectorAll('.avatar-choice:not([hidden])')).every(e=>e.disabled&&e.dataset.entitlement==='preview')"));
@@ -460,7 +481,7 @@ try{
    await check('Result fixture '+(id==='neon'?'':id+' ')+outcome+' '+w+'x'+h,async()=>{
     try{
      await evaluate(`(()=>{const e=id=>document.getElementById(id),o=${JSON.stringify(outcome)},win=o==='victory';
-      const overlay=e('overlay');overlay.dataset.outcome=o;overlay.dataset.resultPage='overview';
+      const overlay=e('overlay');overlay.dataset.outcome=o;overlay.dataset.resultPage='overview';overlay.dataset.infinity='false';
       e('result-title').textContent=win?'Victory!':o==='defeat'?'Game Over':'Draw';
       e('result-score').textContent=win?'16 - 5':o==='defeat'?'5 - 16':'10 - 10';
       e('result-stars').hidden=!win;e('result-stars').textContent=win?'★★★':'';
@@ -499,6 +520,13 @@ try{
      await evaluate("(()=>{const p=document.querySelector('#overlay .result-details');p.scrollTop=p.scrollHeight;return true;})()");
      assert.equal(await evaluate("document.querySelector('#overlay .result-actions').getBoundingClientRect().top"),before);
      await controls('#overlay',selectors);
+     if(outcome==='victory'){
+      await evaluate("(()=>{const e=id=>document.getElementById(id);e('overlay').dataset.infinity='true';e('nextCareerBtn').textContent='Continue to Infinity ∞';const summary=e('premium-result-summary');summary.querySelector('.rm-result-progress')?.remove();const milestone=document.createElement('div');milestone.className='rm-infinity-milestone';milestone.innerHTML='<span class=rm-infinity-symbol>∞</span><div class=rm-infinity-copy><strong>Career complete · Infinity unlocked</strong><small>Congratulations! Your next challenge awaits in Infinity.</small></div>';summary.append(milestone);return true;})()");
+      const fit=await evaluate("(()=>{const p=document.querySelector('#overlay .result-details');return p.scrollHeight-p.clientHeight;})()");
+      assert.ok(fit<=2,'Infinity finale vertical overflow: '+fit+'px');
+      await controls('#overlay',selectors);
+      await shot('v255-infinity-'+id+'-'+w+'x'+h);
+     }
      return details;
     }finally{await evaluate("document.getElementById('overlay').classList.remove('flex')");}
    });
