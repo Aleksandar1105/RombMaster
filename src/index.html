@@ -89,33 +89,38 @@
                     
                     </section>
                 <section id="quick-settings" class="home-drawer" hidden>
-                    <div class="home-drawer-content">
-                <div>
-                    <label>Game Mode</label>
-                    <div class="btn-group">
-                        <button data-ai="pvp">2 Players</button>
-                        <button data-ai="ai" class="selected">vs AI</button>
-                    </div>
-                </div>
-                <div>
-                    <label>Board Size</label>
-                    <div class="btn-group">
-                        <button data-size="4">Small</button>
-                        <button data-size="6" class="selected">Classic</button>
-                        <button data-size="8">Large</button>
-                        <button data-size="10">Grand</button>
-                    </div>
-                </div>
-                <div id="difficulty-wrapper">
-                    <label>AI Level</label>
-                    <div class="btn-group">
-                        <button data-diff="easy">Casual</button>
-                        <button data-diff="normal" class="selected">Smart</button>
-                        <button data-diff="hard">Master</button>
-                    </div>
-                </div>
-                    <canvas id="setup-preview" width="160" height="160" aria-label="Board preview"></canvas>
-                    <button id="setup-play" type="button" class="btn-primary">▶ Play</button>
+                    <div class="home-drawer-content rm-quick-layout">
+                        <div class="rm-quick-options">
+                            <div class="rm-quick-group">
+                                <p id="quick-mode-label" class="rm-quick-label">Game mode</p>
+                                <div class="btn-group" role="group" aria-labelledby="quick-mode-label">
+                                    <button type="button" data-ai="pvp"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="8" r="2.5"/><path d="M2 20v-3a6 6 0 0 1 12 0v3M16 14a5 5 0 0 1 6 5v1"/></svg><strong>2 Players</strong><small>Local duel</small></button>
+                                    <button type="button" data-ai="ai" class="selected"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="13" rx="3"/><path d="M12 2v4M8 15h8M1 10v5M23 10v5"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/></svg><strong>vs AI</strong><small>Solo match</small></button>
+                                </div>
+                            </div>
+                            <div class="rm-quick-group">
+                                <p id="quick-size-label" class="rm-quick-label">Board size</p>
+                                <div class="btn-group" role="group" aria-labelledby="quick-size-label">
+                                    <button type="button" data-size="4"><strong>Small</strong><small>9 cells</small></button>
+                                    <button type="button" data-size="6" class="selected"><strong>Classic</strong><small>21 cells</small></button>
+                                    <button type="button" data-size="8"><strong>Large</strong><small>37 cells</small></button>
+                                    <button type="button" data-size="10"><strong>Grand</strong><small>57 cells</small></button>
+                                </div>
+                            </div>
+                            <div id="difficulty-wrapper" class="rm-quick-group">
+                                <p id="quick-diff-label" class="rm-quick-label">AI level</p>
+                                <div class="btn-group" role="group" aria-labelledby="quick-diff-label">
+                                    <button type="button" data-diff="easy"><strong>Casual</strong><small>Easy</small></button>
+                                    <button type="button" data-diff="normal" class="selected"><strong>Smart</strong><small>Normal</small></button>
+                                    <button type="button" data-diff="hard"><strong>Master</strong><small>Hard</small></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rm-quick-preview">
+                            <canvas id="setup-preview" width="160" height="160" aria-label="Board preview"></canvas>
+                            <p id="quick-match-summary" role="status" aria-live="polite"></p>
+                        </div>
+                        <button id="setup-play" type="button" class="btn-primary">▶ Play</button>
                     </div>
                 </section>
                 <section id="arcade-page" hidden class="arcade-panel" aria-label="Challenge Arena">
