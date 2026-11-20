@@ -118,3 +118,7 @@ Use existing assets first (target zero new Picsart credits for V25.5A); no Actio
 
 ### V25.5A2 — owner correction
 One result page only; no duplicate XP, mission preview or match-statistics pages after a match. Keep score, stars, actual rewards, unlocks and actions together. Positive reward increments should visibly animate unless reduced motion enabled. Frozen Christmas Home remains quality benchmark for every screen; use existing full thematic button art, purposefully differentiated typography and fewer decorative outlines (retain functional state/focus boundaries and board edges). Do not close V25.5A or advance to B until the owner reviews the result fix; the broader all-screen visual redesign remains V25.5B–E/V25.7 scope.
+
+
+### V25.5 implementation candidates — 2026-11-20
+A3 starter layout/result art (`1edeb42`), B HUD (`c4561b5`), C Career/rivals (`7c1d9c6`), owner-requested Level 100 Infinity continuation (`ad5655f`), D Quick Play (`8af325c`), E collections (`c5f7536`) are staged on feat/v25-royal-master. Owner requested continuation between batches; this is not visual sign-off. Gate before release: reconcile all changes, run regression and asset/browser checks, then manual free Codemagic APK and owner device visual approval. No GitHub Actions, billing or additional art generation. V25.6 remains next planned implementation scope.
