@@ -1030,3 +1030,32 @@
  #view-menu #menu-page #career-page .mission-detail #career-skin-row:not([hidden]){grid-column:2;grid-row:3;}
  #view-menu #menu-page #career-page .mission-detail #career-start-btn{grid-column:1/-1;grid-row:4;min-height:44px;}
 }
+
+
+/* Career finale — Infinity is an existing Arcade entitlement, never a second reward. */
+#overlay.flex[data-infinity="true"] .rm-infinity-milestone{
+ display:flex;align-items:center;justify-content:center;gap:9px;
+ width:100%;min-width:0;padding:clamp(4px,.8dvh,8px) 2px;
+ color:var(--skin-ink);
+ background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--skin-accent) 14%,transparent),transparent);
+}
+#overlay.flex .rm-infinity-symbol{
+ flex:none;font-family:Georgia,serif;font-size:clamp(1.65rem,5dvh,2.8rem);line-height:1;
+ color:var(--skin-gold,var(--skin-accent));text-shadow:0 0 12px color-mix(in srgb,var(--skin-accent) 55%,transparent);
+}
+#overlay.flex .rm-infinity-copy{display:grid;gap:2px;text-align:left;min-width:0;}
+#overlay.flex .rm-infinity-copy strong{
+ font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(.78rem,2dvh,1.1rem);
+ line-height:1.15;color:var(--skin-ink);overflow-wrap:anywhere;
+}
+#overlay.flex .rm-infinity-copy small{font-size:clamp(.65rem,1.55dvh,.83rem);line-height:1.2;color:var(--skin-ink);}
+:root[data-skin] #overlay.flex[data-infinity="true"] .rm-result-trophy{width:min(48vw,22dvh,185px);}
+:root[data-skin] #overlay.flex[data-infinity="true"] #premium-result-summary{gap:3px;}
+@media(max-height:650px){
+ :root[data-skin] #overlay.flex[data-infinity="true"] .rm-result-trophy{width:min(35vw,14dvh,100px);}
+ #overlay.flex[data-infinity="true"] .rm-infinity-milestone{padding:2px 0;}
+}
+@media(max-height:480px){
+ :root[data-skin] #overlay.flex[data-infinity="true"] .rm-result-trophy{width:min(24vw,15dvh,75px);}
+ #overlay.flex[data-infinity="true"] .rm-result-achievements,#overlay.flex[data-infinity="true"] .rm-result-character-unlock{padding:0;margin:0;font-size:.65rem;}
+}
