@@ -110,7 +110,11 @@ function renderAvatarPage(){
     // Match the actual grid columns; no incomplete second row at short heights.
     const w=window.innerWidth,h=window.innerHeight;
     const size=h<=540?(w>=600?6:2):h<700?(w>=600?4:3):(w>=600?8:6);
-    if(el('character-count'))el('character-count').textContent=rows.length+' / '+all.length;
+    if(el('character-count')){
+        const owned=all.filter(row=>row.dataset.entitlement==='owned').length;
+        el('character-count').textContent=filter==='all'?owned+' / '+all.length+' owned':rows.length+' / '+all.length;
+        el('character-count').setAttribute('aria-label',owned+' owned of '+all.length+' characters; '+rows.length+' in this category');
+    }
     const result=paginateRows(rows,avatarPage,size,'profile-avatar-prev','profile-avatar-next','profile-avatar-page');
     avatarPage=result.current;el('profile-avatar-pager').hidden=result.count===1;
 }
@@ -214,7 +218,7 @@ if(avatarGrid&&avatarSelect){
     for(const c of CHARACTERS){
         const option=document.createElement('option');option.value=c.id;option.textContent=c.label;options.push(option);
         const choice=document.createElement('button');choice.type='button';choice.className='avatar-choice';
-        choice.dataset.profileAvatar=c.id;choice.setAttribute('aria-pressed','false');
+        choice.dataset.profileAvatar=c.id;choice.dataset.category=c.category;choice.setAttribute('aria-pressed','false');
         const art=document.createElement('span');art.className='avatar-art';art.dataset.avatar=c.id;art.setAttribute('aria-hidden','true');
         const name=document.createElement('strong');name.textContent=c.label;
         const status=document.createElement('small');status.dataset.avatarLock='';status.hidden=true;
@@ -226,7 +230,7 @@ function characterStatus(c,entitlement,wallet){
     if(entitlement==='owned')return 'Owned';
     if(entitlement==='locked')return 'Win level '+c.level;
     if(entitlement==='coins')return c.price+' Coins';
-    if(c.currency==='gems')return c.price+' Gems · Later';
+    if(c.currency==='gems')return c.price+' Gems · Preview';
     return 'Coming soon';
 }
 // Presentation only: derive progress from validated Career stars, never from wallet or unlocked level.
@@ -523,9 +527,15 @@ function showSkinPreview() {
         el('skin-status').textContent='Premium cosmetic · No payment enabled';
     } else if (skin.offer) {
         const {active,daysLeft}=seasonStatus(skin.offer);
+        el('skin-equip').disabled=true;
         el('skin-equip').textContent = active ? 'Purchases coming soon' : 'Out of season';
         el('skin-status').textContent = (active ? daysLeft+' days left' : 'Season: '+skin.offer.start+' – '+skin.offer.end) + ' · Target price '+seasonalPriceLabel(skin)+' · No payment enabled';
-    } else el('skin-status').textContent = (unlocked?'Owned':skinUnlockLabel(skin.id))+' · Balance '+balance+' Coins';
+    } else {
+        const walletAvailable=Boolean(profile?.skinWallet);
+        const status=unlocked?(activeSkin().id===skin.id?'Equipped':'Owned'):skinUnlockLabel(skin.id);
+        el('skin-status').textContent=status+' · '+(walletAvailable?'Balance '+balance+' Coins':'Wallet unavailable')+
+            (!unlocked&&price&&walletAvailable&&balance<price?' · Need '+(price-balance)+' more Coins':'');
+    }
     el('skin-effect-label').textContent = skin.prestige ? 'Victory artwork available · Individual capture, victory and audio effects are planned.' : 'Capture effect: ' + skin.catalog.effect + (skin.catalog.victory ? ' · Victory: '+skin.catalog.victory : '');
     if (canvas?.getContext?.('2d')) {
         const board = new Board(4);
@@ -567,7 +577,7 @@ function renderSkinCatalog() {
         button.type = 'button';
         button.className = 'skin-card';
         button.dataset.skinId = skin.id;
-        button.dataset.ownership = status === 'Equipped' ? 'equipped' : owned ? 'owned' : skin.offer ? 'seasonal-preview' : 'locked';
+        button.dataset.ownership = status === 'Equipped' ? 'equipped' : owned ? 'owned' : skin.prestige ? 'prestige-preview' : skin.offer ? 'seasonal-preview' : SKIN_PRICES[skin.id] ? 'coins' : 'locked';
         button.dataset.rarity = skin.catalog.rarity.toLowerCase();
         if (skin.offer) button.dataset.inSeason = String(!!active);
         button.style.setProperty('--card-x',skin.colors.x);
@@ -584,7 +594,7 @@ function renderSkinCatalog() {
         button.append(part('skin-card-rarity',skin.catalog.rarity),
             part('skin-card-name',skin.name),
             part('skin-card-status',status),
-            part('skin-card-action','View skin ›'));
+            part('skin-card-action',owned?'View collection item ›':skin.offer||skin.prestige?'Preview ›':'View skin ›'));
         button.setAttribute('aria-pressed',String(skin.id === activeSkin().id));
         button.onclick = () => {
             previewSkinId = skin.id;
@@ -801,6 +811,7 @@ const refreshCareer = () => {
         const entitlement=characterEntitlement(id,p,characterWallet);
         choice.disabled=entitlement!=='owned'&&(entitlement!=='coins'||walletState.status!=='ready');
         choice.dataset.entitlement=entitlement;
+        choice.dataset.affordable=String(entitlement==='coins'&&walletState.status==='ready'&&walletBalance(characterWallet)>=c.price);
         choice.setAttribute('aria-pressed', String(id === p.avatar&&entitlement==='owned'));
         const lock=choice.querySelector('[data-avatar-lock]');
         if(lock){lock.textContent=id===p.avatar&&entitlement==='owned'?'Equipped':characterStatus(c,entitlement,characterWallet);lock.hidden=false;}
