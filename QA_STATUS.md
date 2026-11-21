@@ -1,5 +1,11 @@
 # RombMaster — QA status
 
+## Neon phone walkthrough · 2026-11-21
+
+Evidence: 139-second Android recording, 1080×2340. Home is visible both with a saved match and after victory. Reviewed Quick Play, match, victory, profile/player and character flows, store/details/preview/collection, tutorial, career, challenge puzzle, Arena and confirmation dialogs. Findings and timestamps are in ROADMAP-CURRENT.md. Intermittent system bars are visible; reproduce without an edge gesture before classifying as a fullscreen regression.
+
+Pending targeted captures: Settings, Statistics, later tutorial steps, defeat/draw, Daily completion and reward, Arena Progress & Rewards, preview return and keyboard dismissal. For each changed screen compare with Home at small and tall viewport sizes; verify selection, disabled actions, labels, safe areas and Android Back. Verify score, save/continue, selected avatar and equipped skin survive navigation. Home must fit without scrolling and a one-item collection must stay top-left. Run the regression suite, web build, Android sync and packaged asset checks before a manual Codemagic build. This review does not constitute a new test run or device sign-off.
+
 ## Neon visual consistency · 2026-11-21
 
 190 automated tests passed. Vite build, Android sync and the packaged asset check passed for 37 reference, 90 Master and 12 Career assets. The local browser check timed out while starting Chromium. Screen-by-screen visual approval is pending. Verify paired actions, disabled Undo, turn contrast, selected options, readable labels, dialog focus, result artwork, and skin preview/return on the phone before closing Neon.

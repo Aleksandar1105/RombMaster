@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Neon Android recording reviewed · 2026-11-21
+
+Reviewed 34526.mp4 against Neon Home and recorded an ordered pre-build plan in ROADMAP-CURRENT.md. Code reference for planning: 40a670d. The recording does not identify its exact commit. The next implementation starts with the compact wordmark, shared controls and selected states, followed by Quick Play and the match HUD. This checkpoint changes tracking documents only.
+
 ## Neon visual consistency · 2026-11-21
 
 Starting from a2037ce, Home and secondary Neon actions now share the same rim, dark face and six-sided silhouette. Secondary menus reuse the H6 scene with a dark overlay. The gameplay controls, turn indicator, dialog surfaces, result panel and actions use the Neon palette. Changes are scoped to the active Neon skin. The existing themed board renderer, character art and audio continue to supply their own content.
