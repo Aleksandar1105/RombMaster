@@ -1,6 +1,10 @@
 # RombMaster — Development status
 
-## Latest implementation · 2026-11-21
+## Neon HUD and controls · 2026-11-21
+
+Based on runtime 80ea07d and the latest owner screenshot, Neon Home now shows an XP badge, illustrated coin, preview gem and outlined settings control. Currency groups stack on compact widths. Home actions use leading outlined symbols, including resume, play, Career growth, calendar, infinity and a hanger. The wide Arena action shares the cut depth of the smaller buttons. Help uses a dark inset and centered label.
+
+## Previous implementation · 2026-11-21
 
 On `feat/v25-royal-master`, revision `80ea07d` fixes the collapsed Neon Home play row seen in 34510.jpg. Continue Match and Quick Play use a horizontal row with automatic widths. Quick Play fills the row when no saved match exists. The transparent logo is 8% larger in portrait with contour lighting. Help has a smaller hexagonal footer button. Locked rival portraits are dimmed and status text remains accessible to screen readers.
 

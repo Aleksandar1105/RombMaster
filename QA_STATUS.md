@@ -1,6 +1,10 @@
 # RombMaster — QA status
 
-## Latest verification · 2026-11-21
+## Neon HUD and controls · 2026-11-21
+
+The supplied phone screenshot confirms that both play buttons render side by side in the saved-match state. For this revision, 190 regression tests passed, Vite built, Capacitor synchronized and source/dist/Android asset hashes matched (37 reference, 90 Master, 12 Career). The packaged Home contains six decorative action SVGs and a labeled Gems placeholder. Pending on Android: check HUD fit, currency readability, all six actions, Arena corners and the help button.
+
+## Previous verification · 2026-11-21
 
 Runtime revision `80ea07d` addresses the collapsed play buttons in the owner's screenshot 34510.jpg.
 
