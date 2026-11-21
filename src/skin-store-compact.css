@@ -1685,3 +1685,169 @@
  transition:none!important;animation:none!important;
  }
 }
+
+
+/* V25.5G6a — screenshot-driven Neon corrections. Native Neon controls are
+   slim luminous outlines, NOT the thick master-button artwork used by other skins. */
+:root[data-skin="neon"]{
+ --rm-neon-slim:linear-gradient(145deg,#10334bdb,#0a172fe8 65%,#26183de8);
+ --rm-neon-line:#35d8ef;
+}
+:root[data-skin="neon"] #view-menu .home-shell:has(#home-hub:not([hidden])),
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"],
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-actions,
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .play-row,
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-hero-stage{
+ background-color:transparent!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-hero-stage{
+ background-image:var(--premium-hero-art)!important;background-size:contain!important;
+ background-position:center!important;background-repeat:no-repeat!important;
+ border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ grid-template-rows:auto!important;align-items:center;gap:8px;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero > :is(img,div){
+ display:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .home-hero #helpBtn{
+ grid-column:2!important;grid-row:1!important;justify-self:end;
+ border:0!important;box-shadow:none!important;background:transparent!important;
+ font-size:clamp(.75rem,3vw,.98rem);min-height:40px;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-home-progress:not([hidden]){
+ background:linear-gradient(100deg,#081a30b5,#08172a85)!important;
+ border:0!important;border-left:2px solid #36d9f0!important;border-radius:9px;
+ box-shadow:none!important;padding:8px 10px;min-width:0;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-profile-row{
+ display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;
+ grid-template-rows:auto auto;align-items:center;gap:2px 8px;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-player-avatar{
+ grid-column:1;grid-row:1/3;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-player-name{
+ grid-column:2;grid-row:1;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-player-xp{
+ grid-column:2;grid-row:2;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-player-stars{
+ grid-column:3;grid-row:1;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] #premium-brain-points{
+ grid-column:3;grid-row:2;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-progress-label{
+ display:flex;justify-content:space-between;gap:8px;align-items:center;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-layout="premium"] .premium-progress-label > span{
+ min-width:0;
+}
+/* Transparent stage and compact Quick Play controls keep the arena artwork visible. */
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings:not([hidden]),
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings :is(.home-drawer-content,.rm-quick-layout,.rm-quick-options,.rm-quick-preview,.rm-quick-group,.btn-group){
+ background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button:not(:disabled){
+ background:var(--rm-neon-slim)!important;border:1px solid #35d8ef88!important;
+ border-radius:9px!important;box-shadow:inset 0 0 10px #22d3ee1a!important;
+ clip-path:none!important;text-shadow:0 0 6px #22d3ee66;
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button[aria-pressed="true"]{
+ border-color:#67e8f9!important;box-shadow:inset 0 -3px #22d3ee,0 0 11px #22d3ee55!important;
+}
+/* Thin Neon chrome for secondary screens, no Frozen-like crystal-button art. */
+:root[data-skin="neon"] #view-menu #menu-page :is(
+ #page-back,#quick-settings #setup-play,#player-settings button:not(.avatar-choice):not(.rm-player-option),
+ #skin-page button:not(.skin-card),#career-page button:not(#chapter-route button)
+):not(:disabled),
+:root[data-skin="neon"] #view-game #controls .btn-icon:not(:disabled),
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page :is(
+ #arcade-back,#arcade-next,#arcade-start,#arcade-progress-open,#arcade-progress-back,
+ #arena-category-prev,#arena-category-next
+):not(:disabled),
+:root[data-skin="neon"] #confirm-dialog :is(#confirm-dialog-cancel,#confirm-dialog-accept){
+ background:var(--rm-neon-slim)!important;background-image:var(--rm-neon-slim)!important;
+ border:1px solid #35d8ef88!important;border-radius:9px!important;
+ border-image:none!important;clip-path:none!important;
+ box-shadow:inset 0 0 10px #22d3ee18!important;
+ color:#e7fbff!important;text-shadow:0 0 7px #22d3ee55;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher label span,
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option,
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-character-categories span{
+ background:var(--rm-neon-slim)!important;border:1px solid #35d8ef70!important;
+ border-radius:8px!important;box-shadow:none!important;clip-path:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings :is(.rm-player-option[aria-pressed="true"],.profile-switcher input:checked + span,.rm-character-categories input:checked + span){
+ border-color:#78f4ff!important;box-shadow:inset 0 -2px #22d3ee,0 0 9px #22d3ee44!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice{
+ position:relative;isolation:isolate;background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;overflow:visible;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice::before{
+ content:"";display:block;position:absolute;inset:12% 6% 19%;z-index:-1;
+ background:radial-gradient(ellipse at center,color-mix(in srgb,var(--avatar-accent,var(--skin-accent)) 35%,transparent),transparent 68%);
+ opacity:0;pointer-events:none;transition:opacity .18s ease;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[aria-pressed="true"]::before{
+ opacity:1;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice .avatar-art{
+ background-color:transparent!important;box-shadow:none!important;border:0!important;
+ border-radius:0!important;filter:drop-shadow(0 2px 3px #03091c99);
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[aria-pressed="true"] .avatar-art{
+ filter:drop-shadow(0 0 8px var(--avatar-accent,var(--skin-accent))) drop-shadow(0 0 3px var(--avatar-accent,var(--skin-accent)));
+}
+/* Confirmation dialog: borderless panel and equal-sized actions. */
+:root[data-skin="neon"] #confirm-dialog .game-confirm-card,
+:root[data-skin="neon"] #confirm-dialog [role="dialog"]{
+ border:0!important;border-image:none!important;box-shadow:0 14px 36px #0008!important;
+ background:linear-gradient(160deg,#0b223bdc,#0a1129ee)!important;
+}
+:root[data-skin="neon"] #confirm-dialog .game-confirm-actions{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:stretch;
+}
+:root[data-skin="neon"] #confirm-dialog .game-confirm-actions > button{
+ width:100%!important;min-width:0!important;min-height:52px!important;height:100%;
+ padding:8px!important;font-size:clamp(.8rem,3vw,1rem);line-height:1.15;
+}
+/* Arena: let the image show through, keep only the interactive board canvas. */
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page,
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page :is(
+ .arena-view,#arcade-play,.arena-match-hud,#arcade-canvas
+){
+ background:transparent!important;background-image:none!important;
+ box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-play{
+ border:0!important;padding:4px!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-canvas{
+ border:0!important;outline:0!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-progress:not([hidden]),
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-progress .arena-view:not([hidden]){
+ align-content:start!important;justify-content:stretch!important;align-items:start!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page .arena-view{
+ align-content:start!important;justify-items:stretch!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page .rm-page-nav button:not(:disabled){
+ background:var(--rm-neon-slim)!important;border:1px solid #35d8ef88!important;
+ border-radius:9px!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page :is(.arena-selection,.arcade-performance){
+ background:#081b30b8!important;border:1px solid #35d8ef70!important;box-shadow:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ :root[data-skin="neon"] #view-menu #menu-page #player-settings .avatar-choice::before{transition:none;}
+}
