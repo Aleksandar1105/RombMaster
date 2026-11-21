@@ -1,6 +1,19 @@
 # RombMaster — QA status
 
-Updated: 2026-11-18. Application baseline: `11433fc`, V25.2.2 Royal Gold Master.
+## Current checkpoint · 2026-11-21 · Neon Home
+
+Owner feedback on the preceding build (34508.jpg): accepted the logo composition and requested transparency, a completed diamond tip, two navigation buttons, hexagonal rival captions and help at the bottom.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Regression suite | PASS | 190 passed, 0 failed |
+| Vite build and Capacitor Android sync | PASS | Both completed locally |
+| Packaged art | PASS | SHA-256 matched source, dist and Android for 37 reference, 90 Master and 12 Career assets |
+| Transparent Home logo | PASS | Packaged 1080 × 720 WebP has 456,882 fully transparent pixels. The completed upper point is visible in the artwork |
+| Packaged navigation markup | PASS | Profile and Skin Store are the two footer actions. Help follows them. Gear targets sound and haptics |
+| Android visual and interaction QA | PENDING | Build a fresh test APK. Check the logo over H6, the top tip, all six complete names, matching action sizes and help placement. Tap Profile, Skin Store, help and settings. Check narrow portrait and landscape, with and without a saved match |
+
+Historical baseline from 2026-11-18: `11433fc`, V25.2.2 Royal Gold Master.
 This documentation/asset-validation batch does not alter runtime visuals or rules.
 PASS means executed and observed. PENDING means not tested; BLOCKED identifies
 an unavailable test environment. Asset import success is not APK or release QA.

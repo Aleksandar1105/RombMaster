@@ -2079,15 +2079,18 @@
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button{--home-jewel:#f35aaf!important;}
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:first-child{--home-jewel:#39d7fb!important;}
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:last-child{--home-jewel:#ef65bd!important;}
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links button:nth-child(3){--home-jewel:#e66be9!important;}
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row{
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links #home-skin-store{--home-jewel:#e66be9!important;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,#home-tools){
+ display:flex!important;
  gap:clamp(12px,2.6vw,22px)!important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid,
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links{
  gap:clamp(9px,1.8vw,16px)!important;
 }
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button{
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,#home-tools) > button:not([hidden]){
+ box-sizing:border-box!important;width:0!important;min-width:0!important;max-width:none!important;
+ height:clamp(44px,6dvh,60px)!important;min-height:44px!important;
  flex:1 1 0!important;line-height:1.12!important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button{
@@ -2158,16 +2161,20 @@
  background:transparent!important;border:0!important;box-shadow:none!important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card > strong{
- display:block!important;box-sizing:border-box!important;
- width:100%!important;max-width:105px!important;min-height:23px!important;
- padding:4px 3px!important;margin-top:2px!important;
- border:1px solid var(--rival-rim,var(--skin-accent))!important;
- border-radius:999px!important;
- background:linear-gradient(155deg,#14273fe8,#080e23eb 75%)!important;
- box-shadow:inset 0 0 6px color-mix(in srgb,var(--rival-rim,var(--skin-accent)) 36%,transparent),0 0 5px color-mix(in srgb,var(--rival-rim,var(--skin-accent)) 28%,transparent)!important;
+ display:block!important;align-content:center;box-sizing:border-box!important;
+ position:relative;isolation:isolate;
+ width:100%!important;max-width:105px!important;height:25px;min-width:0;
+ padding:1px 6%!important;margin-top:2px!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%);
+ background:var(--rival-rim,var(--skin-accent))!important;
  color:#f5faff!important;text-align:center!important;
- font-size:clamp(.56rem,2.4vw,.74rem)!important;line-height:1.1!important;
- white-space:nowrap!important;letter-spacing:0!important;
+ font-size:clamp(.51rem,2vw,.72rem)!important;line-height:1!important;
+ white-space:normal!important;letter-spacing:0!important;text-overflow:clip!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card > strong::before{
+ content:"";position:absolute;inset:1px;z-index:-1;clip-path:inherit;
+ background:linear-gradient(155deg,#14273f,#080e23 75%);
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card > small{
  font-size:clamp(.51rem,2.1vw,.66rem)!important;line-height:1.1!important;
@@ -2180,13 +2187,14 @@
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-5{--rival-rim:#d5a0ff;}
 /* How to Play is a secondary link after the home tools, never a header row. */
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-help-footer{
- grid-column:1/-1!important;grid-row:auto!important;
+ grid-column:1/-1!important;grid-row:8!important;
  order:99!important;justify-self:center!important;
 }
 @media(orientation:portrait){
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])){
   grid-template-columns:minmax(0,1fr)!important;
  }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-preview-bar:not([hidden]){grid-row:2!important;}
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-hero{
   display:none!important;
  }
@@ -2194,7 +2202,7 @@
   grid-column:1/-1!important;grid-row:1!important;
  }
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-help-footer{
-  grid-column:1/-1!important;grid-row:auto!important;
+  grid-column:1/-1!important;grid-row:9!important;
  }
 }
 
@@ -2279,7 +2287,8 @@
  border:0!important;box-shadow:none!important;
  overflow:visible!important;
 }
-/* Logo is a real DOM image, separate from the scenery, and never a second poster. */
+/* Only Neon uses the transparent Home wordmark and board. */
+.neon-home-brand{display:none;}
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage .neon-home-brand{
  position:absolute!important;inset:0!important;
  display:flex!important;align-items:center!important;justify-content:center!important;

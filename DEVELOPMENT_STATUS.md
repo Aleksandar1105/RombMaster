@@ -1,6 +1,17 @@
 # RombMaster — Development status
 
-Updated: 2026-11-18.
+## Current handoff · 2026-11-21 · Neon Home
+
+Branch `feat/v25-royal-master`. Recent changes in order:
+
+- `6cf6fa4` through `e2b3e59` restored the Neon composition, separated the action buttons, refined rival captions and integrated the real wallet balance and settings gear in the HUD.
+- `e487a40` through `040da29` separated the brand from the arena and bundled the optimized H6 artwork. The redesign in `9a27505` was reverted in `d9f0f4d` at the owner's request.
+- `b24c50b` restored the reference wordmark and board. The owner approved the logo and requested removal of the surrounding scenery after testing.
+- This revision uses a dedicated alpha WebP over the H6 arena. The emblem has a complete upper tip, floating gems, orbit lines and a base ring. Profile and Skin Store occupy the bottom action row. The gear opens sound and haptics. Rival captions have hexagonal rims, and the help link has an explicit footer row.
+
+Next step: build the current branch with the manual Codemagic test workflow and check the device items in QA_STATUS.md. Other V25.5 visual reviews remain open.
+
+Historical baseline from 2026-11-18.
 
 ## Verified baseline
 
