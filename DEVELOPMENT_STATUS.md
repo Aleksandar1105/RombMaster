@@ -99,3 +99,7 @@ Owner feedback on build 6aff67098f52ca2751290f01 documented in QA_STATUS.md. Run
 
 ## V25.5A3–E — implementation candidates, 2026-11-20
 A3 `1edeb42`: starter form and feathered victory artwork. B `c4561b5`: responsive HUD, portraits, score, turn and controls. C `7c1d9c6`: mission identity, real completion meter and rival states. Infinity `ad5655f`: persisted Level 100 victory displays milestone and opens the existing Arena mode selection. D `8af325c`: structured Quick Play choices, playable-cell counts and live preview. E `c5f7536`: skin/character ownership, affordability cues, themed catalog and disabled seasonal purchases. All are implementation candidates, not QA-approved. No new assets or economy formula changes; no Actions or APK generated here. Full tests, browser geometry, asset audit and physical visual approval pending.
+
+## Reference Home · 2026-11-21
+
+Home now uses a compact live player header, crystal showcase, primary match action, two mode rows, six rival portraits and a separate Store action. Neon uses bundled crops from the approved visual reference. Other skins use their existing Master art.

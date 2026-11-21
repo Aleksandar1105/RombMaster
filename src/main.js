@@ -435,6 +435,8 @@ function renderSkinVariables(skin) {
         '--skin-accent': skin.accent, '--skin-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
         '--skin-panel': skin.id === 'white' ? '#ffffff' : skin.colors.bg,
         '--skin-gold': skin.colors.lastMove,
+        '--palace-scene': `url('/assets/premium/master/${skin.id}-master-arena.webp')`,
+        '--palace-button': `url('/assets/premium/master/${skin.id}-master-button-clean.webp')`,
         '--home-bg': skin.colors.bg,
         '--home-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
     })) root.style.setProperty(name,value);
@@ -725,6 +727,7 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
         'premium-rival-icon': world?.icon ?? '',
         'premium-rival-name': world?.rival ?? '',
         'premium-world-name': world?.name ?? '',
+        'palace-level': profile ? 'Lv. ' + profile.unlockedLevel : '',
         'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
         'premium-career-count': summary ? summary.clearedLevels + ' / ' + CAREER_LEVEL_COUNT : '',
     })) el(id).textContent = value;
