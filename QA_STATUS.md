@@ -170,7 +170,3 @@ Commit `21508ad`: Neon-scoped visual normalization of secondary-screen actions (
 
 ## V25.5G6a owner screenshot/video findings — 2026-11-21
 Owner provided 8 screenshots and 34448.mp4 (103 s): home and Quick Play backdrop obscured by panels; header unfinished; Frozen-like ornate button art across secondary screens, game controls and Arena; character tiles show rectangular backplates; confirmation panel has border and uneven buttons; Arena board backed by opaque panel; Arena Progress second page vertically centered; stray player-character art near rivals reported. Candidate visual fixes in `5393548` and `2d26d32` use Neon-only CSS to remove backdrop panels, adjust HUD layout, use slimmer Neon controls, remove avatar tile surfaces and add selected glow, normalize confirm actions, clear Arena board panel and anchor Progress top. **Not tested in APK or browser.** Stray player-character art between rival groups remains under investigation; per-character aura color needs data-driven avatar accent verification; no claim that those two issues are resolved. Confirm gameplay, profile persistence and 100-level progression unchanged by this CSS-only patch. Owner approval pending.
-
-## Reference Home · 2026-11-21
-
-Check the reference layout on Android with and without a saved game, the collection and store destinations, profile and settings shortcuts, full rival strip, and a second skin preview. Physical device visual approval is pending.
