@@ -2140,3 +2140,60 @@
   padding:5px 7px!important;font-size:clamp(.69rem,3vw,.88rem)!important;
  }
 }
+
+
+/* V25.5H4 — screenshot QA: edge-to-edge status and framed rival captions. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]){
+ box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;
+ margin:0!important;justify-self:stretch!important;
+ border:0!important;border-bottom:1px solid #64dfff99!important;
+ background:linear-gradient(90deg,#08182bf2,#10243ae6 60%,#0a172bea)!important;
+ border-radius:0!important;padding:7px 10px!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-profile-row{
+ width:100%!important;grid-template-columns:34px minmax(0,1fr) auto!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card{
+ display:flex!important;flex-direction:column!important;align-items:center!important;gap:3px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card > strong{
+ display:block!important;box-sizing:border-box!important;
+ width:100%!important;max-width:105px!important;min-height:23px!important;
+ padding:4px 3px!important;margin-top:2px!important;
+ border:1px solid var(--rival-rim,var(--skin-accent))!important;
+ border-radius:999px!important;
+ background:linear-gradient(155deg,#14273fe8,#080e23eb 75%)!important;
+ box-shadow:inset 0 0 6px color-mix(in srgb,var(--rival-rim,var(--skin-accent)) 36%,transparent),0 0 5px color-mix(in srgb,var(--rival-rim,var(--skin-accent)) 28%,transparent)!important;
+ color:#f5faff!important;text-align:center!important;
+ font-size:clamp(.56rem,2.4vw,.74rem)!important;line-height:1.1!important;
+ white-space:nowrap!important;letter-spacing:0!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rival-card > small{
+ font-size:clamp(.51rem,2.1vw,.66rem)!important;line-height:1.1!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-0{--rival-rim:#59e4ff;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-1{--rival-rim:#ef70e5;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-2{--rival-rim:#f67e81;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-3{--rival-rim:#6b9cff;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-4{--rival-rim:#e9c58a;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-rival-5{--rival-rim:#d5a0ff;}
+/* How to Play is a secondary link after the home tools, never a header row. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-help-footer{
+ grid-column:1/-1!important;grid-row:auto!important;
+ order:99!important;justify-self:center!important;
+}
+@media(orientation:portrait){
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])){
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-hero{
+  display:none!important;
+ }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]){
+  grid-column:1/-1!important;grid-row:1!important;
+ }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-help-footer{
+  grid-column:1/-1!important;grid-row:auto!important;
+ }
+}
