@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Neon visual consistency · 2026-11-21
+
+Starting from a2037ce, Home and secondary Neon actions now share the same rim, dark face and six-sided silhouette. Secondary menus reuse the H6 scene with a dark overlay. The gameplay controls, turn indicator, dialog surfaces, result panel and actions use the Neon palette. Changes are scoped to the active Neon skin. The existing themed board renderer, character art and audio continue to supply their own content.
+
 ## Android fullscreen · 2026-11-21
 
 The Android BridgeActivity now hides the status and navigation bars on creation and when window focus returns. AndroidX controls transient edge-swipe access to system navigation. The activity applies the behavior across Home, gameplay and menus.

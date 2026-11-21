@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Neon visual consistency · 2026-11-21
+
+190 automated tests passed. Vite build, Android sync and the packaged asset check passed for 37 reference, 90 Master and 12 Career assets. The local browser check timed out while starting Chromium. Screen-by-screen visual approval is pending. Verify paired actions, disabled Undo, turn contrast, selected options, readable labels, dialog focus, result artwork, and skin preview/return on the phone before closing Neon.
+
 ## Android fullscreen · 2026-11-21
 
 190 regression tests passed. Vite build, Capacitor sync and packaged asset hashes passed. Local APK compilation was blocked while the Gradle wrapper attempted to download Gradle 8.5. A Codemagic APK and device check are pending for launch, gameplay, edge-swipe navigation, app switching, keyboard dismissal and header clearance near the camera cutout.

@@ -2044,6 +2044,17 @@
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage:not([hidden]){
  background-color:transparent!important;box-shadow:none!important;
 }
+/* Apply the same materials to Home and the controls inside each mode. */
+:root[data-skin="neon"] {
+ --neon-panel:linear-gradient(140deg,#0c2439f5,#11172ff5 70%,#251a38f5);
+ --neon-action-face:linear-gradient(115deg,#07182de9,#14233eea 56%,#301d3fe9);
+}
+:root[data-skin="neon"] button {
+ --home-cut:clamp(6px,1.6vw,10px);
+ --home-jewel:#42d9f1;
+ --neon-action-rim:linear-gradient(125deg,#b9ffff,var(--home-jewel) 18%,#15385e 47%,var(--home-jewel) 83%,#fff4ff);
+ --neon-action-shape:polygon(var(--home-cut) 0,calc(100% - var(--home-cut)) 0,100% 50%,calc(100% - var(--home-cut)) 100%,var(--home-cut) 100%,0 50%);
+}
 /* Single clean jewel silhouette per action, no nested cards or second frame. */
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden]){
  --home-cut:clamp(12px,3.8vw,18px);
@@ -2055,17 +2066,17 @@
  padding:6px 10px!important;
  color:#f3fcff!important;text-align:center!important;
  font-size:clamp(.76rem,3.25vw,1.08rem)!important;font-weight:800!important;
- background:linear-gradient(125deg,#b9ffff,var(--home-jewel) 18%,#15385e 47%,var(--home-jewel) 83%,#fff4ff)!important;
- background-image:linear-gradient(125deg,#b9ffff,var(--home-jewel) 18%,#15385e 47%,var(--home-jewel) 83%,#fff4ff)!important;
- clip-path:polygon(var(--home-cut) 0,calc(100% - var(--home-cut)) 0,100% 50%,calc(100% - var(--home-cut)) 100%,var(--home-cut) 100%,0 50%)!important;
+ background:var(--neon-action-rim)!important;
+ background-image:var(--neon-action-rim)!important;
+ clip-path:var(--neon-action-shape)!important;
  border:0!important;border-radius:0!important;box-shadow:none!important;
  text-shadow:0 1px 2px #020b1c,0 0 5px #3ddcf566!important;
  overflow:hidden!important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden])::before{
  content:""!important;display:block!important;position:absolute!important;inset:3px!important;
- background:linear-gradient(115deg,#07182de9,#14233eea 56%,#301d3fe9)!important;
- clip-path:polygon(var(--home-cut) 0,calc(100% - var(--home-cut)) 0,100% 50%,calc(100% - var(--home-cut)) 100%,var(--home-cut) 100%,0 50%)!important;
+ background:var(--neon-action-face)!important;
+ clip-path:var(--neon-action-shape)!important;
  z-index:-1!important;pointer-events:none!important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:not([hidden])::after{
@@ -2359,3 +2370,39 @@
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-status-row .home-gem-count{grid-column:5;grid-row:1/3;}
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-status-row .home-settings-trigger{grid-column:6;}
 }
+
+
+/* Secondary action chrome. Keep selection cards, portrait art, switches and board targets intact. */
+:root[data-skin="neon"] :is(
+ #view-menu #menu-page :is(#quick-settings,#career-page,#arcade-page,#player-settings,#skin-page),
+ #view-menu #menu-page,#view-game #controls,#overlay,#daily-modal,#help-modal,#career-reset-modal,#confirm-dialog
+) :is(.btn-primary,.btn-secondary,.btn-icon,.rm-page-nav button,#closeHelpBtn,
+ #arcade-progress-open,#arcade-progress-back,#arcade-back,#career-open-mission,#profile-create-toggle,#profile-stats-toggle):not([hidden]){
+ position:relative!important;isolation:isolate;
+ background:var(--neon-action-rim)!important;border:0!important;border-image:none!important;
+ border-radius:0!important;clip-path:var(--neon-action-shape)!important;
+ color:#edfaff!important;text-shadow:0 1px 2px #030918;
+}
+:root[data-skin="neon"] :is(
+ #view-menu #menu-page :is(#quick-settings,#career-page,#arcade-page,#player-settings,#skin-page),
+ #view-menu #menu-page,#view-game #controls,#overlay,#daily-modal,#help-modal,#career-reset-modal,#confirm-dialog
+) :is(.btn-primary,.btn-secondary,.btn-icon,.rm-page-nav button,#closeHelpBtn,
+ #arcade-progress-open,#arcade-progress-back,#arcade-back,#career-open-mission,#profile-create-toggle,#profile-stats-toggle):not([hidden])::before{
+ content:""!important;display:block!important;position:absolute!important;inset:2px!important;
+ clip-path:inherit!important;background:var(--neon-action-face)!important;
+ pointer-events:none;z-index:-1;
+}
+:root[data-skin="neon"] :is(#menu-page,#overlay,#help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) .btn-primary{--home-jewel:#f377c0;}
+:root[data-skin="neon"] :is(#menu-page,#overlay,#view-game,#help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) button:focus-visible{
+ --home-jewel:white;filter:brightness(1.2);
+}
+:root[data-skin="neon"] :is(#menu-page,#view-game,#overlay) button:is(:disabled,.disabled){opacity:.5;}
+:root[data-skin="neon"] #view-menu:has(#menu-page:not([hidden])){
+ background:linear-gradient(#07142388,#070d1cbf),url('/assets/premium/master/neon-home-h6.webp') center/cover no-repeat!important;
+}
+:root[data-skin="neon"] :is(#help-modal .help-content,#daily-modal .daily-content,#career-reset-modal .career-reset-content,
+ #confirm-dialog .game-confirm-content,#overlay.flex .center-panel,#view-game #turn-status,#menu-page #comfort-settings .comfort-options){
+ background:var(--neon-panel)!important;border:1px solid #408399!important;
+ color:#edfaff;box-shadow:inset 0 1px #83efff24,0 5px 16px #03081666;
+}
+:root[data-skin="neon"] #view-game #turn-status[data-player="two"]{border-color:#b571aa!important;}

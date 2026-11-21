@@ -6,6 +6,10 @@ Long-term milestones are in ROADMAP.md.
 
 For every project change, update ROADMAP-CURRENT.md (milestone and next step), DEVELOPMENT_STATUS.md (implementation and revision) and QA_STATUS.md (checks run, results and pending checks) in the same commit. When starting a new conversation, read all three at the current branch head.
 
+## Neon visual consistency · 2026-11-21
+
+Neon Home H6 is the visual baseline for the full Neon experience. Review Quick Play, Career, Daily, Arena, Profile, Store, Settings, gameplay, help, confirmations and results on Android before closing Neon. After Neon approval, each new skin should adapt the complete experience: scenery, typography, controls, HUD, board, dialogs, effects, results and audio. Verify switching themes and returning to Neon.
+
 ## Android fullscreen · 2026-11-21
 
 Android fullscreen is implemented for Home and gameplay. Next device review: cold start, resume after switching apps, transient bars on an edge swipe and keyboard dismissal on the player-name field.
