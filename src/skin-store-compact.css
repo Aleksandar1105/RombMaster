@@ -2252,8 +2252,7 @@
 
 
 /* V25.5H6 — one approved seamless Neon arena for the whole HOME surface.
-   The source is saved durably in the owner's Picsart Drive; remote image
-   requires internet until a binary is checked into public/assets.
+   The optimized background is bundled for offline use.
    Other skins/screens are deliberately unaffected. */
 :root[data-skin="neon"] #view-menu:has(#home-hub[data-neon-reference="1"]:not([hidden])){
  background:#071327!important;background-image:none!important;
@@ -2265,7 +2264,7 @@
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]){
  background-color:#071327!important;
- background-image:url('https://gcdn.picsart.com/picsart-mcp/45c2e21b-638c-4291-8ee2-09a647bfffec.png')!important;
+ background-image:url('/assets/premium/master/neon-home-h6.webp')!important;
  background-repeat:no-repeat!important;background-position:center center!important;
  background-size:100% 100%!important;
  border:0!important;box-shadow:none!important;isolation:isolate!important;
