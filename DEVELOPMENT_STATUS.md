@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Android recording 34528 · 2026-11-21
+
+The 34528.mp4 walkthrough showed an empty top band on inner scenes. Removed the Home visibility condition from the Android Neon body inset reset; the menu and match now keep cutout clearance inside their painted surfaces.
+
 ## Android top edge and Back · 2026-11-21
 
 MainActivity owns the transparent edge-to-edge window and requests short-edge cutout layout. Only the status bar is hidden. Native navigation and keyboard space are reserved at their respective edges. Neon Home applies top safe padding to HUD content. Android no longer applies a conflicting status-bar color from JS. System UI controls the transient timeout.

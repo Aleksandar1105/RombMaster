@@ -210,8 +210,8 @@
   clip-path: polygon(6px 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,6px 100%,0 50%);
 }
 
-/* Give the camera inset to Home's foreground; its scene reaches the top edge. */
-:root.android-edge-layout[data-skin="neon"] body:has(#home-hub:not([hidden])) {
+/* Each scene paints to the top. Its controls own the cutout clearance. */
+:root.android-edge-layout[data-skin="neon"] body {
   padding-top: 0;
 }
 :root.android-edge-layout[data-skin="neon"] #view-menu:has(#home-hub:not([hidden])) {
@@ -219,4 +219,9 @@
 }
 :root.android-edge-layout[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) {
   padding-top: max(7px, env(safe-area-inset-top)) !important;
+}
+
+:root.android-edge-layout[data-skin="neon"] #view-menu:has(#menu-page:not([hidden])),
+:root.android-edge-layout[data-skin="neon"] #view-game {
+  padding-top: max(4px, env(safe-area-inset-top)) !important;
 }

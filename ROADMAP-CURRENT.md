@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Android recording 34528 · 2026-11-21
+
+Verify the secondary-screen top edge on the next test APK. On the phone, compare Home, Quick Play setup, a continued match and a newly started match; check a side Back gesture separately from a top-edge pull.
+
 ## Android top edge and Back · 2026-11-21
 
 The Android candidate draws into the camera area and keeps Android Back navigation available. Next phone check: compare a side Back gesture with a pull from the top; record the actual transient-bar timeout.

@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Android recording 34528 · 2026-11-21
+
+34528.mp4 (2m06s, 1080×2340): Home reaches the top at 0:00 and 1:14. A blank band appears above Quick Play at 0:13 and above a match at 0:25. Daily advances through three tasks; Home shows 30 Brain Points and 280 coins afterward. The recording does not identify the build SHA, exact Back input or system bar timeout. Regression suite, web build, Android sync and packaged asset hashes rechecked. Corrected top edge still needs a new phone capture.
+
 ## Android top edge and Back · 2026-11-21
 
 190 regression tests, web build, Android sync and packaged hashes passed. Native Java compile could not start: Gradle 8.5 is not cached and the download is unreachable. Verify on phone: no top letterbox on Home and match, one side Back from menus/dialogs, top-edge pull and auto-hide, three-button Back, landscape cutout and profile keyboard. Previous multi-size visual QA remains open. No APK started.
