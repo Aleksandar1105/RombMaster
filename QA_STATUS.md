@@ -1,6 +1,18 @@
 # RombMaster — QA status
 
-## Current checkpoint · 2026-11-21 · Neon Home
+## Latest verification · 2026-11-21
+
+Runtime revision `80ea07d` addresses the collapsed play buttons in the owner's screenshot 34510.jpg.
+
+| Check | Result | Evidence or next check |
+| --- | --- | --- |
+| Regression suite | PASS | 190 passed, 0 failed |
+| Web build and Capacitor Android sync | PASS | Both completed for this revision |
+| Packaged assets | PASS | SHA-256 matched for 37 reference, 90 Master and 12 Career assets |
+| Android play actions | PENDING | Resume a saved match and open Quick Play. Check full-width Quick Play on a fresh profile |
+| Android visual review | PENDING | Inspect logo clearance and glow, help placement and tap action, and contrast between available and locked rivals |
+
+## Previous checkpoint · 2026-11-21 · Neon Home
 
 Owner feedback on the preceding build (34508.jpg): accepted the logo composition and requested transparency, a completed diamond tip, two navigation buttons, hexagonal rival captions and help at the bottom.
 

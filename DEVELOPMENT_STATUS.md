@@ -1,6 +1,12 @@
 # RombMaster — Development status
 
-## Current handoff · 2026-11-21 · Neon Home
+## Latest implementation · 2026-11-21
+
+On `feat/v25-royal-master`, revision `80ea07d` fixes the collapsed Neon Home play row seen in 34510.jpg. Continue Match and Quick Play use a horizontal row with automatic widths. Quick Play fills the row when no saved match exists. The transparent logo is 8% larger in portrait with contour lighting. Help has a smaller hexagonal footer button. Locked rival portraits are dimmed and status text remains accessible to screen readers.
+
+Resume with the Android checks in QA_STATUS.md.
+
+## Previous handoff · 2026-11-21 · Neon Home
 
 Branch `feat/v25-royal-master`. Recent changes in order:
 
