@@ -1959,3 +1959,31 @@
  grid-template-columns:minmax(0,1fr) 96px!important;gap:6px!important;
  }
 }
+
+
+/* V25.5H1 — HOME ONLY. Restore approved Neon poster.
+   Regression: G6a overrode hero background with an unresolved theme variable,
+   leaving a blank reserved poster slot on Android. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]{
+ --premium-hero-art:url('/assets/premium/reference/neon-reference-hero.webp');
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage:not([hidden]){
+ display:block!important;position:relative;
+ background-image:url('/assets/premium/reference/neon-reference-hero.webp')!important;
+ background-color:transparent!important;
+ background-position:center center!important;
+ background-size:contain!important;
+ background-repeat:no-repeat!important;
+ border:0!important;box-shadow:none!important;
+ overflow:hidden;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage :is(#premium-hero-board,.premium-hero-emblem,#premium-hero-title){
+ display:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-hero #helpBtn{
+ white-space:nowrap!important;min-width:max-content!important;
+ font-size:clamp(.72rem,2.7vw,.95rem)!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-hero #helpBtn span{
+ white-space:nowrap!important;
+}
