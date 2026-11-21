@@ -1987,3 +1987,31 @@
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-hero #helpBtn span{
  white-space:nowrap!important;
 }
+
+
+/* V25.5H2 — approved reference spacing, Neon Home ONLY.
+   Separate illuminated tile rims without changing actions or screen structure. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-actions{
+ row-gap:clamp(9px,1.1vh,17px)!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row,
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid,
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links{
+ column-gap:clamp(12px,2.6vw,22px)!important;
+ row-gap:clamp(10px,1.3vh,18px)!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button,
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button,
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links button{
+ min-width:0!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .premium-rivals-section{
+ margin-block:clamp(4px,.65vh,10px)!important;
+}
+@media (max-width:390px){
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row,
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid,
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links{
+  column-gap:10px!important;row-gap:9px!important;
+ }
+}
