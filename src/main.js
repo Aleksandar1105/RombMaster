@@ -728,6 +728,13 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
         'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
         'premium-career-count': summary ? summary.clearedLevels + ' / ' + CAREER_LEVEL_COUNT : '',
     })) el(id).textContent = value;
+    const coinCounter = el('premium-player-coins');
+    if (coinCounter) {
+        const economy = skinState().wallet;
+        coinCounter.textContent = economy.status === 'ready'
+            ? walletBalance(economy.wallet).toLocaleString('en-US')
+            : '—';
+    }
     const points = el('premium-brain-points');
     const daily = DailyProgress.read(localDateKey());
     if (points) points.textContent = daily.status === 'ready' ? daily.progress.brainPoints + ' Brain Points' : 'Brain Points unavailable';
