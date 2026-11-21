@@ -31,7 +31,7 @@ def validate(item):
     u = urlsplit(url)
     if (u.scheme != "https" or u.netloc != "gcdn.picsart.com"
             or not (re.fullmatch(r"/pipeline-output/[a-zA-Z0-9-]+\.(png|jpe?g|webp)", u.path)
-                    or re.fullmatch(r"/editing-temp/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(png|jpe?g|webp)", u.path))
+                    or re.fullmatch(r"/(?:editing-temp|picsart-mcp)/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(png|jpe?g|webp)", u.path))
             or u.query or u.fragment):
         raise ValueError("Only direct Picsart image URLs are allowed")
     if type(maximum) is not int or not 320 <= maximum <= 2048:
@@ -131,7 +131,7 @@ def self_test():
         # Seedream can return a direct image under editing-temp rather than
         # pipeline-output. Accept only UUID image paths on the same exact host.
         direct = "https://gcdn.picsart.com/editing-temp/12345678-1234-1234-1234-123456789abc.jpeg"
-        for url in [direct, "https://gcdn.picsart.com/pipeline-output/a.png"]:
+        for url in [direct, direct.replace("editing-temp", "picsart-mcp"), "https://gcdn.picsart.com/pipeline-output/a.png"]:
             assert validate({"name": "test.webp", "url": url, "max_side": 320}) == ("test.webp", url, 320)
         for url in ["http://gcdn.picsart.com/pipeline-output/a.png", "https://evil.test/a.png",
                     "https://gcdn.picsart.com@evil.test/pipeline-output/a.png",
@@ -187,6 +187,18 @@ def main():
         # Publish only when every source passed validation and conversion.
         for output in work.iterdir():
             (DEST / output.name).write_bytes(output.read_bytes())
+    for name, url, _ in entries:
+        if name == "neon-home-h6.webp":
+            css = ROOT / "src/skin-store-compact.css"
+            old = "url('" + url + "')"
+            new = "url('/assets/premium/master/" + name + "')"
+            style = css.read_text()
+            if old not in style and new not in style:
+                raise ValueError("H6 background reference has changed")
+            style = style.replace(old, new).replace(
+                "The source is saved durably in the owner's Picsart Drive; remote image\n   requires internet until a binary is checked into public/assets.",
+                "The optimized background is bundled for offline use.")
+            css.write_text(style)
     print("ASSET CONVERSION: PASS")
 
 if __name__ == "__main__":

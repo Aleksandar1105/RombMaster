@@ -98,7 +98,8 @@ workflows:
       - name: Commit generated assets to the same feature branch
         script: |
           set -eu
-          git add -- src/public/assets/premium/master/
+          node scripts/verify-theme-assets.mjs
+          git add -- src/public/assets/premium/master/ src/skin-store-compact.css
           if git diff --cached --quiet; then echo "ASSETS ALREADY CURRENT"; exit 0; fi
           git diff --cached --name-only
           git -c user.name="RombMaster Asset Bot" -c user.email="rombmaster-assets@users.noreply.github.com" commit -m "chore(assets): import optimized Picsart artwork [skip ci]"
