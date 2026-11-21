@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Neon screen implementation · 2026-11-21
+
+Based on walkthrough plan 1844ddc. The new secondary-screen stylesheet uses the transparent Home wordmark asset, selected-state markers, quieter profile choices, a compact results panel, readable Arena cards and consistent back actions. It covers match HUD, tutorial/confirmations, Daily, Career, settings, statistics and store. Preview exit uses the previewed skin palette when opened from Neon. The VM test loader treats styles as bundled assets. The Android fullscreen behavior and board renderer were retained pending device verification.
+
 ## Neon Android recording reviewed · 2026-11-21
 
 Reviewed 34526.mp4 against Neon Home and recorded an ordered pre-build plan in ROADMAP-CURRENT.md. Code reference for planning: 40a670d. The recording does not identify its exact commit. The next implementation starts with the compact wordmark, shared controls and selected states, followed by Quick Play and the match HUD. This checkpoint changes tracking documents only.

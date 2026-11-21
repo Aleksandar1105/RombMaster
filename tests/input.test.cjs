@@ -78,13 +78,11 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
       constructor(canvas) { this.canvas = canvas; this.CELL = 40; this.offX = 0; this.offY = 0; this.particles = []; }
       resize() {} spawnParticles() {} draw() {}
     } },
-    'style.css': {},
-    // Styles are bundled by Vite, not evaluated as JavaScript in the VM harness.
-    'skin-store-compact.css': {},
   };
   function load(filename) {
     if (modules.has(filename)) return modules.get(filename);
-    const stub = stubs[path.basename(filename)];
+    // Vite bundles styles separately from the JavaScript module graph.
+    const stub = filename.endsWith('.css') ? {} : stubs[path.basename(filename)];
     const mod = stub ? new vm.SyntheticModule(Object.keys(stub), function () {
       for (const [key, value] of Object.entries(stub)) this.setExport(key, value);
     }, { context, identifier: filename }) : new vm.SourceTextModule(fs.readFileSync(filename, 'utf8'), { context, identifier: filename });

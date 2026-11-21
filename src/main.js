@@ -1,5 +1,6 @@
 import './style.css';
 import './skin-store-compact.css';
+import './neon-screens.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -764,6 +765,7 @@ el('skin-home-preview').onclick = () => {
     if (getSkin(previewSkinId).prestige || homePreviewSkin || el('skin-page').hidden || el('menu-page').hidden || ui.viewMenu.classList.contains('hidden')) return;
     stopSkinPreview();
     const skin = getSkin(previewSkinId);
+    el('home-preview-bar').dataset.sourceSkin = activeSkin().id;
     homePreviewSkin = skin.id;
     const hub = el('home-hub');
     for (const area of hub.querySelectorAll('.home-hero, .home-actions')) area.inert = true;

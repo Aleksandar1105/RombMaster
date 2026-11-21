@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Neon pre-build implementation · 2026-11-21
+
+The six screen groups in the recorded walkthrough now have a Neon styling pass. Next checkpoint: run the visual comparisons and Android system-bar checks in phase 7 below before approving the next APK build. No new skin assets or economy changes were needed.
+
 ## Neon Android video review and pre-build plan · 2026-11-21
 
 Reference: the 2m19s portrait recording 34526.mp4. Use the opening Home as the reference for the active Neon skin. Preserve its transparent crystal artwork, compact player header, dark surfaces, beveled controls and restrained cyan/magenta highlights. The Home with an active match (0:00) and after victory (0:28) are two valid states.

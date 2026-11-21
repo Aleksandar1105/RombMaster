@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Neon pre-build implementation checks · 2026-11-21
+
+190/190 regression tests passed. Vite production build and Capacitor Android sync passed. Packaged SHA256 checks passed for 37 reference, 90 Master and 12 Career assets. The built CSS includes the Neon overrides after the shared skin styles. Local Playwright could not launch Chromium because the environment denied its browser socket. Visual comparison at 320×568, 390×844 and 412×915, actual WebView layout, keyboard dismissal, app resume and transient system bars are still open. No APK build was triggered; this is a source candidate, pending visual approval.
+
 ## Neon phone walkthrough · 2026-11-21
 
 Evidence: 139-second Android recording, 1080×2340. Home is visible both with a saved match and after victory. Reviewed Quick Play, match, victory, profile/player and character flows, store/details/preview/collection, tutorial, career, challenge puzzle, Arena and confirmation dialogs. Findings and timestamps are in ROADMAP-CURRENT.md. Intermittent system bars are visible; reproduce without an edge gesture before classifying as a fullscreen regression.
