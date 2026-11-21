@@ -1851,3 +1851,20 @@
 @media(prefers-reduced-motion:reduce){
  :root[data-skin="neon"] #view-menu #menu-page #player-settings .avatar-choice::before{transition:none;}
 }
+
+
+/* G6a follow-up: actual confirmation markup uses .game-confirm-content. */
+:root[data-skin="neon"] #confirm-dialog .game-confirm-content{
+ border:0!important;border-image:none!important;border-radius:14px!important;
+ box-shadow:0 14px 36px #0008!important;
+ background:linear-gradient(160deg,#0b223bdc,#0a1129ee)!important;
+}
+:root[data-skin="neon"] #confirm-dialog .game-confirm-actions{
+ width:100%;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-progress:not([hidden]){
+ min-height:0!important;align-self:stretch!important;justify-self:stretch!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-progress :is(.rm-page-nav,.arcade-performance,#arcade-rewards){
+ align-self:stretch!important;justify-self:stretch!important;
+}
