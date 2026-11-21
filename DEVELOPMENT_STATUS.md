@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Android fullscreen · 2026-11-21
+
+The Android BridgeActivity now hides the status and navigation bars on creation and when window focus returns. AndroidX controls transient edge-swipe access to system navigation. The activity applies the behavior across Home, gameplay and menus.
+
 ## Neon HUD and controls · 2026-11-21
 
 Based on runtime 80ea07d and the latest owner screenshot, Neon Home now shows an XP badge, illustrated coin, preview gem and outlined settings control. Currency groups stack on compact widths. Home actions use leading outlined symbols, including resume, play, Career growth, calendar, infinity and a hanger. The wide Arena action shares the cut depth of the smaller buttons. Help uses a dark inset and centered label.

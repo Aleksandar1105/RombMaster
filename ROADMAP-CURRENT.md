@@ -6,6 +6,10 @@ Long-term milestones are in ROADMAP.md.
 
 For every project change, update ROADMAP-CURRENT.md (milestone and next step), DEVELOPMENT_STATUS.md (implementation and revision) and QA_STATUS.md (checks run, results and pending checks) in the same commit. When starting a new conversation, read all three at the current branch head.
 
+## Android fullscreen · 2026-11-21
+
+Android fullscreen is implemented for Home and gameplay. Next device review: cold start, resume after switching apps, transient bars on an edge swipe and keyboard dismissal on the player-name field.
+
 ## Neon HUD and controls · 2026-11-21
 
 Neon Home HUD and action icons are ready for the next Android visual review. The owner screenshot shows the repaired play row. Review the compact currency display, action bevels and centered help label. Gems remain reserved for a future economy milestone.

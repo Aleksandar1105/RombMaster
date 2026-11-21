@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Android fullscreen · 2026-11-21
+
+190 regression tests passed. Vite build, Capacitor sync and packaged asset hashes passed. Local APK compilation was blocked while the Gradle wrapper attempted to download Gradle 8.5. A Codemagic APK and device check are pending for launch, gameplay, edge-swipe navigation, app switching, keyboard dismissal and header clearance near the camera cutout.
+
 ## Neon HUD and controls · 2026-11-21
 
 The supplied phone screenshot confirms that both play buttons render side by side in the saved-match state. For this revision, 190 regression tests passed, Vite built, Capacitor synchronized and source/dist/Android asset hashes matched (37 reference, 90 Master, 12 Career). The packaged Home contains six decorative action SVGs and a labeled Gems placeholder. Pending on Android: check HUD fit, currency readability, all six actions, Arena corners and the help button.
