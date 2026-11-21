@@ -2249,3 +2249,61 @@
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-status-row .home-coin-count{padding:4px;font-size:.62rem;}
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-status-row .home-settings-trigger{width:29px;height:29px;min-width:29px;min-height:29px;}
 }
+
+
+/* V25.5H6 — one approved seamless Neon arena for the whole HOME surface.
+   The source is saved durably in the owner's Picsart Drive; remote image
+   requires internet until a binary is checked into public/assets.
+   Other skins/screens are deliberately unaffected. */
+:root[data-skin="neon"] #view-menu:has(#home-hub[data-neon-reference="1"]:not([hidden])){
+ background:#071327!important;background-image:none!important;
+}
+:root[data-skin="neon"] #view-menu > .home-shell:has(#home-hub[data-neon-reference="1"]:not([hidden])){
+ background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]){
+ background-color:#071327!important;
+ background-image:url('https://gcdn.picsart.com/picsart-mcp/45c2e21b-638c-4291-8ee2-09a647bfffec.png')!important;
+ background-repeat:no-repeat!important;background-position:center center!important;
+ background-size:100% 100%!important;
+ border:0!important;box-shadow:none!important;isolation:isolate!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.home-actions,.home-hero,.play-row,.mode-grid,.home-utility-row,.home-links){
+ background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage:not([hidden]){
+ position:relative!important;display:grid!important;place-items:center!important;
+ background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;
+ overflow:visible!important;
+}
+/* Logo is a real DOM image, separate from the scenery, and never a second poster. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage .neon-home-brand{
+ position:absolute!important;inset:0!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ background:transparent!important;pointer-events:none!important;
+ overflow:visible!important;z-index:2!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage .neon-home-brand img{
+ display:block!important;width:min(82%,410px)!important;max-width:82%!important;
+ max-height:35%!important;height:auto!important;object-fit:contain!important;
+ filter:drop-shadow(0 3px 12px #030c1b) drop-shadow(0 0 13px #1acbf288)!important;
+}
+/* Header remains flush; background canvas is visible behind every other row. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]){
+ background:linear-gradient(90deg,#071426e8,#101d32d9 55%,#09182ddd)!important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.premium-rivals-section,.premium-rivals-strip,.premium-rival-card){
+ background:transparent!important;background-image:none!important;
+}
+@media(orientation:portrait){
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]){
+  background-size:100% 100%!important;background-position:center center!important;
+ }
+ :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage .neon-home-brand img{
+  width:min(84%,390px)!important;
+ }
+}
