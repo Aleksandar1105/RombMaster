@@ -1868,3 +1868,94 @@
 :root[data-skin="neon"] #view-menu #menu-page #arcade-page #arcade-progress :is(.rm-page-nav,.arcade-performance,#arcade-rewards){
  align-self:stretch!important;justify-self:stretch!important;
 }
+
+
+/* V25.5G7 — owner QA: remove redundant avatar above grid, selection glow,
+   character-specific portrait aura, and polished profile save. Neon only. */
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-pane[data-profile-pane="avatar"] > .profile-avatar-row{
+ display:none!important;
+}
+/* The active local-player button has a single cyan luminous state; no gold ring. */
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option[aria-pressed="true"],
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher input:checked + span,
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-character-categories input:checked + span{
+ outline:0!important;outline-offset:0!important;border:1px solid #79f5ff!important;
+ border-image:none!important;box-shadow:inset 0 0 15px #22d3ee45,0 0 13px #22d3ee66!important;
+ background:linear-gradient(145deg,#0c4a65ee,#101c39ee 70%,#29305aee)!important;
+ filter:none!important;color:#f1feff!important;text-shadow:0 0 10px #65eeffb8!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option[aria-pressed="true"]::before,
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .rm-player-option[aria-pressed="true"]::after{
+ content:none!important;display:none!important;
+}
+/* Keyboard focus remains visible, using the same neon hue rather than gold. */
+:root[data-skin="neon"] #view-menu #menu-page #player-settings :is(.rm-player-option,.avatar-choice,#save-profile-btn):focus-visible{
+ outline:2px solid #7af5ff!important;outline-offset:3px!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-switcher label:has(input:focus-visible){
+ outline:2px solid #7af5ff!important;outline-offset:3px!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice{
+ --rm-character-glow:#45e6fa;
+ background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="spark"]{--rm-character-glow:#ffcf55;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="fox"]{--rm-character-glow:#ff8c38;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="robot"]{--rm-character-glow:#5defff;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="rocket"]{--rm-character-glow:#fa5f8b;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="dragon"]{--rm-character-glow:#57ef8e;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="shield"]{--rm-character-glow:#e0b65e;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar="neon-fox"]{--rm-character-glow:#fa65ef;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="frost"],
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="azure"]{--rm-character-glow:#70e9ff;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="jade"]{--rm-character-glow:#4cf6a2;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="crimson"],
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="ember"]{--rm-character-glow:#ff697b;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="gold"],
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="solar"]{--rm-character-glow:#ffd06d;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="void"],
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[data-profile-avatar*="moon"]{--rm-character-glow:#b59aff;}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice::before{
+ background:radial-gradient(ellipse at center,color-mix(in srgb,var(--rm-character-glow) 65%,transparent) 0%,color-mix(in srgb,var(--rm-character-glow) 28%,transparent) 37%,transparent 72%)!important;
+ inset:8% 4% 23%!important;border-radius:50%!important;filter:blur(11px);
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[aria-pressed="true"]::before{
+ opacity:1!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .premium-avatar-grid .avatar-choice[aria-pressed="true"] .avatar-art{
+ filter:drop-shadow(0 0 4px var(--rm-character-glow)) drop-shadow(0 0 11px var(--rm-character-glow))!important;
+}
+/* Portrait images may contain opaque square pixels. Do not fabricate a contour mask;
+   the background halo and image drop shadow are safe CSS-only approximations. */
+:root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-name-row:not([hidden]){
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(110px,28%)!important;
+ align-items:stretch!important;gap:10px!important;padding:10px 0!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #profile-name{
+ width:100%!important;min-width:0!important;min-height:52px!important;
+ border:1px solid #34d5e899!important;border-radius:10px!important;
+ background:linear-gradient(130deg,#0a3045d9,#08152dce)!important;
+ color:#e8fdff!important;font-family:var(--rm-display-font,var(--rm-font));
+ font-size:1rem!important;padding:10px 14px!important;box-shadow:inset 0 0 12px #22d3ee12!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #profile-name:focus{
+ outline:2px solid #65eaf8!important;outline-offset:2px!important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #save-profile-btn{
+ display:grid!important;place-items:center!important;width:100%!important;
+ min-height:52px!important;height:auto!important;margin:0!important;padding:10px!important;
+ background:linear-gradient(140deg,#135b70,#102d4b 60%,#30235a)!important;
+ border:1px solid #5de6f5!important;border-radius:10px!important;border-image:none!important;
+ box-shadow:inset 0 0 13px #22d3ee2b,0 0 8px #22d3ee35!important;
+ font-family:var(--rm-display-font,var(--rm-font));font-weight:800!important;
+ color:#efffff!important;text-shadow:0 0 7px #67e8f9a6;
+}
+:root[data-skin="neon"] #view-menu #menu-page #player-settings #save-profile-btn:active{
+ box-shadow:inset 0 0 18px #22d3ee88,0 0 15px #22d3ee88!important;
+}
+@media(max-width:350px){
+ :root[data-skin="neon"] #view-menu #menu-page #player-settings .profile-name-row:not([hidden]){
+ grid-template-columns:minmax(0,1fr) 96px!important;gap:6px!important;
+ }
+}
