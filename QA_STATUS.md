@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Android top edge and Back · 2026-11-21
+
+190 regression tests, web build, Android sync and packaged hashes passed. Native Java compile could not start: Gradle 8.5 is not cached and the download is unreachable. Verify on phone: no top letterbox on Home and match, one side Back from menus/dialogs, top-edge pull and auto-hide, three-button Back, landscape cutout and profile keyboard. Previous multi-size visual QA remains open. No APK started.
+
 ## Neon pre-build implementation checks · 2026-11-21
 
 190/190 regression tests passed. Vite production build and Capacitor Android sync passed. Packaged SHA256 checks passed for 37 reference, 90 Master and 12 Career assets. The built CSS includes the Neon overrides after the shared skin styles. Local Playwright could not launch Chromium because the environment denied its browser socket. Visual comparison at 320×568, 390×844 and 412×915, actual WebView layout, keyboard dismissal, app resume and transient system bars are still open. No APK build was triggered; this is a source candidate, pending visual approval.

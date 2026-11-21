@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Android top edge and Back · 2026-11-21
+
+MainActivity owns the transparent edge-to-edge window and requests short-edge cutout layout. Only the status bar is hidden. Native navigation and keyboard space are reserved at their respective edges. Neon Home applies top safe padding to HUD content. Android no longer applies a conflicting status-bar color from JS. System UI controls the transient timeout.
+
 ## Neon screen implementation · 2026-11-21
 
 Based on walkthrough plan 1844ddc. The new secondary-screen stylesheet uses the transparent Home wordmark asset, selected-state markers, quieter profile choices, a compact results panel, readable Arena cards and consistent back actions. It covers match HUD, tutorial/confirmations, Daily, Career, settings, statistics and store. Preview exit uses the previewed skin palette when opened from Neon. The VM test loader treats styles as bundled assets. The Android fullscreen behavior and board renderer were retained pending device verification.

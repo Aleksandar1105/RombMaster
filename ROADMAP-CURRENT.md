@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Android top edge and Back · 2026-11-21
+
+The Android candidate draws into the camera area and keeps Android Back navigation available. Next phone check: compare a side Back gesture with a pull from the top; record the actual transient-bar timeout.
+
 ## Neon pre-build implementation · 2026-11-21
 
 The six screen groups in the recorded walkthrough now have a Neon styling pass. Next checkpoint: run the visual comparisons and Android system-bar checks in phase 7 below before approving the next APK build. No new skin assets or economy changes were needed.

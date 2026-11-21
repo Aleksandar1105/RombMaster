@@ -7,6 +7,11 @@ export const Native = {
   hapticsEnabled: true,
   setHapticsEnabled(enabled) { this.hapticsEnabled = Boolean(enabled); },
   async init() {
+    // MainActivity owns Android bar visibility, color and edge-to-edge layout.
+    if (Capacitor.getPlatform() === 'android') {
+      document.documentElement.classList.add('android-edge-layout');
+      return;
+    }
     try {
       await StatusBar.setStyle({ style: Style.Dark });
       await StatusBar.setBackgroundColor({ color: '#080F21' });

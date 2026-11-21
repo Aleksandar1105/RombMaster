@@ -209,3 +209,14 @@
   background: #0b1d32;
   clip-path: polygon(6px 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,6px 100%,0 50%);
 }
+
+/* Give the camera inset to Home's foreground; its scene reaches the top edge. */
+:root.android-edge-layout[data-skin="neon"] body:has(#home-hub:not([hidden])) {
+  padding-top: 0;
+}
+:root.android-edge-layout[data-skin="neon"] #view-menu:has(#home-hub:not([hidden])) {
+  padding-top: 0 !important;
+}
+:root.android-edge-layout[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) {
+  padding-top: max(7px, env(safe-area-inset-top)) !important;
+}
