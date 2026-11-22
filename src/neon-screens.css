@@ -235,3 +235,41 @@ html[data-edition="core"] :is(.home-gem-count, .home-utility-row, #premium-rival
 html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueBtn[hidden] {
     display: none !important;
 }
+
+/* Group the setup choices above a live preview, with a single launch action. */
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings .rm-quick-label {
+  display: flex;
+  align-items: center;
+  gap: .65em;
+  color: #b6e8f3;
+  letter-spacing: .08em;
+}
+:root[data-skin="neon"] #quick-settings .rm-quick-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #427084, transparent);
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button[aria-pressed="true"]::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  top: 5px;
+  right: 5px;
+  background: none;
+  clip-path: none;
+  border: solid #a5f7ff;
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg);
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings .rm-quick-preview {
+  background: radial-gradient(ellipse at center, #10334ddd, #08172bbf 72%) !important;
+  border-block: 1px solid #34536d !important;
+  padding-block: clamp(3px, .7dvh, 8px);
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings #quick-match-summary {
+  color: #c4edf6;
+  font-size: clamp(.75rem, 2.8vw, .92rem);
+}
+:root[data-skin="neon"] #quick-settings .btn-group button small {color: #c2d4e4;}
+:root[data-skin="neon"] #quick-settings #setup-play span {color: #b5f6ff;}

@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Neon Quick Play and Android Back · 2026-11-22
+
+Android Back pauses an unfinished match and offers Keep playing or Save & return. Leaving an active game requires a successful save. Quick Play highlights selected choices with a check, separates setup groups, frames the live preview and labels the start action.
+
 ## Core phone walkthrough · 2026-11-22
 
 Recording 34539.mp4 reviews the Android Core flow on a phone. This checkpoint records device evidence only. An exit confirmation during an active match remains a proposed change.

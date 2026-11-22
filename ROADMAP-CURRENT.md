@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Neon Quick Play and Android Back · 2026-11-22
+
+Neon Home accepted by owner for this stage; minor polish deferred to Play Store release candidate. Royal preview layout deferred. Current review scope: Neon Quick Play setup and active-match Android Back. Verify both confirmation choices and Continue on the next handset build.
+
 ## Core phone walkthrough · 2026-11-22
 
 Phone walkthrough covers new-player entry, the first Career win, opening level 2, Royal preview and a complete Quick Play match. Next verify active-match Back and resume, then progress through level 30 and test an in-place update.

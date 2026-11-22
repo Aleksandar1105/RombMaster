@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Neon Quick Play and Android Back · 2026-11-22
+
+Owner confirms the status bar appeared on deliberate top-edge swipe and hid after about two seconds. Previous phone build returned directly Home on Android Back. New regression checks exercise cancel via Back, confirmation and restoration of board and turn. 192/192 tests, Vite build, Android sync and 139 packaged theme assets passed. Chromium launch denied by local socket permissions; Quick Play visual and new Back behavior await the next physical-device test.
+
 ## Core phone walkthrough · 2026-11-22
 
 34539.mp4 (94s, portrait): created a player using the keyboard; Home → Play opened guided level 1; victory 9–0 with three stars; level 2 opened; Royal preview returned to Neon; Quick Play ended 15–6. No persistent upper gray strip apparent in sampled Home and match frames. The status bar appears briefly around 0:36. Back input, exact bar timeout and resumption of the identical board were not established. Royal preview shows Profile on a separate row below How to play. APK commit is not displayed.

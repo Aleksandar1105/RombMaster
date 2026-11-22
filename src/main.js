@@ -1341,8 +1341,9 @@ el('restartBtn').onclick = () => {
     } else restart();
 };
 el('menuBtn').onclick = () => {
-    showHome();
     Game.saveLocal();
+    if (!Game.gameOver && Game.saveFailed) return;
+    showHome();
     Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
     ui.viewMenu.classList.remove('hidden'); ui.viewMenu.classList.add('active-view');
@@ -1685,7 +1686,16 @@ Native.onBack(() => {
     } else if (el('overlay').classList.contains('flex')) {
         el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
-        el('menuBtn').click();
+        if (Game.gameOver) {
+            el('menuBtn').click();
+            return;
+        }
+        confirmDialog.open({
+            heading: 'Return to Home?',
+            detail: 'You can resume this match with Continue.',
+            cancelLabel: 'Keep playing', confirmLabel: 'Save & return',
+            onConfirm: () => el('menuBtn').click(), focusReturn: el('menuBtn'),
+        });
     } else if (backSubpage() || closeSkinDetails()) {
         return;
     } else if (arcade?.back()) {

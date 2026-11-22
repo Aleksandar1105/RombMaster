@@ -203,7 +203,22 @@ test('Back closes help first, then saves to menu, then confirms Android exit fro
   assert.equal(h.el('help-modal').classList.contains('flex'), false);
   assert.equal(h.game.gameOver, false);
   assert.equal(h.exits, 0);
+  const board = JSON.stringify(h.game.board);
+  const player = h.game.player;
   h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog-title').textContent, 'Return to Home?');
+  assert.equal(h.game.paused, true);
+  h.nativeEvents.back();
+  assert.equal(h.el('confirm-dialog').hidden, true);
+  assert.equal(h.game.paused, false);
+  assert.equal(JSON.stringify(h.game.board), board);
+  h.nativeEvents.back();
+  h.el('confirm-dialog-accept').click();
+  h.el('continueBtn').click();
+  assert.equal(JSON.stringify(h.game.board), board);
+  assert.equal(h.game.player, player);
+  h.nativeEvents.back();
+  h.el('confirm-dialog-accept').click();
   assert.equal(h.game.gameOver, true);
   assert.equal(h.el('continueBtn').hidden, false);
   assert.equal(h.exits, 0);
@@ -223,6 +238,7 @@ test('Back closes help first, then saves to menu, then confirms Android exit fro
 
 test('Back closes result without leaving a blocking overlay on the menu', async () => {
   const h = await boot();
+  h.game.gameOver = true;
   h.el('overlay').classList.add('flex');
   h.nativeEvents.back();
   assert.equal(h.el('overlay').classList.contains('flex'), false);
