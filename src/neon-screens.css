@@ -405,3 +405,27 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
   :root[data-skin="neon"] .btn-group button svg { color:var(--skin-o) !important; }
   :root[data-skin="neon"] .btn-group button[aria-pressed="true"] svg { color:var(--skin-x) !important; }
 }
+
+/* Build #40: preserve the approved Neon wordmark, replace its baked misaligned
+   playing-grid area with an exact common-edge X/O vector. Only Home uses this.
+   The SVG has the same 1080:720 intrinsic ratio as the wordmark asset. */
+:root[data-skin="neon"] #premium-hero-stage .neon-home-brand > img {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 45%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 32%, transparent 45%);
+}
+:root[data-skin="neon"] #premium-hero-stage .neon-home-brand > .neon-logo-rebuilt-board {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px #2ad9ef65);
+}
+@media (orientation: portrait) {
+  :root[data-skin="neon"] #premium-hero-stage .neon-home-brand > .neon-logo-rebuilt-board {
+    transform: scale(1.08);
+  }
+}
+:root:not([data-skin="neon"]) .neon-logo-rebuilt-board { display: none; }

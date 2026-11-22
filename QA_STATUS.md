@@ -1,3 +1,7 @@
+## Build #40 owner report and fix candidate · 2026-11-22
+
+Build #40 device screenshots: FAIL Android Back first gesture reveals status/navigation bars; FAIL translucent playing surface in Quick Play and gameplay (also reported Career); FAIL Home logo cell layout/fill. Fix candidate changes native bar policy, shared Neon Renderer fill and a Home-only aligned vector board overlay. Existing active-match confirmation remains. Device recheck pending: first Back from gameplay and Quick Play; Keep playing / Save & return and Continue; bottom native gesture area not obstructing controls; all board surfaces opaque INSIDE but transparent OUTSIDE; visual matching of logo wordmark, vector cell alignment and X/O at 360–412 px portrait. The Android OS may keep a navigation handle visible. NOT YET VERIFIED on a physical device.
+
 # RombMaster — QA status
 
 ## Neon board palette and handset corrections · 2026-11-22

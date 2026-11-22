@@ -61,9 +61,19 @@ export class Renderer {
 
     
 
-    // V2.3: a calm, continuous playing surface, without cell outlines.
-    // Only playable squares receive the wash; the existing edge pass is
-    // still the single source of truth for all played/available edges.
+    // The Neon playing surface is opaque INSIDE the diamond only. Outside
+    // the active cells the transparent canvas still reveals the arena art.
+    // All render paths (match, setup, Career, Daily and skin previews) share
+    // this renderer. Do not add per-cell outlines: shared edges paint once.
+    if (skin.id === 'neon') {
+      this.ctx.fillStyle = '#071b30';
+      for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
+        if (board.active(r, c)) {
+          this.ctx.fillRect(dx(c), dy(r), this.CELL, this.CELL);
+        }
+      }
+    }
+    // A subtle skin-specific wash, without extra lines or grid artifacts.
     this.ctx.fillStyle = colors.dot + (skin.id === 'royal' ? '24' : skin.id === 'neon' ? '1c' : skin.id === 'white' ? '0a' : '0c');
     for (let r = 0; r < board.S; r++) for (let c = 0; c < board.S; c++) {
       if (board.active(r, c)) {

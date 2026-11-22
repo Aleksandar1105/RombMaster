@@ -1,3 +1,7 @@
+## Build #40 correction gate · 2026-11-22
+
+Three owner-reported defects in Android Build #40: first system Back gesture swallowed by bar reveal; transparency through the active playing cells across match/setup/Career; crooked X/O Home logo board. Prepare the code fix on feat/android-closed-test-core, then build manually with Codemagic (not GitHub Actions). Verify native Back with the tradeoff of a visible OS gesture indicator, all boards and the reconstructed board on Home. Do not carry prior PASS to the new APK. Do not change progress, saved games, score or AI.
+
 # RombMaster — current roadmap checkpoint
 
 ## Neon board palette and handset corrections · 2026-11-22

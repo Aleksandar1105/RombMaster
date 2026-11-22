@@ -1,3 +1,7 @@
+## Build #40 feedback corrections · 2026-11-22
+
+Source update on feat/android-closed-test-core based on owner screenshots 34567/34569/34571. The Android native window now keeps the gesture navigation bar available while hiding the status bar to avoid the first Back gesture being swallowed by immersive bar reveal; the existing in-game Save & return confirmation is unchanged. An unavoidable system navigation handle may remain visible and must not be hidden by the app. The Neon canvas renderer paints an opaque #071b30 base INSIDE active diamond cells before the translucent wash. Its exterior stays transparent, and the shared edge and scoring algorithms are unchanged. Home retains the approved wordmark but masks its baked misaligned board and overlays a deterministic 4x4 aligned X/O logo grid. All device results require a new APK; no claims of Android or visual PASS are made here.
+
 # RombMaster — Development status
 
 ## Neon board palette and handset corrections · 2026-11-22
