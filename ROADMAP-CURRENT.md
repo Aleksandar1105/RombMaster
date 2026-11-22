@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Quick Play Home-style controls · 2026-11-22
+
+Quick Play now uses the approved Home scene and control geometry. Next phone review: all mode, size and difficulty choices, Back and Start match, selected-state visibility and preview contrast.
+
 ## Neon Quick Play and Android Back · 2026-11-22
 
 Neon Home accepted by owner for this stage; minor polish deferred to Play Store release candidate. Royal preview layout deferred. Current review scope: Neon Quick Play setup and active-match Android Back. Verify both confirmation choices and Continue on the next handset build.

@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Quick Play Home-style controls · 2026-11-22
+
+192 regression tests passed. Vite production build, Capacitor sync and 139 packaged asset hash checks passed. The supplied screenshot documents the previous layout. The new appearance still needs verification in the next handset APK.
+
 ## Neon Quick Play and Android Back · 2026-11-22
 
 Owner confirms the status bar appeared on deliberate top-edge swipe and hid after about two seconds. Previous phone build returned directly Home on Android Back. New regression checks exercise cancel via Back, confirmation and restoration of board and turn. 192/192 tests, Vite build, Android sync and 139 packaged theme assets passed. Chromium launch denied by local socket permissions; Quick Play visual and new Back behavior await the next physical-device test.

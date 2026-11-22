@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Quick Play Home-style controls · 2026-11-22
+
+Neon Quick Play uses the Home arena and shared bevel, rim and face variables. Removed the page wordmark and panel fills. Selected setup choices have a brighter magenta face and check mark. Added touch feedback for enabled Neon buttons and a persistent highlight for stateful controls.
+
 ## Neon Quick Play and Android Back · 2026-11-22
 
 Android Back pauses an unfinished match and offers Keep playing or Save & return. Leaving an active game requires a successful save. Quick Play highlights selected choices with a check, separates setup groups, frames the live preview and labels the start action.

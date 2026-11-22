@@ -39,7 +39,6 @@
   padding-inline: min(19vw, 78px);
   margin-block: 0 4px;
 }
-:root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button:not(:disabled),
 :root[data-skin="neon"] #view-menu #menu-page #player-settings :is(.profile-switcher label span, .rm-character-categories label span, .rm-player-option),
 :root[data-skin="neon"] #view-menu #menu-page #skin-page .skin-store-tabs button:not(:disabled) {
   position: relative;
@@ -51,23 +50,12 @@
   box-shadow: none !important;
   text-shadow: none !important;
 }
-:root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button[aria-pressed="true"],
 :root[data-skin="neon"] #view-menu #menu-page #player-settings :is(.rm-player-option[aria-pressed="true"], label input:checked + span),
 :root[data-skin="neon"] #view-menu #menu-page #skin-page .skin-store-tabs button[aria-pressed="true"] {
   background: var(--neon-selected) !important;
   border-color: var(--neon-highlight) !important;
   box-shadow: inset 0 -3px #65e4f4 !important;
   color: white !important;
-}
-:root[data-skin="neon"] #quick-settings .btn-group button[aria-pressed="true"]::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 6px;
-  height: 6px;
-  background: var(--neon-highlight);
-  clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%);
 }
 :root[data-skin="neon"] #quick-match-summary,
 :root[data-skin="neon"] #view-menu #menu-page #skin-page :is(#skin-status, #skin-owned-count) {
@@ -252,20 +240,16 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
 }
 :root[data-skin="neon"] #view-menu #menu-page #quick-settings .btn-group button[aria-pressed="true"]::after {
   content: "";
+  position: absolute;
   width: 9px;
   height: 5px;
   top: 5px;
-  right: 5px;
+  right: var(--home-cut);
   background: none;
   clip-path: none;
-  border: solid #a5f7ff;
+  border: solid #fff0fa;
   border-width: 0 0 2px 2px;
   transform: rotate(-45deg);
-}
-:root[data-skin="neon"] #view-menu #menu-page #quick-settings .rm-quick-preview {
-  background: radial-gradient(ellipse at center, #10334ddd, #08172bbf 72%) !important;
-  border-block: 1px solid #34536d !important;
-  padding-block: clamp(3px, .7dvh, 8px);
 }
 :root[data-skin="neon"] #view-menu #menu-page #quick-settings #quick-match-summary {
   color: #c4edf6;
@@ -273,3 +257,60 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
 }
 :root[data-skin="neon"] #quick-settings .btn-group button small {color: #c2d4e4;}
 :root[data-skin="neon"] #quick-settings #setup-play span {color: #b5f6ff;}
+
+/* Quick Play uses the same arena artwork and beveled materials as Home. */
+:root[data-skin="neon"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) {
+  background: #071327 url('/assets/premium/master/neon-home-h6.webp') center / 100% 100% no-repeat !important;
+}
+:root[data-skin="neon"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden]))
+:is(.home-shell, #menu-page, #page-title, #quick-settings, .rm-quick-layout, .rm-quick-options,
+    .rm-quick-group, .btn-group, .rm-quick-preview, #setup-preview) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+:root[data-skin="neon"] #menu-page:has(#quick-settings:not([hidden])) #page-title::before {
+  content: none;
+}
+:root[data-skin="neon"] #view-menu #menu-page:has(#quick-settings:not([hidden]))
+:is(#page-back, #quick-settings button) {
+  --home-cut: clamp(9px, 2.8vw, 16px);
+  position: relative !important;
+  isolation: isolate;
+  background: var(--neon-action-rim) !important;
+  clip-path: var(--neon-action-shape) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #f3fcff !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page:has(#quick-settings:not([hidden]))
+:is(#page-back, #quick-settings button)::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 2px !important;
+  clip-path: inherit !important;
+  background: var(--neon-action-face) !important;
+  z-index: -1;
+  pointer-events: none;
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings button[aria-pressed="true"] {
+  --home-jewel: #ff83ce;
+  --neon-action-face: linear-gradient(115deg, #14304c, #312950 55%, #651e55);
+}
+:root[data-skin="neon"] #quick-settings #setup-play { --home-jewel: #f35aaf; }
+:root[data-skin="neon"] #quick-settings :is(.rm-quick-label, #quick-match-summary) {
+  text-shadow: 0 1px 3px #020813, 0 0 6px #020813;
+}
+
+/* Press feedback is momentary. Toggle and radio controls keep their highlight. */
+:root[data-skin="neon"] :is(button[aria-pressed="true"],button[aria-selected="true"],label input:checked + span) {
+  text-shadow: 0 0 6px #76efff;
+  filter: brightness(1.13) drop-shadow(0 0 3px #42cce899);
+}
+:root[data-skin="neon"] button:enabled:not(.disabled):active {
+  filter: brightness(1.35) drop-shadow(0 0 6px #78ebff) !important;
+}
