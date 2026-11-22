@@ -1,3 +1,7 @@
+## Build #40 follow-up phone gate · 2026-11-22
+
+Owner video 34580.mp4 adds five corrections: disable zoom, restore six Career Rivals after Career/Profile/Store controls and before Help (Core intervals of five to level 30), increase Neon logo shine and chromed gradient button legibility, remove legacy match/result button art, enlarge Home portrait while preserving progress visibility. Next gate: run source regression / web build / Android sync and manual Codemagic APK on feat/android-closed-test-core, then phone QA. Keep Home non-scrolling, catalog swipe-scrolling, saved games and original 100-level world mapping unchanged. No GitHub Actions.
+
 ## Build #40 correction gate · 2026-11-22
 
 Three owner-reported defects in Android Build #40: first system Back gesture swallowed by bar reveal; transparency through the active playing cells across match/setup/Career; crooked X/O Home logo board. Prepare the code fix on feat/android-closed-test-core, then build manually with Codemagic (not GitHub Actions). Verify native Back with the tradeoff of a visible OS gesture indicator, all boards and the reconstructed board on Home. Do not carry prior PASS to the new APK. Do not change progress, saved games, score or AI.

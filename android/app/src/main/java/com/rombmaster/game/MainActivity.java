@@ -1,6 +1,7 @@
 package com.rombmaster.game;
 
 import android.graphics.Color;
+import android.webkit.WebSettings;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,14 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // This is a fixed-scale mobile game, not a document viewer. Prevent
+        // Android WebView's pinch/double-tap page zoom across every screen.
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            WebSettings webSettings = getBridge().getWebView().getSettings();
+            webSettings.setSupportZoom(false);
+            webSettings.setBuiltInZoomControls(false);
+            webSettings.setDisplayZoomControls(false);
+        }
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);

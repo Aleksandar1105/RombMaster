@@ -734,16 +734,37 @@ el('skin-equip').onclick = () => {
 // Portraits are cosmetic; lock state is derived from the validated profile.
 function refreshRivalPortraits(profile) {
     for (const [i, world] of CAREER_WORLDS.entries()) {
-        const state = profile?.stars?.[world.end] ? 'defeated' : profile && profile.unlockedLevel >= world.start ? 'available' : 'locked';
+        // Android 1.0 displays all six existing rival portraits across its 30
+        // playable levels. Keep the 100-level world definitions and saves intact.
+        const start = coreEdition ? i * 5 + 1 : world.start;
+        const end = coreEdition ? Math.min((i + 1) * 5, campaignLimit) : world.end;
+        const cleared = Boolean(profile?.stars?.[end]);
+        const reached = Boolean(profile && profile.unlockedLevel >= start);
+        const state = cleared ? 'defeated' : reached ? 'available' : 'locked';
+        const current = state === 'available' && Boolean(profile) &&
+            Math.min(profile.unlockedLevel, campaignLimit) >= start &&
+            Math.min(profile.unlockedLevel, campaignLimit) <= end;
         for (const prefix of ['home-rival', 'career-rival-card']) {
             const card = el(prefix + '-' + i);
             const status = el(prefix + '-status-' + i);
             if (card) {
-                card.hidden = coreEdition && world.start > campaignLimit;
-                card.dataset.state=state;
-                card.dataset.current=String(Boolean(profile&&careerWorld(profile.unlockedLevel)===world));
+                // The Career screen retains its existing 100-level world map.
+                // Only the Home strip uses the temporary Android Core mapping.
+                const home = prefix === 'home-rival';
+                const ownState = home ? state : (profile?.stars?.[world.end] ? 'defeated' :
+                    profile && profile.unlockedLevel >= world.start ? 'available' : 'locked');
+                card.hidden = false;
+                card.dataset.state = ownState;
+                card.dataset.current = String(home ? current : Boolean(profile && careerWorld(profile.unlockedLevel) === world));
+                if (home) {
+                    card.dataset.levels = start + '–' + end;
+                    card.setAttribute('aria-label', world.rival + ', levels ' + start + ' to ' + end + ', ' +
+                        (current ? 'current opponent' : ownState));
+                }
             }
-            if (status) status.textContent = state === 'defeated' ? 'Defeated' : state === 'available' ? 'Available' : 'Locked';
+            if (status) status.textContent = prefix === 'home-rival' && coreEdition
+                ? start + '–' + end
+                : state === 'defeated' ? 'Defeated' : state === 'available' ? 'Available' : 'Locked';
         }
     }
 }
