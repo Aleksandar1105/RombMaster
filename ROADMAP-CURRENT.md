@@ -1,5 +1,12 @@
 # RombMaster — current roadmap checkpoint
 
+## Android Core Test · 2026-11-22
+
+1. Test the isolated APK on a physical Android phone. Check the top edge, first Back gesture and temporary status-bar reveal on Home, setup and during a match.
+2. Play through Career levels 1–30 on the phone. Check Continue after restart and verify existing progress during an in-place upgrade of a compatible test installation.
+3. Observe first-time players completing a match, starting another and returning for Daily. Use those findings to refine the opening and the daily puzzle.
+4. Prepare a signed AAB and start the Google Play closed test after device QA. The current deliverable is a sideloadable test APK.
+
 ## Android recording 34528 · 2026-11-21
 
 Verify the secondary-screen top edge on the next test APK. On the phone, compare Home, Quick Play setup, a continued match and a newly started match; check a side Back gesture separately from a top-edge pull.

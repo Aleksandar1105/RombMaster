@@ -1,5 +1,13 @@
 # RombMaster — Development status
 
+## Android Core Test · 2026-11-22
+
+Development branched from `feat/v25-royal-master` at `8a69e12`. The locally built APK uses implementation commit `d4f7ea0`. This GitHub checkpoint records the documentation; the implementation commit is local pending publication.
+
+Play opens Career level 1 for a new player and highlights the first scoring edge. Continue appears for a resumable match. Daily is on Home, and Quick Play supports local multiplayer. The Career selector caps new matches at 30 while retaining older profile data. Neon is playable and Royal is preview-only. Infinity, seasons, Gems and the character collection are hidden. Ads and purchases are deferred.
+
+The signed debug APK is named `RombMaster-Core-Test-d4f7ea0.apk`. Its isolated Android application ID, `com.rombmaster.game.coretest`, gives it a separate local profile.
+
 ## Android recording 34528 · 2026-11-21
 
 The 34528.mp4 walkthrough showed an empty top band on inner scenes. Removed the Home visibility condition from the Android Neon body inset reset; the menu and match now keep cutout clearance inside their painted surfaces.

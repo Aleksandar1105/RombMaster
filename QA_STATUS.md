@@ -1,5 +1,17 @@
 # RombMaster — QA status
 
+## Android Core Test · 2026-11-22
+
+| Check | Result |
+|---|---|
+| Automated regression suite on local implementation d4f7ea0 | PASS · 192/192 |
+| Browser checks at 320×568, 412×860 and 844×390 | PASS · Play, Continue after reload, Daily, board bounds and Royal preview |
+| Existing level-45 profile | PASS · selector capped at 30 and stored level retained |
+| Debug APK | PASS · Android build completed, signature verified and all 198 packaged web assets matched the build |
+| Physical phone | Pending · top-edge coverage, first Back gesture, temporary bar reveal and hide timing |
+| Career progression and installation upgrade | Pending · complete levels 1–30 on device and check progress across an in-place update |
+| Google Play closed test | Pending · the isolated APK was delivered for sideload testing |
+
 ## Android recording 34528 · 2026-11-21
 
 34528.mp4 (2m06s, 1080×2340): Home reaches the top at 0:00 and 1:14. A blank band appears above Quick Play at 0:13 and above a match at 0:25. Daily advances through three tasks; Home shows 30 Brain Points and 280 coins afterward. The recording does not identify the build SHA, exact Back input or system bar timeout. Regression suite, web build, Android sync and packaged asset hashes rechecked. Corrected top edge still needs a new phone capture.

@@ -1,5 +1,11 @@
 # RombMaster — Roadmap to V30.0
 
+## Android 1.0 closed-test scope · 2026-11-22
+
+The branch `feat/android-closed-test-core` starts at `8a69e12` on `feat/v25-royal-master`. The first Android release focuses on short offline matches, a guided opening, up to 30 phone-tested Career levels, Quick Play, local two-player games and a daily puzzle. Neon is included. Royal is available for preview.
+
+Run the first Play closed test without ads or purchases. Defer Infinity, seasons, Gems and the character collection. Revisit cosmetic purchases, purchase restoration and optional rewarded ads after playtesting. iOS follows the Android release. The V30 milestones below describe longer-term work. See [the current checkpoint](ROADMAP-CURRENT.md) for release order.
+
 Updated: 2026-11-18. Active branch: `feat/v25-royal-master`.
 Goal: a commercial production release for Google Play.
 
