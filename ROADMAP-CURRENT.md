@@ -1,3 +1,7 @@
+## Build #43 Codemagic Run regression tests: one false-negative assertion · 2026-11-23
+
+Uploaded Codemagic test log: 201 tests total, 200 passed, 1 failed (test 145, Neon Home preserves logos and restores true rendered match button content). The sole failing expression looked for a whitespace-sensitive literal `grid-template-columns:repeat(3,minmax(0,1fr)) !important`; current, semantically identical CSS uses a space after ':' in `grid-template-columns: repeat(3,minmax(0,1fr)) !important`. The updated test selects the actual Core Neon Home `.mode-grid` block and checks a three-column layout with whitespace-tolerant matching. Live CSS and navigation have NOT been altered by this commit. Targeted source-rule verification passed; rerun full Codemagic regression tests and phone QA is still required, and no new APK or full PASS is claimed. No GitHub Actions.
+
 ## Android Core Home/Quick Play screen isolation · 2026-11-23
 
 Fix highest-priority Build #42 navigation regression: make [hidden] authoritative for Home and Quick Play, present Home controls in two separate rows (Continue/Play/Daily; Career/Profile/Skin Store), followed by all six rivals and How to Play, no Home scrolling. Keep Quick Play as a separate full-screen setup with its own scrolling only if its layout cannot fit (never display Home behind it). Run tests, build and install new Codemagic APK manually. No GitHub Actions; preserve profile, saves, game logic, logo and Neon design.

@@ -25,5 +25,8 @@ test('Neon Home preserves logos and restores true rendered match button content'
  assert.match(css,/#view-game #controls,#overlay\.flex \.result-actions/);
  assert.match(css,/opacity:1 !important;visibility:visible !important/);
  assert.match(css,/inset:3px !important/);
- assert.match(css,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\) !important/);
+ // Match the actual Core Home 3-column rule, without depending on whitespace.
+ const gridRule = css.match(/:root\[data-edition="core"\]\[data-skin="neon"\]\s+#home-hub \.mode-grid\s*\{([^}]*)\}/);
+ assert.ok(gridRule,'Core Neon Home must define its own mode grid');
+ assert.match(gridRule[1],/\bgrid-template-columns\s*:\s*repeat\s*\(\s*3\s*,\s*minmax\s*\(\s*0\s*,\s*1fr\s*\)\s*\)\s*!important/);
 });
