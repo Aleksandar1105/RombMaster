@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Core phone walkthrough · 2026-11-22
+
+Recording 34539.mp4 reviews the Android Core flow on a phone. This checkpoint records device evidence only. An exit confirmation during an active match remains a proposed change.
+
 ## Android Core Test · 2026-11-22
 
 Development branched from `feat/v25-royal-master` at `8a69e12`. The locally built APK uses implementation commit `d4f7ea0`. This branch includes the implementation and regression tests from that build.

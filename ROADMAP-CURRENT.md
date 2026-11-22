@@ -1,5 +1,9 @@
 # RombMaster — current roadmap checkpoint
 
+## Core phone walkthrough · 2026-11-22
+
+Phone walkthrough covers new-player entry, the first Career win, opening level 2, Royal preview and a complete Quick Play match. Next verify active-match Back and resume, then progress through level 30 and test an in-place update.
+
 ## Android Core Test · 2026-11-22
 
 1. Test the isolated APK on a physical Android phone. Check the top edge, first Back gesture and temporary status-bar reveal on Home, setup and during a match.
