@@ -1,5 +1,9 @@
 # RombMaster — QA status
 
+## Neon board palette and handset corrections · 2026-11-22
+
+Cloud Test #39 (92aea6d): owner confirmed setup selection and the active-match Android Back prompt. Recording 34551 and screenshots also showed rectangular Quick Play frames, an unexplained disabled fifth-player action, and a persistent navigation handle. Updated regression exercises the fifth profile with a Cyrillic name and Fox avatar, and the capacity boundary. 192 tests, production web build, Android sync and packaged theme assets passed. Revised visuals, system gestures, audio and haptics await physical-device verification.
+
 ## Quick Play Home-style controls · 2026-11-22
 
 192 regression tests passed. Vite production build, Capacitor sync and 139 packaged asset hash checks passed. The supplied screenshot documents the previous layout. The new appearance still needs verification in the next handset APK.

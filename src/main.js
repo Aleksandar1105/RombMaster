@@ -5,7 +5,7 @@ import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
-import { ProfileStore, LocalSlots, PLAYER_AVATARS, configureCharacterEconomy, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
+import { ProfileStore, LocalSlots, MAX_LOCAL_PLAYERS, PLAYER_AVATARS, configureCharacterEconomy, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
 import { CONSTANTS } from './constants.js';
@@ -134,6 +134,8 @@ function setCreatePlayer(show=false){
     creatingPlayer=show;el('profile-create-form').hidden=!show;
     el('profile-create-toggle').setAttribute('aria-expanded',String(show));
     el('profile-create-toggle').textContent=show?'‹ Existing players':'Create new player ›';
+    el('rm-player-chooser').hidden=show;
+    el('local-player-feedback').textContent='';
     const nameRow=el('profile-name')?.parentElement;if(nameRow)nameRow.hidden=show;
 }
 function backSubpage(){
@@ -209,7 +211,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         }
         for (const id of Object.keys(menuPages)) el(id).hidden = id !== selected;
         if(selected==='career-page')setCareerScreen(0);
-        if(selected==='player-settings'){setCreatePlayer(false);setAchievementView(false);avatarPage=0;el('character-filter').value='all';refreshCareer();renderAvatarPage();}
+        if(selected==='player-settings'){setCreatePlayer(false);refreshPlayerChooser();setAchievementView(false);avatarPage=0;el('character-filter').value='all';refreshCareer();renderAvatarPage();}
         if (selected === 'quick-settings') {
             readQuickSetup();
             renderQuickSetup();
@@ -470,6 +472,11 @@ function renderSkinVariables(skin) {
     const root = document.documentElement;
     if (!root) return; // headless input tests
     root.dataset.skin = skin.id;
+    const profileAction = document.querySelector('#home-hub button[data-page="player-settings"]');
+    if (profileAction) {
+        if (coreEdition && skin.id === 'neon') el('home-skin-store').before(profileAction);
+        else el('home-tools').append(profileAction);
+    }
     for (const [name,value] of Object.entries({
         '--skin-bg': skin.colors.bg, '--skin-x': skin.colors.x, '--skin-o': skin.colors.o,
         '--skin-accent': skin.accent, '--skin-ink': skin.id === 'white' ? '#182334' : '#f8fafc',
@@ -944,7 +951,10 @@ const refreshPlayerChooser = () => {
         return;
     }
     localPlayerSelect.disabled = false;
-    el('create-local-player-btn').disabled = slots.index.slots.length >= 4;
+    const full = slots.index.slots.length >= MAX_LOCAL_PLAYERS;
+    el('create-local-player-btn').disabled = full;
+    el('profile-create-toggle').disabled = full;
+    if (full) el('profile-create-toggle').textContent = 'All ' + MAX_LOCAL_PLAYERS + ' player slots are in use';
     localPlayerSelect.innerHTML = slots.index.slots.map(id => {
         const p = ProfileStore.readSlot(id);
         const label = p.status === 'ready' || p.status === 'empty'
@@ -1012,12 +1022,13 @@ el('create-local-player-btn').onclick = () => {
     if (result.status !== 'ready') {
         localPlayerFeedback.textContent = ({
             'bad-name': 'Enter a player name of 1–18 characters.',
-            limit: 'Maximum of four local players reached.',
+            limit: 'All ' + MAX_LOCAL_PLAYERS + ' player slots are in use.',
             'duplicate-name': 'Choose a different player name.',
             invalid: 'Existing player data could not be read and was preserved.',
         })[result.status] || 'Unable to add player; existing data was preserved.';
         return;
     }
+    setCreatePlayer(false);
     newLocalPlayerName.value = '';
     el('new-local-player-avatar').value = 'spark';
     renderStarterCharacter('new-local-player-avatar');
@@ -1066,6 +1077,12 @@ const setComfort = (settings, persist = false) => {
     }
 };
 setComfort(readComfort());
+document.addEventListener('click', event => {
+    const control = event.target.closest?.('button, input[type="radio"], input[type="checkbox"], [role="button"]');
+    if (!control || control.disabled || control.getAttribute('aria-disabled') === 'true') return;
+    Native.vibrate('light');
+    Game.playButtonSound();
+}, true);
 soundToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
 hapticsToggle.onchange = () => setComfort({ sound: soundToggle.checked, haptics: hapticsToggle.checked }, true);
 el('game-sound-btn').onclick = () => setComfort({ sound: !soundToggle.checked, haptics: hapticsToggle.checked }, true);

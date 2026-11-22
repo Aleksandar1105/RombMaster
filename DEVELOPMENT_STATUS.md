@@ -1,5 +1,9 @@
 # RombMaster — Development status
 
+## Neon board palette and handset corrections · 2026-11-22
+
+Replaced the Neon scene and transparent hero with cyan/coral art and X/O cells. Unified thin action rims and press feedback, grouped Career/Profile/Skin Store, compacted Help, and raised the portrait action rows. Creation now supports 16 isolated local profiles, hides the chooser during editing, and returns to the active profile after saving. Android hides both system bars with transient swipe reveal and reserves keyboard insets.
+
 ## Quick Play Home-style controls · 2026-11-22
 
 Neon Quick Play uses the Home arena and shared bevel, rim and face variables. Removed the page wordmark and panel fills. Selected setup choices have a brighter magenta face and check mark. Added touch feedback for enabled Neon buttons and a persistent highlight for stateful controls.

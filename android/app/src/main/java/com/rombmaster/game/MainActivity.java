@@ -32,11 +32,10 @@ public class MainActivity extends BridgeActivity {
             window.setAttributes(layout);
         }
 
-        // The scene extends to the camera edge. Reserve the native navigation
-        // and keyboard areas once so bottom controls and name fields stay usable.
+        // Let transient system bars overlay the scene. Reserve space only for typing.
         View content = findViewById(android.R.id.content);
         content.setBackgroundColor(Color.rgb(7, 19, 39));
-        int reserved = WindowInsetsCompat.Type.navigationBars() | WindowInsetsCompat.Type.ime();
+        int reserved = WindowInsetsCompat.Type.ime();
         ViewCompat.setOnApplyWindowInsetsListener(content, (view, insets) -> {
             Insets padding = insets.getInsets(reserved);
             view.setPadding(padding.left, 0, padding.right, padding.bottom);
@@ -63,8 +62,6 @@ public class MainActivity extends BridgeActivity {
         controller.setSystemBarsBehavior(
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         );
-        // Keeping navigation available lets Android deliver the first Back gesture.
-        controller.show(WindowInsetsCompat.Type.navigationBars());
-        controller.hide(WindowInsetsCompat.Type.statusBars());
+        controller.hide(WindowInsetsCompat.Type.systemBars());
     }
 }

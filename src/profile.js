@@ -159,7 +159,7 @@ function parseProfile(raw) {
 // Guest-first local save slots. The original keys remain untouched for 'guest';
 // additional players use their own namespaced Career, match and Daily keys.
 export const PLAYER_SLOTS_KEY = 'rombmaster_player_slots_v1';
-export const MAX_LOCAL_PLAYERS = 4;
+export const MAX_LOCAL_PLAYERS = 16;
 const DEFAULT_SLOTS = () => ({
   version: 1, activeId: 'guest', nextId: 1, slots: ['guest'],
 });

@@ -2,7 +2,7 @@
 import { CONSTANTS } from './constants.js';
 export const SKIN_KEY = 'rombmaster_skin_v1';
 const items = [
-  ['neon','Neon Arena','Included','#071729','#FB7185','#22D3EE','#a5c5df','#a775fa','#f6c86a','#f8fafc','inset'],
+  ['neon','Neon Arena','Included','#071729','#FB7185','#22D3EE','#a5c5df','#22D3EE','#FB7185','#f8fafc','inset'],
   ['royal','Royal Gold','Premium preview — store not available yet','#17130d','#f8cd69','#eaedfa','#bda77b','#d9ae50','#ffdc85','#ede2c6','full'],
   ['cyber','Cyberpunk','Complete 7 Daily Challenges','#180b28','#ff38b8','#b0f83d','#c3a8ed','#9568ff','#ffcb4e','#e5d6ff','full'],
   ['ice','Ice & Fire','Reach Career Level 15','#111d2c','#ff813c','#78dfff','#aebcc9','#789cb7','#fbd16b','#e1f0ff','full'],

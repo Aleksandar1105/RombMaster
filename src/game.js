@@ -106,6 +106,11 @@ export const Game = {
     this.gameOver = true;
   },
 
+  playButtonSound() {
+    if (!audio.enabled || document.hidden) return;
+    audio.init();
+    audio.playTone(640, 'sine', 0.055, 0.035);
+  },
   setSoundEnabled(enabled) { audio.enabled = Boolean(enabled); },
 
   playCosmeticSound(event, skinId) {
@@ -380,7 +385,6 @@ export const Game = {
     }
     this.updateUI();
     this.saveLocal();
-    Native.vibrate('light');
   },
 
   endGame() {

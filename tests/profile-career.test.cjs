@@ -271,15 +271,19 @@ test('guest legacy profile stays on original key when a new local player is crea
   assert.equal(h.ProfileStore.read().profile.unlockedLevel, 2);
 });
 
-test('local slots reject duplicate names, invalid IDs and a fifth player', async () => {
+test('local slots preserve four existing profiles when adding a fifth and enforce capacity', async () => {
   const h = await profileHarness();
   assert.equal(h.LocalSlots.createPlayer('Lina').status, 'ready');
   assert.equal(h.LocalSlots.createPlayer('lina').status, 'duplicate-name');
   assert.equal(h.LocalSlots.switchTo('slot-999').status, 'not-found');
   assert.equal(h.LocalSlots.createPlayer('Mila').status, 'ready');
   assert.equal(h.LocalSlots.createPlayer('Alex').status, 'ready');
-  assert.equal(h.LocalSlots.createPlayer('Fifth').status, 'limit');
-  assert.equal(h.LocalSlots.read().index.slots.length, 4);
+  assert.equal(h.LocalSlots.createPlayer('Нов 3', 'fox').status, 'ready');
+  assert.equal(h.ProfileStore.read().profile.name, 'Нов 3');
+  assert.equal(h.ProfileStore.read().profile.avatar, 'fox');
+  for (let number = 6; number <= 16; number++) assert.equal(h.LocalSlots.createPlayer('Player ' + number).status, 'ready');
+  assert.equal(h.LocalSlots.createPlayer('Overflow').status, 'limit');
+  assert.equal(h.LocalSlots.read().index.slots.length, 16);
 });
 
 test('corrupt slot index and missing registered slot data are never silently overwritten', async () => {
