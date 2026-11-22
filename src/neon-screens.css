@@ -693,3 +693,29 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
    content:none !important;display:none !important;
  }
 }
+
+/* NEON HOME BACKGROUND TRIAL (Picsart, 2026-11-23).
+   This is the ONLY visual change in this trial. No controls, avatars, logo,
+   six Career Rivals, Home layout, Quick Play or gameplay are restyled.
+   The image is currently Picsart-hosted, therefore online for this trial.
+   Before a production/offline release, bundle a local optimized asset. */
+:root[data-skin="neon"] #view-menu:has(
+  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+) {
+  background-color:#071327 !important;
+  background-image:none !important;
+}
+:root[data-skin="neon"] #view-menu
+#home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) {
+  background-color:#071327 !important;
+  background-image: url('https://gcdn.picsart.com/picsart-mcp/f665960e-8e08-4a8d-ba93-e1656759a836.png') !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+  background-size:cover !important;
+}
+:root[data-skin="neon"] #view-menu
+#home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+#premium-hero-stage:not([hidden]) {
+  background:transparent !important;
+  background-image:none !important;
+}
