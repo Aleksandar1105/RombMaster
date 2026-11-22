@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-async function boot({ storage = new Map(), autoStart = true, confirm = () => true } = {}) {
+async function boot({ storage = new Map(), autoStart = true, coreEdition = false, confirm = () => true } = {}) {
   const elements = new Map();
   const events = new Map();
   const nativeEvents = {};
@@ -56,7 +56,7 @@ async function boot({ storage = new Map(), autoStart = true, confirm = () => tru
   const context = vm.createContext({
     console,
     window: { devicePixelRatio: 1, innerWidth:412, innerHeight:860, addEventListener(type, callback) { events.set(type, callback); }, confirm },
-    document: { hidden: false, createElement: () => el(Symbol()), getElementById: el,
+    document: { documentElement: coreEdition ? Object.assign(el("root"), {dataset: {edition: "core"}}) : undefined, hidden: false, createElement: () => el(Symbol()), getElementById: el,
       querySelector: selector=>selector==='.premium-avatar-grid'?avatarGrid:null,
       querySelectorAll: selector=>{
         if(selector==='[data-page]')return pages;
@@ -598,4 +598,34 @@ test('Career introduces a fresh player once and preserves an existing quick matc
   assert.equal(h.el('career-identity').hidden, true);
   assert.equal(h.el('confirm-dialog').hidden, true);
   assert.equal(h.storage.get('rhombus_save'), original);
+});
+
+test('closed test starts with a scoring hint, resumes the same move and offers Royal as a preview', async () => {
+  const first = await boot({coreEdition: true, autoStart: false});
+  first.el('startBtn').click();
+  assert.equal(first.game.settings.careerLevel, 1);
+  const move = first.game.firstCaptureHint();
+  assert.ok(move);
+  first.game.executeMove(move);
+  assert.ok(first.game.board.score[1] > 0);
+  const next = await boot({coreEdition: true, autoStart: false, storage: first.storage});
+  assert.equal(next.el('continueBtn').hidden, false);
+  next.el('continueBtn').click();
+  assert.deepEqual({...next.game.lastMove}, {...move});
+  next.el('home-skin-store').click();
+  assert.deepEqual(Array.from(next.el('skin-options').children, node => node.dataset.skinId), ['neon','royal']);
+  next.el('skin-options').children[1].click();
+  assert.equal(next.el('skin-equip').disabled, true);
+});
+
+test('closed test caps the route without rewriting a veteran profile', async () => {
+  const profile = JSON.stringify({version: 1, name: 'Veteran', xp: 300, unlockedLevel: 45,
+    stars: {1: 3, 40: 2}, stats: {played: 3, wins: 2, draws: 0, losses: 1}});
+  const storage = new Map([['rombmaster_profile_v1', profile]]);
+  const h = await boot({coreEdition: true, storage, autoStart: false});
+  h.el('career').click();
+  assert.equal(h.el('career-level').value, '30');
+  assert.equal(h.el('next-chapter').disabled, true);
+  assert.equal(h.el('stat-stars').textContent, '3 / 90');
+  assert.equal(storage.get('rombmaster_profile_v1'), profile);
 });

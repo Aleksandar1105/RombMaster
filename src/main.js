@@ -8,12 +8,22 @@ import { Native } from './native.js';
 import { ProfileStore, LocalSlots, PLAYER_AVATARS, configureCharacterEconomy, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
+import { CONSTANTS } from './constants.js';
 import { Board } from './board.js';
 import { SKINS, SKIN_KEY, getSkin, activeSkin, setActiveSkin, unlockedSkin, readSkin, saveSkin, skinCatalog, seasonalCatalog, prestigeCatalog, seasonStatus, seasonalPriceLabel, WALLET_KEY, SKIN_PRICES, syncWallet, walletBalance, buyWalletSkin, skinUnlockLabel, CHARACTERS, getCharacter, characterEntitlement, buyWalletCharacter, skinVictoryPreview } from './skins.js';
 import { nearestLegalLine, canvasPoint } from './input.js';
 import { duelReply, createDailyPuzzle, evaluateDailyMove, localDateKey } from './daily-challenge.js';
 import { DailyProgress } from './daily-progress.js';
 import { createConfirmationController } from './confirmation.js';
+
+// Scope the closed test at the UI boundary. Stored profiles retain the full campaign.
+const coreEdition = document.documentElement?.dataset?.edition === 'core';
+const campaignLimit = coreEdition ? 30 : CAREER_LEVEL_COUNT;
+function visibleProfile(profile) {
+    if (!coreEdition || !profile) return profile;
+    return {...profile, unlockedLevel: Math.min(profile.unlockedLevel, campaignLimit),
+        stars: Object.fromEntries(Object.entries(profile.stars || {}).filter(([level]) => Number(level) <= campaignLimit))};
+}
 
 // Elements
 const el = id => document.getElementById(id);
@@ -168,11 +178,22 @@ document.querySelectorAll('[data-page]').forEach(button => {
     button.onclick = () => {
         pageTrigger = button;
         const selected = button.dataset.page;
+        if (coreEdition && selected === 'arcade-page') return;
+        if (coreEdition && button.id === 'startBtn') {
+            const profile = ProfileStore.read();
+            const saved = Game.refreshSavedGame();
+            if (['empty', 'ready'].includes(profile.status) && profile.profile.unlockedLevel === 1 &&
+                !profile.profile.stars?.[1] && saved.status === 'empty') {
+                const stage = careerLevel(1);
+                Game.start(stage.size, 'ai', stage.diff, 1);
+                return;
+            }
+        }
         if(selected!=='arcade-page')arcade?.leave();
         if (selected !== 'skin-page') stopSkinPreview();
         if (selected === 'career-page') {
             const state = ProfileStore.read();
-            const profile = state.profile;
+            const profile = visibleProfile(state.profile);
             el('career-identity').hidden = state.status !== 'empty';
             if (state.status === 'empty') {
                 el('career-name').value = profile.name;
@@ -240,9 +261,9 @@ function characterStatus(c,entitlement,wallet){
 function renderCareerProgress(profile) {
     const cleared=profile?Object.keys(profile.stars||{}).length:0;
     const meter=el('career-clear-progress');
-    if(meter){meter.max=CAREER_LEVEL_COUNT;meter.value=cleared;meter.hidden=!profile;}
+    if(meter){meter.max=campaignLimit;meter.value=cleared;meter.hidden=!profile;}
     if(careerProgress)careerProgress.textContent=profile
-        ? cleared+' / '+CAREER_LEVEL_COUNT+' levels cleared · Level '+profile.unlockedLevel+' unlocked'
+        ? cleared+' / '+campaignLimit+' levels cleared · Level '+profile.unlockedLevel+' unlocked'
         : 'Career progress unavailable';
 }
 function renderRoute(profile, selected) {
@@ -256,11 +277,11 @@ function renderRoute(profile, selected) {
     const portrait=el('career-mission-portrait');
     const guidedFox=selected===5;
     if(portrait)portrait.dataset.rival=guidedFox?'guided-fox':world.rival.toLowerCase();
-    setText('career-mission-level','LEVEL '+selected+' / '+CAREER_LEVEL_COUNT+(selected===world.end?' · BOSS BATTLE':''));
+    setText('career-mission-level','LEVEL '+selected+' / '+campaignLimit+(selected===world.end?' · BOSS BATTLE':''));
     setText('career-mission-title',mission?.title||(selected===world.end?'Boss Battle':'Career mission'));
     setText('career-mission-rival',guidedFox?'Fox · '+world.name:world.rival+' · '+world.name);
     setText('career-open-mission','Level '+selected+' · View mission ›');
-    el('chapter-label').textContent = world.name+' · '+(Math.floor((selected-1)/5)+1)+' / '+Math.ceil(CAREER_LEVEL_COUNT/5);
+    el('chapter-label').textContent = world.name+' · '+(Math.floor((selected-1)/5)+1)+' / '+Math.ceil(campaignLimit/5);
     const rival=el('career-rival');
     if(rival)rival.textContent=world.icon+' '+world.rival+' · '+world.focus;
     el('previous-chapter').disabled = first === 1;
@@ -325,7 +346,7 @@ let resultAnimation=0;
 // Infinity uses the existing Career Level 100 entitlement; no extra reward or unlock write.
 function isInfinityResult(){
     const outcome=Game.careerOutcome;
-    return Game.settings.careerLevel===CAREER_LEVEL_COUNT &&
+    return !coreEdition && Game.settings.careerLevel===CAREER_LEVEL_COUNT &&
         outcome?.status==='ready' && outcome.victory===true &&
         Boolean(outcome.profile?.stars?.[CAREER_LEVEL_COUNT]);
 }
@@ -370,11 +391,27 @@ function renderPremiumResult(){
     }
     metric('Coins earned',wallet?.coins);
     metric('XP earned',outcome.earnedXP);
+    if (coreEdition && Game.settings.careerLevel === 1 && outcome.victory) {
+        const turns = Game.historyStack;
+        for (let i = turns.length - 1; i >= 0; i--) {
+            const after = turns[i + 1]?.score ?? Game.board.score;
+            const gained = after[CONSTANTS.X] - turns[i].score[CONSTANTS.X];
+            if (gained <= 0) continue;
+            const move = Game.moveLog[i];
+            const note = document.createElement('p');
+            note.textContent = 'Your last capture: the ' + (move.t === 'h' ? 'horizontal' : 'vertical') +
+                ' line at row ' + (move.r + 1) + ', column ' + (move.c + 1) +
+                ' closed ' + gained + (gained === 1 ? ' square.' : ' squares.');
+            summary.append(note);
+            break;
+        }
+        el('againBtn').textContent = 'Play again';
+    }
     summary.append(metrics);
     const total=document.createElement('small');total.className='rm-result-total';
     total.textContent=outcome.profile.xp+' XP total';
     summary.append(total);
-    const next=wallet?.nextReward;
+    const next=coreEdition ? null : wallet?.nextReward;
     if(next&&Number.isInteger(next.level)){
         const progress=document.createElement('div');progress.className='rm-result-progress';
         const label=document.createElement('small');
@@ -393,7 +430,7 @@ function renderPremiumResult(){
         note.textContent=achievements.length===1?'Achievement: '+achievements[0].title:achievements.length+' new achievements · View in Profile';
         summary.append(note);
     }
-    if(characterNames.length){
+    if(!coreEdition && characterNames.length){
         const unlock=document.createElement('p');unlock.className='rm-result-character-unlock';
         unlock.textContent='Character unlocked: '+characterNames.join(', ');summary.append(unlock);
     }
@@ -414,6 +451,8 @@ Game.refreshResultPages=()=>{
     overlay.dataset.infinity=String(infinity);
     renderPremiumResult();
     const next=el('nextCareerBtn');
+    if (coreEdition) el('againBtn').hidden = Game.settings.careerLevel > campaignLimit;
+    if (next && coreEdition && Game.settings.careerLevel >= campaignLimit) next.hidden = true;
     if(next&&infinity){
         next.textContent='Continue to Infinity ∞';
         next.hidden=false;
@@ -442,7 +481,7 @@ function renderSkinVariables(skin) {
 }
 function syncSkin() {
     const {profile,daily,key} = skinState();
-    applySkin(readSkin(localStorage,key,profile,daily));
+    applySkin(coreEdition ? 'neon' : readSkin(localStorage,key,profile,daily));
 }
 let previewSkinId = 'neon';
 let skinCatalogPage = 0;
@@ -524,7 +563,11 @@ function showSkinPreview() {
     const price=SKIN_PRICES[skin.id],balance=walletBalance(profile?.skinWallet);
     el('skin-equip').disabled = activeSkin().id === skin.id || (!unlocked&&(!price||!profile?.skinWallet||balance<price));
     el('skin-equip').textContent = activeSkin().id === skin.id ? 'Equipped' : unlocked ? 'Equip skin' : price ? 'Buy · '+price+' Coins' : 'Locked';
-    if(skin.prestige){
+    if (coreEdition) {
+        el('skin-equip').disabled = true;
+        el('skin-equip').textContent = skin.id === 'neon' ? 'Equipped' : 'Preview only';
+        el('skin-status').textContent = skin.id === 'neon' ? 'Included' : 'Royal Gold · Preview only';
+    } else if(skin.prestige){
         el('skin-equip').disabled=true;
         el('skin-equip').textContent='Prestige · Preview only';
         el('skin-status').textContent='Premium cosmetic · No payment enabled';
@@ -560,9 +603,12 @@ function showSkinPreview() {
 }
 function renderSkinCatalog() {
     const {profile,daily} = skinState();
-    const entries = prestigeOnly ? prestigeCatalog() : seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
+    const entries = coreEdition ? skinCatalog(profile,daily,'neon',false)
+        .filter(({skin}) => skin.id === 'neon' || (!collectionOnly && skin.id === 'royal'))
+        .map(entry => ({...entry, owned: entry.skin.id === 'neon', status: entry.skin.id === 'neon' ? 'Equipped' : 'Preview only'}))
+        : prestigeOnly ? prestigeCatalog() : seasonalOnly ? seasonalCatalog() : skinCatalog(profile,daily,activeSkin().id,collectionOnly);
     const owned = skinCatalog(profile,daily,activeSkin().id,true);
-    el('skin-owned-count').textContent = prestigeOnly ? '3 Prestige skins · Preview only' : seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked · '+(profile?.skinWallet?walletBalance(profile.skinWallet)+' Coins':'Wallet unavailable');
+    el('skin-owned-count').textContent = coreEdition ? 'Neon Arena included' : prestigeOnly ? '3 Prestige skins · Preview only' : seasonalOnly ? entries.filter(e=>e.active).length+' seasonal offers in season · Preview all '+entries.length : owned.length + ' / ' + SKINS.length + ' skins unlocked · '+(profile?.skinWallet?walletBalance(profile.skinWallet)+' Coins':'Wallet unavailable');
     el('skin-tab-store').setAttribute('aria-pressed',String(!collectionOnly && !seasonalOnly && !prestigeOnly));
     el('skin-tab-collection').setAttribute('aria-pressed',String(collectionOnly));
     el('skin-tab-seasonal')?.setAttribute('aria-pressed',String(seasonalOnly));
@@ -655,6 +701,7 @@ if(el('skin-victory-preview')) el('skin-victory-preview').onclick=()=>{
     Game.playCosmeticSound('win',skin.id);
 };
 el('skin-equip').onclick = () => {
+    if (coreEdition) return;
     const {profile,daily,key,walletKey,originalProfile} = skinState();
     if(!unlockedSkin(previewSkinId,profile,daily)&&SKIN_PRICES[previewSkinId]){
       const id=previewSkinId, owner=LocalSlots.read().index?.activeId;
@@ -685,6 +732,7 @@ function refreshRivalPortraits(profile) {
             const card = el(prefix + '-' + i);
             const status = el(prefix + '-status-' + i);
             if (card) {
+                card.hidden = coreEdition && world.start > campaignLimit;
                 card.dataset.state=state;
                 card.dataset.current=String(Boolean(profile&&careerWorld(profile.unlockedLevel)===world));
             }
@@ -727,7 +775,7 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
         'premium-rival-name': world?.rival ?? '',
         'premium-world-name': world?.name ?? '',
         'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
-        'premium-career-count': summary ? summary.clearedLevels + ' / ' + CAREER_LEVEL_COUNT : '',
+        'premium-career-count': summary ? summary.clearedLevels + ' / ' + campaignLimit : '',
     })) el(id).textContent = value;
     const coinCounter = el('premium-player-coins');
     if (coinCounter) {
@@ -740,7 +788,7 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
     const daily = DailyProgress.read(localDateKey());
     if (points) points.textContent = daily.status === 'ready' ? daily.progress.brainPoints + ' Brain Points' : 'Brain Points unavailable';
     const progress = el('premium-career-progress');
-    progress.max = CAREER_LEVEL_COUNT;
+    progress.max = campaignLimit;
     progress.value = summary?.clearedLevels ?? 0;
 }
 function closeHomePreview() {
@@ -750,7 +798,7 @@ function closeHomePreview() {
     for (const area of hub.querySelectorAll('.home-hero, .home-actions')) area.inert = false;
     el('home-preview-bar').hidden = true;
     renderSkinVariables(activeSkin());
-    const profile = ProfileStore.read().profile;
+    const profile = visibleProfile(ProfileStore.read().profile);
     refreshPremiumHome(profile, profile ? careerSummary(profile) : null);
     hub.hidden = true;
     el('menu-page').hidden = false;
@@ -770,7 +818,7 @@ el('skin-home-preview').onclick = () => {
     const hub = el('home-hub');
     for (const area of hub.querySelectorAll('.home-hero, .home-actions')) area.inert = true;
     renderSkinVariables(skin);
-    const profile = ProfileStore.read().profile;
+    const profile = visibleProfile(ProfileStore.read().profile);
     refreshPremiumHome(profile, profile ? careerSummary(profile) : null, skin);
     el('menu-page').hidden = true;
     hub.hidden = false;
@@ -799,7 +847,7 @@ const refreshCareer = () => {
         refreshPremiumHome(null, null);
         return;
     }
-    const p = state.profile;
+    const p = visibleProfile(state.profile);
     if(!p)return;
     el('career-start-btn').disabled = false;
     el('reset-career-btn').disabled = false;
@@ -834,6 +882,12 @@ const refreshCareer = () => {
     el('identity-art').dataset.avatar = p.avatar;
     el('identity-art').textContent = '';
     const summary = careerSummary(p);
+    if (coreEdition) {
+        summary.achievements = summary.achievements.filter(({id}) =>
+            !(id.startsWith('boss-') && Number(id.slice(5)) > campaignLimit) &&
+            !(id.startsWith('stars-') && Number(id.slice(6)) > campaignLimit * 3));
+        summary.earnedAchievements = summary.achievements.filter(item => item.earned).length;
+    }
     refreshPremiumHome(p, summary);
     for (const [id, value] of Object.entries({
         'stat-played': summary.played,
@@ -842,8 +896,8 @@ const refreshCareer = () => {
         'stat-losses': summary.losses,
         'stat-win-rate': `${summary.winRate}%`,
         'stat-best-streak': summary.bestStreak,
-        'stat-cleared': `${summary.clearedLevels} / ${CAREER_LEVEL_COUNT}`,
-        'stat-stars': `${summary.totalStars} / ${CAREER_LEVEL_COUNT*3}`,
+        'stat-cleared': `${summary.clearedLevels} / ${campaignLimit}`,
+        'stat-stars': `${summary.totalStars} / ${campaignLimit*3}`,
     })) el(id).textContent = String(value);
     el('achievement-count').textContent =
         `${summary.earnedAchievements} / ${summary.achievements.length}`;
@@ -1113,7 +1167,7 @@ document.querySelectorAll('[data-profile-avatar]').forEach(choice => {
 careerSelect.onchange = () => {
     const stage = careerLevel(Number(careerSelect.value));
     drawOpening(el('mission-preview'), stage);
-    const profile = ProfileStore.read().profile;
+    const profile = visibleProfile(ProfileStore.read().profile);
     if (profile) renderRoute(profile, stage.level);
     careerDescription.textContent =
         missionFor(stage.level)?.clue ?? `Board ${stage.size} · ${stage.diff.toUpperCase()} AI · Win to unlock the next level`;
@@ -1121,7 +1175,7 @@ careerSelect.onchange = () => {
 for (const [id, direction] of [['previous-chapter', -1], ['next-chapter', 1]]) {
     el(id).onclick = () => {
         const first = Math.floor((Number(careerSelect.value) - 1) / 5) * 5 + 1 + 5 * direction;
-        const profile = ProfileStore.read().profile;
+        const profile = visibleProfile(ProfileStore.read().profile);
         if (!profile || first < 1 || first > profile.unlockedLevel) return;
         careerSelect.value = String(first);
         careerSelect.onchange();
@@ -1131,7 +1185,7 @@ el('career-start-btn').onclick = () => {
     const level = Number(careerSelect.value);
     const state = ProfileStore.read();
     if (!['ready', 'empty'].includes(state.status) ||
-        !Number.isInteger(level) || level < 1 || level > state.profile.unlockedLevel) {
+        !Number.isInteger(level) || level < 1 || level > campaignLimit || level > state.profile.unlockedLevel) {
         careerStatus.textContent = 'This career level is not available.';
         return;
     }
@@ -1206,7 +1260,7 @@ function refreshCareerSkins() {
         select.append(option);
     }
     select.value = activeSkin().id;
-    el('career-skin-row').hidden = owned.length < 2;
+    el('career-skin-row').hidden = coreEdition || owned.length < 2;
 }
 el('career-skin').onchange = () => {
     const {profile, daily, key} = skinState();
@@ -1307,7 +1361,7 @@ el('againBtn').onclick = () => {
 
 el('nextCareerBtn').onclick = () => {
     const current = Game.settings.careerLevel;
-    if (!current) return;
+    if (!current || (coreEdition && current >= campaignLimit)) return;
     const state = ProfileStore.read();
     if(current===CAREER_LEVEL_COUNT){
         if(!isInfinityResult()||state.status!=='ready'||!state.profile.stars?.[CAREER_LEVEL_COUNT])return;

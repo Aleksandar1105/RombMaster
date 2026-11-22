@@ -2,7 +2,7 @@
 
 ## Android Core Test · 2026-11-22
 
-Development branched from `feat/v25-royal-master` at `8a69e12`. The locally built APK uses implementation commit `d4f7ea0`. This GitHub checkpoint records the documentation; the implementation commit is local pending publication.
+Development branched from `feat/v25-royal-master` at `8a69e12`. The locally built APK uses implementation commit `d4f7ea0`. This branch includes the implementation and regression tests from that build.
 
 Play opens Career level 1 for a new player and highlights the first scoring edge. Continue appears for a resumable match. Daily is on Home, and Quick Play supports local multiplayer. The Career selector caps new matches at 30 while retaining older profile data. Neon is playable and Royal is preview-only. Infinity, seasons, Gems and the character collection are hidden. Ads and purchases are deferred.
 

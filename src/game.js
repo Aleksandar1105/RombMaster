@@ -466,6 +466,13 @@ export const Game = {
     this.setSaveStatus(SaveStore.clear() ? '' : 'The finished game could not be cleared from storage.');
   },
 
+  firstCaptureHint() {
+    if (globalThis.document?.documentElement?.dataset?.edition !== 'core' || this.settings.careerLevel !== 1 ||
+        !this.settings.openingVersion || this.moveLog.length || this.player !== CONSTANTS.X) return null;
+    return this.board.getFreeMoves().find(({t, r, c}) =>
+      this.board.clone().makeMove(t, r, c, CONSTANTS.X).points > 0) ?? null;
+  },
+
   updateTurnStatus() {
     // This is advisory UI: never use the banner to decide whose move is legal.
     // Query lazily so existing native and test harnesses without these elements work.
@@ -497,7 +504,7 @@ export const Game = {
       hint.textContent = 'You captured a square — play again';
     } else {
       label.textContent = this.settings.mode === 'ai' ? 'Your turn' : currentName + "'s turn";
-      hint.textContent = 'Tap between two dots to draw a line';
+      hint.textContent = this.firstCaptureHint() ? 'Tap the gold line to close your first square' : 'Tap between two dots to draw a line';
     }
   },
 
@@ -570,7 +577,7 @@ export const Game = {
     if (this.renderer.CELL <= 0)
       this.renderer.resize(this.ui.viewGame, this.board.S);
 
-    this.renderer.draw(this.board, this.lastMove, this.canHumanMove() ? this.hoverMove : null);
+    this.renderer.draw(this.board, this.lastMove, this.canHumanMove() ? this.hoverMove ?? this.firstCaptureHint() : null);
 
     // A settled board needs no continuous animation. Moves, undo, resize,
     // hover and resume explicitly invalidate it; capture effects continue to

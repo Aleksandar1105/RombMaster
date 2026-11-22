@@ -225,3 +225,13 @@
 :root.android-edge-layout[data-skin="neon"] #view-game {
   padding-top: max(4px, env(safe-area-inset-top)) !important;
 }
+
+/* Keep the full campaign and collections in storage while limiting the first edition. */
+html[data-edition="core"] :is(.home-gem-count, .home-utility-row, #premium-rivals-section,
+    #skin-tab-seasonal, #skin-tab-prestige, label:has(#profile-section-avatar),
+    [data-profile-pane="avatar"], #result-unlocks, .up-next) {
+    display: none !important;
+}
+html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueBtn[hidden] {
+    display: none !important;
+}

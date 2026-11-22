@@ -101,7 +101,7 @@ test('Home offers a single collection entrance and local multiplayer and uses a 
  assert.match(html,/id="startBtn"[^>]*data-page="quick-settings"/);
  assert.match(html,/data-ai="pvp"/);
  assert.match(html,/id="home-arcade"[^>]*data-page="arcade-page"/);
- assert.match(html,/data-collection="true" id="home-skin-store"[^>]*data-page="skin-page"/);
+ assert.match(html,/data-collection="false" id="home-skin-store"[^>]*data-page="skin-page"/);
  assert.ok(html.indexOf('id="home-skin-store"') < html.indexOf('id="menu-page"'));
  assert.match(main,/openSkins\(button\.dataset\.collection === 'true'\)/);
  assert.match(main,/function openSkins\(ownedOnly = false\)/);
