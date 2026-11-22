@@ -367,18 +367,26 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
   :root[data-skin="neon"] .home-links:not(:has(button)) { display:none !important; }
   :root[data-skin="neon"] :is(#quick-settings button,.profile-switcher label span,.rm-player-option,.play-row button,.mode-grid button,#helpBtn) { position: relative !important; }
   @media (orientation:portrait) {
-    :root[data-edition="core"][data-skin="neon"] #home-hub[data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) {
-      --action-height: clamp(44px,6dvh,58px);
-      --action-gap: clamp(4px,1.4vw,8px);
-      grid-template-rows: auto auto minmax(55px,1fr) var(--action-height) var(--action-height) 44px minmax(0,0.48fr) !important;
+    :root[data-edition="core"][data-skin="neon"] #home-hub[data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {
+      --action-height: clamp(44px,6dvh,54px);
+      --action-gap: clamp(3px,.65dvh,6px);
+      grid-template-rows: auto 0 minmax(95px,1fr) var(--action-height) var(--action-height) minmax(82px,auto) 38px !important;
       gap: var(--action-gap) !important;
     }
-    :root[data-edition="core"][data-skin="neon"] #home-hub :is(.play-row,.mode-grid) {
+    :root[data-edition="core"][data-skin="neon"] #home-hub .play-row {
       display: grid !important;
-      grid-template-columns: none !important;
+      grid-template-columns: repeat(3,minmax(0,1fr)) !important;
       grid-template-rows: 1fr !important;
-      grid-auto-flow: column !important;
-      grid-auto-columns: minmax(0,1fr) !important;
+      grid-auto-flow: row !important;
+      gap: var(--action-gap) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    :root[data-edition="core"][data-skin="neon"] #home-hub .mode-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+      grid-template-rows: 1fr !important;
+      grid-auto-flow: row !important;
       gap: var(--action-gap) !important;
       margin: 0 !important;
       padding: 0 !important;
@@ -393,7 +401,7 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
       font-size:clamp(.68rem,2.85vw,.92rem) !important;
       gap:3px !important;
     }
-    :root[data-edition="core"][data-skin="neon"] .home-help-footer { grid-row:6 !important; margin:0 !important; }
+    :root[data-edition="core"][data-skin="neon"] .home-help-footer { grid-row:7 !important; margin:0 !important; }
     :root[data-edition="core"][data-skin="neon"] #helpBtn { width:clamp(110px,32vw,150px) !important; height:36px !important; min-height:36px !important; font-size:.76rem !important; }
   }
 }
@@ -440,60 +448,98 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
   touch-action:none !important;
 }
 
-/* Restore all six Career Rivals in Android Core, between the three Home tools
-   and How to Play; only Home is remapped to six five-level chapters. */
+/* Android Core Home: one bounded seven-row grid.
+   1 HUD, 2 empty hidden brand slot, 3 hero, 4 Play, 5 Career/Profile/Store,
+   6 six rivals, 7 Help. The Profile button is moved into .mode-grid by main.js.
+   This avoids display:contents and arbitrary grid positions on child buttons. */
+html[data-edition="core"] #view-menu #home-hub[hidden],
+html[data-edition="core"] #view-menu #menu-page[hidden],
+html[data-edition="core"] #view-menu #home-tools[hidden] {
+  display:none !important;
+}
 html[data-edition="core"] #premium-rivals-section:not([hidden]) {
   display:block !important;
 }
 @media (orientation:portrait) {
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:has(#premium-hero-stage:not([hidden])) {
-    display:grid !important;
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    grid-template-rows:auto 0 minmax(110px,1fr) var(--action-height,50px)
-      var(--action-height,50px) minmax(65px,auto) 38px !important;
-    gap:clamp(3px,.65dvh,7px) !important;
-    align-items:stretch !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(#premium-home-progress,#premium-hero-stage,.play-row,#premium-rivals-section,.home-help-footer) {
-    grid-column:1/-1 !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid,
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-tools {
-    display:contents !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid > button[data-page="career-page"] {
-    grid-column:1 !important;grid-row:5 !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #home-tools > button[data-page="player-settings"] {
-    grid-column:2 !important;grid-row:5 !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid > button[data-page="skin-page"] {
-    grid-column:3 !important;grid-row:5 !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.mode-grid > button,#home-tools > button) {
-    width:100% !important;min-width:0 !important;max-width:100% !important;
-    margin:0 !important;padding:4px !important;
-    height:var(--action-height,50px) !important;min-height:44px !important;
-    font-size:clamp(.65rem,2.8vw,.94rem) !important;gap:3px !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section:not([hidden]) {
-    grid-row:6 !important;
-    padding:0 !important;margin:0 !important;min-height:0 !important;
-  }
-  :root[data-skin="neon"][data-edition="core"] #view-menu
-  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-help-footer {
-    grid-row:7 !important;margin:0 !important;
-    align-self:center !important;
-  }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]):has(#premium-hero-stage:not([hidden])) {
+   display:grid !important;
+   grid-template-columns: minmax(0,1fr) !important;
+   grid-template-rows:auto 0 minmax(95px,1fr)
+     var(--action-height,50px) var(--action-height,50px)
+     minmax(82px,auto) 38px !important;
+   align-content:stretch !important;
+   align-items:stretch !important;
+   gap:var(--action-gap,5px) !important;
+   min-height:0 !important;
+   height:100% !important;
+   max-height:100% !important;
+   overflow:hidden !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .home-actions {display:contents !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .home-hero {display:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) {
+   grid-column:1 !important;grid-row:1 !important;min-width:0 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) {
+   grid-column:1 !important;grid-row:3 !important;
+   min-height:0 !important;height:auto !important;max-height:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .play-row {
+   grid-column:1 !important;grid-row:4 !important;
+   width:100% !important;min-width:0 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .mode-grid {
+   grid-column:1 !important;grid-row:5 !important;
+   width:100% !important;min-width:0 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .mode-grid > button {
+   grid-column:auto !important;grid-row:auto !important;
+   flex:none !important;
+   width:100% !important;min-width:0 !important;max-width:100% !important;
+   height:var(--action-height,50px) !important;
+   min-height:44px !important;max-height:var(--action-height,50px) !important;
+   margin:0 !important;padding:3px 5px !important;
+   font-size:clamp(.68rem,2.6vw,.92rem) !important;
+   white-space:normal !important;line-height:1.07 !important;
+   gap:3px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .mode-grid button :is(.reference-mode-icon,.hub-glyph) {
+   width:clamp(16px,4.5vw,21px) !important;
+   height:clamp(16px,4.5vw,21px) !important;
+   flex:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) #premium-rivals-section:not([hidden]) {
+   grid-column:1 !important;grid-row:6 !important;
+   width:100% !important;min-width:0 !important;
+   margin:0 !important;padding:0 !important;
+   min-height:0 !important;align-self:stretch !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) .home-help-footer {
+   grid-column:1 !important;grid-row:7 !important;
+   margin:0 !important;min-height:0 !important;justify-self:center !important;
+   align-self:center !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) #home-tools[hidden] {
+   display:none !important;
+ }
+}
+/* Mode and Quick Play must occupy the same view, never coexist visually.
+   The underlying navigation already toggles [hidden] and scrollTop. */
+:root[data-skin="neon"] #view-menu #home-hub[hidden],
+:root[data-skin="neon"] #view-menu #menu-page[hidden] {
+  display:none !important;
 }
 :root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"] #premium-rivals-section:not([hidden]) {
   background:none !important;border:0 !important;box-shadow:none !important;

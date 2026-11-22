@@ -225,6 +225,23 @@ document.querySelectorAll('[data-page]').forEach(button => {
         el('page-back').focus();
     };
 });
+// On the Android Core Home, Career / Profile / Skin Store form one physical
+// button row. Move the existing Profile node (never clone it) so listeners,
+// profile data and accessible control identity remain unchanged. The complete
+// edition retains its established navigation layout.
+function arrangeCoreHomeNavigation() {
+    if (!coreEdition) return;
+    const modeGrid = el('home-hub')?.querySelector('.mode-grid');
+    const homeTools = el('home-tools');
+    const profileButton = homeTools?.querySelector('[data-page="player-settings"]');
+    const skinStoreButton = el('home-skin-store');
+    if (!modeGrid || !profileButton || !skinStoreButton ||
+        typeof modeGrid.insertBefore !== 'function') return;
+    modeGrid.insertBefore(profileButton, skinStoreButton);
+    homeTools.hidden = true;
+}
+arrangeCoreHomeNavigation();
+
 el('page-back').onclick = () => { if (!backSubpage() && !closeSkinDetails() && !arcade?.back()) showHome(); };
 
 // Career mode is optional and offline-first. Quick Play remains available.

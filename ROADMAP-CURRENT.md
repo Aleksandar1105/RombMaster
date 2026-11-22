@@ -1,3 +1,7 @@
+## Android Core Home/Quick Play screen isolation · 2026-11-23
+
+Fix highest-priority Build #42 navigation regression: make [hidden] authoritative for Home and Quick Play, present Home controls in two separate rows (Continue/Play/Daily; Career/Profile/Skin Store), followed by all six rivals and How to Play, no Home scrolling. Keep Quick Play as a separate full-screen setup with its own scrolling only if its layout cannot fit (never display Home behind it). Run tests, build and install new Codemagic APK manually. No GitHub Actions; preserve profile, saves, game logic, logo and Neon design.
+
 ## Build #40 follow-up phone gate · 2026-11-22
 
 Owner video 34580.mp4 adds five corrections: disable zoom, restore six Career Rivals after Career/Profile/Store controls and before Help (Core intervals of five to level 30), increase Neon logo shine and chromed gradient button legibility, remove legacy match/result button art, enlarge Home portrait while preserving progress visibility. Next gate: run source regression / web build / Android sync and manual Codemagic APK on feat/android-closed-test-core, then phone QA. Keep Home non-scrolling, catalog swipe-scrolling, saved games and original 100-level world mapping unchanged. No GitHub Actions.
