@@ -1,0 +1,55 @@
+/*
+ * RombMaster Neon Polish P1.2 — nonblocking screen-entry transitions.
+ *
+ * Previous screen is hidden immediately by the existing navigation.
+ * Only the already-visible destination's CONTENT fades/slides; no delayed
+ * hiding, JS timeouts, pointer interception, DOM duplication or layout edits.
+ * Keep the approved Home wallpaper stationary and the P1.1 logo unaffected.
+ *
+ * This is Android Core + Neon only. CSS animation selectors become active
+ * again on each Home / Quick Play / Career entry (also returning from a game).
+ */
+:root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+#home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+:is(.play-row,.mode-grid,.home-help-footer,#premium-rivals-section:not([hidden])) {
+  animation: rm-p1-home-content-in 220ms cubic-bezier(.18,.72,.25,1) both;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+#menu-page:not([hidden]) #quick-settings:not([hidden]) {
+  animation: rm-p1-quick-in 220ms cubic-bezier(.18,.72,.25,1) both;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+#menu-page:not([hidden]) #career-page:not([hidden]) {
+  animation: rm-p1-career-in 220ms cubic-bezier(.18,.72,.25,1) both;
+}
+/* Deliberately subtle to avoid flicker on dark Android WebView backgrounds.
+   transform never changes layout size or the position of touch targets. */
+@keyframes rm-p1-home-content-in {
+  from { opacity:.72; transform:translate3d(0,6px,0); }
+  to { opacity:1; transform:none; }
+}
+@keyframes rm-p1-quick-in {
+  from { opacity:.72; transform:translate3d(0,7px,0); }
+  to { opacity:1; transform:none; }
+}
+@keyframes rm-p1-career-in {
+  from { opacity:.72; transform:translate3d(0,7px,0); }
+  to { opacity:1; transform:none; }
+}
+/* Shorten animations on very compact handsets; do not shrink the content. */
+@media (max-height:600px) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+  #home-hub:not([hidden]) :is(.play-row,.mode-grid,.home-help-footer,#premium-rivals-section:not([hidden])),
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+  #menu-page:not([hidden]) :is(#quick-settings,#career-page):not([hidden]) {
+    animation-duration:170ms;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+  #home-hub:not([hidden]) :is(.play-row,.mode-grid,.home-help-footer,#premium-rivals-section:not([hidden])),
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view
+  #menu-page:not([hidden]) :is(#quick-settings,#career-page):not([hidden]) {
+    animation:none !important;
+  }
+}
