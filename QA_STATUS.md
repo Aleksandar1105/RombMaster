@@ -1,3 +1,29 @@
+# NEXT QA GATE — Neon Polish visual & interaction audit (2026-11-23)
+
+**Status: PLANNED / NOT VERIFIED.** Video `34636.mp4` prompted proposed visual polish; this handoff does **not** implement it. Baseline issue is perceptual quality: flat/inconsistent buttons; insufficient tap, transition, capture and victory motion; low CTA priority on Home; overly complex, under-explained Career. Android Back user-reported GOOD and must not regress.
+
+## Acceptance matrix for Work implementation
+
+| ID | Surface | Required outcome | Status |
+| --- | --- | --- | --- |
+| NP-01 | Neon tokens | Red reads as saturated neon red, not pink; cyan/red/navy/white consistent across all Neon screens; other skins unaffected | PENDING |
+| NP-02 | Button system | Clear selected/disabled/pressed states, controlled edge glow & subtle inward reflection, legible labels/icons, minimum touch dimensions | PENDING |
+| NP-03 | Home | Visually dominant Play; two 3-wide rows, six rivals, Help; full portrait Home without scrolling or overlaps | PENDING |
+| NP-04 | Home motion | Logo entrance finishes promptly, subdued Play pulse, tap compress/glow 120–180ms with user-configured sound/vibration | PENDING |
+| NP-05 | Navigation | Quick Play never shows Home behind it; transitions 200–250ms; first Back gesture/return confirm and Continue unchanged | PENDING |
+| NP-06 | Career overview | One understandable chapter flow, 6 rivals × 5 Core levels, readable current/completed/locked cards, obvious next action | PENDING |
+| NP-07 | Career mission | Single primary Start Match, named Back, clear AI/board/objective, no overflow; saved stars/unlock levels intact | PENDING |
+| NP-08 | Gameplay | Move and capture animations, scoreboard/Extra Turn feedback; correct shared edges, no ghost moves/input delay | PENDING |
+| NP-09 | Results | Controlled victory/defeat animation, reward messaging and clear Replay/Home; no blocking or duplicate label art | PENDING |
+| NP-10 | Accessibility/performance | Reduced motion, readability and tap sizes, portrait variants, offline art, acceptable FPS on phone | PENDING |
+| NP-11 | Regression | Current `npm test`, `npm run build`, manual APK, cross-screen saved-data checks and handset visual QA all documented | PENDING |
+
+**Existing evidence:** latest provided regression log before `a1ba485`: **205 tests, 204 PASS, 1 FAIL** for outdated `career-progress` text; assertion subsequently changed, but no full updated log in this handoff. Android Back user explicitly marked working. After each implementation stage log build commit, manual device screenshots/videos, explicit PASS/FAIL/BLOCKED for affected IDs, regression results, and any user approval. Do not report all NP gates as PASS based on CSS-only changes.
+
+**Release safeguards:** no GitHub Actions, no unnecessary asset regeneration, no modification of game rules/AI/saves or other skin styles, no lost Home viewport, no Quick Play page stacking, no interactions blocked by decorative effects.
+
+---
+
 ## Codemagic regression log #2 — obsolete Career label assertion · 2026-11-23
 
 The uploaded `run_regression_tests.log (2).txt` contains 205 tests: 204 PASS, 1 FAIL. Test 128 (`multiple local players keep match saves and Career progress independent`) stopped at `tests/input.test.cjs:409` because the expected legacy text `0 / 100 levels cleared · Level 1 unlocked` no longer matches the intentional new label `Completed 0 of 100 · Next: Level 1` in `src/main.js:renderCareerProgress`. The test is updated to check the actual new text, while its meter, per-player stored data, saved games and switching assertions remain unchanged. No game logic or UI modifications in this commit. The uploaded log reflects the earlier candidate, and the full suite / Android build must be rerun on this commit before claiming PASS. No GitHub Actions.

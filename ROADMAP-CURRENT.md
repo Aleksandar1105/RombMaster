@@ -1,3 +1,49 @@
+# NEXT — RombMaster Android 1.0 / Neon Polish (design and UX handoff, 2026-11-23)
+
+**Status: APPROVED FOR PLANNING, NOT IMPLEMENTED.** This is the prioritized proposal distilled from the latest physical-device walkthrough `34636.mp4` and the user's request to make RombMaster more visually polished, distinctive, animated and intuitive. Continue implementation in ChatGPT Work. Base repository `Aleksandar1105/RombMaster`, current working branch `feat/android-closed-test-core`; start from the actual HEAD when Work begins (do not assume a hard-coded SHA). **Do not use GitHub Actions.** Use manual/local tests and Codemagic `RombMaster Cloud Test APK` for Android verification.
+
+## Product direction / non-negotiable design boundaries
+
+- **Refine, do not restart.** Preserve the accepted Neon dark-blue arena, locally bundled Home background, cyan/red X/O identity, geometric/hexagonal button silhouette, Home logo, six rivals and the current feature set. Keep existing save files/progress, player slots, Career gameplay and AI, Quick Play, Daily, Shop, Back behavior and monetization roadmap unchanged unless a later explicit decision requires it.
+- **Avoid visual noise.** Keep background darker and quieter behind information. Give one clear focal point per screen; controlled bloom/depth rather than every element blinking. No new backgrounds, logo replacement or Picsart credits required for the initial polish. Use CSS/SVG/Canvas animations and crisp, scalable UI.
+- **Navigation:** Home always fits portrait without vertical scrolling; two rows of three buttons remain (**Continue / Play / Daily**; **Career / Profile / Skin Store**), followed by six rivals and How to Play. Quick Play is an independent view; never show Home behind it. Android Back already behaves correctly on device: protect this regression.
+- **Proposed color tokens (design candidates, not yet signed-off implementation):** Neon Cyan `#2DE6F4`, Neon Red `#FF5965` (stronger red, less pink), Deep Navy `#0A1C30`, Text White `#F3FAFF`. Define tokens centrally, verify all Neon controls/states, ensure text contrast and consistency before sweeping replacements. Keep other skins unaffected.
+- **Performance and accessibility:** target responsive animation at ~60 fps on supported phones (measure, do not promise), avoid animation-induced input delay, preserve ~44px+ touch targets and readable labels, honor `prefers-reduced-motion` / comfort settings, and keep essential assets available offline.
+
+## Execution order and acceptance gates
+
+### P0 — Foundations: unified Neon visual language (first implementation batch)
+- Audit all Neon buttons, selected/unselected/disabled states, typography, borders, gradients, icons, result controls, secondary screens and legacy image-based chrome. Replace inconsistent pinkish mixed borders with a coordinated cyan/red system only after a side-by-side phone comparison.
+- Establish one reusable button surface: dark glass/navy face; subtle inner reflection/edge light; measured outer glow and depth; readable white type; cyan as default interaction accent, red as X/active/important accent. Choose a visibly stronger **Play** CTA while keeping existing geometry and button order.
+- Define shared scale and motion tokens; avoid the existing cascade of per-screen CSS overrides. Where feasible isolate polish styles in a maintainable layer without rewriting game logic.
+- **Gate:** all buttons are visually unified across Home, Quick Play, Career, Profile, Skin Store, gameplay, dialogs and Results; icons and labels remain readable; selected/disabled states unmistakable; no inherited raster duplicates; no new overlap or Home scroll.
+
+### P1 — Home + Quick Play first impression
+- Make **Play** the visual focal point (clearer fill/inner glow + discreet slow breathing pulse); Continue and Daily secondary. Keep the two existing 3-wide button rows, six portrait rivals and How to Play.
+- Add a *brief entrance sequence*: diamond highlights → X/O → RombMaster wordmark, then settle. Never continually animate all components. Make buttons react on press with small compression + inward light sweep + existing short sound/haptic response, roughly **120–180 ms**.
+- Use light transition/fade+small offset between Home/Quick Play/other subpages, roughly **200–250 ms**; avoid UI jump or stacked screens.
+- **Gate:** immediate visual focus on Play; balanced, non-scrolling Home; rivals current/defeated/locked clearly distinguished; Quick Play opens at top without Home content; single-tap input and Android Back remain correct.
+
+### P2 — Career clarity and child-friendly flow
+- Replace the confusing stacked navigation/dual arrow pairs and oversized, largely empty level tiles with one intuitive chapter/rival selector: **6 opponents, 5 levels each in Android Core (1–5, 6–10, ... 26–30)**, large current chapter/rival header and a clearly visible progress indicator.
+- Compact, legible level cards use *number + stars/check + state*; completed in color, current highlighted with an unmistakable **Play Level N**, future locked and dimmed. Replace tiny explanatory copy with meaningful large labels and simple visual symbols; show mission details on selection instead of cluttering the level overview.
+- Keep the mission preview with a single dominant **Start Match** CTA and a clearly named Back control (not an arrow alone). Display completion and next unlock information *inside Career* in a child-readable presentation, not as tiny Home rival subtitles.
+- **Gate:** a child can identify current level, completed levels, locked levels and the next action without explanation; saved progress/maps unchanged; current rival/chapter across screens is consistent.
+
+### P3 — Gameplay feedback and results
+- Preserve board and rules, implement short nonblocking line-draw glow (~**120–180 ms**), cell ownership fill + X/O highlight (~**200–300 ms**), score bump on capture, subtle particles traveling toward scoreboard and **Extra Turn** cue (~**400–600 ms**). Active player is always evident.
+- Refine Undo / Restart / Sound / Home visually; their behavior stays unchanged. Victory/defeat: reveal/reward animation, crystal shine and optional XP/count-up, total celebration about **900–1200 ms** without blocking further interactions.
+- **Gate:** a move can be made immediately even if effects from a prior move are still playing; turn/game rules and scoring unchanged, no ghost input, no audio buildup or seizure-like flashing.
+
+### P4 — Device QA and release gate (after each completed batch)
+- Run local regression suite and production web build before every manual Codemagic APK; no GitHub Actions. Test both fresh and returning player, saves, Career 1–30 states, Home/Quick Play, Daily, store, sound and vibration, Android Back/exit confirmation, results, offline background loading and viewport variants.
+- Compare at least 360px / 393px / 412px portrait with representative Android hardware; check FPS/perceived jank, tap latency and reduced-motion fallback. Use explicit PASS/FAIL/BLOCKED and screenshots/video per milestone. Never mark anything PASS merely because code compiles.
+- Roll out in small reversible commits: visual tokens & CTA → Home transitions → Career overview → gameplay/rewards. Update all three status docs after each gate. Avoid unrequested new assets or changes to other skins.
+
+**Work restart prompt:** “Продолжи со RombMaster од GitHub `Aleksandar1105/RombMaster`, гранка `feat/android-closed-test-core`. Прочитај `ROADMAP-CURRENT.md`, `DEVELOPMENT_STATUS.md`, `QA_STATUS.md`, почни со P0 Neon Polish, зачувај ги Home и Android Back регресиите, направи тестови и нов APK преку Codemagic, без GitHub Actions. Не означувај QA PASS без реална проверка.”
+
+---
+
 ## Codemagic regression log #2 — obsolete Career label assertion · 2026-11-23
 
 The uploaded `run_regression_tests.log (2).txt` contains 205 tests: 204 PASS, 1 FAIL. Test 128 (`multiple local players keep match saves and Career progress independent`) stopped at `tests/input.test.cjs:409` because the expected legacy text `0 / 100 levels cleared · Level 1 unlocked` no longer matches the intentional new label `Completed 0 of 100 · Next: Level 1` in `src/main.js:renderCareerProgress`. The test is updated to check the actual new text, while its meter, per-player stored data, saved games and switching assertions remain unchanged. No game logic or UI modifications in this commit. The uploaded log reflects the earlier candidate, and the full suite / Android build must be rerun on this commit before claiming PASS. No GitHub Actions.
