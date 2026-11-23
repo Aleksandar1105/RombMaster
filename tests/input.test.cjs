@@ -406,7 +406,7 @@ test('multiple local players keep match saves and Career progress independent', 
   assert.equal(h.el('local-player-select').value, 'slot-1');
   assert.equal(h.el('profile-name').value, 'Lina');
   assert.equal(h.el('profile-avatar').value, 'robot');
-  assert.equal(h.el('career-progress').textContent, '0 / 100 levels cleared · Level 1 unlocked');
+  assert.equal(h.el('career-progress').textContent, 'Completed 0 of 100 · Next: Level 1');
   assert.equal(h.el('career-clear-progress').max, 100);
   assert.equal(h.el('career-clear-progress').value, 0);
   const linaProfile = JSON.parse(h.storage.get('rombmaster_profile_v1:slot-1'));

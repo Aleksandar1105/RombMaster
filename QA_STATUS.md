@@ -1,3 +1,7 @@
+## Codemagic regression log #2 — obsolete Career label assertion · 2026-11-23
+
+The uploaded `run_regression_tests.log (2).txt` contains 205 tests: 204 PASS, 1 FAIL. Test 128 (`multiple local players keep match saves and Career progress independent`) stopped at `tests/input.test.cjs:409` because the expected legacy text `0 / 100 levels cleared · Level 1 unlocked` no longer matches the intentional new label `Completed 0 of 100 · Next: Level 1` in `src/main.js:renderCareerProgress`. The test is updated to check the actual new text, while its meter, per-player stored data, saved games and switching assertions remain unchanged. No game logic or UI modifications in this commit. The uploaded log reflects the earlier candidate, and the full suite / Android build must be rerun on this commit before claiming PASS. No GitHub Actions.
+
 ## Core Career presentation mapping audit · 2026-11-23
 
 The visual Career chapter and rival label for Android Core are now derived from the same 5-level grouping as the six Home rivals (1–5 / 6–10 / 11–15 / 16–20 / 21–25 / 26–30). This changes presentation only, not underlying Career gameplay, AI difficulty, persistent world data or rewards. Optional chaining on DOM querySelector protects lightweight test stubs. Verify chapter labels, per-rival locked/cleared/current states and mission screens in Android. No handset PASS claimed.
