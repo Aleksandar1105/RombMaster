@@ -1,5 +1,7 @@
 # NEXT WORK HANDOFF — Neon Polish implementation brief (2026-11-23)
 
+Codemagic build **#48** finished for `54e29e3`. `RombMaster-Cloud-Test-48.apk` (27.89 MB) is ready for physical-device QA. [Build and artifact](https://codemagic.io/app/6afc82905eb39306a8e3c3fa/build/6b04b76fd17d55100e0f7978)
+
 **P0 implementation:** Consolidated the competing Neon control materials in the existing neonControls layer. Cyan/navy glass and a 2px edge are the default, selected controls use red, and Home Play uses a stronger red fill. Focus has a wider white rim, disabled controls are desaturated, and reduced motion removes the feedback transition. The material uses dedicated variables to avoid inheriting the old bitmap faces of Undo, Restart, Home and Replay. The existing icon, artwork and layout exceptions are retained. Only the stylesheet and its regression assertion changed in the app/test code.
 
 **Original design handoff.** Last user walkthrough: `34636.mp4` (~1m57s), plus screenshots of Home, Quick Play, gameplay, return confirmation, Profile, Skin Store, Career list and Career mission. User dislikes the **first impression**, specifically bland/flat CTA buttons, insufficient interactive animation and weak visual hierarchy. Goal is a premium *game feel*, not a complete redesign or more decorative imagery.

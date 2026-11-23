@@ -1,5 +1,7 @@
 # NEXT QA GATE — Neon Polish visual & interaction audit (2026-11-23)
 
+Codemagic build **#48** finished for `54e29e3`. `RombMaster-Cloud-Test-48.apk` (27.89 MB) is ready for physical-device QA. [Build and artifact](https://codemagic.io/app/6afc82905eb39306a8e3c3fa/build/6b04b76fd17d55100e0f7978)
+
 **P0 source checks: PASS. Physical-device review: PENDING.** Baseline and candidate passed 205/205 tests and production compilation. Android sync and 139 theme asset checks passed. Local Chromium executable was missing, so no rendered viewport or handset pass is claimed. Compare the two APKs at 360/393/412px, inspect selection, focus, disabled controls and Play hierarchy, then verify Quick Play isolation and the first Android Back gesture.
 
 **Original QA handoff.** Video `34636.mp4` prompted proposed visual polish; this handoff does **not** implement it. Baseline issue is perceptual quality: flat/inconsistent buttons; insufficient tap, transition, capture and victory motion; low CTA priority on Home; overly complex, under-explained Career. Android Back user-reported GOOD and must not regress.
