@@ -412,7 +412,9 @@ test('multiple local players keep match saves and Career progress independent', 
   const linaProfile = JSON.parse(h.storage.get('rombmaster_profile_v1:slot-1'));
   assert.equal(linaProfile.unlockedLevel, 1);
   assert.deepEqual(linaProfile.stars, {});
-  assert.equal(h.el('continueBtn').hidden, true);
+  // Empty saves cannot resume. Whether Home reserves a disabled slot depends
+  // on the active edition+skin; the underlying action must be disabled.
+  assert.equal(h.el('continueBtn').disabled, true);
   h.game.start(4, 'pvp', 'normal');
   h.el('menuBtn').click();
   const linaSave = h.storage.get('rhombus_save:slot-1');

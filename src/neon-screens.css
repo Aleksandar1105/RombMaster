@@ -938,3 +938,13 @@ button[aria-pressed="true"] {
  font-size:.78rem !important;
  color:#b5e5f3 !important;
 }
+
+/* Neon Polish P0.1 — reserve the Continue slot, rather than allowing a
+   finished game to break the three-wide Home action hierarchy. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub:not([hidden])
+.play-row #continueBtn:disabled {
+  opacity:.43 !important;
+  filter:saturate(.45) brightness(.72) !important;
+  cursor:default !important;
+  pointer-events:none !important;
+}

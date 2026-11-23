@@ -600,7 +600,19 @@ export const Game = {
   refreshSavedGame() {
     const saved = SaveStore.read();
     const button = document.getElementById('continueBtn');
-    if (button) button.hidden = saved.status !== 'ready';
+    if (button) {
+      // Android Core Neon keeps a stable three-button Home row after victory.
+      // No resumable match => Continue is visible but genuinely disabled.
+      // Other skins/editions keep their established hidden-empty behavior.
+      const stableNeonHome = document.documentElement?.dataset?.skin === 'neon' &&
+        document.documentElement?.dataset?.edition === 'core';
+      const canResume = saved.status === 'ready';
+      button.hidden = !stableNeonHome && !canResume;
+      button.disabled = !canResume;
+      button.title = canResume ? 'Resume saved match' : 'No unfinished match to resume';
+      button.setAttribute?.('aria-label',
+        canResume ? 'Continue saved match' : 'Continue unavailable — no unfinished match');
+    }
     const detail = document.getElementById('continue-summary');
     if (detail) {
       const state = saved.state;
