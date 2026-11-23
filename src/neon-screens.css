@@ -298,10 +298,10 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
   pointer-events: none;
 }
 :root[data-skin="neon"] #view-menu #menu-page #quick-settings button[aria-pressed="true"] {
-  --home-jewel: #ff83ce;
-  --neon-action-face: linear-gradient(115deg, #14304c, #312950 55%, #651e55);
+  --home-jewel: var(--neon-red);
+  --neon-action-face: linear-gradient(115deg, #14304c, #272638 55%, #3b232c);
 }
-:root[data-skin="neon"] #quick-settings #setup-play { --home-jewel: #f35aaf; }
+:root[data-skin="neon"] #quick-settings #setup-play { --home-jewel: var(--neon-red); }
 :root[data-skin="neon"] #quick-settings :is(.rm-quick-label, #quick-match-summary) {
   text-shadow: 0 1px 3px #020813, 0 0 6px #020813;
 }
@@ -651,7 +651,7 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
  :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex,
   #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) button:not(
   .skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"]) {
-   --rim:linear-gradient(115deg,#c1ffff,#31e2fa 19%,#17648d 47%,#f56d91 80%,#ffe0ec) !important;
+   --rim:linear-gradient(115deg,#c1ffff,var(--neon-cyan) 19%,#17648d 47%,var(--neon-red) 80%,#ffd7d1) !important;
    --face:linear-gradient(125deg,#102c42 0%,#0d1b30 53%,#261c37 100%) !important;
    position:relative !important;isolation:isolate !important;
    background:var(--rim) !important;background-image:var(--rim) !important;
@@ -673,7 +673,7 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
  }
  :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex) button:is(
   [aria-pressed="true"],[aria-selected="true"],.selected,.active) {
-   --rim:linear-gradient(115deg,#ffdfeb,#ff7fa5 22%,#c83d78 59%,#7fe5fa 100%) !important;
+   --rim:linear-gradient(115deg,#ffe2dc,var(--neon-red) 22%,#b93945 59%,#7fe5fa 100%) !important;
    --face:linear-gradient(115deg,#54283e,#251b33 63%,#422039) !important;
  }
  :root[data-skin="neon"] :is(#view-game #controls,#overlay.flex .result-actions) button {
@@ -758,12 +758,12 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
    #home-hub,#menu-page,#view-game #controls,#overlay.flex,
    #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal
  ) button:not(.skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"]) {
-   --rim:linear-gradient(112deg,#8af6ff 0%,#1cd9ee 18%,#16668b 45%,#ff625e 78%,#ffc1ac 100%) !important;
+   --rim:linear-gradient(112deg,#8af6ff 0%,var(--neon-cyan) 18%,#16668b 45%,var(--neon-red) 78%,#ffd1c9 100%) !important;
    --face:linear-gradient(124deg,#102d41 0%,#0c1c30 54%,#2f212d 100%) !important;
  }
  :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex)
  button:is([aria-pressed="true"],[aria-selected="true"],.selected,.active) {
-   --rim:linear-gradient(110deg,#a7faff,#46cce5 24%,#ff685f 70%,#ffb28a) !important;
+   --rim:linear-gradient(110deg,#a7faff,#46cce5 24%,var(--neon-red) 70%,#ffc3bb) !important;
    --face:linear-gradient(115deg,#46292e,#201d2c 65%,#3d2528) !important;
  }
 }

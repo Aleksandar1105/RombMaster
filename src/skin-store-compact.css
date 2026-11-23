@@ -2046,13 +2046,18 @@
 }
 /* Apply the same materials to Home and the controls inside each mode. */
 :root[data-skin="neon"] {
- --neon-panel:linear-gradient(140deg,#0c2439f5,#11172ff5 70%,#251a38f5);
- --neon-action-face:linear-gradient(115deg,#07182de9,#14233eea 56%,#301d3fe9);
+ /* P0.2: color tokens only; keep established button geometry and layering. */
+ --neon-cyan:#2de6f4;
+ --neon-red:#ff5965;
+ --neon-navy:#0a1c30;
+ --neon-text:#f3faff;
+ --neon-panel:linear-gradient(140deg,#0c2439f5,#11172ff5 70%,#201d2bf5);
+ --neon-action-face:linear-gradient(115deg,#07182de9,#14233eea 56%,#24202eeb);
 }
 :root[data-skin="neon"] button {
  --home-cut:clamp(6px,1.6vw,10px);
- --home-jewel:#42d9f1;
- --neon-action-rim:linear-gradient(125deg,#b9ffff,var(--home-jewel) 18%,#15385e 47%,var(--home-jewel) 83%,#fff4ff);
+ --home-jewel:var(--neon-cyan);
+ --neon-action-rim:linear-gradient(125deg,#b9ffff,var(--home-jewel) 18%,#15385e 47%,var(--home-jewel) 83%,#fff1ee);
  --neon-action-shape:polygon(var(--home-cut) 0,calc(100% - var(--home-cut)) 0,100% 50%,calc(100% - var(--home-cut)) 100%,var(--home-cut) 100%,0 50%);
 }
 /* Single clean jewel silhouette per action, no nested cards or second frame. */
@@ -2088,10 +2093,12 @@
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-utility-row,.home-links) button:focus-visible{
  outline:2px solid #d9ffff!important;outline-offset:2px!important;
 }
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button{--home-jewel:#f35aaf!important;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row button{--home-jewel:var(--neon-cyan)!important;}
+/* Give the primary Play tile a warmer red accent without recoloring all actions. */
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .play-row #startBtn{--home-jewel:var(--neon-red)!important;}
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:first-child{--home-jewel:#39d7fb!important;}
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:last-child{--home-jewel:#ef65bd!important;}
-:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links #home-skin-store{--home-jewel:#e66be9!important;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .mode-grid button:last-child{--home-jewel:var(--neon-red)!important;}
+:root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] .home-links #home-skin-store{--home-jewel:var(--neon-red)!important;}
 :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,#home-tools){
  display:flex!important;flex-flow:row nowrap!important;align-items:center!important;
  gap:clamp(12px,2.6vw,22px)!important;
@@ -2392,7 +2399,7 @@
  clip-path:inherit!important;background:var(--neon-action-face)!important;
  pointer-events:none;z-index:-1;
 }
-:root[data-skin="neon"] :is(#menu-page,#overlay,#help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) .btn-primary{--home-jewel:#f377c0;}
+:root[data-skin="neon"] :is(#menu-page,#overlay,#help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) .btn-primary{--home-jewel:var(--neon-red);}
 :root[data-skin="neon"] :is(#menu-page,#overlay,#view-game,#help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) button:focus-visible{
  --home-jewel:white;filter:brightness(1.2);
 }
