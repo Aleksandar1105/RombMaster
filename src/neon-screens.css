@@ -708,7 +708,7 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
 :root[data-skin="neon"] #view-menu
 #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) {
   background-color:#071327 !important;
-  background-image: url('https://gcdn.picsart.com/picsart-mcp/f665960e-8e08-4a8d-ba93-e1656759a836.png') !important;
+  background-image: url('/assets/premium/master/neon-home-calm-300.webp') !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
   background-size:cover !important;
@@ -718,4 +718,223 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
 #premium-hero-stage:not([hidden]) {
   background:transparent !important;
   background-image:none !important;
+}
+
+/* Android 1.0 polish: native Back gesture unchanged. Home-only refinements. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]),
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-neon-reference="1"]:not([hidden]) :is(.play-row,.mode-grid) {
+   transform:translateY(-7px) !important;
+ }
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]
+#premium-rivals-section h2 {
+ font-size:clamp(.78rem,3.4vw,1rem) !important;
+ letter-spacing:.065em !important;
+ font-weight:900 !important;
+ text-shadow:0 1px 3px #010a16,0 0 9px #64dafa99 !important;
+ margin:3px 0 6px !important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]
+#premium-rivals-section .premium-rival-card > small { display:none !important; }
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]
+#premium-rivals-section .premium-rival-card strong {
+ font-size:clamp(.56rem,2.15vw,.76rem) !important;
+ line-height:1.18 !important;
+ color:#effcff !important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"] #helpBtn {
+ width:clamp(102px,27vw,132px) !important;
+ height:34px !important;
+ min-height:34px !important;
+ font-size:.7rem !important;
+}
+/* All Neon controls: blue and vivid CORAL RED, no pink/magenta cast.
+   Keep contrast and keyboard focus from existing declarations. */
+@layer neonControls {
+ :root[data-skin="neon"] :is(
+   #home-hub,#menu-page,#view-game #controls,#overlay.flex,
+   #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal
+ ) button:not(.skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"]) {
+   --rim:linear-gradient(112deg,#8af6ff 0%,#1cd9ee 18%,#16668b 45%,#ff625e 78%,#ffc1ac 100%) !important;
+   --face:linear-gradient(124deg,#102d41 0%,#0c1c30 54%,#2f212d 100%) !important;
+ }
+ :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex)
+ button:is([aria-pressed="true"],[aria-selected="true"],.selected,.active) {
+   --rim:linear-gradient(110deg,#a7faff,#46cce5 24%,#ff685f 70%,#ffb28a) !important;
+   --face:linear-gradient(115deg,#46292e,#201d2c 65%,#3d2528) !important;
+ }
+}
+/* One visible Back label instead of an unlabeled chevron.
+   The actual onclick handler and Android hardware Back stay unchanged. */
+:root[data-skin="neon"] #view-menu #menu-page #page-back {
+ position:absolute !important;
+ top:clamp(8px,1.8dvh,18px) !important;left:8px !important;
+ width:clamp(76px,22vw,92px) !important;
+ min-width:76px !important;height:44px !important;min-height:44px !important;
+ padding:4px 7px !important;
+ font-size:clamp(.74rem,3vw,.87rem) !important;
+ line-height:1 !important;
+ white-space:nowrap !important;
+ z-index:12 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #page-back::after {
+ content:none !important;display:none !important;
+}
+/* Career: compact, legible levels and three-step navigation. */
+:root[data-skin="neon"] #view-menu #menu-page #career-page {
+ padding:clamp(4px,1vw,9px) !important;
+ gap:clamp(6px,1.1dvh,11px) !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page [data-career-screen][hidden] {
+ display:none !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #career-screen-nav {
+ display:grid !important;
+ grid-template-columns:44px minmax(0,1fr) 44px !important;
+ gap:6px !important;
+ align-items:center !important;
+ margin:0 0 9px !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page
+:is(#career-screen-prev,#career-screen-next,#previous-chapter,#next-chapter) {
+ width:44px !important;height:44px !important;min-height:44px !important;
+ padding:4px !important;font-size:1.25rem !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #career-screen-label {
+ font-size:clamp(.94rem,4vw,1.1rem) !important;
+ font-weight:900 !important;
+ color:#e6fcff !important;
+ text-align:center !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .chapter-nav {
+ display:grid !important;
+ grid-template-columns:44px minmax(0,1fr) 44px !important;
+ gap:6px !important;
+ align-items:center !important;
+ margin-bottom:4px !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-label {
+ font-size:clamp(.84rem,3.5vw,1rem) !important;
+ line-height:1.15 !important;
+ color:#bdf7ff !important;
+ text-align:center !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #career-rival {
+ margin:2px 0 !important;
+ font-size:.88rem !important;color:#e5faff !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .rm-career-hint {
+ margin:0 auto 4px !important;
+ font-size:clamp(.76rem,3vw,.86rem) !important;
+ line-height:1.35 !important;
+ text-align:center !important;
+ color:#b7dce9 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .rm-career-progress {
+ display:grid !important;gap:5px !important;
+ margin:0 0 7px !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .career-progress {
+ position:static !important;
+ clip-path:none !important;
+ width:auto !important;height:auto !important;
+ overflow:visible !important;
+ font-size:clamp(.76rem,3vw,.9rem) !important;
+ line-height:1.25 !important;color:#d5f5ff !important;
+ text-align:center !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route {
+ display:grid !important;
+ grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+ gap:clamp(6px,1.5vw,11px) !important;
+ margin:8px 0 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route button {
+ display:grid !important;
+ grid-template-columns:44px minmax(0,1fr) !important;
+ grid-template-rows:auto auto !important;
+ gap:0 7px !important;
+ min-height:clamp(55px,8dvh,72px) !important;
+ height:auto !important;
+ padding:8px !important;
+ align-content:center !important;align-items:center !important;
+ text-align:left !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route button b {
+ grid-column:1 !important;grid-row:1/3 !important;
+ width:38px !important;height:38px !important;
+ display:grid !important;place-items:center !important;
+ border-radius:9px !important;
+ color:#f8fdff !important;
+ background:#174257 !important;
+ font-size:1.1rem !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route button span {
+ grid-column:2 !important;grid-row:1 !important;
+ display:block !important;
+ font-size:clamp(.75rem,3vw,.88rem) !important;
+ line-height:1.12 !important;
+ color:#f0faff !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route button small {
+ grid-column:2 !important;grid-row:2 !important;
+ margin:2px 0 0 !important;
+ font-size:clamp(.65rem,2.65vw,.77rem) !important;
+ line-height:1.2 !important;
+ color:#bfecff !important;
+ white-space:nowrap !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route
+button[data-level-state="locked"] { opacity:.6 !important; }
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route
+button[data-level-state="cleared"] small {color:#a2edca !important;}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route
+button[aria-pressed="true"] {
+ filter:brightness(1.16) drop-shadow(0 0 6px #39ddf688) !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page
+:is(#career-open-mission,#career-start-btn) {
+ width:100% !important;min-height:50px !important;height:50px !important;
+ font-size:clamp(.98rem,4vw,1.18rem) !important;
+ margin-top:4px !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .mission-detail {
+ gap:7px !important;
+ align-content:start !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .rm-mission-header {
+ display:flex !important;gap:10px !important;
+ padding:8px 10px !important;
+ align-items:center !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .rm-mission-copy small {
+ font-size:clamp(.72rem,2.9vw,.84rem) !important;
+ line-height:1.25 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page .rm-mission-copy strong {
+ font-size:clamp(1rem,4.2vw,1.3rem) !important;
+ line-height:1.15 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #mission-preview {
+ width:min(65vw,28dvh,260px) !important;height:auto !important;
+ margin:1px auto !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #career-page #career-description {
+ font-size:clamp(.8rem,3.2vw,.95rem) !important;
+ line-height:1.35 !important;
+ max-width:95% !important;
+ margin:1px auto !important;
+ color:#d6e8f4 !important;
+}
+/* On Core rival index, display actual five-level intervals instead of old
+   hundred-level world ranges and preserve per-player colored states. */
+:root[data-skin="neon"][data-edition="core"] #career-page .premium-rivals-grid {
+ gap:clamp(6px,1.8vw,12px) !important;
+}
+:root[data-skin="neon"][data-edition="core"] #career-page .premium-rival-card .rm-rival-levels {
+ font-size:.78rem !important;
+ color:#b5e5f3 !important;
 }

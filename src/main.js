@@ -86,7 +86,7 @@ function setCareerScreen(index=0){
     for(const pane of document.querySelectorAll('[data-career-screen]'))pane.hidden=identityOpen||pane.dataset.careerScreen!==careerScreens[careerScreen];
     el('career-screen-prev').disabled=careerScreen===0;
     el('career-screen-next').disabled=careerScreen===2;
-    el('career-screen-label').textContent=['Levels','Mission','Rivals'][careerScreen]+' · '+(careerScreen+1)+' / 3';
+    el('career-screen-label').textContent=['Choose a level','Mission preview','Your rivals'][careerScreen]+' · '+(careerScreen+1)+' / 3';
 }
 function setSkinDetailScreen(index=0){
     skinDetailScreen=Math.max(0,Math.min(2,index));
@@ -169,7 +169,7 @@ function showHome() {
     arcade?.leave();
     stopSkinPreview();
     skinDetailsOpen = false;
-    el('page-back').textContent = '← Home';
+    el('page-back').textContent = '← Back';
     el('menu-page').hidden = true;
     el('home-hub').hidden = false;
     ui.viewMenu.scrollTop = 0;
@@ -282,7 +282,7 @@ function renderCareerProgress(profile) {
     const meter=el('career-clear-progress');
     if(meter){meter.max=campaignLimit;meter.value=cleared;meter.hidden=!profile;}
     if(careerProgress)careerProgress.textContent=profile
-        ? cleared+' / '+campaignLimit+' levels cleared · Level '+profile.unlockedLevel+' unlocked'
+        ? 'Completed '+cleared+' of '+campaignLimit+' · Next: Level '+Math.min(profile.unlockedLevel,campaignLimit)
         : 'Career progress unavailable';
 }
 function renderRoute(profile, selected) {
@@ -299,13 +299,13 @@ function renderRoute(profile, selected) {
     setText('career-mission-level','LEVEL '+selected+' / '+campaignLimit+(selected===world.end?' · BOSS BATTLE':''));
     setText('career-mission-title',mission?.title||(selected===world.end?'Boss Battle':'Career mission'));
     setText('career-mission-rival',guidedFox?'Fox · '+world.name:world.rival+' · '+world.name);
-    setText('career-open-mission','Level '+selected+' · View mission ›');
-    el('chapter-label').textContent = world.name+' · '+(Math.floor((selected-1)/5)+1)+' / '+Math.ceil(campaignLimit/5);
+    setText('career-open-mission','Preview Level '+selected+' ›');
+    el('chapter-label').textContent = world.name+' · Chapter '+(Math.floor((selected-1)/5)+1)+' of '+Math.ceil(campaignLimit/5);
     const rival=el('career-rival');
-    if(rival)rival.textContent=world.icon+' '+world.rival+' · '+world.focus;
+    if(rival)rival.textContent = coreEdition ? 'Rival: '+world.rival : world.icon+' '+world.rival+' · '+world.focus;
     el('previous-chapter').disabled = first === 1;
     el('next-chapter').disabled = first + 5 > profile.unlockedLevel;
-    el('career-start-btn').textContent = 'Start match · Level ' + selected;
+    el('career-start-btn').textContent = 'Play Level ' + selected;
     const nodes = [];
     for (let level = first; level < first + 5; level++) {
         const button = document.createElement('button');
@@ -317,10 +317,10 @@ function renderRoute(profile, selected) {
         const number = document.createElement('b');
         number.textContent = level;
         const title = document.createElement('span');
-        title.textContent = careerWorld(level)?.end===level?'Boss Battle':missionFor(level)?.title ?? 'Level ' + level;
+        title.textContent = coreEdition ? 'Level '+level : (careerWorld(level)?.end===level?'Boss Battle':missionFor(level)?.title ?? 'Level ' + level);
         const stars = document.createElement('small');
         const earned=profile.stars[level]||0;
-        stars.textContent=button.disabled?'🔒':earned?'★'.repeat(earned)+'☆'.repeat(3-earned):'Ready';
+        stars.textContent=button.disabled?'🔒 Locked':earned?'✓ Completed · '+'★'.repeat(earned):'▶ Play now';
         button.setAttribute('aria-label','Level '+level+' · '+title.textContent+' · '+(button.disabled?'Locked':earned?earned+' of 3 stars':'Available'));
         button.append(number, title, stars);
         button.onclick = () => {
@@ -515,7 +515,7 @@ function setSkinPanel(detail) {
     skinDetailsOpen = detail;
     el('skin-catalog-panel').hidden = detail;
     el('skin-detail-panel').hidden = !detail;
-    el('page-back').textContent = detail ? '← Skins' : '← Home';
+    el('page-back').textContent = '← Back';
     if (detail) {
         setSkinDetailScreen(0);
         el('page-title').textContent = 'Skin Details';
@@ -765,22 +765,24 @@ function refreshRivalPortraits(profile) {
             const card = el(prefix + '-' + i);
             const status = el(prefix + '-status-' + i);
             if (card) {
-                // The Career screen retains its existing 100-level world map.
+                // The full edition retains its established 100-level world map.
                 // Only the Home strip uses the temporary Android Core mapping.
                 const home = prefix === 'home-rival';
-                const ownState = home ? state : (profile?.stars?.[world.end] ? 'defeated' :
+                const ownState = coreEdition ? state : (profile?.stars?.[world.end] ? 'defeated' :
                     profile && profile.unlockedLevel >= world.start ? 'available' : 'locked');
                 card.hidden = false;
                 card.dataset.state = ownState;
                 card.dataset.current = String(home ? current : Boolean(profile && careerWorld(profile.unlockedLevel) === world));
-                if (home) {
+                if (coreEdition) {
                     card.dataset.levels = start + '–' + end;
+                    const levelLabel = card.querySelector('.rm-rival-levels');
+                    if (levelLabel) levelLabel.textContent = 'Levels ' + start + '–' + end;
                     card.setAttribute('aria-label', world.rival + ', levels ' + start + ' to ' + end + ', ' +
                         (current ? 'current opponent' : ownState));
                 }
             }
-            if (status) status.textContent = prefix === 'home-rival' && coreEdition
-                ? start + '–' + end
+            if (status) status.textContent = coreEdition
+                ? (state === 'defeated' ? 'Completed' : state === 'available' ? 'Current rival' : 'Locked')
                 : state === 'defeated' ? 'Defeated' : state === 'available' ? 'Available' : 'Locked';
         }
     }
