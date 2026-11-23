@@ -323,83 +323,39 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
     --control-cut: 11px;
     --control-shape: polygon(0 50%, var(--control-cut) 0, calc(100% - var(--control-cut)) 0, 100% 50%, calc(100% - var(--control-cut)) 100%, var(--control-cut) 100%);
   }
-  /* P0 control material. The face, rim and state are independent of page layout.
-     Portraits, catalog illustrations and the settings emblem retain their own art. */
-  :root[data-skin="neon"] {
-    --neon-cyan: #2de6f4;
-    --neon-red: #ff5965;
-    --neon-navy: #0a1c30;
-    --neon-white: #f3faff;
-    --neon-rim-width: 2px;
-    --neon-touch-size: 44px;
-    --neon-press-time: 140ms;
-    --neon-label-weight: 750;
-  }
-  :root[data-skin="neon"] :where(button:not(.skin-card,.avatar-choice,.home-settings-trigger,.premium-player-avatar,[role="gridcell"]), .profile-switcher label span) {
-    --neon-edge: var(--neon-cyan);
-    --neon-surface-top: #173d50;
-    --neon-surface-bottom: var(--neon-navy);
-    --neon-control-rim: linear-gradient(150deg,#c5f6ff,var(--neon-edge) 24%,#294951 52%,var(--neon-edge));
-    --neon-control-face: linear-gradient(168deg,var(--neon-surface-top),var(--neon-surface-bottom) 67%);
-    position: relative;
+  :root[data-skin="neon"] :is(button,.profile-switcher label span):not(.skin-card,.home-settings-trigger,.premium-player-avatar,[role="gridcell"]) {
+    --rim: var(--skin-o);
+    --face: linear-gradient(110deg,#0d293c,#0a162a 80%);
     isolation: isolate !important;
-    background: var(--neon-control-rim) !important;
+    position: relative;
+    background: var(--rim) !important;
     clip-path: var(--control-shape) !important;
     border: 0 !important;
-    border-image: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    color: var(--neon-white) !important;
-    font-weight: var(--neon-label-weight) !important;
-    text-shadow: 0 1px 2px #03101c !important;
-    transition: filter var(--neon-press-time) ease-out;
+    color: #edfaff !important;
   }
-  :root[data-skin="neon"] :where(button:not(.skin-card,.avatar-choice,.home-settings-trigger,.premium-player-avatar,[role="gridcell"]), .profile-switcher label span)::before {
+  :root[data-skin="neon"] :is(button,.profile-switcher label span):not(.skin-card,.home-settings-trigger,.premium-player-avatar,[role="gridcell"])::before {
     content: "" !important;
     display: block !important;
     position: absolute !important;
-    inset: var(--neon-rim-width) !important;
+    inset: 1.5px 2px !important;
     width: auto !important;
     height: auto !important;
     transform: none !important;
     border: 0 !important;
-    border-image: none !important;
     border-radius: 0 !important;
+    box-shadow: none !important;
     clip-path: inherit !important;
     pointer-events: none;
-    background: var(--neon-control-face) !important;
-    box-shadow: inset 0 1px 1px #dbfaff55, inset 0 -3px 6px #020a16a6 !important;
+    background: var(--face) !important;
     z-index: -1 !important;
   }
-  :root[data-skin="neon"] :where(button:not(#page-back,.skin-card,.avatar-choice,.home-settings-trigger,.premium-player-avatar,[role="gridcell"])) { position: relative !important; }
-  :root[data-skin="neon"] :is(button[aria-pressed="true"],button[aria-selected="true"],button.selected,button.active,label input:checked + span) {
-    --neon-edge: var(--neon-red);
-    --neon-surface-top: #54303c;
-    --neon-surface-bottom: #291d2c;
+  :root[data-skin="neon"] :is(button[aria-pressed="true"],button[aria-selected="true"],button.active,label input:checked + span) {
+    --rim: var(--skin-x) !important;
+    --face: linear-gradient(110deg,#402536,#20192c) !important;
   }
-  :root[data-skin="neon"] #startBtn {
-    --neon-edge: var(--neon-red);
-    --neon-surface-top: #ab3547;
-    --neon-surface-bottom: #642036;
-    --neon-label-weight: 900;
-  }
-  :root[data-skin="neon"] :is(button:focus-visible,label input:focus-visible + span) {
-    --neon-control-rim: linear-gradient(white,white);
-    --neon-rim-width: 3px;
-  }
-  :root[data-skin="neon"] button:is(:disabled,[aria-disabled="true"],.disabled) {
-    --neon-edge: #768a98;
-    --neon-surface-top: #253444;
-    --neon-surface-bottom: #142332;
-    filter: saturate(.3) !important;
-    opacity: .65 !important;
-  }
-  :root[data-skin="neon"] :is(#quick-settings,#controls,.result-actions,.game-confirm-actions) button {
-    min-height: var(--neon-touch-size) !important;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    :root[data-skin="neon"] { --neon-press-time: 0ms; }
-  }
+  :root[data-skin="neon"] :is(#startBtn,#setup-play,#home-skin-store,.btn-primary) { --rim: var(--skin-x) !important; }
   :root[data-skin="neon"] :is(#view-game,#overlay.flex) {
     background-image: linear-gradient(#03112444,#04122755),var(--neon-scene) !important;
     background-size: 100% 100% !important;
@@ -692,8 +648,36 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
 /* One neon material for menus, match controls and results. Removes legacy
    image buttons with duplicated baked labels while retaining actual SVG/text. */
 @layer neonControls {
+ :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex,
+  #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) button:not(
+  .skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"]) {
+   --rim:linear-gradient(115deg,#c1ffff,#31e2fa 19%,#17648d 47%,#f56d91 80%,#ffe0ec) !important;
+   --face:linear-gradient(125deg,#102c42 0%,#0d1b30 53%,#261c37 100%) !important;
+   position:relative !important;isolation:isolate !important;
+   background:var(--rim) !important;background-image:var(--rim) !important;
+   border:0 !important;border-image:none !important;border-radius:0 !important;
+   clip-path:var(--control-shape) !important;box-shadow:none !important;
+   color:#f9fdff !important;font-weight:800 !important;
+   text-shadow:0 1px 2px #020817,0 0 5px #9cefff99 !important;
+ }
+ :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex,
+  #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal) button:not(
+  .skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"])::before {
+   content:"" !important;display:block !important;position:absolute !important;
+   inset:3px !important;width:auto !important;height:auto !important;
+   background:radial-gradient(ellipse at 50% 0,#6fdcfb2c,transparent 63%),var(--face) !important;
+   border:0 !important;border-image:none !important;
+   clip-path:inherit !important;transform:none !important;z-index:-1 !important;
+   pointer-events:none !important;
+   box-shadow:inset 0 0 14px #48d9f538 !important;
+ }
+ :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex) button:is(
+  [aria-pressed="true"],[aria-selected="true"],.selected,.active) {
+   --rim:linear-gradient(115deg,#ffdfeb,#ff7fa5 22%,#c83d78 59%,#7fe5fa 100%) !important;
+   --face:linear-gradient(115deg,#54283e,#251b33 63%,#422039) !important;
+ }
  :root[data-skin="neon"] :is(#view-game #controls,#overlay.flex .result-actions) button {
-   background-image:var(--neon-control-rim) !important;
+   background-image:var(--rim) !important;
    background-size:100% 100% !important;
    text-indent:0 !important;
  }
@@ -766,6 +750,22 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
  height:34px !important;
  min-height:34px !important;
  font-size:.7rem !important;
+}
+/* All Neon controls: blue and vivid CORAL RED, no pink/magenta cast.
+   Keep contrast and keyboard focus from existing declarations. */
+@layer neonControls {
+ :root[data-skin="neon"] :is(
+   #home-hub,#menu-page,#view-game #controls,#overlay.flex,
+   #help-modal,#daily-modal,#confirm-dialog,#career-reset-modal
+ ) button:not(.skin-card,.home-settings-trigger,.avatar-choice,[role="gridcell"]) {
+   --rim:linear-gradient(112deg,#8af6ff 0%,#1cd9ee 18%,#16668b 45%,#ff625e 78%,#ffc1ac 100%) !important;
+   --face:linear-gradient(124deg,#102d41 0%,#0c1c30 54%,#2f212d 100%) !important;
+ }
+ :root[data-skin="neon"] :is(#home-hub,#menu-page,#view-game #controls,#overlay.flex)
+ button:is([aria-pressed="true"],[aria-selected="true"],.selected,.active) {
+   --rim:linear-gradient(110deg,#a7faff,#46cce5 24%,#ff685f 70%,#ffb28a) !important;
+   --face:linear-gradient(115deg,#46292e,#201d2c 65%,#3d2528) !important;
+ }
 }
 /* One visible Back label instead of an unlabeled chevron.
    The actual onclick handler and Android hardware Back stay unchanged. */

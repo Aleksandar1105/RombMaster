@@ -1,3 +1,7 @@
+## Neon P0 Build #48 rollback (2026-11-23)
+
+User reviewed `34638.mp4` (~42.8s) and **rejected** the P0 visual materials from `54e29e3` (Build #48) due to weak first impression and a missing Home first-row item after a match. This is a **non-destructive source rollback** to the pre-P0 styling/test versions from `1d4c273`, not a force-reset: only `src/neon-screens.css` and `tests/neon-build40-followup.test.cjs` are restored; the established documents and later build records are preserved. Root cause of the vanishing Continue tile is separate, preexisting behavior in `src/game.js:refreshSavedGame()`: hides the control if no resumable save, which breaks stable Home visual hierarchy after victory. Track it as P0.1; do not equate missing Continue with lost saved progress. Resume Neon Polish in small testable increments and never change gameplay/AI/profile state, other skins or native Android Back. No GitHub Actions. Rollback commit itself was not yet compiled or tested on a device.
+
 # NEXT — RombMaster Android 1.0 / Neon Polish (design and UX handoff, 2026-11-23)
 
 Codemagic build **#48** finished for `54e29e3`. `RombMaster-Cloud-Test-48.apk` (27.89 MB) is ready for physical-device QA. [Build and artifact](https://codemagic.io/app/6afc82905eb39306a8e3c3fa/build/6b04b76fd17d55100e0f7978)
