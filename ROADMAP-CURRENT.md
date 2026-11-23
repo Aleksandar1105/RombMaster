@@ -1,6 +1,8 @@
 # NEXT — RombMaster Android 1.0 / Neon Polish (design and UX handoff, 2026-11-23)
 
-**Status: APPROVED FOR PLANNING, NOT IMPLEMENTED.** This is the prioritized proposal distilled from the latest physical-device walkthrough `34636.mp4` and the user's request to make RombMaster more visually polished, distinctive, animated and intuitive. Continue implementation in ChatGPT Work. Base repository `Aleksandar1105/RombMaster`, current working branch `feat/android-closed-test-core`; start from the actual HEAD when Work begins (do not assume a hard-coded SHA). **Do not use GitHub Actions.** Use manual/local tests and Codemagic `RombMaster Cloud Test APK` for Android verification.
+**P0 candidate implemented from 1d4c273.** Compare the candidate with the previous APK on the same handset before accepting the palette. Next gate: NP-01, NP-02 and Home hierarchy in NP-03. P1–P3 remain planned.
+
+**Original handoff.** This is the prioritized proposal distilled from the latest physical-device walkthrough `34636.mp4` and the user's request to make RombMaster more visually polished, distinctive, animated and intuitive. Continue implementation in ChatGPT Work. Base repository `Aleksandar1105/RombMaster`, current working branch `feat/android-closed-test-core`; start from the actual HEAD when Work begins (do not assume a hard-coded SHA). **Do not use GitHub Actions.** Use manual/local tests and Codemagic `RombMaster Cloud Test APK` for Android verification.
 
 ## Product direction / non-negotiable design boundaries
 
