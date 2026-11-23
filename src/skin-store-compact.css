@@ -886,11 +886,11 @@
  background:var(--rm-button-art) center/100% 100% no-repeat,var(--rm-chrome-face);
 }
 :root[data-skin][data-skin] #view-game #controls .btn-icon span{
- opacity:1;color:var(--rm-chrome-ink)!important;font-size:clamp(.65rem,2.5vw,.8rem);
- line-height:1.1;white-space:normal;text-align:center;
+ opacity:1;color:var(--rm-chrome-ink)!important;font-size:clamp(.71rem,2.5vw,.82rem);
+ line-height:1.14;white-space:normal;text-align:center;
 }
 :root[data-skin][data-skin] #view-game #controls .btn-icon svg{
- opacity:1;stroke:currentColor;width:20px;height:20px;
+ opacity:1;stroke:currentColor;stroke-width:1.9;width:20px;height:20px;
 }
 :root[data-skin][data-skin] #view-game #controls .btn-icon:is(.disabled,:disabled){
  opacity:.58;filter:saturate(.5);box-shadow:none;
@@ -1089,10 +1089,10 @@
 }
 :root[data-skin] #view-menu #menu-page #quick-settings button:focus-visible{outline:2px solid var(--skin-accent);outline-offset:2px;}
 #quick-settings .btn-group button strong{
- font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(.69rem,2.9vw,1rem);line-height:1.15;overflow-wrap:anywhere;
+ font-family:var(--rm-display-font,var(--rm-font));font-size:clamp(.76rem,2.9vw,1rem);line-height:1.16;overflow-wrap:anywhere;
 }
-#quick-settings .btn-group button small{font-size:clamp(.59rem,2.25vw,.77rem);line-height:1.1;color:var(--skin-ink);}
-#quick-settings .btn-group button svg{width:clamp(18px,4dvh,28px);height:clamp(18px,4dvh,28px);fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+#quick-settings .btn-group button small{font-size:clamp(.69rem,2.25vw,.78rem);line-height:1.14;color:var(--skin-ink);}
+#quick-settings .btn-group button svg{width:clamp(18px,4dvh,28px);height:clamp(18px,4dvh,28px);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 #quick-settings .btn-group button[aria-pressed="true"] svg{color:var(--skin-accent);}
 #view-menu #menu-page #quick-settings .rm-quick-preview{
  display:grid;grid-column:1;grid-row:2;justify-items:center;align-content:center;gap:4px;min-width:0;
@@ -2166,7 +2166,7 @@
 }
 @media(max-width:390px){
  :root[data-skin="neon"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] :is(.play-row,.mode-grid,.home-links) button:not([hidden]){
-  padding:5px 7px!important;font-size:clamp(.69rem,3vw,.88rem)!important;
+  padding:5px 7px!important;font-size:clamp(.74rem,3vw,.88rem)!important;
  }
 }
 

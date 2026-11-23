@@ -398,7 +398,9 @@ html[data-edition="core"] #view-menu #home-hub[data-layout="premium"] #continueB
       grid-column:auto !important;
       margin:0 !important;
       padding:2px 8px !important;
-      font-size:clamp(.68rem,2.85vw,.92rem) !important;
+      font-size:clamp(.74rem,2.95vw,.92rem) !important;
+      line-height:1.13 !important;
+      letter-spacing:.005em !important;
       gap:3px !important;
     }
     :root[data-edition="core"][data-skin="neon"] .home-help-footer { grid-row:7 !important; margin:0 !important; }
@@ -882,10 +884,11 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
 :root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route button small {
  grid-column:2 !important;grid-row:2 !important;
  margin:2px 0 0 !important;
- font-size:clamp(.65rem,2.65vw,.77rem) !important;
- line-height:1.2 !important;
- color:#bfecff !important;
- white-space:nowrap !important;
+ font-size:clamp(.69rem,2.65vw,.79rem) !important;
+ line-height:1.18 !important;
+ color:#d4f3ff !important;
+ white-space:normal !important;
+ overflow-wrap:break-word !important;
 }
 :root[data-skin="neon"] #view-menu #menu-page #career-page #chapter-route
 button[data-level-state="locked"] { opacity:.6 !important; }
@@ -947,4 +950,33 @@ button[aria-pressed="true"] {
   filter:saturate(.45) brightness(.72) !important;
   cursor:default !important;
   pointer-events:none !important;
+}
+
+/* Neon Polish P0.3 — label contrast and icon weight; preserve all geometry. */
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]:not([hidden])
+:is(.play-row,.mode-grid) button:not([hidden]):not(:disabled) {
+ color:var(--neon-text,#f3faff) !important;
+ text-shadow:0 1px 2px #020b1c,0 0 4px #4ccfef66 !important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]:not([hidden])
+:is(.play-row,.mode-grid) button > svg[aria-hidden="true"] {
+ stroke-width:2 !important;
+ color:var(--neon-cyan,#2de6f4) !important;
+ filter:drop-shadow(0 0 2px #30dbe055) !important;
+}
+:root[data-skin="neon"] #view-menu #home-hub[data-neon-reference="1"]:not([hidden])
+.play-row #startBtn > svg[aria-hidden="true"] { color:var(--neon-red,#ff5965) !important; }
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings:not([hidden])
+.btn-group button :is(strong,small),
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings:not([hidden])
+#quick-match-summary {
+ color:var(--neon-text,#f3faff) !important;
+ text-shadow:0 1px 2px #051226 !important;
+}
+:root[data-skin="neon"] #view-menu #menu-page #quick-settings:not([hidden])
+.btn-group button[aria-pressed="true"] svg { color:var(--neon-red,#ff5965) !important; }
+:root[data-skin="neon"] #view-game #controls .btn-icon:not(:disabled):not(.disabled) span,
+:root[data-skin="neon"] #overlay.flex .result-actions button {
+ color:var(--neon-text,#f3faff) !important;
+ text-shadow:0 1px 2px #061427 !important;
 }
