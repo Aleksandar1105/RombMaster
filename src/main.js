@@ -288,7 +288,9 @@ function renderCareerProgress(profile) {
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
-    const world=careerWorld(selected);
+    // Core UI presents six rivals over 30 levels (five per rival).
+    // The historical 100-level world/AI/save tables are never modified.
+    const world=coreEdition ? CAREER_WORLDS[Math.floor((selected-1)/5)] : careerWorld(selected);
     if(!world)return;
     renderCareerProgress(profile);
     const mission=missionFor(selected);
@@ -775,7 +777,7 @@ function refreshRivalPortraits(profile) {
                 card.dataset.current = String(home ? current : Boolean(profile && careerWorld(profile.unlockedLevel) === world));
                 if (coreEdition) {
                     card.dataset.levels = start + '–' + end;
-                    const levelLabel = card.querySelector('.rm-rival-levels');
+                    const levelLabel = card.querySelector?.('.rm-rival-levels');
                     if (levelLabel) levelLabel.textContent = 'Levels ' + start + '–' + end;
                     card.setAttribute('aria-label', world.rival + ', levels ' + start + ' to ' + end + ', ' +
                         (current ? 'current opponent' : ownState));
