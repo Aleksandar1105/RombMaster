@@ -1,0 +1,99 @@
+/*
+ * RombMaster Neon Polish P1.1 — premium Home focus and feedback.
+ * Scoped to the visible Android Core Neon Home only.
+ *
+ * Intentional boundaries:
+ *   - Never change grid geometry, coordinates, dimensions, button order,
+ *     saved games, current-player state, skin selection or navigation.
+ *   - The existing Home hexagon/glass surface uses ::before, not a new overlay.
+ *   - Logo entrance is a one-time sequence when Home becomes visible.
+ *   - Only Play has an idle light pulse; other controls react on interaction.
+ */
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+.play-row #startBtn:not(:disabled) {
+  --neon-action-rim:linear-gradient(120deg,
+    #bbfaff 0%,var(--neon-cyan,#2de6f4) 25%,#1a4262 49%,
+    var(--neon-red,#ff5965) 78%,#ffd1c9 100%);
+  --neon-action-face:radial-gradient(ellipse at 48% 0,
+    #83eaff30 0,transparent 58%),
+    linear-gradient(145deg,#143247 0%,#102138 52%,#35232d 100%);
+  font-weight:900 !important;
+  letter-spacing:.012em !important;
+  text-shadow:0 1px 3px #020b1c,0 0 7px #d8faff88 !important;
+  animation:rm-home-play-beacon 3.8s ease-in-out 1.1s infinite;
+}
+/* Active and keyboard-focused controls get a clear non-sticky response.
+   Keep the established focus outline and the disabled Continue appearance. */
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub[data-neon-reference="1"]:not([hidden])
+:is(.play-row,.mode-grid) > button:not([hidden]):not(:disabled) {
+  transition:transform 150ms cubic-bezier(.2,.75,.25,1),
+    filter 150ms ease !important;
+  touch-action:manipulation;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub[data-neon-reference="1"]:not([hidden])
+:is(.play-row,.mode-grid) > button:active:not(:disabled) {
+  transform:scale(.968) !important;
+  filter:brightness(1.17) drop-shadow(0 0 4px #8eeeff88) !important;
+  animation-play-state:paused !important;
+}
+@media (hover:hover) and (pointer:fine) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button:hover:not(:disabled):not(:active) {
+    filter:brightness(1.12) !important;
+  }
+}
+/* A three-beat logo entrance without changing the logo's geometry or
+   recreating its approved artwork. Board rim -> symbols -> wordmark.
+   Selectors intentionally reuse the existing vector logo markup. */
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child {
+  stroke-dasharray:1360;
+  animation:rm-home-logo-rim .46s cubic-bezier(.24,.7,.25,1) .06s both;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"] {
+  animation:rm-home-logo-symbols .36s ease-out .38s both;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-home-brand > img {
+  animation:rm-home-logo-wordmark .48s ease-out .52s both;
+}
+@keyframes rm-home-logo-rim {
+  from {stroke-dashoffset:1360;opacity:.7;}
+  to {stroke-dashoffset:0;opacity:1;}
+}
+@keyframes rm-home-logo-symbols {
+  from {opacity:.12;}
+  to {opacity:1;}
+}
+@keyframes rm-home-logo-wordmark {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+@keyframes rm-home-play-beacon {
+  0%,100% {filter:brightness(1.03) drop-shadow(0 0 2px #2de6f455);}
+  50% {filter:brightness(1.10) drop-shadow(0 0 6px #ff596570);}
+}
+/* Reduced-motion never waits on delayed opacity, including the wordmark. */
+@media (prefers-reduced-motion:reduce) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub:not([hidden]) :is(
+    .neon-home-brand > img,
+    .neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child,
+    .neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"],
+    .play-row #startBtn) {
+    animation:none !important;
+    transition:none !important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub:not([hidden]) :is(.play-row,.mode-grid) > button {
+    transition:none !important;
+  }
+}

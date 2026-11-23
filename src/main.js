@@ -1,6 +1,7 @@
 import './style.css';
 import './skin-store-compact.css';
 import './neon-screens.css';
+import './neon-p1-home.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
