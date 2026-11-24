@@ -1788,7 +1788,13 @@ if (coreEdition) {
     const reveal=()=>{
         if(revealed) return;
         revealed=true;
-        if(root.dataset.skin==='neon' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Optional motion must never prevent the initialized Home from becoming visible.
+        let allowIntro=false;
+        try {
+            allowIntro=typeof window.matchMedia==='function' &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches===false;
+        } catch { /* Unknown motion preference: skip the optional intro. */ }
+        if(root.dataset.skin==='neon' && allowIntro) {
             root.dataset.rmIntro='1';
             const finishIntro=()=>{
                 delete root.dataset.rmIntro;

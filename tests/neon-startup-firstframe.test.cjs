@@ -68,3 +68,44 @@ test('Native launch uses one navy background and avoids stale recents images on 
  assert.match(theme,/name="postSplashScreenTheme">\@style\/AppTheme.NoActionBar/);
  assert.doesNotMatch(java,/FLAG_SECURE/);
 });
+
+
+test('Core launch reveals Home even when matchMedia is absent, throws, or requests reduced motion',async()=>{
+ const vm=require('node:vm');
+ const js=read('src/main.js');
+ const marker='// Core launch: initialize the full UI and assets before revealing it.';
+ assert.ok(js.includes(marker));
+ const launch=js.slice(js.indexOf(marker));
+ for(const [matchMedia,expectIntro] of [
+   [undefined,false],
+   [()=>{throw Error('unsupported');},false],
+   [()=>({matches:true}),false],
+   [()=>({matches:false}),true]
+ ]){
+   const dataset={skin:'neon'};
+   const timers=new Map();
+   let id=0;
+   const listeners=new Map();
+   const context={
+     coreEdition:true, window:{matchMedia},
+     document:{
+       documentElement:{dataset},createElement:()=>({decode:()=>Promise.resolve()}),
+       querySelector:()=>null,
+       addEventListener:(type,fn)=>listeners.set(type,fn),
+       removeEventListener:(type,fn)=>{if(listeners.get(type)===fn)listeners.delete(type);}
+     },
+     setTimeout:(fn,ms)=>{timers.set(++id,{fn,ms});return id;},
+     clearTimeout:id=>timers.delete(id)
+   };
+   vm.runInNewContext(launch,context);
+   await new Promise(resolve=>setImmediate(resolve));
+   assert.equal(dataset.rmReady,'1');
+   assert.equal(dataset.rmIntro,expectIntro?'1':undefined);
+   assert.equal([...timers.values()].some(t=>t.ms===2000),false);
+   if(expectIntro){
+     listeners.get('click')();
+     assert.equal(dataset.rmIntro,undefined);
+     assert.equal(listeners.has('click'),false);
+   }
+ }
+});
