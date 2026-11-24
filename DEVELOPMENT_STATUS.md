@@ -1,3 +1,9 @@
+## P1.6a follow-up — gate existing logo animation on first visible frame (2026-11-24)
+
+Source inspection after the reported startup/absent logo motion shows that the existing P1.1 logo animation can run while the initial WebView guard hides the app. Added the readiness flag to the three existing logo animation selectors so the rim, symbols and wordmark start only after the guard releases, plus a regression assertion. No timings, geometry, artwork, buttons, navigation, native splash or game state changed. This is NOT the P1.7 startup-only assembly; replay on later Home returns has not yet been addressed. The native startup flash is not confirmed resolved. Full regression/build and cold-start phone footage required; no GitHub Actions.
+
+---
+
 ## Android regression build unblock — 2026-11-24
 
 Codemagic `RombMaster Cloud Test APK` for source `46aec69` stopped at `npm test`: **232 tests, 230 PASS, 2 FAIL**. The uploaded `run_regression_tests.log (3).txt` identifies exactly two obsolete test assertions, not demonstrated application regressions: `tests/neon-career-clarity.test.cjs` test #150 still expected the old 300×533 `neon-home-calm-300.webp` despite approved P1.4 switching to local 893×1600 `neon-home-h6.webp`; `tests/neon-p1-transitions.test.cjs` test #162 assumed an adjacent Home visibility pair despite P1.6 intentionally inserting `clearNeonHomePress(document)` between those two assignments. Updated ONLY those test expectations and strengthened offline-art checks. No changes to application logic/CSS/assets or any runtime behavior. Source-level preflight verifies both fixes match current code, but **all 232 tests must be rerun in Codemagic**. No APK and no Android PASS are claimed yet; do not start P1.7 until build and cold-start recording pass. Build manually in Codemagic on `feat/android-closed-test-core` using the `RombMaster Cloud Test APK` workflow; do NOT use GitHub Actions.

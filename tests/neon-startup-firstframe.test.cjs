@@ -37,3 +37,12 @@ test('Guard has no navigation/save/game changes and preloads offline imagery',()
  const css=read('src/neon-p1-material.css');
  assert.match(css,/@layer neonControls/);
 });
+
+
+test('Existing logo animation starts only after the startup visibility guard releases',()=>{
+ const css=read('src/neon-p1-home.css');
+ for(const name of ['rim','symbols','wordmark']) {
+  const block=css.split('animation:rm-home-logo-'+name)[0].split('}').pop();
+  assert.match(block,/\[data-rm-ready="1"\]/);
+ }
+});

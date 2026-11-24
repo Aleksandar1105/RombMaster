@@ -48,19 +48,20 @@
 }
 /* A three-beat logo entrance without changing the logo's geometry or
    recreating its approved artwork. Board rim -> symbols -> wordmark.
-   Selectors intentionally reuse the existing vector logo markup. */
-:root[data-skin="neon"][data-edition="core"] #view-menu
+   Selectors intentionally reuse the existing vector logo markup.
+   Do not start the animation behind the initial WebView visibility guard. */
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child {
   stroke-dasharray:1360;
   animation:rm-home-logo-rim .46s cubic-bezier(.24,.7,.25,1) .06s both;
 }
-:root[data-skin="neon"][data-edition="core"] #view-menu
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"] {
   animation:rm-home-logo-symbols .36s ease-out .38s both;
 }
-:root[data-skin="neon"][data-edition="core"] #view-menu
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-home-brand > img {
   animation:rm-home-logo-wordmark .48s ease-out .52s both;
