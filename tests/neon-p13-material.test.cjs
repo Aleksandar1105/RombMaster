@@ -18,7 +18,7 @@ test('P1.3 overrides actual --rim and --face from the same cascade layer',()=>{
  const old=read('src/neon-screens.css');
  assert.match(old,/background:var\(--rim\) !important/);
  assert.match(old,/background:radial-gradient\([^;]*var\(--face\) !important/);
- assert.match(css,/--rim:linear-gradient\(118deg/);
+ assert.match(css,/--rim:radial-gradient\(ellipse/);
  assert.match(css,/--face:linear-gradient\(152deg/);
  assert.match(css,/background:var\(--rim\) !important/);
  assert.match(css,/var\(--face\) !important/);
@@ -38,7 +38,7 @@ test('P1.3 retains one Play pulse and reduces logo opacity delay',()=>{
  const base=read('src/neon-p1-home.css');
  assert.match(base,/animation:rm-home-play-beacon 3\.8s/);
  assert.match(css,/@keyframes rm-home-play-beacon/);
- assert.match(css,/drop-shadow\(0 0 11px #2de6f494\)/);
+ assert.match(css,/drop-shadow\(0 0 15px #2de6f4b3\)/);
  assert.match(css,/animation:rm-p13-wordmark \.26s ease-out \.12s both !important/);
  assert.match(css,/@media \(prefers-reduced-motion:reduce\)/);
  assert.match(css,/animation:none !important/);
