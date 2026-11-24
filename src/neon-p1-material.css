@@ -1,0 +1,83 @@
+/*
+ RombMaster Neon Polish P1.3 — premium Home material ONLY.
+ Active button chrome in neon-screens.css uses important --rim/--face inside
+ @layer neonControls. Reopen that SAME layer; do not add a second overlay,
+ touch the Home grid, or change other skins and game screens.
+*/
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ :is(.play-row,.mode-grid) > button:not([hidden]) {
+   --rim:linear-gradient(118deg,#9deef5 0%,#3cb7d0 12%,#1d526b 31%,#12354c 55%,#28617a 71%,#b34a4d 91%,#f49d93 100%) !important;
+   --face:linear-gradient(152deg,#16384b 0%,#0c2235 24%,#08182b 66%,#182031 100%) !important;
+   background:var(--rim) !important;
+   background-image:var(--rim) !important;
+   color:var(--neon-text,#f3faff) !important;
+   text-shadow:0 1px 2px #020a1a,0 0 3px #b9f5ff66 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ :is(.play-row,.mode-grid) > button:not([hidden])::before {
+   content:"" !important;
+   inset:3px !important;
+   clip-path:inherit !important;
+   background:radial-gradient(ellipse 78% 90% at 50% -8%,#a4faff2a,transparent 70%),
+     linear-gradient(180deg,#c6faff0b,transparent 42%,#020a1755 100%),var(--face) !important;
+   box-shadow:inset 0 1px 0 #c4fdff35,inset 0 -3px 8px #010a1894 !important;
+   pointer-events:none !important;
+   transition:box-shadow 145ms ease !important;
+ }
+ /* Main Play: a brighter cyan top and internal glow. Small red edge only. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .play-row #startBtn:not(:disabled) {
+   --rim:linear-gradient(118deg,#f1ffff 0%,#91faff 9%,var(--neon-cyan,#2de6f4) 25%,#187799 49%,#38daee 72%,var(--neon-red,#ff5965) 91%,#ffd8d0 100%) !important;
+   --face:linear-gradient(155deg,#1c4b60 0%,#123c56 28%,#0e2941 66%,#182735 100%) !important;
+   background:var(--rim) !important;
+   background-image:var(--rim) !important;
+   color:#fbffff !important;
+   text-shadow:0 1px 2px #010a19,0 0 7px #8defff99 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .play-row #startBtn:not(:disabled)::before {
+   inset:2.5px !important;
+   background:radial-gradient(ellipse 86% 118% at 50% -17%,#b2ffff81 0%,#49e9fb4c 29%,transparent 69%),
+     linear-gradient(180deg,#e4ffff18,transparent 47%,#03132440 100%),var(--face) !important;
+   box-shadow:inset 0 1px 0 #ecffffa1,inset 0 -4px 10px #02132680 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .play-row #startBtn:not(:disabled) > svg[aria-hidden="true"] {
+   color:var(--neon-cyan,#2de6f4) !important;
+   stroke:#b4ffff !important;
+   filter:drop-shadow(0 0 4px #2de6f499) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ :is(.play-row,.mode-grid) > button:not([hidden]):not(:disabled):active::before {
+   box-shadow:inset 0 1px 0 #efffffcc,inset 0 0 12px #48e6fa91,inset 0 -3px 7px #020a1677 !important;
+ }
+}
+/* Keep P1.1's one 3.8s pulse, now cyan-dominant and less pink. */
+@keyframes rm-home-play-beacon {
+ 0%,100% {filter:brightness(1.035) drop-shadow(0 1px 2px #020e1caa) drop-shadow(0 0 4px #2de6f45e);}
+ 50% {filter:brightness(1.13) drop-shadow(0 1px 2px #020e1caa) drop-shadow(0 0 11px #2de6f494);}
+}
+/* Existing artwork remains intact; prevent prolonged dimming on return Home. */
+:root[data-skin="neon"][data-edition="core"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
+ animation:rm-p13-wordmark .26s ease-out .12s both !important;
+}
+@keyframes rm-p13-wordmark {from {opacity:.68;} to {opacity:1;}}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
+   animation:none !important;opacity:1 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ :is(.play-row,.mode-grid) > button:not([hidden])::before {
+   transition:none !important;
+ }
+}
