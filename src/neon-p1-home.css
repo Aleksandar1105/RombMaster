@@ -46,59 +46,95 @@
     filter:brightness(1.12) !important;
   }
 }
-/* P1.7: a deliberate startup-only assembly of the existing approved logo.
-   No geometry or artwork change. Normal Home returns remain fully formed. */
+/* P1.7b: two light sources trace the exact perimeter, then reveal cells,
+   X/O, wordmark, illuminated platform and finally all Home controls. */
+.neon-logo-rebuilt-board .rm-logo-trace {display:none;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) {position:relative!important;isolation:isolate;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden])::before {
+  content:"";position:absolute;inset:0;z-index:2;background:#071423;
+  pointer-events:none;animation:rm-intro-backdrop .4s ease-out 2.60s both;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden]) {position:relative!important;z-index:4!important;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) :is(#premium-home-progress,.play-row,.mode-grid,#premium-rivals-section,.home-help-footer,.home-hero,.home-utility-row,.home-links,#home-tools) {
+  animation:rm-intro-ui .35s ease-out 2.70s both!important;
+  pointer-events:none!important;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) :is(#premium-home-progress,.play-row,.mode-grid,#premium-rivals-section,.home-help-footer,.home-hero,.home-utility-row,.home-links,#home-tools) * {pointer-events:none!important;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.rm-logo-trace {display:block;animation:rm-trace-out .28s ease-out 1.36s both;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.rm-trace-line {stroke-dasharray:1;stroke-dashoffset:1;animation:rm-trace-draw 1.12s linear .23s both;filter:drop-shadow(0 0 7px currentColor);}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.rm-trace-dot {filter:drop-shadow(0 0 12px #6cefff);}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.rm-trace-dot:last-child {filter:drop-shadow(0 0 12px #ff7185);}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child {
-  stroke-dasharray:1360;
-  animation:rm-home-logo-rim .65s ease-out .05s both;
+  animation:rm-home-logo-rim .20s ease-out 1.29s both;
 }
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"] {
-  animation:rm-home-logo-cells .5s ease-out .45s both;
-}
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"] {animation:rm-home-logo-cells .35s ease-out 1.42s both;}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"]:nth-of-type(even) {
-  animation-delay:.62s;
-}
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"]:nth-of-type(even) {animation-delay:1.55s;}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill="none"],
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.neon-logo-rebuilt-board > g[transform^="translate"] > path {
-  animation:rm-home-logo-cells .4s ease-out .54s both;
-}
+.neon-logo-rebuilt-board > g[transform^="translate"] > path {animation:rm-home-logo-cells .30s ease-out 1.48s both;}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"] {
-  animation:rm-home-logo-symbols .42s ease-out .80s both;
+  animation:rm-home-logo-symbols .32s ease-out 1.76s both;
 }
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"]:nth-of-type(even) {
-  animation-delay:1s;
-}
+.neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"]:nth-of-type(even) {animation-delay:1.90s;}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.neon-logo-rebuilt-board > g[fill="none"] {
-  animation:rm-home-logo-cells .65s ease-out .95s both;
-}
+.neon-logo-rebuilt-board > g[fill="none"],
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > path {animation:rm-home-logo-cells .4s ease-out 2.05s both;}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.rm-logo-pedestal {animation:rm-home-logo-cells .4s ease-out 2.12s both;}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-home-brand > img {
-  animation:rm-home-logo-wordmark .65s ease-out 1.05s both;
+  animation:rm-home-logo-wordmark .48s ease-out 2.02s both;
 }
-@keyframes rm-home-logo-rim {
-  from {stroke-dashoffset:1360;opacity:0;}
-  to {stroke-dashoffset:0;opacity:1;}
+@keyframes rm-trace-draw {from {stroke-dashoffset:1;}to {stroke-dashoffset:0;}}
+@keyframes rm-trace-out {from {opacity:1;}to {opacity:0;}}
+@keyframes rm-intro-backdrop {from {opacity:1;}to {opacity:0;}}
+@keyframes rm-intro-ui {from {opacity:0;visibility:hidden;}to {opacity:1;visibility:visible;}}
+@keyframes rm-home-logo-rim {from {opacity:0;}to {opacity:1;}}
+@keyframes rm-home-logo-cells {from {opacity:0;}to {opacity:1;}}
+@keyframes rm-home-logo-symbols {from {opacity:0;}to {opacity:1;}}
+@keyframes rm-home-logo-wordmark {from {opacity:0;}to {opacity:1;}}
+/* A changed system preference also cancels the in-flight intro. */
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden])::before {display:none;}
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) :is(#premium-home-progress,.play-row,.mode-grid,#premium-rivals-section,.home-help-footer,.home-hero,.home-utility-row,.home-links,#home-tools),
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage * {animation:none!important;}
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) .rm-logo-trace {display:none!important;}
 }
-@keyframes rm-home-logo-cells {from {opacity:0;} to {opacity:1;}}
-@keyframes rm-home-logo-symbols {from {opacity:0;} to {opacity:1;}}
-@keyframes rm-home-logo-wordmark {from {opacity:0;} to {opacity:1;}}
 @keyframes rm-home-play-beacon {
   0%,100% {filter:brightness(1.03) drop-shadow(0 0 2px #2de6f455);}
   50% {filter:brightness(1.10) drop-shadow(0 0 6px #ff596570);}

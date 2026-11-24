@@ -1802,7 +1802,11 @@ if (coreEdition) {
             };
             // An early navigation click ends the effect without consuming the click.
             document.addEventListener('click',finishIntro,true);
-            setTimeout(finishIntro,2100);
+            // SVG paths and their two moving light sources share a timeline.
+            for(const motion of document.querySelectorAll?.('.rm-logo-trace animateMotion') || []) {
+                try { motion.beginElement?.(); } catch { /* CSS still reveals the logo. */ }
+            }
+            setTimeout(finishIntro,3250);
         }
         root.dataset.rmReady='1';
         clearTimeout(fallback);

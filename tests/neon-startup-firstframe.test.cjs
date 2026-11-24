@@ -54,7 +54,7 @@ test('Startup intro flag is temporary and not set by Home navigation',()=>{
  const js=read('src/main.js');
  assert.equal((js.match(/root\.dataset\.rmIntro='1'/g)||[]).length,1);
  assert.match(js,/delete root\.dataset\.rmIntro/);
- assert.match(js,/setTimeout\(finishIntro,2100\)/);
+ assert.match(js,/setTimeout\(finishIntro,3250\)/);
  assert.match(js,/prefers-reduced-motion: reduce/);
  assert.doesNotMatch(read('src/neon-p1-material.css'),/animation:rm-p13-wordmark/);
 });
@@ -108,4 +108,20 @@ test('Core launch reveals Home even when matchMedia is absent, throws, or reques
      assert.equal(listeners.has('click'),false);
    }
  }
+});
+
+
+test('P1.7b traces two exact perimeter halves before revealing the Home interface',()=>{
+ const html=read('src/index.html'),css=read('src/neon-p1-home.css'),js=read('src/main.js');
+ assert.equal((html.match(/class="rm-trace-dot"/g)||[]).length,2);
+ assert.equal((html.match(/class="rm-trace-line"/g)||[]).length,2);
+ assert.match(html,/M301 462 L540 223 L779 462/);
+ assert.match(html,/M779 462 L540 701 L301 462/);
+ assert.equal((html.match(/begin="indefinite" dur="1.35s"/g)||[]).length,2);
+ assert.match(js,/motion\.beginElement\?\.\(\)/);
+ assert.match(css,/animation:rm-trace-draw 1\.12s linear \.23s both/);
+ assert.match(css,/animation:rm-home-logo-wordmark \.48s ease-out 2\.02s both/);
+ assert.match(css,/animation:rm-intro-ui \.35s ease-out 2\.70s both!important/);
+ assert.match(css,/\.rm-logo-pedestal \{animation:rm-home-logo-cells/);
+ assert.match(css,/\.rm-logo-trace \{display:none;\}/);
 });
