@@ -1,3 +1,9 @@
+## Android regression build unblock — 2026-11-24
+
+Codemagic `RombMaster Cloud Test APK` for source `46aec69` stopped at `npm test`: **232 tests, 230 PASS, 2 FAIL**. The uploaded `run_regression_tests.log (3).txt` identifies exactly two obsolete test assertions, not demonstrated application regressions: `tests/neon-career-clarity.test.cjs` test #150 still expected the old 300×533 `neon-home-calm-300.webp` despite approved P1.4 switching to local 893×1600 `neon-home-h6.webp`; `tests/neon-p1-transitions.test.cjs` test #162 assumed an adjacent Home visibility pair despite P1.6 intentionally inserting `clearNeonHomePress(document)` between those two assignments. Updated ONLY those test expectations and strengthened offline-art checks. No changes to application logic/CSS/assets or any runtime behavior. Source-level preflight verifies both fixes match current code, but **all 232 tests must be rerun in Codemagic**. No APK and no Android PASS are claimed yet; do not start P1.7 until build and cold-start recording pass. Build manually in Codemagic on `feat/android-closed-test-core` using the `RombMaster Cloud Test APK` workflow; do NOT use GitHub Actions.
+
+---
+
 ## P1.6a — Eliminate WebView startup FOUC before P1.7 (2026-11-24)
 
 **CODE IMPLEMENTED; ANDROID QA PENDING.** Startup footage `34665.mp4` around 0.9s shows a partially styled default Home (small diamonds, placeholder regions) before the final Neon screen. `34667.mp4` around 0.58s shows a partly rendered/dim Home before full graphics. The current HTML displays visible menu DOM while most Neon styles load through JS imports; this creates a first-paint race. Android splash configuration also immediately exits (`launchShowDuration:0`). This is not the planned logo animation.

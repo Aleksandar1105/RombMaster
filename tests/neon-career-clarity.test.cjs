@@ -3,9 +3,10 @@ const fs=require('node:fs');const path=require('node:path');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
 test('Neon Home picture loads from bundled offline asset, not Picsart CDN',()=>{
  const css=read('src/neon-screens.css');
- assert.match(css,/url\('\/assets\/premium\/master\/neon-home-calm-300\.webp'\)/);
+ assert.match(css,/url\('\/assets\/premium\/master\/neon-home-h6\.webp'\)/);
  assert.doesNotMatch(css,/gcdn\.picsart\.com/);
- const bytes=fs.readFileSync(path.resolve(__dirname,'../src/public/assets/premium/master/neon-home-calm-300.webp'));
+ const bytes=fs.readFileSync(path.resolve(__dirname,'../src/public/assets/premium/master/neon-home-h6.webp'));
+ assert.ok(bytes.length > 100000,'P1.4 Home art should be the larger local high-resolution asset');
  assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
 });
 test('Neon Core removes Home rival level subtitles but Career still displays intervals',()=>{

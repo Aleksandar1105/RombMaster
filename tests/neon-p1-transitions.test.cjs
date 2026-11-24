@@ -28,7 +28,7 @@ test('P1.2 uses distinct <=220ms entry effects and never delays navigation',()=>
 test('P1.2 preserves existing screen isolation and native Back implementation',()=>{
  const js=read('src/main.js');
  assert.match(js,/el\('home-hub'\)\.hidden = true;\s*el\('menu-page'\)\.hidden = false;/);
- assert.match(js,/el\('menu-page'\)\.hidden = true;\s*el\('home-hub'\)\.hidden = false;/);
+ assert.match(js,/el\('menu-page'\)\.hidden = true;\s*clearNeonHomePress\(document\);\s*el\('home-hub'\)\.hidden = false;/);
  assert.match(js,/Native\.onBack\(\(\) =>/);
  const p1=read('src/neon-p1-home.css');
  assert.match(p1,/animation:rm-home-play-beacon 3\.8s/);
