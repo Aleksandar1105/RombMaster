@@ -1,0 +1,60 @@
+/*
+ * RombMaster Neon Polish P1.6 — an inward travelling light sweep.
+ * Scope: six buttons on visible Neon/Core premium Home.
+ * The already-existing ::before holds the glass; ::after is an inert
+ * light-only overlay BEHIND button text. No layout or click delay.
+ */
+@layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button:not([hidden])::after {
+    content:"" !important;
+    display:block !important;
+    position:absolute !important;
+    inset:3px !important;
+    width:auto !important;
+    height:auto !important;
+    clip-path:inherit !important;
+    z-index:-1 !important;
+    pointer-events:none !important;
+    background:linear-gradient(90deg,
+      transparent 0%,#78efff12 5%,#a8ffffaa 15%,transparent 33%,
+      transparent 67%,#a8ffffaa 85%,#78efff12 95%,transparent 100%),
+      radial-gradient(ellipse 62% 105% at 50% 50%,#b1ffff4d,transparent 76%) !important;
+    opacity:0;
+    transform:scaleX(1.12);
+  }
+  /* The press animation temporarily replaces Play's idle beacon;
+     animationend restores it without interfering with button navigation. */
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button.rm-home-press:not(:disabled) {
+    animation:rm-home-press-depth 230ms cubic-bezier(.17,.65,.29,1) both !important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button.rm-home-press:not(:disabled)::after {
+    animation:rm-home-press-sweep 230ms ease-out both !important;
+  }
+}
+@keyframes rm-home-press-depth {
+  0% {transform:scale(1);}
+  28% {transform:scale(.963);}
+  100% {transform:scale(1);}
+}
+@keyframes rm-home-press-sweep {
+  0% {transform:scaleX(1.12);opacity:0;}
+  16% {opacity:.91;}
+  50% {transform:scaleX(.61);opacity:.64;}
+  100% {transform:scaleX(.12);opacity:0;}
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button.rm-home-press,
+  :root[data-skin="neon"][data-edition="core"] #view-menu
+  #home-hub[data-neon-reference="1"]:not([hidden])
+  :is(.play-row,.mode-grid) > button.rm-home-press::after {
+    animation:none !important;
+  }
+}

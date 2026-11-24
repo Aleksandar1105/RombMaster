@@ -4,10 +4,12 @@ import './neon-screens.css';
 import './neon-p1-home.css';
 import './neon-p1-transitions.css';
 import './neon-p1-material.css';
+import './neon-p1-press.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
 import { Native } from './native.js';
+import { mountNeonHomePress, clearNeonHomePress } from './neon-home-press.js';
 import { ProfileStore, LocalSlots, MAX_LOCAL_PLAYERS, PLAYER_AVATARS, configureCharacterEconomy, careerSummary, careerLevel, CAREER_LEVEL_COUNT, careerWorld, CAREER_WORLDS } from './profile.js';
 import { TUTORIAL_STEPS, tutorialStep } from './tutorial.js';
 import { Renderer } from './renderer.js';
@@ -174,6 +176,7 @@ function showHome() {
     skinDetailsOpen = false;
     el('page-back').textContent = '← Back';
     el('menu-page').hidden = true;
+    clearNeonHomePress(document);
     el('home-hub').hidden = false;
     ui.viewMenu.scrollTop = 0;
     pageTrigger?.focus();
@@ -244,6 +247,8 @@ function arrangeCoreHomeNavigation() {
     homeTools.hidden = true;
 }
 arrangeCoreHomeNavigation();
+// P1.6: start light feedback at pointer-down; click stays instantaneous.
+mountNeonHomePress(document);
 
 el('page-back').onclick = () => { if (!backSubpage() && !closeSkinDetails() && !arcade?.back()) showHome(); };
 
