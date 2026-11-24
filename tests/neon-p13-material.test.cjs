@@ -34,12 +34,13 @@ test('P1.3 is paint-only, keeps Continue and Android Back behavior',()=>{
  assert.match(js,/Native\.onBack\(\(\) =>/);
 });
 
-test('P1.3 retains one Play pulse and reduces logo opacity delay',()=>{
+test('P1.3 retains one Play pulse and leaves logo motion to P1.7',()=>{
  const base=read('src/neon-p1-home.css');
  assert.match(base,/animation:rm-home-play-beacon 3\.8s/);
  assert.match(css,/@keyframes rm-home-play-beacon/);
  assert.match(css,/drop-shadow\(0 0 15px #2de6f4b3\)/);
- assert.match(css,/animation:rm-p13-wordmark \.26s ease-out \.12s both !important/);
+ assert.doesNotMatch(css,/animation:rm-p13-wordmark/);
+ assert.match(base,/animation:rm-home-logo-wordmark/);
  assert.match(css,/@media \(prefers-reduced-motion:reduce\)/);
  assert.match(css,/animation:none !important/);
 });

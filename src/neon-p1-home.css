@@ -6,7 +6,7 @@
  *   - Never change grid geometry, coordinates, dimensions, button order,
  *     saved games, current-player state, skin selection or navigation.
  *   - The existing Home hexagon/glass surface uses ::before, not a new overlay.
- *   - Logo entrance is a one-time sequence when Home becomes visible.
+ *   - Logo entrance is a one-time sequence on document startup.
  *   - Only Play has an idle light pulse; other controls react on interaction.
  */
 :root[data-skin="neon"][data-edition="core"] #view-menu
@@ -46,38 +46,59 @@
     filter:brightness(1.12) !important;
   }
 }
-/* A three-beat logo entrance without changing the logo's geometry or
-   recreating its approved artwork. Board rim -> symbols -> wordmark.
-   Selectors intentionally reuse the existing vector logo markup.
-   Do not start the animation behind the initial WebView visibility guard. */
-:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
+/* P1.7: a deliberate startup-only assembly of the existing approved logo.
+   No geometry or artwork change. Normal Home returns remain fully formed. */
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child {
   stroke-dasharray:1360;
-  animation:rm-home-logo-rim .46s cubic-bezier(.24,.7,.25,1) .06s both;
+  animation:rm-home-logo-rim .65s ease-out .05s both;
 }
-:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"] {
+  animation:rm-home-logo-cells .5s ease-out .45s both;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill^="url"]:nth-of-type(even) {
+  animation-delay:.62s;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > rect[fill="none"],
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > path {
+  animation:rm-home-logo-cells .4s ease-out .54s both;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"] {
-  animation:rm-home-logo-symbols .36s ease-out .38s both;
+  animation:rm-home-logo-symbols .42s ease-out .80s both;
 }
-:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"] #view-menu
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[transform^="translate"] > g[transform^="rotate(-45"]:nth-of-type(even) {
+  animation-delay:1s;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
+#home-hub:not([hidden]) #premium-hero-stage:not([hidden])
+.neon-logo-rebuilt-board > g[fill="none"] {
+  animation:rm-home-logo-cells .65s ease-out .95s both;
+}
+:root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-home-brand > img {
-  animation:rm-home-logo-wordmark .48s ease-out .52s both;
+  animation:rm-home-logo-wordmark .65s ease-out 1.05s both;
 }
 @keyframes rm-home-logo-rim {
-  from {stroke-dashoffset:1360;opacity:.7;}
+  from {stroke-dashoffset:1360;opacity:0;}
   to {stroke-dashoffset:0;opacity:1;}
 }
-@keyframes rm-home-logo-symbols {
-  from {opacity:.12;}
-  to {opacity:1;}
-}
-@keyframes rm-home-logo-wordmark {
-  from {opacity:0;}
-  to {opacity:1;}
-}
+@keyframes rm-home-logo-cells {from {opacity:0;} to {opacity:1;}}
+@keyframes rm-home-logo-symbols {from {opacity:0;} to {opacity:1;}}
+@keyframes rm-home-logo-wordmark {from {opacity:0;} to {opacity:1;}}
 @keyframes rm-home-play-beacon {
   0%,100% {filter:brightness(1.03) drop-shadow(0 0 2px #2de6f455);}
   50% {filter:brightness(1.10) drop-shadow(0 0 6px #ff596570);}

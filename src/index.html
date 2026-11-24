@@ -16,17 +16,31 @@
       html[data-edition="core"]:not([data-rm-ready="1"]) #app,
       html[data-edition="core"]:not([data-rm-ready="1"]) .bg-layer {
         visibility:hidden !important;
+        opacity:0 !important;
+        pointer-events:none !important;
       }
+      #rm-launch-cover {display:none;}
+      html[data-edition="core"]:not([data-rm-ready="1"]) #rm-launch-cover {
+        display:flex;position:fixed;inset:0;z-index:2147483647;
+        background:#071423;align-items:center;justify-content:center;
+        flex-direction:column;gap:20px;color:#d3faff;font:600 14px system-ui,sans-serif;
+      }
+      #rm-launch-mark {width:44px;height:44px;border:3px solid #4ce5f8;
+        border-right-color:#ff718b;border-bottom-color:#ff718b;
+        transform:rotate(45deg);box-shadow:0 0 20px #36d7ed55;}
+      #rm-launch-retry[hidden] {display:none!important;}
+      #rm-launch-retry {font:inherit;color:#d3faff;background:#123149;border:1px solid #4ce5f8;padding:10px 16px;border-radius:8px;}
     </style>
-    <!-- Fail open if a WebView asset cannot decode; never leave a black app. -->
+    <!-- Never expose partially initialized DOM, even if the main module fails. -->
     <script>
       setTimeout(() => {
-        const root=document.documentElement;
-        if(root?.dataset?.edition === 'core' && root.dataset.rmReady !== '1') {
-          root.dataset.rmReady = '1';
-          console.warn('RombMaster startup guard fallback');
+        if(document.documentElement.dataset.edition === 'core' && document.documentElement.dataset.rmReady !== '1') {
+          const message=document.getElementById('rm-launch-message');
+          const retry=document.getElementById('rm-launch-retry');
+          if(message) message.textContent='Unable to finish loading. Try again.';
+          if(retry) retry.hidden=false;
         }
-      },3000);
+      },8000);
     </script>
     <link rel="preload" as="image" href="/assets/premium/master/neon-home-h6.webp">
     <link rel="preload" as="image" href="/assets/premium/master/neon-home-logo.webp">
@@ -36,6 +50,11 @@
 </head>
 
 <body>
+    <div id="rm-launch-cover" role="status" aria-live="polite">
+      <div id="rm-launch-mark" aria-hidden="true"></div>
+      <span id="rm-launch-message">ROMBMASTER</span>
+      <button id="rm-launch-retry" type="button" hidden onclick="location.reload()">Try again</button>
+    </div>
     <div class="bg-layer">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>

@@ -11,8 +11,10 @@ test('Startup guard lives in initial HTML head before CSS/JS-rendered Home',()=>
  assert.ok(html.indexOf('id="rm-core-startup-guard"')<html.indexOf('<body>'));
  assert.match(html,/html\[data-edition="core"\]:not\(\[data-rm-ready="1"\]\) #app/);
  assert.match(html,/visibility:hidden !important/);
- assert.match(html,/root\.dataset\.rmReady = '1'/);
- assert.match(html,/3000/);
+ assert.match(html,/opacity:0 !important/);
+ assert.match(html,/id="rm-launch-cover"/);
+ assert.match(html,/8000/);
+ assert.doesNotMatch(html,/root\.dataset\.rmReady = '1'/);
 });
 
 test('Main only releases Core WebView once the local Home assets are ready',()=>{
@@ -43,6 +45,26 @@ test('Existing logo animation starts only after the startup visibility guard rel
  const css=read('src/neon-p1-home.css');
  for(const name of ['rim','symbols','wordmark']) {
   const block=css.split('animation:rm-home-logo-'+name)[0].split('}').pop();
-  assert.match(block,/\[data-rm-ready="1"\]/);
+  assert.match(block,/\[data-rm-ready="1"\]\[data-rm-intro="1"\]/);
  }
+});
+
+
+test('Startup intro flag is temporary and not set by Home navigation',()=>{
+ const js=read('src/main.js');
+ assert.equal((js.match(/root\.dataset\.rmIntro='1'/g)||[]).length,1);
+ assert.match(js,/delete root\.dataset\.rmIntro/);
+ assert.match(js,/setTimeout\(finishIntro,2100\)/);
+ assert.match(js,/prefers-reduced-motion: reduce/);
+ assert.doesNotMatch(read('src/neon-p1-material.css'),/animation:rm-p13-wordmark/);
+});
+test('Native launch uses one navy background and avoids stale recents images on API 33+',()=>{
+ const java=read('android/app/src/main/java/com/rombmaster/game/MainActivity.java');
+ const theme=read('android/app/src/main/res/values/styles.xml');
+ assert.match(java,/SplashScreen\.installSplashScreen\(this\);\s*super\.onCreate/);
+ assert.match(java,/VERSION_CODES\.TIRAMISU\)\s*\{\s*setRecentsScreenshotEnabled\(false\)/);
+ assert.match(java,/setBackgroundColor\(Color\.rgb\(7, 20, 35\)\)/);
+ assert.match(theme,/name="windowSplashScreenBackground">#071423/);
+ assert.match(theme,/name="postSplashScreenTheme">\@style\/AppTheme.NoActionBar/);
+ assert.doesNotMatch(java,/FLAG_SECURE/);
 });

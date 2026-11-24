@@ -1780,16 +1780,24 @@ Native.onBack(() => {
 });
 
 
-// Pre-P1.7 launch guard: main module imports own the final Neon CSS. Ensure
-// the active Core screen AND its two local hero images are initialized before
-// the first WebView paint is revealed. Startup logo motion will be refined
-// separately in P1.7 and must never replay on every Home navigation.
+// Core launch: initialize the full UI and assets before revealing it.
+// The temporary intro flag is set only here, once per document, never on Home return.
 if (coreEdition) {
     const root=document.documentElement;
     let revealed=false;
     const reveal=()=>{
         if(revealed) return;
         revealed=true;
+        if(root.dataset.skin==='neon' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            root.dataset.rmIntro='1';
+            const finishIntro=()=>{
+                delete root.dataset.rmIntro;
+                document.removeEventListener('click',finishIntro,true);
+            };
+            // An early navigation click ends the effect without consuming the click.
+            document.addEventListener('click',finishIntro,true);
+            setTimeout(finishIntro,2100);
+        }
         root.dataset.rmReady='1';
         clearTimeout(fallback);
     };

@@ -75,12 +75,7 @@
  0%,100% {filter:brightness(1.055) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 7px #2de6f478);}
  50% {filter:brightness(1.15) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 15px #2de6f4b3);}
 }
-/* Existing artwork remains intact; prevent prolonged dimming on return Home. */
-:root[data-skin="neon"][data-edition="core"] #view-menu
-#home-hub:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
- animation:rm-p13-wordmark .26s ease-out .12s both !important;
-}
-@keyframes rm-p13-wordmark {from {opacity:.68;} to {opacity:1;}}
+/* Logo motion belongs exclusively to P1.7 in neon-p1-home.css. */
 @media (prefers-reduced-motion:reduce) {
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
