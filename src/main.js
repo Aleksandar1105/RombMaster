@@ -1779,3 +1779,28 @@ Native.onBack(() => {
     }
 });
 
+
+// Pre-P1.7 launch guard: main module imports own the final Neon CSS. Ensure
+// the active Core screen AND its two local hero images are initialized before
+// the first WebView paint is revealed. Startup logo motion will be refined
+// separately in P1.7 and must never replay on every Home navigation.
+if (coreEdition) {
+    const root=document.documentElement;
+    let revealed=false;
+    const reveal=()=>{
+        if(revealed) return;
+        revealed=true;
+        root.dataset.rmReady='1';
+        clearTimeout(fallback);
+    };
+    const fallback=setTimeout(reveal,2000);
+    const background=document.createElement('img');
+    background.decoding='async';
+    background.src='/assets/premium/master/neon-home-h6.webp';
+    const wordmark=document.querySelector('#premium-hero-stage .neon-home-brand > img');
+    const decoded=[background,wordmark].filter(Boolean).map(img=>{
+        if (typeof img.decode !== 'function') return Promise.resolve();
+        try {return img.decode().catch(()=>{});} catch {return Promise.resolve();}
+    });
+    Promise.all(decoded).then(reveal,reveal);
+}

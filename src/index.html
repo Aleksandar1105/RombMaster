@@ -6,6 +6,30 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>RombMaster — Strategic Board Game</title>
+    <!-- Startup guard: keep the initial WebView frame navy until the bundled
+         Neon styles and Home imagery are ready, not an unfinished Home DOM. -->
+    <style id="rm-core-startup-guard">
+      html[data-edition="core"]:not([data-rm-ready="1"]),
+      html[data-edition="core"]:not([data-rm-ready="1"]) body {
+        background:#071423 !important;
+      }
+      html[data-edition="core"]:not([data-rm-ready="1"]) #app,
+      html[data-edition="core"]:not([data-rm-ready="1"]) .bg-layer {
+        visibility:hidden !important;
+      }
+    </style>
+    <!-- Fail open if a WebView asset cannot decode; never leave a black app. -->
+    <script>
+      setTimeout(() => {
+        const root=document.documentElement;
+        if(root?.dataset?.edition === 'core' && root.dataset.rmReady !== '1') {
+          root.dataset.rmReady = '1';
+          console.warn('RombMaster startup guard fallback');
+        }
+      },3000);
+    </script>
+    <link rel="preload" as="image" href="/assets/premium/master/neon-home-h6.webp">
+    <link rel="preload" as="image" href="/assets/premium/master/neon-home-logo.webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./arena.css">

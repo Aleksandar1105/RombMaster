@@ -1,3 +1,13 @@
+## P1.6a — Eliminate WebView startup FOUC before P1.7 (2026-11-24)
+
+**CODE IMPLEMENTED; ANDROID QA PENDING.** Startup footage `34665.mp4` around 0.9s shows a partially styled default Home (small diamonds, placeholder regions) before the final Neon screen. `34667.mp4` around 0.58s shows a partly rendered/dim Home before full graphics. The current HTML displays visible menu DOM while most Neon styles load through JS imports; this creates a first-paint race. Android splash configuration also immediately exits (`launchShowDuration:0`). This is not the planned logo animation.
+
+Added an INLINE Core-only launch visibility guard at the start of the HTML head. The app remains over a matching dark-navy background until the main module initializes the UI and local `neon-home-h6.webp` + `neon-home-logo.webp` are decoded; assets are preloaded in HTML. JS reveals at most after 2 seconds, with an additional 3-second HTML fail-open so errors cannot leave a permanently blank screen. Only the Core initial display is gated; other editions unaffected. No navigation, layout, button, Continue, Back, saved game, P1.6 press animation, native theme or splash config changed. **P1.7 must assemble the logo once on initial launch AFTER the ready flag and never replay on Home navigation.**
+
+Added source regression test `tests/neon-startup-firstframe.test.cjs`. **Full npm tests, Vite build, Codemagic and Android phone QA are still PENDING.** Validate cold start/warm launch, no briefly unstyled Home or missing Continue, no prolonged blank screen, no logo re-animation on return, Quick Play/Career navigation and Android Back. No GitHub Actions.
+
+---
+
 ## Neon Polish P1.6 — Home press microinteraction (2026-11-24)
 
 **IMPLEMENTED IN SOURCE; TEST/APK/PHONE QA STILL PENDING.** On Android Core + Neon Home six action buttons, pointerdown triggers an immediate 230ms press effect rather than relying on a nearly invisible :active-only style. CSS scales slightly inward (0.963) then recovers while a pair of Cyan light sweeps travels from the outer ends toward the center using a reusable `::after` surface behind the text. Existing `::before` glass and P1.5 button materials are preserved. The short press class is cleaned by animationend/cancel and when returning Home; repeated touches restart it. Keyboard Enter/Space and screen-reader synthetic click are also supported. Disabled Continue, nonprimary/right click and other skins never animate. Reduced-motion suppresses animation.
