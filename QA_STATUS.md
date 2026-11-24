@@ -1,3 +1,13 @@
+## Neon Polish P1.4: stable Continue and crisp offline Home (2026-11-24)
+
+SOURCE IMPLEMENTED — FULL TEST/ANDROID QA PENDING. User video 34667.mp4 shows Continue disappearing on the first render and a pixelated Home background. Root cause of Continue: Game.init refreshes saved-game button BEFORE syncSkin assigns data-skin=neon; P0.1 incorrectly depended on this skin flag. Core always uses Neon, so Continue now uses data-edition=core alone; visible but disabled on empty save, enabled on resumable save, never removed from first Home row. Non-Core editions retain original behavior. Added a first-launch regression test.
+
+The current Home override scaled a 300×533 local `neon-home-calm-300.webp` (4266 bytes). Changed Home only to already bundled `neon-home-h6.webp` (893×1600, 117884 bytes) plus a subtle navy readability gradient; no blur. The high-resolution composition is from the same Neon arena family but has more visible crystalline geometry and reflections. Other screens, buttons, game saves and Android Back unchanged. Updated tests expecting the old low-resolution image and startup condition. No Picsart credits or network are needed.
+
+This change is NOT device-verified. Before marking PASS run npm test, npm run build and a manual Codemagic `RombMaster Cloud Test APK` (not GitHub Actions). Verify no Continue gap at fresh install, after finishing a match, and when resuming; check art sharpness/readability at 360/393/412px; ensure Quick Play remains isolated and Back unaffected. Next: P1.5 premium Play/button contrast; P1.6 touch ripple/press animation; P1.7 one-time logo assembly on launch.
+
+---
+
 ## Neon Polish P1.3 — premium Home button material (2026-11-24)
 
 IMPLEMENTED IN SOURCE; ANDROID QA PENDING. Latest phone video 34665.mp4 showed Play insufficiently prominent, flat secondary Home buttons and a wordmark dimmed too long on returning Home. Root cause: named cascade layer neonControls applies important --rim/--face and background values, so earlier P1.1 --neon-action-* settings did not reliably affect the final rendered surface.

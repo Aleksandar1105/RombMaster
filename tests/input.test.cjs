@@ -647,3 +647,13 @@ test('closed test caps the route without rewriting a veteran profile', async () 
   assert.equal(h.el('stat-stars').textContent, '3 / 90');
   assert.equal(storage.get('rombmaster_profile_v1'), profile);
 });
+
+test('Core Continue is visible on initial load even before a skin is selected', async () => {
+  const h=await boot({coreEdition:true,autoStart:false});
+  assert.equal(h.el('continueBtn').hidden,false);
+  assert.equal(h.el('continueBtn').disabled,true);
+  h.game.start(4,'pvp','normal');
+  h.el('menuBtn').click();
+  assert.equal(h.el('continueBtn').hidden,false);
+  assert.equal(h.el('continueBtn').disabled,false);
+});

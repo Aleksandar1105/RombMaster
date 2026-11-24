@@ -696,11 +696,8 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
  }
 }
 
-/* NEON HOME BACKGROUND TRIAL (Picsart, 2026-11-23).
-   This is the ONLY visual change in this trial. No controls, avatars, logo,
-   six Career Rivals, Home layout, Quick Play or gameplay are restyled.
-   The image is currently Picsart-hosted, therefore online for this trial.
-   Before a production/offline release, bundle a local optimized asset. */
+/* P1.4: high-resolution offline Neon Home art (893x1600 instead of 300x533).
+   Keep the central controls legible with a subtle, transparent navy overlay. */
 :root[data-skin="neon"] #view-menu:has(
   #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
 ) {
@@ -710,7 +707,9 @@ html[data-edition="core"] #premium-rivals-section:not([hidden]) {
 :root[data-skin="neon"] #view-menu
 #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) {
   background-color:#071327 !important;
-  background-image: url('/assets/premium/master/neon-home-calm-300.webp') !important;
+  background-image:linear-gradient(180deg,
+    #07132712 0%,#0713271a 42%,#07132760 65%,#0713275c 85%,#07132716 100%),
+    url('/assets/premium/master/neon-home-h6.webp') !important;
   background-position:center center !important;
   background-repeat:no-repeat !important;
   background-size:cover !important;

@@ -601,11 +601,9 @@ export const Game = {
     const saved = SaveStore.read();
     const button = document.getElementById('continueBtn');
     if (button) {
-      // Android Core Neon keeps a stable three-button Home row after victory.
-      // No resumable match => Continue is visible but genuinely disabled.
-      // Other skins/editions keep their established hidden-empty behavior.
-      const stableNeonHome = document.documentElement?.dataset?.skin === 'neon' &&
-        document.documentElement?.dataset?.edition === 'core';
+      // The initial saved-game check happens before data-skin is initialized.
+      // Core always runs Neon, so reserve Continue's grid slot from first paint.
+      const stableNeonHome = document.documentElement?.dataset?.edition === 'core';
       const canResume = saved.status === 'ready';
       button.hidden = !stableNeonHome && !canResume;
       button.disabled = !canResume;
