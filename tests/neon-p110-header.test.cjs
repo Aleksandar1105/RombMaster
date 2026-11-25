@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
-const css=read('src/neon-screens.css').split('/* P1.10 —')[1];
+const css=read('src/neon-screens.css').split('/* P1.10 —')[1]?.split('/* P1.11 —')[0];
 
 test('P1.10 positions HUD values in explicit non-overlapping cells and keeps settings reachable',()=>{
  assert.ok(css);

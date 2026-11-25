@@ -106,6 +106,8 @@ test('Core launch reveals Home even when matchMedia is absent, throws, or reques
      listeners.get('click')();
      assert.equal(dataset.rmIntro,undefined);
      assert.equal(listeners.has('click'),false);
+     assert.equal(dataset.rmIntroSettled,'1');
+     assert.equal([...timers.values()].some(t=>t.ms===3250),false);
    }
  }
 });

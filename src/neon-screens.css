@@ -1164,3 +1164,29 @@ button[aria-pressed="true"] {
   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row {gap:2px 4px !important;grid-template-columns:44px minmax(0,1.15fr) minmax(0,1fr) 44px !important;}
   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .premium-progress-label {padding-top:2px !important;}
 }
+
+
+/* P1.11 — Home integration: cancel obsolete name plates and leave room
+   for the pedestal, header, two action rows and six real rival portraits. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card > strong {
+  display:block !important;position:static !important;isolation:auto !important;
+  clip-path:none !important;height:auto !important;min-height:0 !important;
+  max-width:100% !important;align-content:normal !important;
+  margin:0 !important;padding:0 !important;
+  background:none !important;background-image:none !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card > strong::before {
+  content:none !important;display:none !important;
+}
+@media (orientation:portrait) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) :is(.play-row,.mode-grid) {
+    transform:none !important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) {
+    transform:none !important;
+    overflow:hidden !important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-hero-stage .neon-home-brand > :is(img,.neon-logo-rebuilt-board) {
+    transform:none !important;
+  }
+}

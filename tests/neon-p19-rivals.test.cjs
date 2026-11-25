@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
-const css=read('src/neon-screens.css').split('/* P1.9 —')[1];
+const css=read('src/neon-screens.css').split('/* P1.9 —')[1]?.split('/* P1.10 —')[0];
 
 test('P1.9 Home only: larger portraits with compact-height safeguard and unboxed names',()=>{
  assert.ok(css);

@@ -155,3 +155,10 @@
     transition:none !important;
   }
 }
+
+/* Do not restart the older 220ms P1.2 Home entry fade after the completed
+   startup sequence. showHome clears this marker for normal navigation. */
+:root[data-skin="neon"][data-edition="core"][data-rm-intro-settled="1"] #view-menu
+#home-hub:not([hidden]) :is(.play-row,.mode-grid,.home-help-footer,#premium-rivals-section:not([hidden])) {
+  animation:none !important;
+}

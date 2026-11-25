@@ -169,6 +169,7 @@ document.querySelectorAll('.rm-character-categories input').forEach(input=>{inpu
 if(el('profile-section-avatar'))el('profile-section-avatar').onchange=()=>{avatarPage=0;renderAvatarPage();};
 window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
+    if(document.documentElement?.dataset) delete document.documentElement.dataset.rmIntroSettled;
     readQuickSetup();
     renderQuickSetup();
     arcade?.leave();
@@ -1796,8 +1797,12 @@ if (coreEdition) {
         } catch { /* Unknown motion preference: skip the optional intro. */ }
         if(root.dataset.skin==='neon' && allowIntro) {
             root.dataset.rmIntro='1';
+            let introTimer;
             const finishIntro=()=>{
+                if(root.dataset.rmIntro!=='1') return;
+                root.dataset.rmIntroSettled='1';
                 delete root.dataset.rmIntro;
+                clearTimeout(introTimer);
                 document.removeEventListener('click',finishIntro,true);
             };
             // An early navigation click ends the effect without consuming the click.
@@ -1806,7 +1811,7 @@ if (coreEdition) {
             for(const motion of document.querySelectorAll?.('.rm-logo-trace animateMotion') || []) {
                 try { motion.beginElement?.(); } catch { /* CSS still reveals the logo. */ }
             }
-            setTimeout(finishIntro,3250);
+            introTimer=setTimeout(finishIntro,3250);
         }
         root.dataset.rmReady='1';
         clearTimeout(fallback);
