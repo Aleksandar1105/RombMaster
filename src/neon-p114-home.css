@@ -68,3 +68,69 @@
  0%,100% {opacity:.38;}
  50% {opacity:.9;}
 }
+
+/* P1.14.1 — align the live HUD seen in video 34738; open, not boxed.
+   No new counters, icon assets, grid tracks, or animations. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) {
+   background:linear-gradient(90deg,transparent,#48ddfa90 25%,#a078fb90 75%,transparent) center bottom/100% 1px no-repeat,
+     radial-gradient(ellipse at 9% 0%,#13354d66,transparent 48%),
+     linear-gradient(115deg,#08162c,#0b1029 62%,#19132f) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-avatar {
+   box-shadow:0 0 0 1px #78e8f8a6,0 0 9px #31d9f34d !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-name {
+   letter-spacing:.015em;
+   text-shadow:0 1px 2px #050b18,0 0 7px #63cfff4d !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-world-level {
+   background:linear-gradient(125deg,#18435b,#222746 60%,#35234f) !important;
+   box-shadow:inset 0 0 0 1px #6ac9e455 !important;
+   text-shadow:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-settings-trigger {
+   background:linear-gradient(145deg,#24465d,#14243e 52%,#2c2045) !important;
+   box-shadow:inset 0 0 0 1px #79defa55,inset 0 1px 0 #c9eaff33 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-settings-trigger:active {
+   box-shadow:inset 0 0 0 1px #9af5ff,0 0 8px #51deef66 !important;
+ }
+ /* Explicit coin columns override the inherited one-column layout. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-coin-count {
+   grid-template-columns:auto minmax(0,max-content) !important;
+   grid-template-rows:auto auto !important;
+   gap:5px 3px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-coin-count .wallet-symbol {
+   grid-column:1 !important;grid-row:1 !important;
+   align-self:center !important;justify-self:end !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-coin-count #premium-player-coins {
+   grid-column:2 !important;grid-row:1 !important;
+   justify-self:start !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-coin-count .rm-hud-label {
+   grid-column:1/-1 !important;grid-row:2 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row :is(#premium-player-xp,#premium-player-stars,#premium-brain-points) {
+   gap:5px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row :is(#premium-player-xp,#premium-player-stars,#premium-brain-points,.home-coin-count) {
+   align-self:start !important;
+   grid-template-rows:auto auto !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .rm-hud-label {
+   color:#c7d2e6 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-career-progress {
+   height:7px !important;min-height:7px !important;
+   background:#24344c !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-career-progress::-webkit-progress-value {
+   background:linear-gradient(90deg,#31e3f7,#7181ff,#e67afa) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-career-progress::-moz-progress-bar {
+   background:linear-gradient(90deg,#31e3f7,#7181ff,#e67afa) !important;
+ }
+}
