@@ -1331,3 +1331,42 @@ button[aria-pressed="true"] {
  }
 }
 @keyframes rm-v2-scene-in {from {opacity:0;} to {opacity:1;}}
+
+
+/* P1.12e.1 — video 34728: settle the existing logo on the photographic
+   podium, blend the old wordmark crop, and add contact light, not another base.
+   Only the V2 portrait Core composition is affected. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand {
+   inset:auto 0 22.5% !important;
+   height:77.5% !important;
+ }
+ @supports (width:1cqh) {
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand {height:auto !important;}
+ }
+ /* The source wordmark includes a dark rectangular scene. Use intersecting
+    soft masks, retaining the central lettering and upper diamond while
+    fading the inherited backdrop at its top, side and lower edges. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
+   -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 32%,transparent 42%),linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%) !important;
+   mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 32%,transparent 42%),linear-gradient(to right,transparent 0%,#000 9%,#000 91%,transparent 100%) !important;
+   -webkit-mask-composite:source-in !important;
+   mask-composite:intersect !important;
+   -webkit-mask-size:100% 100% !important;
+   mask-size:100% 100% !important;
+   -webkit-mask-repeat:no-repeat !important;
+   mask-repeat:no-repeat !important;
+ }
+ /* Contact highlight on the surface, behind the existing diamond.
+    Soft elliptical light alone: no extra platform outline or solid disc. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::after {
+   content:"";position:absolute;left:50%;top:76%;width:35%;height:9%;
+   transform:translate(-50%,-50%);pointer-events:none;z-index:1;
+   background:radial-gradient(ellipse at 50% 50%,#f8f6ffed 0%,#9befff95 7%,#3ce8ff55 17%,#c25dff45 34%,transparent 71%);
+   mix-blend-mode:screen;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-intro="1"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::after {animation:rm-v2-scene-in .45s ease-out 2.12s both;}
+ @media (prefers-reduced-motion:reduce) {
+   :root[data-skin="neon"][data-edition="core"][data-rm-intro="1"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::after {animation:none !important;opacity:1 !important;}
+ }
+}

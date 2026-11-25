@@ -13,7 +13,7 @@ test('P1.12d verified WebP artwork is bundled offline',()=>{
  assert.match(read('src/main.js'),/const decoded=\[background,arena,wordmark\]/);
 });
 test('P1.12d one scene podium follows the Core portrait hero while other skins retain their artwork',()=>{
- const css=read('src/neon-screens.css').split('/* P1.12d —')[1];
+ const css=read('src/neon-screens.css').split('/* P1.12d —')[1]?.split('/* P1.12e.1 —')[0];
  assert.ok(css);
  assert.match(css,/@media \(orientation:portrait\)/);
  assert.match(css,/:root\[data-skin="neon"\]\[data-edition="core"\] #view-menu #home-hub/);
