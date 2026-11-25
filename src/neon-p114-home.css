@@ -1,0 +1,70 @@
+/* P1.14 — final Home-only polish, isolated from the approved P1.13.2.
+   Keep the intro, grid, HUD, actions and artwork untouched. The six columns
+   cap portrait growth; short displays retain the existing P1.9 safeguard. */
+@media (orientation:portrait) and (min-height:741px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-rivals-section:not([hidden]) .premium-rival-card .reference-rival-frame {
+   width:min(100%,clamp(46px,15.2vw,78px)) !important;
+ }
+}
+/* Preserve a static highlighted rim, including throughout the cold intro.
+   Only the separate rim overlay animates, not the portrait or its filter. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-rivals-section:not([hidden]) .premium-rival-card[data-current="true"] .reference-rival-frame {
+   animation:none !important;
+   filter:drop-shadow(0 0 3px #b5ffff) drop-shadow(0 0 7px #2de6f4aa) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-rivals-section:not([hidden]) .premium-rival-card[data-current="true"] .reference-rival-frame::after {
+   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+   clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%,50% 0,50% 5%,5% 50%,50% 95%,95% 50%,50% 5%);
+   background:linear-gradient(140deg,#eaffff,#42eaff 45%,#bc7dff 75%,#f0ffff);
+   opacity:.48;
+ }
+}
+/* Decorative overlay has no dimensions in layout and never handles input.
+   The diamond mask is aligned to the existing SVG viewBox 1080x720:
+   corners (540,223), (779,462), (540,701), (301,462). */
+.rm-home-ambient {display:none;pointer-events:none;}
+@media (orientation:portrait) and (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > .rm-home-ambient {
+   display:block;position:absolute;inset:0;z-index:2;pointer-events:none;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .rm-home-ambient::before {
+   content:"";position:absolute;inset:0;
+   clip-path:polygon(50% 30.972%,72.13% 64.167%,50% 97.361%,27.87% 64.167%);
+   background:linear-gradient(112deg,transparent 42%,#c5faff55 48%,#fff9 50%,#e8c8ff44 52%,transparent 58%) -170% 0 / 200% 100% no-repeat;
+   opacity:0;animation:rm-p114-glint 11s ease-in-out 2s infinite;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .rm-home-ambient::after {
+   content:"";position:absolute;inset:24% 8% 8%;pointer-events:none;
+   background:radial-gradient(circle at 12% 42%,#a7f6ff 0 1px,#4fd7ff55 2px,transparent 4px),
+     radial-gradient(circle at 83% 32%,#e7caff 0 1px,#c675ff55 2px,transparent 4px),
+     radial-gradient(circle at 18% 77%,#bffaff 0 1px,transparent 3px),
+     radial-gradient(circle at 91% 68%,#e2cbff 0 1px,transparent 3px);
+   opacity:0;animation:rm-p114-dust 8s ease-in-out 1s infinite;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::after {
+   animation:rm-p114-podium 5.8s ease-in-out 1s infinite;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-rivals-section:not([hidden]) .premium-rival-card[data-current="true"] .reference-rival-frame::after {
+   animation:rm-p114-rival 3.8s ease-in-out .4s infinite;
+ }
+}
+@keyframes rm-p114-glint {
+ 0%,3% {opacity:0;background-position:170% 0;}
+ 5% {opacity:.46;}
+ 15% {opacity:.46;}
+ 18%,100% {opacity:0;background-position:-170% 0;}
+}
+@keyframes rm-p114-dust {
+ 0%,100% {opacity:0;transform:translate3d(0,3px,0);}
+ 25%,65% {opacity:.65;}
+ 85% {opacity:0;transform:translate3d(0,-9px,0);}
+}
+@keyframes rm-p114-podium {
+ 0%,100% {opacity:1;}
+ 50% {opacity:.65;}
+}
+@keyframes rm-p114-rival {
+ 0%,100% {opacity:.38;}
+ 50% {opacity:.9;}
+}
