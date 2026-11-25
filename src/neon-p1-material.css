@@ -13,7 +13,7 @@
    --rim:radial-gradient(ellipse 43% 90% at 10% 0%,#94f1fc 0%,transparent 95%),
      radial-gradient(ellipse 34% 85% at 91% 0%,#e3ffff 0%,#65e8ff 24%,transparent 100%),
      linear-gradient(180deg,#a5faff 0%,#36c6e4 28%,#237c9a 65%,#94efff 100%) !important;
-   --face:linear-gradient(152deg,#193448 0%,#20536b 24%,#102b43 50%,#0a1c30 73%,#1a4860 100%) !important;
+   --face:linear-gradient(152deg,#193448 0%,#246087 24%,#123957 50%,#091b34 73%,#21688c 100%) !important;
    --glass-light:#6eeaff;
    --glass-facet:#bff9ff55;
    --glass-edge:#c8faffb0;
@@ -32,7 +32,7 @@
       dark readable central face and a luminous lower edge. */
    background:linear-gradient(142deg,var(--glass-facet) 0 9%,transparent 9% 79%,var(--glass-facet) 79% 88%,transparent 88%),
      linear-gradient(180deg,#efffff5c 0%,#e7ffff16 15%,transparent 39%,#01071344 68%,color-mix(in srgb,var(--glass-light) 24%,transparent) 100%),
-     radial-gradient(ellipse 84% 95% at 50% -18%,#91eaff65 0%,transparent 67%),
+     radial-gradient(ellipse 84% 95% at 50% -18%,color-mix(in srgb,var(--glass-light) 40%,transparent) 0%,transparent 67%),
      var(--face) !important;
    box-shadow:inset 0 1.5px 0 var(--glass-edge),inset 0 -1.5px 0 var(--glass-edge),
      inset 0 0 9px color-mix(in srgb,var(--glass-light) 45%,transparent),
@@ -40,17 +40,16 @@
    pointer-events:none !important;
    transition:box-shadow 145ms ease !important;
  }
- /* Coral glass accents for Career and Skin Store. The existing cyan/coral
-    palette is retained, not the purple reference mockup. */
+ /* P1.12c: violet glass accents for Career and Skin Store, matching the approved Home concept. */
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  .mode-grid > button:is([data-page="career-page"],#home-skin-store):not([hidden]) {
-   --rim:radial-gradient(ellipse 45% 100% at 9% 0%,#fff1ed 0%,#ffadac 24%,transparent 96%),
-     linear-gradient(165deg,#ffb8bc 0%,#f67883 25%,#a3425c 66%,#ffc1bb 100%) !important;
-   --face:linear-gradient(152deg,#412b40 0%,#603044 24%,#301e36 52%,#181c31 76%,#502f45 100%) !important;
-   --glass-light:#ff8d99;
-   --glass-facet:#ffd5cf55;
-   --glass-edge:#ffd5cfb8;
+   --rim:radial-gradient(ellipse 45% 100% at 9% 0%,#fff0ff 0%,#e7a4ff 24%,transparent 96%),
+     linear-gradient(165deg,#e9b7ff 0%,#a34df5 25%,#6735ac 66%,#f15be5 100%) !important;
+   --face:linear-gradient(152deg,#442867 0%,#683a9b 24%,#382254 52%,#21143e 76%,#62318a 100%) !important;
+   --glass-light:#e77aff;
+   --glass-facet:#edc9ff55;
+   --glass-edge:#f5d9ffb8;
  }
  /* Apply the external glow AFTER child clipping, on the existing row.
     Individual button shadows on clip-path elements are otherwise cut off.
@@ -77,41 +76,40 @@
    background:linear-gradient(142deg,#bff9ff66 0 10%,transparent 10% 82%,#bff9ff44 82% 92%,transparent 92%),var(--face) !important;
    box-shadow:inset 0 1px 0 #e3ffffbb,inset 0 -1px 0 #83eafa99,inset 0 0 8px #5ce5ff44 !important;
  }
- /* Main Play: a brighter cyan top and internal glow. Small red edge only. */
+ /* P1.12c: brighter violet Quick Play, with cyan-to-magenta surrounding light. */
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  .play-row #startBtn:not(:disabled) {
-   /* P1.5 — distinct primary CTA: powerful cyan top corners and brighter
-      blue-tinted glass. A short coral accent remains at the lower edge. */
-   --rim:radial-gradient(ellipse 47% 100% at 9% 0%,#f0ffff 0%,#89faff 29%,transparent 96%),
-     radial-gradient(ellipse 43% 100% at 92% 0%,#d4ffff 0%,#52e6f5 33%,transparent 100%),
-     linear-gradient(180deg,#a2ffff 0%,var(--neon-cyan,#2de6f4) 34%,#1889a6 65%,var(--neon-red,#ff5965) 100%) !important;
-   --face:linear-gradient(155deg,#265b72 0%,#32758d 24%,#16435e 53%,#10273d 72%,#24556a 100%) !important;
-   --glass-light:#a1f7ff;
-   --glass-facet:#e2ffff77;
-   --glass-edge:#eaffffed;
+   /* Primary CTA: luminous violet glass, brighter than secondary violet actions. */
+   --rim:radial-gradient(ellipse 47% 100% at 9% 0%,#fff4ff 0%,#e9baff 29%,transparent 96%),
+     radial-gradient(ellipse 43% 100% at 92% 0%,#f9dcff 0%,#e77aff 33%,transparent 100%),
+     linear-gradient(180deg,#f9dcff 0%,#b875ff 34%,#7234a2 65%,#f15be5 100%) !important;
+   --face:linear-gradient(155deg,#7442a1 0%,#995ad3 24%,#452375 53%,#21143e 72%,#7234a2 100%) !important;
+   --glass-light:#f0a5ff;
+   --glass-facet:#f5d9ff77;
+   --glass-edge:#fff0ffed;
    background:var(--rim) !important;
    background-image:var(--rim) !important;
    color:#fbffff !important;
-   text-shadow:0 1px 2px #010a19,0 0 8px #a1f7ffbd !important;
+   text-shadow:0 1px 2px #010a19,0 0 8px #f0a5ffbd !important;
  }
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  .play-row #startBtn:not(:disabled)::before {
    inset:3.25px !important;
    background:linear-gradient(142deg,var(--glass-facet) 0 11%,transparent 11% 77%,var(--glass-facet) 77% 87%,transparent 87%),
-     radial-gradient(ellipse 88% 115% at 50% -19%,#c6ffffb8 0%,#60f0ff77 29%,transparent 72%),
-     linear-gradient(180deg,#f1ffff3d 0%,transparent 46%,#03132455 78%,#62e9ff66 100%),
+     radial-gradient(ellipse 88% 115% at 50% -19%,#f8d5ffb8 0%,#d48cff77 29%,transparent 72%),
+     linear-gradient(180deg,#f1ffff3d 0%,transparent 46%,#03132455 78%,#f15be566 100%),
      var(--face) !important;
    box-shadow:inset 0 1.5px 0 var(--glass-edge),inset 0 -1.5px 0 var(--glass-edge),
-     inset 0 0 13px #45ecff66,inset 0 -4px 10px #0213269c !important;
+     inset 0 0 13px #d48cff66,inset 0 -4px 10px #0213269c !important;
  }
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  .play-row #startBtn:not(:disabled) > svg[aria-hidden="true"] {
-   color:var(--neon-cyan,#2de6f4) !important;
-   stroke:#b4ffff !important;
-   filter:drop-shadow(0 0 6px #2de6f4b0) !important;
+   color:#f0a5ff !important;
+   stroke:#fff0ff !important;
+   filter:drop-shadow(0 0 6px #e77affb0) !important;
  }
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
@@ -119,10 +117,10 @@
    box-shadow:inset 0 1px 0 #efffffcc,inset 0 0 12px #48e6fa91,inset 0 -3px 7px #020a1677 !important;
  }
 }
-/* Keep P1.1's one 3.8s pulse, now cyan-dominant and less pink. */
+/* Keep P1.1's one 3.8s pulse, now aligned with violet Quick Play. */
 @keyframes rm-home-play-beacon {
- 0%,100% {filter:brightness(1.055) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 7px #2de6f478);}
- 50% {filter:brightness(1.15) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 15px #2de6f4b3);}
+ 0%,100% {filter:brightness(1.055) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 7px #e77aff78);}
+ 50% {filter:brightness(1.15) drop-shadow(0 2px 3px #020e1cb8) drop-shadow(0 0 15px #e77affb3);}
 }
 /* Logo motion belongs exclusively to P1.7 in neon-p1-home.css. */
 @media (prefers-reduced-motion:reduce) {

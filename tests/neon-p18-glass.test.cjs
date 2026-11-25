@@ -10,7 +10,7 @@ test('P1.8 glass has real facets, beveled highlights and a readable dark face',(
  assert.match(css,/linear-gradient\(142deg,var\(--glass-facet\)/);
  assert.match(css,/inset 0 1\.5px 0 var\(--glass-edge\),inset 0 -1\.5px 0 var\(--glass-edge\)/);
  assert.match(css,/--face:linear-gradient\(152deg,#193448/);
- assert.match(css,/--glass-light:#ff8d99/);
+ assert.match(css,/--glass-light:#e77aff/);
  assert.match(css,/\.mode-grid > button:is\(\[data-page="career-page"\],#home-skin-store\)/);
 });
 

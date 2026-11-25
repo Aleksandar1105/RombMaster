@@ -14,7 +14,7 @@
 .play-row #startBtn:not(:disabled) {
   --neon-action-rim:linear-gradient(120deg,
     #bbfaff 0%,var(--neon-cyan,#2de6f4) 25%,#1a4262 49%,
-    var(--neon-red,#ff5965) 78%,#ffd1c9 100%);
+    #a34df5 78%,#f5d9ff 100%);
   --neon-action-face:radial-gradient(ellipse at 48% 0,
     #83eaff30 0,transparent 58%),
     linear-gradient(145deg,#143247 0%,#102138 52%,#35232d 100%);
@@ -76,7 +76,7 @@
 .rm-trace-dot {filter:drop-shadow(0 0 12px #6cefff);}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
-.rm-trace-dot:last-child {filter:drop-shadow(0 0 12px #ff7185);}
+ .rm-trace-dot:last-child {filter:drop-shadow(0 0 12px #f15be5);}
 :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu
 #home-hub:not([hidden]) #premium-hero-stage:not([hidden])
 .neon-logo-rebuilt-board > g[transform^="translate"] > rect:first-child {
@@ -137,7 +137,7 @@
 }
 @keyframes rm-home-play-beacon {
   0%,100% {filter:brightness(1.03) drop-shadow(0 0 2px #2de6f455);}
-  50% {filter:brightness(1.10) drop-shadow(0 0 6px #ff596570);}
+  50% {filter:brightness(1.10) drop-shadow(0 0 6px #e77aff70);}
 }
 /* Reduced-motion never waits on delayed opacity, including the wordmark. */
 @media (prefers-reduced-motion:reduce) {

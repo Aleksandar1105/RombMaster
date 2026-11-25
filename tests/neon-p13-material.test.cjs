@@ -23,7 +23,7 @@ test('P1.3 overrides actual --rim and --face from the same cascade layer',()=>{
  assert.match(css,/background:var\(--rim\) !important/);
  assert.match(css,/var\(--face\) !important/);
  assert.match(css,/\.play-row #startBtn:not\(:disabled\)/);
- assert.match(css,/var\(--neon-cyan,#2de6f4\)/);
+ assert.match(css,/#f15be5 100%/);
 });
 
 test('P1.3 is paint-only, keeps Continue and Android Back behavior',()=>{
@@ -38,7 +38,7 @@ test('P1.3 retains one Play pulse and leaves logo motion to P1.7',()=>{
  const base=read('src/neon-p1-home.css');
  assert.match(base,/animation:rm-home-play-beacon 3\.8s/);
  assert.match(css,/@keyframes rm-home-play-beacon/);
- assert.match(css,/drop-shadow\(0 0 15px #2de6f4b3\)/);
+ assert.match(css,/drop-shadow\(0 0 15px #e77affb3\)/);
  assert.doesNotMatch(css,/animation:rm-p13-wordmark/);
  assert.match(base,/animation:rm-home-logo-wordmark/);
  assert.match(css,/@media \(prefers-reduced-motion:reduce\)/);
