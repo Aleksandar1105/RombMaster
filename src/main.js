@@ -9,6 +9,7 @@ import './neon-p113-home.css';
 import './neon-p114-home.css';
 import './neon-p22-quick-layout.css';
 import './neon-p23-quick-glass.css';
+import './neon-p24-quick-preview.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -1383,7 +1384,14 @@ function renderQuickSetup() {
     const playable=1+2*radius*(radius+1)-4;
     const summary=el('quick-match-summary');
     if(summary)summary.textContent=board+' · '+playable+' playable cells · '+(mode==='pvp'?'Local duel':difficulty+' AI');
-    drawOpening(el('setup-preview'), { size });
+    const preview = el('setup-preview');
+    // Higher backing resolution without altering shared Renderer or board geometry.
+    if (coreEdition && document.documentElement?.dataset?.skin === 'neon') {
+        if (preview.width !== 480 || preview.height !== 480) {
+            preview.width = preview.height = 480;
+        }
+    }
+    drawOpening(preview, { size });
 }
 for (const button of document.querySelectorAll('[data-size],[data-ai],[data-diff]')) {
     button.onclick = () => {
