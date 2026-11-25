@@ -979,3 +979,77 @@ button[aria-pressed="true"] {
  color:var(--neon-text,#f3faff) !important;
  text-shadow:0 1px 2px #061427 !important;
 }
+
+
+/* P1.9 — six larger Home rival portraits; no individual name plates.
+   Keep the existing row and real Career states, and use the outer diamond
+   frame for the glow so the clipped portrait does not cut it off. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rivals-strip {
+  gap:clamp(2px,.65vw,5px) !important;
+  align-items:start !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card {
+  display:grid !important;justify-items:center !important;
+  gap:3px !important;min-width:0 !important;
+  background:transparent !important;border:0 !important;
+  box-shadow:none !important;padding:0 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card .reference-rival-frame {
+  width:min(100%,clamp(40px,13vw,68px)) !important;
+  padding:2px !important;
+  overflow:visible !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card img {
+  border:0 !important;border-radius:0 !important;
+  max-block-size:none !important;
+  box-shadow:none !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card strong {
+  background:transparent !important;border:0 !important;box-shadow:none !important;
+  padding:0 !important;margin:0 !important;
+  font-size:clamp(.56rem,2.2vw,.79rem) !important;
+  font-weight:750 !important;line-height:1.12 !important;
+  white-space:normal !important;overflow-wrap:anywhere !important;
+  overflow:visible !important;text-overflow:clip !important;
+  letter-spacing:-.02em !important;text-align:center !important;
+  text-shadow:0 1px 3px #020918,0 0 5px #071423 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-state="locked"] .reference-rival-frame {
+  filter:drop-shadow(0 0 2px #8299aa44) !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-state="locked"] img {
+  filter:saturate(.60) brightness(.67) !important;opacity:.93 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-state="locked"] strong {
+  color:#b1c3d3 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-state="defeated"] .reference-rival-frame {
+  filter:drop-shadow(0 0 4px #f7cd7766) !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-current="true"] .reference-rival-frame {
+  --rival-rim:#7ff6ff !important;
+  filter:drop-shadow(0 0 3px #b5ffff) drop-shadow(0 0 8px #2de6f4aa);
+  animation:rm-p19-current-rival 2.8s ease-in-out infinite;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-current="true"] img {
+  animation:none !important;filter:saturate(1.1) brightness(1.12) !important;
+  opacity:1 !important;box-shadow:none !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-current="true"] strong {
+  color:#c9fbff !important;text-shadow:0 1px 3px #020918,0 0 7px #2de6f4aa !important;
+}
+@keyframes rm-p19-current-rival {
+  0%,100% {filter:drop-shadow(0 0 3px #b5ffff) drop-shadow(0 0 7px #2de6f499);}
+  50% {filter:drop-shadow(0 0 4px #d9ffff) drop-shadow(0 0 12px #2de6f4dd);}
+}
+@media (max-height:680px) and (orientation:portrait) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card .reference-rival-frame {
+    width:min(100%,clamp(34px,11vw,50px)) !important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card {gap:1px !important;}
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-rivals-section .premium-rival-card[data-current="true"] .reference-rival-frame {
+    animation:none !important;
+  }
+}
