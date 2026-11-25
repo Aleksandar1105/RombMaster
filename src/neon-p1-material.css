@@ -1,5 +1,5 @@
 /*
- RombMaster Neon Polish P1.3 + P1.5 — consolidated premium Home material ONLY.
+ RombMaster Neon Polish P1.3 + P1.5 + P1.8 — consolidated premium Home material ONLY.
  Active button chrome in neon-screens.css uses important --rim/--face inside
  @layer neonControls. Reopen that SAME layer; do not add a second overlay,
  touch the Home grid, or change other skins and game screens.
@@ -11,9 +11,12 @@
    /* P1.5 — secondary surfaces keep their dark navy depth. The brighter
       parts of the border are at the upper corners, not every edge. */
    --rim:radial-gradient(ellipse 43% 90% at 10% 0%,#94f1fc 0%,transparent 95%),
-     radial-gradient(ellipse 34% 85% at 91% 0%,#9ccbd9 0%,transparent 100%),
-     linear-gradient(180deg,#317189 0%,#1d526b 32%,#102d43 72%,#96535e 100%) !important;
-   --face:linear-gradient(152deg,#193448 0%,#0c2337 26%,#081727 71%,#101a29 100%) !important;
+     radial-gradient(ellipse 34% 85% at 91% 0%,#e3ffff 0%,#65e8ff 24%,transparent 100%),
+     linear-gradient(180deg,#a5faff 0%,#36c6e4 28%,#237c9a 65%,#94efff 100%) !important;
+   --face:linear-gradient(152deg,#193448 0%,#20536b 24%,#102b43 50%,#0a1c30 73%,#1a4860 100%) !important;
+   --glass-light:#6eeaff;
+   --glass-facet:#bff9ff55;
+   --glass-edge:#c8faffb0;
    background:var(--rim) !important;
    background-image:var(--rim) !important;
    color:var(--neon-text,#f3faff) !important;
@@ -23,14 +26,56 @@
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  :is(.play-row,.mode-grid) > button:not([hidden])::before {
    content:"" !important;
-   inset:3px !important;
+   inset:2.5px !important;
    clip-path:inherit !important;
-   background:radial-gradient(ellipse 84% 95% at 50% -18%,#91eaff29 0%,transparent 67%),
-     linear-gradient(180deg,#e7ffff0c 0%,transparent 36%,#01071366 100%),
+   /* Glass facets: bright beveled corners, a restrained reflected highlight,
+      dark readable central face and a luminous lower edge. */
+   background:linear-gradient(142deg,var(--glass-facet) 0 9%,transparent 9% 79%,var(--glass-facet) 79% 88%,transparent 88%),
+     linear-gradient(180deg,#efffff5c 0%,#e7ffff16 15%,transparent 39%,#01071344 68%,color-mix(in srgb,var(--glass-light) 24%,transparent) 100%),
+     radial-gradient(ellipse 84% 95% at 50% -18%,#91eaff65 0%,transparent 67%),
      var(--face) !important;
-   box-shadow:inset 0 1px 0 #a3eefa50,inset 0 -3px 9px #010713ac !important;
+   box-shadow:inset 0 1.5px 0 var(--glass-edge),inset 0 -1.5px 0 var(--glass-edge),
+     inset 0 0 9px color-mix(in srgb,var(--glass-light) 45%,transparent),
+     inset 0 -3px 9px #01071392 !important;
    pointer-events:none !important;
    transition:box-shadow 145ms ease !important;
+ }
+ /* Coral glass accents for Career and Skin Store. The existing cyan/coral
+    palette is retained, not the purple reference mockup. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .mode-grid > button:is([data-page="career-page"],#home-skin-store):not([hidden]) {
+   --rim:radial-gradient(ellipse 45% 100% at 9% 0%,#fff1ed 0%,#ffadac 24%,transparent 96%),
+     linear-gradient(165deg,#ffb8bc 0%,#f67883 25%,#a3425c 66%,#ffc1bb 100%) !important;
+   --face:linear-gradient(152deg,#412b40 0%,#603044 24%,#301e36 52%,#181c31 76%,#502f45 100%) !important;
+   --glass-light:#ff8d99;
+   --glass-facet:#ffd5cf55;
+   --glass-edge:#ffd5cfb8;
+ }
+ /* Apply the external glow AFTER child clipping, on the existing row.
+    Individual button shadows on clip-path elements are otherwise cut off.
+    Keep the static shadow restrained and the six hit targets unchanged. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ :is(.play-row,.mode-grid) {
+   filter:drop-shadow(0 2px 2px #020713b8) drop-shadow(0 0 4px #59dfff66) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .home-help-footer {
+   filter:drop-shadow(0 0 3px #59dfff66) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .home-help-footer #helpBtn:not([hidden]) {
+   --rim:linear-gradient(150deg,#b9ffff,#36c6e4 30%,#237c9a 65%,#94efff) !important;
+   --face:linear-gradient(152deg,#25556b,#0d243b 58%,#18445b) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu
+ #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
+ .home-help-footer #helpBtn:not([hidden])::before {
+   background:linear-gradient(142deg,#bff9ff66 0 10%,transparent 10% 82%,#bff9ff44 82% 92%,transparent 92%),var(--face) !important;
+   box-shadow:inset 0 1px 0 #e3ffffbb,inset 0 -1px 0 #83eafa99,inset 0 0 8px #5ce5ff44 !important;
  }
  /* Main Play: a brighter cyan top and internal glow. Small red edge only. */
  :root[data-skin="neon"][data-edition="core"] #view-menu
@@ -41,7 +86,10 @@
    --rim:radial-gradient(ellipse 47% 100% at 9% 0%,#f0ffff 0%,#89faff 29%,transparent 96%),
      radial-gradient(ellipse 43% 100% at 92% 0%,#d4ffff 0%,#52e6f5 33%,transparent 100%),
      linear-gradient(180deg,#a2ffff 0%,var(--neon-cyan,#2de6f4) 34%,#1889a6 65%,var(--neon-red,#ff5965) 100%) !important;
-   --face:linear-gradient(155deg,#265b72 0%,#1a4a64 29%,#123551 69%,#13273a 100%) !important;
+   --face:linear-gradient(155deg,#265b72 0%,#32758d 24%,#16435e 53%,#10273d 72%,#24556a 100%) !important;
+   --glass-light:#a1f7ff;
+   --glass-facet:#e2ffff77;
+   --glass-edge:#eaffffed;
    background:var(--rim) !important;
    background-image:var(--rim) !important;
    color:#fbffff !important;
@@ -51,11 +99,12 @@
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
  .play-row #startBtn:not(:disabled)::before {
    inset:3.25px !important;
-   background:radial-gradient(ellipse 88% 115% at 50% -19%,#c6ffff9e 0%,#60f0ff66 29%,transparent 72%),
-     linear-gradient(180deg,#f1ffff2d 0%,transparent 46%,#03132455 100%),
+   background:linear-gradient(142deg,var(--glass-facet) 0 11%,transparent 11% 77%,var(--glass-facet) 77% 87%,transparent 87%),
+     radial-gradient(ellipse 88% 115% at 50% -19%,#c6ffffb8 0%,#60f0ff77 29%,transparent 72%),
+     linear-gradient(180deg,#f1ffff3d 0%,transparent 46%,#03132455 78%,#62e9ff66 100%),
      var(--face) !important;
-   box-shadow:inset 0 1px 0 #f0ffffda,inset 0 0 13px #45ecff36,
-     inset 0 -4px 10px #0213269c !important;
+   box-shadow:inset 0 1.5px 0 var(--glass-edge),inset 0 -1.5px 0 var(--glass-edge),
+     inset 0 0 13px #45ecff66,inset 0 -4px 10px #0213269c !important;
  }
  :root[data-skin="neon"][data-edition="core"] #view-menu
  #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden])
