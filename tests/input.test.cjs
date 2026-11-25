@@ -25,6 +25,7 @@ async function boot({ storage = new Map(), autoStart = true, coreEdition = false
       querySelector(selector) {
         if(selector==='[data-avatar-lock]')return this.children.find(e=>e.dataset.avatarLock!==undefined)||null;
         if(selector==='.avatar-art')return this.children.find(e=>e.className==='avatar-art')||null;
+        if(['.rm-hud-legacy','.rm-hud-number','.rm-hud-label'].includes(selector))return this.children.find(e=>e.className===selector.slice(1))||null;
         return null;
       },
       focus() {}, setAttribute(key,value) { this[key] = value; }, getAttribute(key) { return this[key] ?? null; },
@@ -40,6 +41,17 @@ async function boot({ storage = new Map(), autoStart = true, coreEdition = false
       click() { this.onclick?.(); },
     };
     elements.set(id, element);
+    // Mirror the three nested Home HUD fields in src/index.html. Keep the
+    // selector strict so an unexpected selector still returns null.
+    const hudLabels = {'premium-player-xp':'XP','premium-player-stars':'Stars','premium-brain-points':'Brain Points'};
+    if(typeof id==='string' && Object.hasOwn(hudLabels,id)){
+      for(const className of ['rm-hud-legacy','rm-hud-number','rm-hud-label']){
+        const child=el(Symbol());
+        child.className=className;
+        if(className==='rm-hud-label')child.textContent=hudLabels[id];
+        element.append(child);
+      }
+    }
     return element;
   }
   const pages = Object.entries({ startBtn: 'quick-settings', career: 'career-page', profile: 'player-settings', 'home-skin-store':'skin-page' }).map(([id,page]) => {
@@ -656,4 +668,21 @@ test('Core Continue is visible on initial load even before a skin is selected', 
   h.el('menuBtn').click();
   assert.equal(h.el('continueBtn').hidden,false);
   assert.equal(h.el('continueBtn').disabled,false);
+});
+
+
+test('P1.13.1 Home HUD renders live XP and separate captions without replacing the nested nodes', async () => {
+  const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:45,
+    stars:{1:3,40:2},stats:{played:3,wins:2,draws:0,losses:1}});
+  const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
+  const xp=h.el('premium-player-xp');
+  assert.equal(String(xp.querySelector('.rm-hud-number').textContent),'300');
+  assert.equal(xp.querySelector('.rm-hud-legacy').textContent,'300 XP');
+  assert.equal(xp.querySelector('.rm-hud-label').textContent,'XP');
+  for(const [id,label] of [['premium-player-stars','Stars'],['premium-brain-points','Brain Points']]){
+    const metric=h.el(id);
+    assert.notEqual(String(metric.querySelector('.rm-hud-number').textContent),'');
+    assert.equal(metric.querySelector('.rm-hud-label').textContent,label);
+  }
+  assert.equal(xp.querySelector('.unknown-hud-field'),null);
 });
