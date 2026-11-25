@@ -10,6 +10,7 @@ import './neon-p114-home.css';
 import './neon-p22-quick-layout.css';
 import './neon-p23-quick-glass.css';
 import './neon-p24-quick-preview.css';
+import './neon-p25-quick-motion.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -1395,10 +1396,27 @@ function renderQuickSetup() {
 }
 for (const button of document.querySelectorAll('[data-size],[data-ai],[data-diff]')) {
     button.onclick = () => {
+        const previousSize = size;
         if (button.dataset.size) size = Number(button.dataset.size);
         if (button.dataset.ai) mode = button.dataset.ai;
         if (button.dataset.diff) diff = button.dataset.diff;
         renderQuickSetup();
+        if (size !== previousSize && coreEdition &&
+            document.documentElement?.dataset?.skin === 'neon' &&
+            !el('menu-page').hidden && !el('quick-settings').hidden) {
+            const preview = el('setup-preview');
+            try {
+                if (window.matchMedia?.('(prefers-reduced-motion: no-preference)')?.matches && preview.animate) {
+                    for (const animation of preview.getAnimations?.() || []) {
+                        if (animation.id === 'rm-quick-preview-change') animation.cancel();
+                    }
+                    const animation = preview.animate(
+                        [{opacity:.78,transform:'scale(.97)'},{opacity:1,transform:'none'}],
+                        {duration:180,easing:'ease-out'});
+                    animation.id = 'rm-quick-preview-change';
+                }
+            } catch { /* Optional motion must never interrupt selection. */ }
+        }
     };
 }
 readQuickSetup();
