@@ -31,7 +31,7 @@
  :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .rm-home-ambient::before {
    content:"";position:absolute;inset:0;
    clip-path:polygon(50% 30.972%,72.13% 64.167%,50% 97.361%,27.87% 64.167%);
-   background:linear-gradient(112deg,transparent 42%,#c5faff55 48%,#fff9 50%,#e8c8ff44 52%,transparent 58%) -170% 0 / 200% 100% no-repeat;
+   background:linear-gradient(112deg,transparent 42%,#c5faff55 48%,#fff9 50%,#e8c8ff44 52%,transparent 58%) 170% 0 / 200% 100% no-repeat;
    opacity:0;animation:rm-p114-glint 11s ease-in-out 2s infinite;
  }
  :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"]:not([data-rm-intro="1"]) #view-menu.active-view #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .rm-home-ambient::after {
