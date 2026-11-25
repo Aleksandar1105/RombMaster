@@ -1,0 +1,19 @@
+/* P2.5 — finite visual feedback, no delayed navigation or audio duplication. */
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings .btn-group button,#setup-play):not(:disabled) {
+   transition:transform 120ms ease-out;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings .btn-group button,#setup-play):not(:disabled):active {
+   transform:scale(.96);
+ }
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings .btn-group button,#setup-play):not(:disabled)::before {
+    transition:box-shadow 140ms ease-out !important;
+  }
+ }
+}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings .btn-group button,#setup-play) {
+   transition:none !important;transform:none !important;
+ }
+}
