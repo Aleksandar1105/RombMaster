@@ -1,0 +1,74 @@
+/* P2.3 — Quick Play premium glass. Reuse the existing neonControls
+   cascade layer and the existing ::before face / ::after selection mark.
+   P2.2 geometry and the frozen Home are untouched. No new motion or assets. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
+   --rim:radial-gradient(ellipse 45% 100% at 10% 0%,#c4faff 0%,#65dcf3 24%,transparent 95%),
+     linear-gradient(165deg,#91edff 0%,#36b5d3 28%,#28557c 67%,#79d8ee 100%) !important;
+   --face:linear-gradient(150deg,#23465e,#1b405c 23%,#10283f 55%,#0a172e 77%,#22516a) !important;
+   --qp-glass-facet:#bff9ff40;
+   --qp-glass-edge:#a2eafa90;
+   --qp-glass-light:#4dcbe8;
+   --qp-rim-inset:2px;
+   --qp-icon:#9cecff;
+   background:var(--rim) !important;background-image:var(--rim) !important;
+   color:#f3faff !important;
+   text-shadow:0 1px 2px #020a1a !important;
+   filter:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button[aria-pressed="true"] {
+   --rim:radial-gradient(ellipse 46% 100% at 10% 0%,#fff0ff 0%,#dca3ff 26%,transparent 95%),
+     linear-gradient(165deg,#e8c4ff,#a46bf2 28%,#633aa7 66%,#efa4ff) !important;
+   --face:linear-gradient(150deg,#492d72,#68428c 22%,#392858 54%,#211638 77%,#593584) !important;
+   --qp-glass-facet:#edc9ff55;
+   --qp-glass-edge:#efd3ffbd;
+   --qp-glass-light:#d188ff;
+   --qp-rim-inset:2.5px;
+   --qp-icon:#e8caff;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play:not(:disabled) {
+   --rim:radial-gradient(ellipse 47% 100% at 9% 0%,#fff4ff 0%,#e9baff 29%,transparent 96%),
+     radial-gradient(ellipse 43% 100% at 92% 0%,#f9dcff 0%,#e77aff 33%,transparent 100%),
+     linear-gradient(180deg,#f9dcff,#b875ff 34%,#7234a2 65%,#f15be5) !important;
+   --face:linear-gradient(155deg,#7442a1,#995ad3 24%,#452375 53%,#21143e 72%,#7234a2) !important;
+   --qp-glass-facet:#f5d9ff77;
+   --qp-glass-edge:#fff0ffed;
+   --qp-glass-light:#f0a5ff;
+   --qp-rim-inset:3px;
+   --qp-icon:#fff0ff;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play)::before {
+   content:"" !important;display:block !important;
+   inset:var(--qp-rim-inset) !important;clip-path:inherit !important;
+   background:linear-gradient(142deg,var(--qp-glass-facet) 0 9%,transparent 9% 79%,var(--qp-glass-facet) 79% 88%,transparent 88%),
+     linear-gradient(180deg,#efffff40 0%,#e7ffff12 15%,transparent 39%,#01071344 68%,color-mix(in srgb,var(--qp-glass-light) 20%,transparent) 100%),
+     radial-gradient(ellipse 84% 95% at 50% -18%,color-mix(in srgb,var(--qp-glass-light) 35%,transparent) 0%,transparent 67%),
+     var(--face) !important;
+   box-shadow:inset 0 1px 0 var(--qp-glass-edge),inset 0 -1px 0 var(--qp-glass-edge),
+     inset 0 0 8px color-mix(in srgb,var(--qp-glass-light) 30%,transparent),
+     inset 0 -3px 8px #01071388 !important;
+   pointer-events:none !important;
+ }
+ /* Selection is both color AND a small check; no second permanent glass layer. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button:not([aria-pressed="true"])::after {content:none !important;display:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button[aria-pressed="true"]::after {
+   content:"" !important;display:block !important;position:absolute !important;
+   inset:7px 12px auto auto !important;width:8px !important;height:4px !important;
+   border:solid #f7e9ff !important;border-width:0 0 2px 2px !important;
+   background:none !important;clip-path:none !important;
+   transform:rotate(-45deg) !important;z-index:2 !important;pointer-events:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button svg, :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play > span {
+   color:var(--qp-icon) !important;filter:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button[aria-pressed="true"] svg {color:var(--qp-icon) !important;}
+ /* Clipped buttons cannot reliably show an exterior outline; keep an inset
+    keyboard focus indication as well as the existing native outline. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):focus-visible {
+   --rim:linear-gradient(135deg,#fff0b0,#ffdf70,#fff8da) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):not(:disabled):active::before {
+   box-shadow:inset 0 1px 0 #fff8,inset 0 0 12px var(--qp-glass-light),inset 0 -3px 8px #01071399 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):disabled {opacity:.5 !important;filter:none !important;}
+}
