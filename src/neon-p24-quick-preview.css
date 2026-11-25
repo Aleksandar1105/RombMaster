@@ -1,0 +1,25 @@
+/* P2.4 — exact board silhouettes and larger, crisp live preview. */
+.rm-quick-board-icon,.rm-quick-preview-label {display:none !important;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .btn-group button[data-size] .rm-quick-board-icon {
+   display:block !important;order:-1;width:clamp(20px,3.7dvh,32px);height:clamp(20px,3.7dvh,32px);
+   flex:none;fill:none;stroke:none;filter:none !important;
+ }
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-board-icon .rm-quick-mini-cell {
+ fill:#10283f;stroke:currentColor;stroke-width:.55px;vector-effect:non-scaling-stroke;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-board-icon .rm-quick-mini-x {fill:#fa6378;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-board-icon .rm-quick-mini-o {fill:#43dff5;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-preview-label {
+ display:block !important;margin:0;color:#b6e8f3;font-size:.75rem;
+ letter-spacing:.12em;text-transform:uppercase;text-align:center;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-preview {width:min(68vw,28dvh,240px) !important;max-width:100%;}
+@media (orientation:portrait) and (max-height:720px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-preview {width:min(50vw,19dvh,156px) !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-preview-label {font-size:.65rem;}
+}
+@media (orientation:landscape) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-preview {width:min(28vw,36dvh,190px) !important;}
+}
