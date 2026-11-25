@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
-const css=read('src/neon-screens.css').split('/* P1.11 —')[1];
+const css=read('src/neon-screens.css').split('/* P1.11 —')[1]?.split('/* P1.12a —')[0];
 
 test('P1.11 neutralizes the legacy rival caption plate including its generated surface',()=>{
  assert.ok(css);

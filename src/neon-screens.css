@@ -1190,3 +1190,88 @@ button[aria-pressed="true"] {
     transform:none !important;
   }
 }
+
+
+/* P1.12a — approved reference: full-width, three visual HUD groups.
+   The existing live values are placed in one shared grid. No new currency,
+   no duplicate profile, no new mode, and Help remains in the footer. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) {
+   display:grid !important;
+   grid-template-columns:clamp(34px,10.5vw,52px) minmax(0,1fr) minmax(0,1.35fr) minmax(0,.95fr) 44px !important;
+   grid-template-rows:auto auto auto !important;
+   gap:3px clamp(4px,1.5vw,8px) !important;
+   align-items:center !important;
+   width:100% !important;max-width:none !important;justify-self:stretch !important;
+   border:1.5px solid transparent !important;border-radius:12px !important;
+   background:linear-gradient(155deg,#16435a,#081a32 43%,#1a1530) padding-box,
+     linear-gradient(120deg,#c7ffff,#2de6f4 35%,#617edc 65%,#ff7185) border-box !important;
+   box-shadow:inset 0 1px 0 #d1ffff70,inset 0 0 14px #32d9f12a,0 0 7px #2de6f455 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row,:root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .premium-progress-label {
+   display:contents !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row #premium-player-avatar {
+   grid-column:1 !important;grid-row:1/4 !important;
+   width:100% !important;max-width:52px !important;
+   clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%) !important;
+   background-size:cover !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row #premium-player-name {
+   grid-column:2 !important;grid-row:1 !important;
+   font-size:clamp(.74rem,3.6vw,1.1rem) !important;
+   width:100% !important;overflow:hidden !important;text-overflow:ellipsis !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) #premium-world-level {
+   grid-column:2 !important;grid-row:2 !important;
+   justify-self:start !important;padding:2px 5px !important;
+   max-width:100% !important;box-sizing:border-box !important;
+   border:1px solid #5be8f3 !important;border-radius:12px !important;
+   background:linear-gradient(100deg,#165f79,#172b50) !important;
+   font-size:clamp(.6rem,2.6vw,.8rem) !important;white-space:nowrap !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row .home-coin-count {
+   grid-column:2 !important;grid-row:3 !important;
+   font-size:clamp(.65rem,2.7vw,.83rem) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row #premium-player-xp {
+   grid-column:3 !important;grid-row:1 !important;
+   font-size:clamp(.77rem,3.55vw,1.1rem) !important;
+   border-left:1px solid #70c9e54d !important;padding-left:5px !important;
+   font-weight:850 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .premium-progress-label > span:nth-child(2) {
+   grid-column:3 !important;grid-row:2 !important;
+   min-width:0 !important;font-size:clamp(.57rem,2.35vw,.73rem) !important;
+   color:#d8edf7 !important;line-height:1.15 !important;
+   white-space:normal !important;overflow-wrap:normal !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) #premium-career-count {white-space:nowrap !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) #premium-career-progress {
+   grid-column:3 !important;grid-row:3 !important;align-self:center !important;
+   height:7px !important;min-height:7px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row #premium-player-stars {
+   grid-column:4 !important;grid-row:1 !important;
+   font-size:clamp(.78rem,3.65vw,1.12rem) !important;
+   border-left:1px solid #70c9e54d !important;padding-left:5px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row #premium-brain-points {
+   grid-column:4 !important;grid-row:2/4 !important;
+   font-size:clamp(.64rem,2.75vw,.85rem) !important;line-height:1.12 !important;
+   border-left:1px solid #70c9e54d !important;padding-left:5px !important;
+   display:block !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row .home-settings-trigger {
+   grid-column:5 !important;grid-row:1/4 !important;
+   justify-self:end !important;align-self:center !important;
+   border-color:#b9faff !important;
+   background:linear-gradient(145deg,#3e8da4,#103650 42%,#091e32 75%,#286680) !important;
+   box-shadow:inset 0 1px 1px #e6ffffb0,inset 0 0 9px #6cefff55,0 0 6px #2de6f466 !important;
+ }
+ @media(max-width:370px) {
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) {grid-template-columns:32px minmax(0,1fr) minmax(0,1.3fr) minmax(0,.95fr) 44px !important;gap:3px 4px !important;padding-inline:5px !important;}
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) #premium-world-level {padding:1px 3px !important;}
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row :is(#premium-player-xp,#premium-player-stars,#premium-brain-points) {padding-left:3px !important;}
+ }
+}
