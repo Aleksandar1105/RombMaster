@@ -7,6 +7,7 @@ import './neon-p1-material.css';
 import './neon-p1-press.css';
 import './neon-p113-home.css';
 import './neon-p114-home.css';
+import './neon-p22-quick-layout.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
