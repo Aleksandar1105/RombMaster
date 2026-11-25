@@ -2,7 +2,7 @@
    cascade layer and the existing ::before face / ::after selection mark.
    P2.2 geometry and the frozen Home are untouched. No new motion or assets. */
 @layer neonControls {
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :where(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
    --rim:radial-gradient(ellipse 45% 100% at 10% 0%,#c4faff 0%,#65dcf3 24%,transparent 95%),
      linear-gradient(165deg,#91edff 0%,#36b5d3 28%,#28557c 67%,#79d8ee 100%) !important;
    --face:linear-gradient(150deg,#23465e,#1b405c 23%,#10283f 55%,#0a172e 77%,#22516a) !important;
