@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
-const css=read('src/neon-screens.css').split('/* P1.12e.1 —')[1];
+const css=read('src/neon-screens.css').split('/* P1.12e.1 —')[1]?.split('/* P1.12e.2 —')[0];
 test('P1.12e.1 portrait V2 contact is aligned with the original single podium',()=>{
  assert.ok(css);
  assert.match(css,/@media \(orientation:portrait\)/);

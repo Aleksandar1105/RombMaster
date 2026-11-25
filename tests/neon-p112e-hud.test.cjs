@@ -1,0 +1,31 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
+const css=read('src/neon-screens.css').split('/* P1.12e.2 —')[1];
+test('portrait Core Neon HUD fits its grid and resets legacy avatar size and offset',()=>{
+ assert.ok(css);
+ assert.match(css,/@media \(orientation:portrait\)/);
+ assert.match(css,/:root\[data-skin="neon"\]\[data-edition="core"\]/);
+ assert.match(css,/box-sizing:border-box !important/);
+ assert.match(css,/width:100% !important;max-width:100% !important;min-width:0 !important/);
+ assert.match(css,/margin:0 !important;justify-self:center !important/);
+ const avatar=css.split('.home-status-row #premium-player-avatar {')[1].split('}')[0];
+ assert.match(avatar,/min-width:0 !important/);
+ assert.match(avatar,/min-height:0 !important/);
+ assert.match(avatar,/aspect-ratio:1 !important;transform:none !important/);
+ assert.match(css,/minmax\(0,1\.05fr\) minmax\(0,1\.32fr\) minmax\(0,\.95fr\) 44px/);
+ assert.match(css,/width:44px !important;height:44px !important/);
+ assert.match(css,/\.premium-world-row \{display:none !important/);
+ assert.match(css,/\.home-gem-count \{display:none !important/);
+});
+test('HUD retains existing live fields and settings, without new screen or hero styles',()=>{
+ const html=read('src/index.html');
+ for(const id of ['premium-player-avatar','premium-player-name','premium-player-xp','premium-player-stars','premium-brain-points','premium-player-coins','premium-world-level','premium-career-progress'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
+ assert.match(html,/class="home-settings-trigger" data-page="comfort-settings"/);
+ assert.match(css,/text-overflow:ellipsis !important/);
+ assert.match(css,/overflow-wrap:anywhere !important/);
+ assert.match(css,/linear-gradient\(90deg,#24ddf5,#5274f5,#e77aff\)/);
+ assert.doesNotMatch(css,/#view-game|#menu-page|#premium-hero-stage|rm-intro/);
+});
