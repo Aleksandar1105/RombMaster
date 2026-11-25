@@ -22,6 +22,8 @@ test('Main only releases Core WebView once the local Home assets are ready',()=>
  assert.match(js,/if \(coreEdition\) \{\s*const root=document\.documentElement;\s*let revealed=false;/);
  assert.match(js,/root\.dataset\.rmReady='1'/);
  assert.match(js,/background\.src='\/assets\/premium\/master\/neon-home-h6\.webp'/);
+ assert.match(js,/arena\.src='\/assets\/premium\/master\/neon-arena-v2\.webp'/);
+ assert.match(js,/const decoded=\[background,arena,wordmark\]/);
  assert.match(js,/document\.querySelector\('#premium-hero-stage \.neon-home-brand > img'\)/);
  assert.match(js,/Promise\.all\(decoded\)\.then\(reveal,reveal\)/);
  assert.match(js,/const fallback=setTimeout\(reveal,2000\)/);

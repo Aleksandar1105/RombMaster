@@ -1275,3 +1275,59 @@ button[aria-pressed="true"] {
    :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"] #premium-home-progress:not([hidden]) .home-status-row :is(#premium-player-xp,#premium-player-stars,#premium-brain-points) {padding-left:3px !important;}
  }
 }
+
+/* P1.12d — local Neon Arena V2, portrait Core only.
+   Separate the upper scene from the footer so the single photographic podium
+   follows the hero row, not a fixed percentage of the phone screen.
+   Upper 45% of V2 holds the arena; the last 14% holds the floor/crystals. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) {
+   background-color:#00062a !important;
+   background-image:linear-gradient(to bottom,#00062a 0%,#00062a 84%,#00062a00 94%),url('/assets/premium/master/neon-arena-v2.webp') !important;
+   background-size:100% 100%,100% 100% !important;
+   background-position:center,center !important;
+   background-repeat:no-repeat !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) {
+   background:transparent !important;
+   isolation:isolate;
+   container-type:size;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::before {
+   content:"";display:block;position:absolute;inset:0;z-index:0;pointer-events:none;
+   background-image:linear-gradient(to bottom,transparent 86%,#00062a),url('/assets/premium/master/neon-arena-v2.webp');
+   background-size:100% 100%,100% 222.222%;
+   background-position:center,center top;
+   background-repeat:no-repeat;
+ }
+ /* The podium top is approximately 35% of the source image,
+    or 78% of the cropped hero. Align the original 1080:720 vector and
+    wordmark as one aspect-ratio box with the diamond tip near the podium. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand {
+   inset:auto 0 20% !important;
+   width:100% !important;height:80% !important;
+   margin:0 auto !important;
+ }
+ @supports (width:1cqh) {
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand {
+     width:min(100%,120cqh) !important;height:auto !important;
+     aspect-ratio:3 / 2 !important;
+   }
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > img {
+   object-position:center bottom !important;
+   filter:brightness(1.16) contrast(1.08) drop-shadow(0 1px 2px #020819) drop-shadow(0 0 9px #29efffcc) drop-shadow(0 0 17px #e77aff88) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .neon-home-brand > .neon-logo-rebuilt-board {
+   filter:brightness(1.14) contrast(1.07) drop-shadow(0 0 6px #45f9ff9a) drop-shadow(0 0 13px #e77aff99) !important;
+ }
+ /* V2 already contains a realistic podium: do not draw a second one. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden]) .rm-logo-pedestal {display:none !important;}
+ /* Reveal the scenic backdrop after the two-light perimeter trace.
+    Existing controls still follow the independent P1.7b UI timeline. */
+ :root[data-skin="neon"][data-edition="core"][data-rm-intro="1"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::before {animation:rm-v2-scene-in .45s ease-out 2.12s both;}
+ @media (prefers-reduced-motion:reduce) {
+   :root[data-skin="neon"][data-edition="core"][data-rm-intro="1"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-hero-stage:not([hidden])::before {animation:none !important;opacity:1 !important;}
+ }
+}
+@keyframes rm-v2-scene-in {from {opacity:0;} to {opacity:1;}}

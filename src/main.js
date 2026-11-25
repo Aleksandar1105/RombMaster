@@ -1820,8 +1820,11 @@ if (coreEdition) {
     const background=document.createElement('img');
     background.decoding='async';
     background.src='/assets/premium/master/neon-home-h6.webp';
+    const arena=document.createElement('img');
+    arena.decoding='async';
+    arena.src='/assets/premium/master/neon-arena-v2.webp';
     const wordmark=document.querySelector('#premium-hero-stage .neon-home-brand > img');
-    const decoded=[background,wordmark].filter(Boolean).map(img=>{
+    const decoded=[background,arena,wordmark].filter(Boolean).map(img=>{
         if (typeof img.decode !== 'function') return Promise.resolve();
         try {return img.decode().catch(()=>{});} catch {return Promise.resolve();}
     });
