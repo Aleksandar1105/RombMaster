@@ -1,0 +1,111 @@
+/* P1.13: video 34731 — open HUD + low-cost compositor-oriented reveal.
+   Scoped to Core Neon Home. Existing live DOM, navigation, hero and touch feedback are retained. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) {
+   box-sizing:border-box !important;display:grid !important;
+   width:100% !important;max-width:100% !important;min-width:0 !important;
+   margin:0 !important;justify-self:center !important;
+   grid-template-columns:repeat(8,minmax(0,1fr)) 44px !important;
+   grid-template-rows:auto auto auto !important;
+   gap:5px 4px !important;padding:6px clamp(8px,2.4vw,13px) 8px !important;
+   border:0 !important;border-radius:0 !important;
+   background:linear-gradient(90deg,transparent,#43dbf570 28%,#9771eb70 70%,transparent) center bottom/100% 1px no-repeat,
+     linear-gradient(180deg,#142c49d9,#07132be8 78%,#07132b00) !important;
+   box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+   align-items:center !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) :is(.home-status-row,.premium-progress-label) {display:contents !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) :is(.premium-world-row,.home-gem-count) {display:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-avatar {
+   grid-column:1/3 !important;grid-row:1 !important;
+   width:42px !important;height:42px !important;min-width:0 !important;min-height:0 !important;
+   max-width:100% !important;max-height:none !important;aspect-ratio:1 !important;
+   transform:none !important;clip-path:none !important;border-radius:50% !important;
+   border:1px solid #75d6ec99 !important;box-shadow:0 0 5px #24ddf533 !important;
+   justify-self:center !important;align-self:center !important;margin:0 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-name {
+   grid-column:3/6 !important;grid-row:1 !important;
+   min-width:0 !important;width:100% !important;margin:0 !important;padding:0 !important;
+   font-size:clamp(.85rem,3.8vw,1.18rem) !important;font-weight:800 !important;
+   text-align:left !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-world-level {
+   grid-column:6/9 !important;grid-row:1 !important;justify-self:center !important;
+   font-size:clamp(.68rem,2.9vw,.85rem) !important;padding:3px 7px !important;
+   background:#17334c !important;border:1px solid #66c8e050 !important;border-radius:8px !important;
+   color:#c3f4ff !important;max-width:100% !important;white-space:nowrap !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-settings-trigger {
+   grid-column:9 !important;grid-row:1 !important;
+   width:44px !important;height:44px !important;min-width:44px !important;min-height:44px !important;
+   justify-self:center !important;align-self:center !important;margin:0 !important;padding:0 !important;
+   border:0 !important;border-radius:10px !important;box-shadow:none !important;
+   background:linear-gradient(145deg,#28465f,#14243d) !important;color:#cdefff !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row :is(.home-coin-count,#premium-player-xp,#premium-player-stars,#premium-brain-points) {
+   grid-row:2 !important;box-sizing:border-box !important;
+   min-width:0 !important;max-width:100% !important;margin:0 !important;padding:4px 1px !important;
+   min-height:0 !important;border:0 !important;border-radius:0 !important;
+   background:none !important;box-shadow:none !important;
+   text-align:center !important;justify-self:stretch !important;align-self:center !important;
+   line-height:1.15 !important;white-space:normal !important;overflow-wrap:anywhere !important;
+   font-variant-numeric:tabular-nums;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row .home-coin-count {
+   grid-column:1/3 !important;display:flex !important;justify-content:center !important;
+   align-items:center !important;gap:3px !important;
+   color:#ffe19b !important;font-size:clamp(.73rem,3.05vw,.98rem) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-xp {
+   grid-column:3/5 !important;display:block !important;color:#d5faff !important;
+   font-size:clamp(.73rem,3.05vw,.98rem) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-stars {
+   grid-column:5/7 !important;display:block !important;color:#ffe19b !important;
+   font-size:clamp(.73rem,3.05vw,.98rem) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-brain-points {
+   grid-column:7/10 !important;display:block !important;color:#c7e5fa !important;
+   font-size:clamp(.65rem,2.65vw,.85rem) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .premium-progress-label > span:nth-child(2) {
+   grid-column:1/5 !important;grid-row:3 !important;
+   min-width:0 !important;margin:0 !important;padding:0 !important;
+   text-align:left !important;color:#c4d5ed !important;
+   font-size:clamp(.63rem,2.5vw,.81rem) !important;line-height:1.15 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) #premium-career-progress {
+   grid-column:5/10 !important;grid-row:3 !important;
+   width:100% !important;min-width:0 !important;height:6px !important;min-height:6px !important;
+   margin:0 !important;box-shadow:none !important;align-self:center !important;
+ }
+ @media(max-width:350px) {
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) {gap:4px 2px !important;padding-inline:6px !important;}
+   :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-home-progress:not([hidden]) .home-status-row #premium-player-avatar {width:36px !important;height:36px !important;}
+ }
+}
+/* Keep painted controls in layout; opacity-only entrance avoids a delayed
+   visibility switch. Pre-promote just the visible control groups during intro.
+   Finish the wallpaper fade before the control fade begins. */
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu #home-hub:not([hidden]) :is(#premium-home-progress,.play-row,.mode-grid,#premium-rivals-section,.home-help-footer,.home-hero,.home-utility-row,.home-links,#home-tools) {
+   animation-duration:.45s !important;animation-timing-function:linear !important;
+   will-change:opacity;
+ }
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu #home-hub:not([hidden])::before {animation:rm-intro-backdrop .42s ease-out 2.18s both;}
+/* Remove expensive wrapper filter passes permanently on this Home only,
+   avoiding a filter toggle at the end of the intro. Existing glass faces,
+   illuminated rims and touch feedback stay in place. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) :is(.play-row,.mode-grid,.home-help-footer) {filter:none !important;}
+}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) .play-row #startBtn:not(:disabled):not(.rm-home-press) {
+   animation:none !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #home-hub[data-home-revision="3"][data-layout="premium"][data-neon-reference="1"]:not([hidden]) #premium-rivals-section .premium-rival-card[data-current="true"] img {
+   animation:none !important;
+ }
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu #home-hub:not([hidden]) :is(#premium-home-progress,.play-row,.mode-grid,#premium-rivals-section,.home-help-footer,.home-hero,.home-utility-row,.home-links,#home-tools) {animation:none !important;will-change:auto;}
+ :root[data-skin="neon"][data-edition="core"][data-rm-ready="1"][data-rm-intro="1"] #view-menu #home-hub:not([hidden])::before {display:none !important;}
+}
