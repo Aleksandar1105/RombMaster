@@ -799,6 +799,14 @@ function refreshRivalPortraits(profile) {
         }
     }
 }
+// Keep one source of truth for the Home counters. Non-Neon layouts use the
+// original inline string; portrait Core Neon uses the number and caption.
+function setHomeMetric(id, legacy, number) {
+    const node = el(id);
+    if (!node) return;
+    node.querySelector('.rm-hud-legacy').textContent = legacy;
+    node.querySelector('.rm-hud-number').textContent = number;
+}
 function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
     const panel = el('premium-home-progress');
     if (!panel) return;
@@ -835,7 +843,11 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
         'premium-world-name': world?.name ?? '',
         'premium-world-level': profile ? 'Level ' + profile.unlockedLevel : '',
         'premium-career-count': summary ? summary.clearedLevels + ' / ' + campaignLimit : '',
-    })) el(id).textContent = value;
+    })) {
+        if (id === 'premium-player-xp') setHomeMetric(id, value, profile ? profile.xp : '—');
+        else if (id === 'premium-player-stars') setHomeMetric(id, value, summary ? '★ ' + summary.totalStars : '—');
+        else el(id).textContent = value;
+    }
     const coinCounter = el('premium-player-coins');
     if (coinCounter) {
         const economy = skinState().wallet;
@@ -845,7 +857,7 @@ function refreshPremiumHome(profile, summary, visualSkin = activeSkin()) {
     }
     const points = el('premium-brain-points');
     const daily = DailyProgress.read(localDateKey());
-    if (points) points.textContent = daily.status === 'ready' ? daily.progress.brainPoints + ' Brain Points' : 'Brain Points unavailable';
+    if (points) setHomeMetric('premium-brain-points', daily.status === 'ready' ? daily.progress.brainPoints + ' Brain Points' : 'Brain Points unavailable', daily.status === 'ready' ? daily.progress.brainPoints : '—');
     const progress = el('premium-career-progress');
     progress.max = campaignLimit;
     progress.value = summary?.clearedLevels ?? 0;
@@ -1540,13 +1552,13 @@ const refreshDailyMenu = () => {
         el('daily-menu-status').textContent = dailyStatusMessage(state.status);
         el('daily-open-btn').disabled = true;
         const homePoints = el('premium-brain-points');
-        if (homePoints) homePoints.textContent = 'Brain Points unavailable';
+        if (homePoints) setHomeMetric('premium-brain-points', 'Brain Points unavailable', '—');
         return;
     }
     el('daily-open-btn').disabled = false;
     el('daily-points').textContent = `${state.progress.brainPoints} Brain Points`;
     const homePoints = el('premium-brain-points');
-    if (homePoints) homePoints.textContent = state.progress.brainPoints + ' Brain Points';
+    if (homePoints) setHomeMetric('premium-brain-points', state.progress.brainPoints + ' Brain Points', state.progress.brainPoints);
     el('daily-menu-status').textContent = state.progress.solved === 3
         ? 'View today’s result →'
         : `${state.progress.solved} of 3 complete`;
