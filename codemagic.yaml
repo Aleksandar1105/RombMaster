@@ -85,7 +85,7 @@ workflows:
       - name: Validate branch and source revision
         script: |
           set -eu
-          case "${CM_BRANCH:-}" in feat/v25-*) ;; *) echo "Only V25 feature branches are allowed"; exit 1;; esac
+          case "${CM_BRANCH:-}" in feat/v25-*|feat/android-closed-test-core) ;; *) echo "Unsupported asset-import branch"; exit 1;; esac
           test -n "${ROMBMASTER_ASSET_TOKEN:-}"
           test "$(git rev-parse HEAD)" = "$CM_COMMIT"
           test -z "$(git status --porcelain)"
@@ -99,7 +99,13 @@ workflows:
         script: |
           set -eu
           node scripts/verify-theme-assets.mjs
-          git add -- src/public/assets/premium/master/ src/skin-store-compact.css
+          if [ "$CM_BRANCH" = "feat/android-closed-test-core" ]; then
+            git add -- src/public/assets/premium/master/neon-tactical-arena-v1.webp
+            test -z "$(git diff --name-only)"
+            test -z "$(git ls-files --others --exclude-standard)"
+          else
+            git add -- src/public/assets/premium/master/ src/skin-store-compact.css
+          fi
           if git diff --cached --quiet; then echo "ASSETS ALREADY CURRENT"; exit 0; fi
           git diff --cached --name-only
           git -c user.name="RombMaster Asset Bot" -c user.email="rombmaster-assets@users.noreply.github.com" commit -m "chore(assets): import optimized Picsart artwork [skip ci]"
