@@ -456,3 +456,7 @@ Owner-approved background and enhanced glass concept. CSS-only presentation cand
 ## 2026-11-26 — Quick Play review / deferred startup continuity
 
 Owner feedback on 34755.mp4: Tactical Arena background accepted, Quick Play improved; eliminate normal vs AI scrolling before freeze. Consider matching chamfered secondary controls to Home/Start Match and refining title font; visual choices not yet finalized. Deferred: smooth first-launch logo-to-controls continuity by overlapping phases rather than leaving a visible pause. Home remains frozen; documentation-only update, no implementation, APK or Actions.
+
+## P2.6e — Final Quick Play fit candidate / device video (2026-11-26)
+
+Scoped CSS and import `5f41969`, `d62cc9b`, `22e0455`; four source tests `4520bd4`. Owner video 34761.mp4 shows visible full setup in both modes, angular glass, title underline, horizontal Game Mode icons and four board sizes. No Home or background change. Full regression expected 278, not yet independently confirmed; deliberate scroll and light-motion verification remain open. No freeze or Career implementation yet.
