@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 276 32">
+<title>CAREER</title>
+<defs><linearGradient id="ink" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset=".48" stop-color="#eaf8ff"/><stop offset="1" stop-color="#9bc3d9"/></linearGradient></defs>
+<g fill="url(#ink)" fill-rule="evenodd" transform="translate(54 3)">
+<path d="M4 0H22V5H6L5 6V19L6 20H22V25H4L0 21V4Z"/>
+<path transform="translate(29)" d="M9 0H15L25 25H19L17 19H7L5 25H-1ZM9 14H15L12 6Z"/>
+<path transform="translate(59)" d="M0 0H19L23 4V12L19 16H15L25 25H17L7 16H5V25H0ZM5 5V11H17L18 10V6L17 5Z"/>
+<path transform="translate(89)" d="M0 0H22V5H5V10H19V15H5V20H22V25H0Z"/>
+<path transform="translate(117)" d="M0 0H22V5H5V10H19V15H5V20H22V25H0Z"/>
+<path transform="translate(145)" d="M0 0H19L23 4V12L19 16H15L25 25H17L7 16H5V25H0ZM5 5V11H17L18 10V6L17 5Z"/>
+</g></svg>
