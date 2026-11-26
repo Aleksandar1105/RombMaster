@@ -464,3 +464,7 @@ Scoped CSS and import `5f41969`, `d62cc9b`, `22e0455`; four source tests `4520bd
 ## P2.7 — Quick Play visual FROZEN; P3.1 discovery (2026-11-26)
 
 Owner confirmed no scrolling and approved final P2.6f visuals after video 34763.mp4. Freeze visual baseline `800b8f7`; no further changes to Home or Quick Play during Career redesign. Final 281-test regression remains unverified. Inspected current Career DOM and controller: levels/mission/rivals sequential navigation, six Core chapters of five levels, full 100-level campaign data retained. Next concept/mockups, then scoped implementation; no Career runtime modifications in this update.
+
+## P2.7 — Final regression gate PASS (2026-11-26)
+
+Owner supplied `run_regression_tests.log (8).txt`: 281/281 PASS, 0 fail, 0 cancelled, 0 skipped, 0 todo; duration 4659.807584 ms. All P2.2–P2.6f checks (200–217), including final P2.6f checks 215–217, pass. Together with prior owner device confirmation of no scrolling and visual acceptance of video 34763.mp4, the Quick Play visual freeze and automated regression gate are complete. Log contains no source SHA; exact APK provenance is not independently established. No runtime changes; Home and Quick Play remain frozen; deferred startup continuity stays open. Proceed to P3.1 Career concept.
