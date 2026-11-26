@@ -11,6 +11,7 @@ import './neon-p22-quick-layout.css';
 import './neon-p23-quick-glass.css';
 import './neon-p24-quick-preview.css';
 import './neon-p25-quick-motion.css';
+import './neon-p26-quick-polish.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
