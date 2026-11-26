@@ -1,0 +1,51 @@
+/* P3.8c — Mission premium readability and state hierarchy.
+   Existing mission data, XP, navigation and responsive scroll remain intact. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header {
+ border-color:#61cce888!important;
+ background:radial-gradient(ellipse at 0 50%,#247c9844,transparent 70%),var(--career-panel-face)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header h3 {font-style:normal;letter-spacing:.07em;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header p {line-height:1.3;overflow-wrap:anywhere;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary {border-color:#b28cf299;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary[data-complete="true"] {border-color:#64e5b5!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary strong {line-height:1.2;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary small {line-height:1.25;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-icon {justify-self:center;filter:drop-shadow(0 0 3px #58dfff55);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy > strong {font-weight:850!important;letter-spacing:.015em;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-xp {border-color:#d4b95a99;background:linear-gradient(150deg,#584522,#202a36 75%)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-xp strong {font-variant-numeric:tabular-nums;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-meter small {font-variant-numeric:tabular-nums;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="cleared"]:not([aria-pressed="true"]):not(:disabled) {
+  --rim:linear-gradient(150deg,#a5f5d6,#38bfa3,#307a82)!important;
+  --face:linear-gradient(155deg,#20534f,#112d35)!important;
+  --career-edge:#8bffcf70;--career-light:#3adab54d;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="cleared"]:not(:disabled) .rm-mission-icon {stroke:#9cf8d7!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled) .rm-mission-icon {stroke:#f5d8ff!important;filter:drop-shadow(0 0 4px #d286ff88);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled .rm-mission-icon {stroke:#9ab0c9!important;filter:none;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled .rm-mission-xp {border-color:#607089;background:#172338!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled .rm-mission-xp strong {color:#c6d2e2!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled .rm-mission-xp small {color:#c6d2e2!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled .rm-mission-xp svg {fill:#9ab0c9!important;stroke:#becbda!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="cleared"]:not([aria-pressed="true"]):not(:disabled):focus-visible {
+  --rim:linear-gradient(135deg,#fff4b8,#ffc96e,#fff4b8)!important;
+  --career-edge:#fff5c799;
+ }
+}
+@media (orientation:portrait) and (min-width:351px) and (min-height:721px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list {gap:clamp(7px,1.15dvh,11px);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header {padding:9px 12px;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header p {font-size:clamp(.78rem,3.2vw,.92rem);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary {padding:9px 11px;gap:10px;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list progress {height:8px;}
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card {grid-template-columns:36px minmax(0,1fr) minmax(64px,auto)!important;min-height:clamp(72px,10dvh,94px)!important;gap:9px!important;padding:8px 10px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-icon {width:32px!important;height:32px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy {gap:4px;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy > strong {font-size:clamp(.84rem,3.65vw,1.05rem)!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy > small {font-size:clamp(.72rem,2.95vw,.87rem)!important;line-height:1.3;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-xp {padding:5px 4px;gap:3px;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn {min-height:clamp(54px,7dvh,66px)!important;font-size:clamp(1rem,4.3vw,1.35rem)!important;}
+ }
+}
