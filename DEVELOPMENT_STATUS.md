@@ -460,3 +460,7 @@ Owner feedback on 34755.mp4: Tactical Arena background accepted, Quick Play impr
 ## P2.6e — Final Quick Play fit candidate / device video (2026-11-26)
 
 Scoped CSS and import `5f41969`, `d62cc9b`, `22e0455`; four source tests `4520bd4`. Owner video 34761.mp4 shows visible full setup in both modes, angular glass, title underline, horizontal Game Mode icons and four board sizes. No Home or background change. Full regression expected 278, not yet independently confirmed; deliberate scroll and light-motion verification remain open. No freeze or Career implementation yet.
+
+## P2.7 — Quick Play visual FROZEN; P3.1 discovery (2026-11-26)
+
+Owner confirmed no scrolling and approved final P2.6f visuals after video 34763.mp4. Freeze visual baseline `800b8f7`; no further changes to Home or Quick Play during Career redesign. Final 281-test regression remains unverified. Inspected current Career DOM and controller: levels/mission/rivals sequential navigation, six Core chapters of five levels, full 100-level campaign data retained. Next concept/mockups, then scoped implementation; no Career runtime modifications in this update.
