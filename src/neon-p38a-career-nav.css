@@ -1,0 +1,44 @@
+/* P3.8a — Career title and three equal navigation controls.
+   Only visible Core Neon Career. Existing labels and state handlers remain. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title {position:relative!important;}
+@media (min-width:340px) and (forced-colors:none) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title {
+   color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title::before {
+   content:""!important;display:block!important;position:absolute!important;
+   inset:0!important;margin:0!important;width:auto!important;height:auto!important;aspect-ratio:auto!important;
+   background:url('/assets/premium/master/career-title.svg') center / contain no-repeat!important;
+   filter:drop-shadow(0 0 5px #57dfff55);pointer-events:none;
+ }
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav {grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(4px,1.6vw,8px)!important;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled) {
+   --rim:linear-gradient(175deg,#c0faff,#40d9f5 28%,#1e6487 68%,#58deff)!important;
+   --face:linear-gradient(180deg,#244c66,#142f49 28%,#09172b 76%,#16374f)!important;
+   --career-edge:#a4f2ff99;--career-light:#45dfff66;--career-inset:2px;
+   flex-direction:row!important;gap:clamp(4px,1.2vw,8px)!important;
+   min-height:54px!important;padding:6px 5px!important;
+   font-size:clamp(.69rem,2.8vw,.9rem)!important;font-style:normal!important;
+   letter-spacing:.035em!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled) {
+   --rim:linear-gradient(175deg,#fff1ff,#df93ff 26%,#943de0 66%,#f2a2ff)!important;
+   --face:linear-gradient(180deg,#704497,#45235e 32%,#25153d 76%,#5a2c78)!important;
+   --career-edge:#f9e0ffcc;--career-light:#dd7dff99;--career-inset:3px;
+   filter:drop-shadow(0 0 6px #d06aff99)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] > svg {width:clamp(17px,4.8vw,22px)!important;height:clamp(17px,4.8vw,22px)!important;flex:none;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] > span {min-width:0;overflow-wrap:anywhere;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled):focus-visible {
+   --rim:linear-gradient(135deg,#fff4b8,#ffc96e,#fff4b8)!important;
+   --career-edge:#fff5c799;
+ }
+}
+@media (max-width:350px), (max-height:680px) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled) {min-height:46px!important;gap:3px!important;padding:4px 3px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] > svg {width:17px!important;height:17px!important;}
+ }
+}
