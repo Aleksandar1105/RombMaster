@@ -8,7 +8,7 @@
  letter-spacing:.075em !important;line-height:1.15 !important;
  color:#f3fbff !important;-webkit-text-fill-color:#f3fbff !important;
  text-shadow:0 1px 0 #81a8c1,0 0 9px #57dfff66 !important;
- padding-bottom:6px !important;
+ padding-bottom:6px !important;white-space:normal !important;
 }
 :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) > #page-title::after {
  content:"" !important;display:block !important;position:absolute;
@@ -61,14 +61,14 @@
 @media (orientation:portrait) {
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) {justify-content:flex-start !important;overflow-y:auto !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) > .home-shell {height:auto !important;min-height:100% !important;flex:0 0 auto !important;display:flex !important;flex-direction:column !important;}
- :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) {flex:1 0 auto !important;min-height:0 !important;grid-template-rows:46px minmax(min-content,1fr) !important;gap:5px !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) {flex:1 0 auto !important;min-height:0 !important;grid-template-rows:minmax(46px,auto) minmax(min-content,1fr) !important;gap:5px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) {margin:0 !important;min-height:0 !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-layout {min-height:100% !important;height:auto !important;grid-template-rows:auto minmax(min-content,1fr) auto !important;gap:6px !important;padding:2px 2px 3px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .btn-group button {min-height:44px !important;padding:4px 3px !important;gap:2px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .btn-group button[data-ai] {min-height:54px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .btn-group button[data-size] {min-height:66px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-preview {
-   width:clamp(112px,calc(100dvh - max(6px,env(safe-area-inset-top)) - max(8px,env(safe-area-inset-bottom)) - 455px),min(66vw,224px)) !important;
+   width:min(66vw,clamp(112px,calc(100dvh - max(6px,env(safe-area-inset-top)) - max(8px,env(safe-area-inset-bottom)) - 455px),224px)) !important;
    height:auto !important;max-width:100% !important;aspect-ratio:1;
  }
 }
@@ -98,5 +98,20 @@
  @layer neonControls {
   :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play::after,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button::before {animation:none !important;}
   :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play::after {opacity:0 !important;}
+ }
+}
+
+/* Explicitly preserve min-content growth: no clipping or shrinking text to fit. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) > .home-shell {align-items:stretch !important;max-height:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) {max-height:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-options {align-self:start !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) .rm-quick-preview {align-self:stretch !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-play {align-self:end !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]):has(#difficulty-wrapper[hidden]) #setup-preview {width:min(70vw,clamp(112px,calc(100dvh - 365px),248px)) !important;}
+}
+@media (max-width:360px) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button[data-ai] {padding-inline:6px !important;column-gap:5px !important;}
  }
 }
