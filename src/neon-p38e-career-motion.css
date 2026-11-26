@@ -1,0 +1,46 @@
+/* P3.8e — final finite Career motion; no additional JS or timers.
+   Use opacity/individual transforms rather than animating layout, filters or shadows.
+   All additions are gated by active visible Core Neon Career and motion preference. */
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]) {
+  animation:rm-career-polish-enter 220ms cubic-bezier(.2,.7,.25,1);
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled) > svg,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled) > b,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled) .rm-mission-icon {
+  animation:rm-career-polish-selection 240ms ease-out;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] {position:relative;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"]::after {
+  content:"";position:absolute;inset:1px;border-radius:7px;pointer-events:none;
+  box-shadow:inset 0 0 14px #d08aff60,0 0 8px #c17bff55;
+  opacity:0;animation:rm-career-polish-aura 2s ease-in-out 2;
+ }
+ /* Replace the earlier portrait scale pulse: static portrait + independent rim glow. */
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] img {animation:none!important;}
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled)::after,
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled)::after {
+   animation:rm-career-play-sweep 2.4s ease-in-out 2!important;
+  }
+ }
+}
+@keyframes rm-career-polish-enter {
+ from {opacity:.9;translate:0 5px;} to {opacity:1;translate:0 0;}
+}
+@keyframes rm-career-polish-selection {
+ 0% {scale:1;} 45% {scale:1.08;} 100% {scale:1;}
+}
+@keyframes rm-career-polish-aura {
+ 0%,100% {opacity:0;} 50% {opacity:.78;}
+}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]),
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled) > svg,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled) > b,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled) .rm-mission-icon,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] img {
+  animation:none!important;transition:none!important;scale:1!important;translate:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"]::after {animation:none!important;content:none!important;}
+}
