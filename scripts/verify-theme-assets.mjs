@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const css=['style.css','skin-store-compact.css','neon-p26-quick-polish.css'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
+const css=['style.css','skin-store-compact.css','neon-p26-quick-polish.css','neon-p26f-quick-finish.css'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
 const sources=css+'\n'+['index.html','main.js','skins.js'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
 const references=[...new Set(Array.from(sources.matchAll(/\/assets\/premium\/reference\/([a-z0-9-]+\.webp)/g),m=>'reference/'+m[1]))].sort();
 const master=[...new Set([
