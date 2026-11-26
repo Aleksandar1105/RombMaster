@@ -4,7 +4,7 @@
 :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) {
   background: #050b1c linear-gradient(180deg,#02081822,#02081808 65%,#02081844) !important;
   background-image:linear-gradient(180deg,#02081822,#02081808 65%,#02081844),
-    url('/assets/premium/master/neon-tactical-arena-v1.jpg'),
+    url('/assets/premium/master/neon-tactical-arena-v1.webp'),
     url('/assets/premium/master/neon-home-h6.webp') !important;
   background-position:center !important;background-size:cover !important;
   background-repeat:no-repeat !important;
