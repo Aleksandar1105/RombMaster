@@ -1,0 +1,9 @@
+/* P3.6 — shared offline Career Command Center V1. Frozen screens are excluded.
+   Keep the existing controls and card materials; only the scene and its wrappers change. */
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) {
+ background:#061122 linear-gradient(180deg,#050b1e26,#050b1e0a 55%,#050b1e55) center / cover no-repeat !important;
+ background-image:linear-gradient(180deg,#050b1e26,#050b1e0a 55%,#050b1e55),url('/assets/premium/master/neon-career-command-v1.webp') !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) :is(.home-shell,#menu-page,#career-page) {
+ background:transparent !important;
+}
