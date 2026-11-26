@@ -387,3 +387,7 @@ The two play buttons use an explicit horizontal flex row with automatic widths. 
 ## Previous milestone · 2026-11-21
 
 V25.5 Neon Home is in visual review on `feat/v25-royal-master`. The owner approved the H6 arena and the wordmark/board composition in `b24c50b`. This revision integrates a transparent emblem, simplifies the bottom navigation and moves help below it. The next gate is a manual Codemagic **RombMaster Cloud Test APK** and owner review on Android. V25.6 remains planned.
+
+## P3.8a — Career vector heading and navigation (2026-11-26)
+
+Owner approved Quick Play-style vector heading and three equal Career tabs. Local career-title.svg (58674a9), Career-only CSS (66096df), import (237647b), packaged asset verifier (33657d1), two focused source tests (9d15476). Six direct static checks PASS: selector scope, import, asset, verifier, selection/focus and responsive fallback. Expected 308 total Node tests; full regression, actual Android rendering and interaction pending. Home and Quick Play frozen. No changes to rules, saves, progression, background art or navigation handlers. No new Picsart credits or GitHub Actions. Next P3.8b Levels proportions/portrait, then Mission, Rivals, motion and integrated P3.9 Android QA.
