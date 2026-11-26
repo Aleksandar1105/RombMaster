@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 276 32">
+<title>QUICK PLAY</title>
+<defs><linearGradient id="ink" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset=".48" stop-color="#eaf8ff"/><stop offset="1" stop-color="#9bc3d9"/></linearGradient></defs>
+<g fill="url(#ink)" fill-rule="evenodd" transform="translate(4 3)">
+<path d="M4 0H19L23 4V20L19 25H4L0 21V4ZM5 5V20H18V5ZM12 14L26 28H19L8 17Z"/>
+<path transform="translate(30)" d="M0 0H5V19L6 20H17L18 19V0H23V21L19 25H4L0 21Z"/>
+<path transform="translate(59)" d="M0 0H6V25H0Z"/>
+<path transform="translate(71)" d="M4 0H22V5H6L5 6V19L6 20H22V25H4L0 21V4Z"/>
+<path transform="translate(99)" d="M0 0H5V10L17 0H24L11 12L24 25H17L5 14V25H0Z"/>
+<path transform="translate(138)" d="M0 0H20L24 4V12L20 16H5V25H0ZM5 5V11H18L19 10V6L18 5Z"/>
+<path transform="translate(168)" d="M0 0H5V20H22V25H0Z"/>
+<path transform="translate(195)" d="M9 0H15L25 25H19L17 19H7L5 25H-1ZM9 14H15L12 6Z"/>
+<path transform="translate(225)" d="M0 0H6L13 10L20 0H26L16 16V25H10V16Z"/>
+</g></svg>
