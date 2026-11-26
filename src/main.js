@@ -341,6 +341,13 @@ function renderRoute(profile, selected) {
     setText('career-mission-level','LEVEL '+selected+' / '+campaignLimit+(selected===world.end?' · BOSS BATTLE':''));
     setText('career-mission-title',mission?.title||(selected===world.end?'Boss Battle':'Career mission'));
     setText('career-mission-rival',guidedFox?'Fox · '+world.name:world.rival+' · '+world.name);
+    const missionStage=careerLevel(selected);
+    const bestStars=profile.stars[selected]||0;
+    const boardNames={4:'Small',6:'Classic',8:'Large',10:'Grand'};
+    setText('career-mission-size',boardNames[missionStage.size]);
+    setText('career-mission-difficulty',missionStage.diff.charAt(0).toUpperCase()+missionStage.diff.slice(1));
+    setText('career-mission-best','★'.repeat(bestStars)+'☆'.repeat(3-bestStars));
+    setText('career-mission-xp',bestStars===3?'All XP earned':'Up to +'+((3-bestStars)*50+(bestStars===0?50:0))+' XP');
     setText('career-open-mission','Preview Level '+selected+' ›');
     el('chapter-label').textContent = world.name+' · Chapter '+(Math.floor((selected-1)/5)+1)+' of '+Math.ceil(campaignLimit/5);
     const rival=el('career-rival');
