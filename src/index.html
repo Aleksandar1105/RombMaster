@@ -167,8 +167,15 @@
                     <input id="career-level" type="hidden" value="1">
                     <div class="mission-detail" id="career-mission-pane" data-career-screen="mission" hidden>
                     <div class="rm-mission-header"><span id="career-mission-portrait" class="match-portrait" aria-hidden="true"></span><div class="rm-mission-copy"><small id="career-mission-level"></small><strong id="career-mission-title"></strong><small id="career-mission-rival"></small></div></div>
+                    <div id="career-mission-facts" aria-label="Mission settings">
+                        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 10 10-10 10L2 12Z M7 7l10 10M17 7 7 17"/></svg><span>Board size</span><strong id="career-mission-size"></strong></div>
+                        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19v-6m7 6V9m7 10V4"/></svg><span>Difficulty</span><strong id="career-mission-difficulty"></strong></div>
+                        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9Z"/></svg><span>Best stars</span><strong id="career-mission-best"></strong></div>
+                    </div>
+                    <h3 id="career-mission-preview-label">Arena preview</h3>
                     <canvas id="mission-preview" width="300" height="300" aria-label="Selected opening"></canvas>
                     <p id="career-description" class="career-description">Start with a small board and easy AI.</p>
+                    <div id="career-mission-rewards"><span aria-hidden="true">✦</span><div><small>XP opportunity</small><strong id="career-mission-xp"></strong></div></div>
                     <label id="career-skin-row" hidden>Arena skin <select id="career-skin"></select></label>
                     <button id="career-start-btn" class="btn-primary" type="button">Play Career</button>
                     </div>
