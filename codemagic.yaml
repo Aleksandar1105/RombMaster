@@ -100,7 +100,7 @@ workflows:
           set -eu
           node scripts/verify-theme-assets.mjs
           if [ "$CM_BRANCH" = "feat/android-closed-test-core" ]; then
-            git add -- src/public/assets/premium/master/neon-tactical-arena-v1.webp
+            git add -- src/public/assets/premium/master/neon-career-command-v1.webp
             test -z "$(git diff --name-only)"
             test -z "$(git ls-files --others --exclude-standard)"
           else
