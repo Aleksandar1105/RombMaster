@@ -13,6 +13,7 @@ import './neon-p24-quick-preview.css';
 import './neon-p25-quick-motion.css';
 import './neon-p26-quick-polish.css';
 import './neon-p26e-quick-fit.css';
+import './neon-p26f-quick-finish.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
