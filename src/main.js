@@ -17,6 +17,7 @@ import './neon-p26f-quick-finish.css';
 import './neon-p32-career-nav.css';
 import './neon-p33-career-levels.css';
 import './neon-p34-career-mission.css';
+import './neon-p35-career-rivals.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
