@@ -27,6 +27,7 @@ import './neon-p38a1-career-background.css';
 import './neon-p38a-career-nav.css';
 import './neon-p38b-career-levels.css';
 import './neon-p38c-career-mission.css';
+import './neon-p38d-career-rivals.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
