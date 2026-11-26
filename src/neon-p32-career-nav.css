@@ -1,0 +1,63 @@
+/* P3.2: approved Career navigation. Only the Core Neon Career page changes.
+   Existing navigation controls remain as the fallback for other editions/skins. */
+#career-direct-nav {display:none;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav[hidden] {display:none !important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) {display:grid !important;grid-template-columns:minmax(0,1fr) !important;gap:0 !important;margin:0 0 5px !important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) > :is(#career-screen-prev,#career-screen-label,#career-screen-next) {display:none !important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav {display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(4px,1.6vw,8px);width:100%;min-width:0;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) {grid-template-columns:76px minmax(0,1fr) 76px !important;grid-template-rows:minmax(46px,auto) 1fr !important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title {
+ display:block !important;align-self:center !important;min-width:0 !important;
+ font-family:Orbitron,Rajdhani,"Arial Black",system-ui,sans-serif !important;
+ font-size:clamp(1.15rem,5vw,1.65rem) !important;font-weight:900 !important;
+ font-style:italic;letter-spacing:.085em !important;text-transform:uppercase;
+ text-align:center !important;color:#edfaff !important;-webkit-text-fill-color:#edfaff !important;
+ text-shadow:0 1px 0 #769cb5,0 0 8px #42dfff55 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title::before {content:none !important;display:none !important;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back {
+  position:relative !important;inset:auto !important;grid-column:1 !important;grid-row:1 !important;
+  align-self:center !important;justify-self:start !important;width:70px !important;min-width:70px !important;
+  height:44px !important;min-height:44px !important;margin:0 !important;padding:4px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] {
+  --career-cut:8px;
+  --control-shape:polygon(var(--career-cut) 0,calc(100% - var(--career-cut)) 0,100% var(--career-cut),100% calc(100% - var(--career-cut)),calc(100% - var(--career-cut)) 100%,var(--career-cut) 100%,0 calc(100% - var(--career-cut)),0 var(--career-cut)) !important;
+  --rim:linear-gradient(155deg,#b7f4ff,#48bbdf 25%,#20436a 65%,#64dfff) !important;
+  --face:linear-gradient(165deg,#234761,#10273f 45%,#0b162c 78%,#16384e) !important;
+  display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;
+  gap:3px !important;min-width:0 !important;width:100% !important;min-height:54px !important;
+  padding:5px 3px !important;margin:0 !important;
+  color:#f0faff !important;font-size:clamp(.69rem,2.9vw,.88rem) !important;font-style:italic;
+  font-weight:850 !important;line-height:1.1 !important;letter-spacing:.045em;text-transform:uppercase;
+  white-space:normal !important;overflow-wrap:anywhere;
+  filter:drop-shadow(0 0 3px #41dfff55) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]::before {
+  --career-cut:6px;inset:2px !important;clip-path:var(--control-shape) !important;
+  background:linear-gradient(180deg,#f3ffff38,transparent 36%),var(--face) !important;
+  box-shadow:inset 0 1px 0 #b7f4ff66,inset 0 -2px 7px #0006 !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"] {
+  --rim:linear-gradient(155deg,#fff0ff,#d38cff 25%,#8742cc 67%,#f1a8ff) !important;
+  --face:linear-gradient(155deg,#7844ae,#442267 40%,#29143f 80%,#66358c) !important;
+  filter:drop-shadow(0 0 6px #d568ffb0) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] > svg {width:22px !important;height:22px !important;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;color:#c5f6ff !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"] > svg {color:#fff0ff !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]::after {content:none !important;display:none !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:focus-visible {--rim:linear-gradient(135deg,#fff4b8,#f6c46a,#fff4cf) !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:active {filter:brightness(1.15) !important;}
+}
+@media (max-height:680px) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] {min-height:46px !important;gap:2px !important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] > svg {width:19px !important;height:19px !important;}
+ }
+}
+@media (prefers-reduced-motion:reduce) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab] {transition:none !important;animation:none !important;}
+ }
+}
