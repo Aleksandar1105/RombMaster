@@ -452,3 +452,7 @@ A3 `1edeb42`: starter form and feathered victory artwork. B `c4561b5`: responsiv
 ## P2.6c — Quick Play final polish implementation candidate (2026-11-26)
 
 Owner-approved background and enhanced glass concept. CSS-only presentation candidate with local Tactical Arena WebP (`67a1c8e`), scoped group frames, cyan inactive/violet selected materials, red angular Start Match, finite reduced-motion-aware CTA shimmer, tall-phone preview sizing and compact landscape safeguards (`8548298`). CSS import is the only main.js change for this phase. Three new tests (`8e36783`); no claim of full regression or physical QA PASS. Home remains frozen. Next manual Codemagic Cloud Test APK; no Actions.
+
+## 2026-11-26 — Quick Play review / deferred startup continuity
+
+Owner feedback on 34755.mp4: Tactical Arena background accepted, Quick Play improved; eliminate normal vs AI scrolling before freeze. Consider matching chamfered secondary controls to Home/Start Match and refining title font; visual choices not yet finalized. Deferred: smooth first-launch logo-to-controls continuity by overlapping phases rather than leaving a visible pause. Home remains frozen; documentation-only update, no implementation, APK or Actions.
