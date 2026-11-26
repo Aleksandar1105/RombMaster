@@ -148,9 +148,20 @@
                         <button id="next-chapter" aria-label="Next chapter">›</button>
                     </nav>
                     <p id="career-rival" class="career-rival"></p><p class="rm-career-hint">Choose a glowing level to play. Finish each level to unlock the next.</p>
+                    <div id="career-chapter-hero" hidden>
+                        <span id="career-chapter-portrait" class="match-portrait" aria-hidden="true"></span>
+                        <div class="rm-chapter-copy">
+                            <small id="career-chapter-number"></small>
+                            <strong id="career-chapter-rival"></strong>
+                            <span id="career-chapter-name"></span>
+                            <progress id="career-chapter-progress" max="5" value="0" aria-label="Chapter levels completed"></progress>
+                            <small id="career-chapter-count"></small>
+                        </div>
+                    </div>
+                    <h3 id="career-levels-heading" hidden>Chapter levels</h3>
                     <div class="rm-career-progress"><span id="career-progress" class="career-progress"></span><progress id="career-clear-progress" max="100" value="0" aria-label="Career levels completed"></progress></div>
                     <div id="chapter-route" aria-label="Career missions"></div>
-                    <button id="career-open-mission" type="button">Selected mission ›</button></div>
+                    <button id="career-open-mission" type="button">Selected mission ›</button><button id="career-level-play" class="btn-primary" type="button" hidden>Play Level 1</button></div>
                     <div id="career-rivals-pane" data-career-screen="rivals" hidden><div class="premium-rivals-grid" aria-label="Career rivals"><div class="premium-rival-card" id="career-rival-card-0" data-state="locked"><img src="/assets/premium/master/rival-rookie-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Rookie</strong><small class="rm-rival-rank" aria-label="Rank 1 of 6">★☆☆☆☆☆</small><small class="rm-rival-levels">Lv 1–10</small><small id="career-rival-card-status-0">Locked</small></div><div class="premium-rival-card" id="career-rival-card-1" data-state="locked"><img src="/assets/premium/master/rival-trickster-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Trickster</strong><small class="rm-rival-rank" aria-label="Rank 2 of 6">★★☆☆☆☆</small><small class="rm-rival-levels">Lv 11–25</small><small id="career-rival-card-status-1">Locked</small></div><div class="premium-rival-card" id="career-rival-card-2" data-state="locked"><img src="/assets/premium/master/rival-predator-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Predator</strong><small class="rm-rival-rank" aria-label="Rank 3 of 6">★★★☆☆☆</small><small class="rm-rival-levels">Lv 26–40</small><small id="career-rival-card-status-2">Locked</small></div><div class="premium-rival-card" id="career-rival-card-3" data-state="locked"><img src="/assets/premium/master/rival-phantom-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Phantom</strong><small class="rm-rival-rank" aria-label="Rank 4 of 6">★★★★☆☆</small><small class="rm-rival-levels">Lv 41–60</small><small id="career-rival-card-status-3">Locked</small></div><div class="premium-rival-card" id="career-rival-card-4" data-state="locked"><img src="/assets/premium/master/rival-grandmaster-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Grandmaster</strong><small class="rm-rival-rank" aria-label="Rank 5 of 6">★★★★★☆</small><small class="rm-rival-levels">Lv 61–80</small><small id="career-rival-card-status-4">Locked</small></div><div class="premium-rival-card" id="career-rival-card-5" data-state="locked"><img src="/assets/premium/master/rival-omega-master.webp" alt="" loading="lazy" width="768" height="768"><strong>Omega</strong><small class="rm-rival-rank" aria-label="Rank 6 of 6">★★★★★★</small><small class="rm-rival-levels">Lv 81–100</small><small id="career-rival-card-status-5">Locked</small></div></div>
                     </div>
                     <input id="career-level" type="hidden" value="1">
