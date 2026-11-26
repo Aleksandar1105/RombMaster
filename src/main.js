@@ -324,6 +324,16 @@ function renderRoute(profile, selected) {
     renderCareerProgress(profile);
     const mission=missionFor(selected);
     const setText=(id,value)=>{const node=el(id);if(node)node.textContent=value;};
+    const chapterPortrait=el('career-chapter-portrait');
+    if(chapterPortrait)chapterPortrait.dataset.rival=world.rival.toLowerCase();
+    const chapterCleared=Array.from({length:5},(_,i)=>first+i).filter(level=>Boolean(profile.stars[level])).length;
+    setText('career-chapter-number','CHAPTER '+String(Math.floor((selected-1)/5)+1).padStart(2,'0'));
+    setText('career-chapter-rival',world.rival);
+    setText('career-chapter-name',world.name);
+    setText('career-chapter-count',chapterCleared+' / 5 completed');
+    const chapterMeter=el('career-chapter-progress');
+    if(chapterMeter)chapterMeter.value=chapterCleared;
+    setText('career-level-play','Play Level '+selected);
     const portrait=el('career-mission-portrait');
     const guidedFox=selected===5;
     if(portrait)portrait.dataset.rival=guidedFox?'guided-fox':world.rival.toLowerCase();
@@ -351,6 +361,7 @@ function renderRoute(profile, selected) {
         title.textContent = coreEdition ? 'Level '+level : (careerWorld(level)?.end===level?'Boss Battle':missionFor(level)?.title ?? 'Level ' + level);
         const stars = document.createElement('small');
         const earned=profile.stars[level]||0;
+        button.dataset.earnedStars=String(earned);
         stars.textContent=button.disabled?'🔒 Locked':earned?'✓ Completed · '+'★'.repeat(earned):'▶ Play now';
         button.setAttribute('aria-label','Level '+level+' · '+title.textContent+' · '+(button.disabled?'Locked':earned?earned+' of 3 stars':'Available'));
         button.append(number, title, stars);
@@ -1281,7 +1292,7 @@ for (const [id, direction] of [['previous-chapter', -1], ['next-chapter', 1]]) {
         careerSelect.onchange();
     };
 }
-el('career-start-btn').onclick = () => {
+function startSelectedCareer(sourceButton) {
     const level = Number(careerSelect.value);
     const state = ProfileStore.read();
     if (!['ready', 'empty'].includes(state.status) ||
@@ -1301,8 +1312,10 @@ el('career-start-btn').onclick = () => {
         careerStatus.textContent = Game.start(stage.size, 'ai', stage.diff, level)
             ? '' : 'Could not start career level.';
     };
-    askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, el('career-start-btn'));
-};
+    askBeforeReplacing('Start Career?', 'This will replace your current saved match for this player. Career progress already earned remains safe.', startCareer, sourceButton);
+}
+el('career-start-btn').onclick=()=>startSelectedCareer(el('career-start-btn'));
+bindPage('career-level-play',()=>startSelectedCareer(el('career-level-play')));
 
 // Both new-player flows share the six free character IDs and the same art.
 function starterCharacters(){return PLAYER_AVATARS.filter(item=>item.id!=='neon-fox');}
