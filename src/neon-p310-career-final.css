@@ -27,7 +27,7 @@
 /* Same faceted material as Quick Play; state specificity remains explicit. */
 @layer neonControls {
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back,
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab],
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled),
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter),
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button,
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card,
@@ -120,15 +120,15 @@
 }
 @media (prefers-reduced-motion:no-preference) {
  @layer neonControls {
-  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled)::after,
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled)::after {
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled)::after,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled)::after {
    background:linear-gradient(110deg,transparent 29%,#fff4ee24 42%,#ffffff92 49%,#ffffff70 51%,#fff4ee24 58%,transparent 71%)!important;
    background-size:100% 100%!important;pointer-events:none!important;
    animation:rm-career-p310-sweep 3.2s ease-in-out 2!important;
   }
-  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled)::before,
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled)::before,
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled)::before {animation:rm-career-p310-select 220ms ease-out;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled)::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled)::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu.active-view #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled)::before {animation:rm-career-p310-select 220ms ease-out;}
  }
  @keyframes rm-career-p310-sweep {0%,18%{translate:-100% 0;opacity:0}30%{opacity:.85}65%{translate:100% 0;opacity:.85}76%,100%{translate:100% 0;opacity:0}}
  @keyframes rm-career-p310-select {0%{opacity:.72}100%{opacity:1}}
