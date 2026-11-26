@@ -14,6 +14,7 @@ import './neon-p25-quick-motion.css';
 import './neon-p26-quick-polish.css';
 import './neon-p26e-quick-fit.css';
 import './neon-p26f-quick-finish.css';
+import './neon-p32-career-nav.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -100,6 +101,9 @@ function setCareerScreen(index=0){
     for(const pane of document.querySelectorAll('[data-career-screen]'))pane.hidden=identityOpen||pane.dataset.careerScreen!==careerScreens[careerScreen];
     el('career-screen-prev').disabled=careerScreen===0;
     el('career-screen-next').disabled=careerScreen===2;
+    for(const tab of document.querySelectorAll('[data-career-tab]')){
+        tab.setAttribute('aria-pressed',String(tab.dataset.careerTab===careerScreens[careerScreen]));
+    }
     el('career-screen-label').textContent=['Choose a level','Mission preview','Your rivals'][careerScreen]+' · '+(careerScreen+1)+' / 3';
 }
 function setSkinDetailScreen(index=0){
@@ -165,6 +169,13 @@ function backSubpage(){
 bindPage('career-screen-prev',()=>setCareerScreen(careerScreen-1));
 bindPage('career-screen-next',()=>setCareerScreen(careerScreen+1));
 bindPage('career-open-mission',()=>setCareerScreen(1));
+for(const tab of document.querySelectorAll('[data-career-tab]')){
+    tab.onclick=()=>{
+        const index=careerScreens.indexOf(tab.dataset.careerTab);
+        if(index<0||!el('career-identity').hidden||el('career-page').hidden||el('menu-page').hidden)return;
+        setCareerScreen(index);
+    };
+}
 bindPage('skin-detail-prev',()=>setSkinDetailScreen(skinDetailScreen-1));
 bindPage('skin-detail-next',()=>setSkinDetailScreen(skinDetailScreen+1));
 bindPage('profile-create-toggle',()=>setCreatePlayer(!creatingPlayer));
