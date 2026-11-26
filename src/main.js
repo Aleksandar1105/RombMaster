@@ -315,6 +315,41 @@ function renderCareerProgress(profile) {
         ? 'Completed '+cleared+' of '+campaignLimit+' · Next: Level '+Math.min(profile.unlockedLevel,campaignLimit)
         : 'Career progress unavailable';
 }
+// Presentation only: these cards summarize existing Career levels, not new reward quests.
+function renderChapterMissions(profile, selected, first, world, chapterCleared) {
+    const list=el('career-mission-list');
+    if(!list)return;
+    const chapterLabel=el('career-mission-chapter');
+    chapterLabel.textContent=world.name+' · Chapter '+(Math.floor((first-1)/5)+1);
+    el('career-mission-chapter-count').textContent=chapterCleared+' / 5 levels completed';
+    el('career-mission-chapter-meter').value=chapterCleared;
+    el('career-mission-chapter-summary').dataset.complete=String(chapterCleared===5);
+    for(const card of list.querySelectorAll('[data-mission-slot]')){
+        const level=first+Number(card.dataset.missionSlot);
+        const stage=careerLevel(level);
+        const mission=missionFor(level);
+        const earned=profile.stars[level]||0;
+        const locked=level>profile.unlockedLevel;
+        const remaining=(3-earned)*50+(earned===0?50:0);
+        card.disabled=locked;
+        card.dataset.state=locked?'locked':earned?'cleared':'available';
+        card.setAttribute('aria-pressed',String(level===selected));
+        card.querySelector('[data-mission-title]').textContent=mission?.title||'Level '+level;
+        card.querySelector('[data-mission-clue]').textContent=mission?.clue||('Win against '+stage.diff+' AI.');
+        card.querySelector('progress').value=earned;
+        card.querySelector('[data-mission-stars]').textContent=earned+' / 3';
+        card.querySelector('[data-mission-xp]').textContent=remaining?('+'+remaining+' XP'):'MAX';
+        card.querySelector('[data-mission-state]').textContent=locked?'Locked':remaining?'Up to':'Earned';
+        card.setAttribute('aria-label','Level '+level+' · '+card.querySelector('[data-mission-title]').textContent+' · '+earned+' of 3 stars · '+(locked?'Locked':remaining?'Up to '+remaining+' XP':'All XP earned'));
+        card.onclick=()=>{
+            if(card.disabled||el('career-page').hidden||el('menu-page').hidden||el('career-mission-pane').hidden||!el('career-identity').hidden)return;
+            const current=visibleProfile(ProfileStore.read().profile);
+            if(!current||level>current.unlockedLevel||level>campaignLimit)return;
+            careerSelect.value=String(level);
+            careerSelect.onchange();
+        };
+    }
+}
 function renderRoute(profile, selected) {
     const route = el('chapter-route');
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
@@ -341,13 +376,7 @@ function renderRoute(profile, selected) {
     setText('career-mission-level','LEVEL '+selected+' / '+campaignLimit+(selected===world.end?' · BOSS BATTLE':''));
     setText('career-mission-title',mission?.title||(selected===world.end?'Boss Battle':'Career mission'));
     setText('career-mission-rival',guidedFox?'Fox · '+world.name:world.rival+' · '+world.name);
-    const missionStage=careerLevel(selected);
-    const bestStars=profile.stars[selected]||0;
-    const boardNames={4:'Small',6:'Classic',8:'Large',10:'Grand'};
-    setText('career-mission-size',boardNames[missionStage.size]);
-    setText('career-mission-difficulty',missionStage.diff.charAt(0).toUpperCase()+missionStage.diff.slice(1));
-    setText('career-mission-best','★'.repeat(bestStars)+'☆'.repeat(3-bestStars));
-    setText('career-mission-xp',bestStars===3?'All XP earned':'Up to +'+((3-bestStars)*50+(bestStars===0?50:0))+' XP');
+    renderChapterMissions(profile, selected, first, world, chapterCleared);
     setText('career-open-mission','Preview Level '+selected+' ›');
     el('chapter-label').textContent = world.name+' · Chapter '+(Math.floor((selected-1)/5)+1)+' of '+Math.ceil(campaignLimit/5);
     const rival=el('career-rival');
