@@ -1,0 +1,27 @@
+/* P3.8a.1 — expose the existing bundled Career Command Center.
+   The legacy .glass-panel blurs the entire scene even with transparent fill.
+   Remove wrapper glass only; retain readable localized card surfaces. */
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) {
+ background-color:#061122!important;
+ background-image:linear-gradient(180deg,#050b1e12,#050b1e00 55%,#050b1e26),url('/assets/premium/master/neon-career-command-v1.webp')!important;
+ background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) > .home-shell,
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) > .home-shell > #menu-page:not([hidden]),
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]),
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) > [data-career-screen]:not([hidden]) {
+ background:transparent!important;background-image:none!important;
+ border:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) {
+ --career-panel-face:linear-gradient(145deg,#15344bbd,#0a172dcc 60%,#211a36c4);
+ --career-accent-face:linear-gradient(125deg,#392455c7,#111e36d1 70%,#292047cc);
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="locked"] {
+ background:linear-gradient(125deg,#15263cc7,#0a1527d1)!important;
+}
+/* Preserve legibility of card content; never apply opacity to the page or text. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) :is(#career-mission-list,.premium-rivals-grid,.chapter-nav,#chapter-route) {
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
