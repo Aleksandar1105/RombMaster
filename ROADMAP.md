@@ -172,3 +172,11 @@ Evidence: run_regression_tests.log (7).txt — **271/271 PASS**, 0 failed/cancel
 ## P2.6a–c — Approved Quick Play Final Polish (2026-11-26)
 
 Owner approved the new Neon Tactical Arena background and stronger cyan/violet/red glass mockup. P2.6c scoped CSS is imported after P2.5. Codemagic asset import commit `67a1c8e` adds only `neon-tactical-arena-v1.webp` (~100 KB); the runtime uses local WebP and the package asset verifier includes it. Home remains frozen; no board geometry, saved choices, navigation or rules changed. Three additional source/asset tests added at `8e36783`; expected total 274, not yet run. Next P2.6d: manual Cloud Test APK, full regression, packaged asset hash verification, phone visual approval and frozen Home comparison. P2.7 freeze only after acceptance; P3 Career follows. No GitHub Actions or additional Picsart generation in implementation.
+
+## Deferred — continuous first-launch presentation (owner feedback, 2026-11-26)
+
+Keep Home frozen during Quick Play/Career work. Later revisit only the first-launch sequence: owner observes a perceptible pause between completed logo reveal and button appearance (video 34755.mp4). Preserve the approved two-light-point rhombus/logo and Home design; overlap the logo lighting, arena/podium reveal and UI entrance in one continuous timeline, with reduced-motion and no repeat on ordinary return to Home. Proposed timing and implementation remain subject to approval; no runtime changes now.
+
+## P2.6d — Quick Play owner video review (2026-11-26)
+
+Owner approves the new Tactical Arena background and reports a major visual improvement. Remaining blocker: vs AI setup requires vertical scroll on the test phone; Start Match must be fully visible without scrolling at normal text size (retain accessibility/compact-screen overflow fallback). Owner asks whether angular Home/Start Match-style corners and more distinctive Quick Play title typography would improve consistency. Proposed: modest chamfers on secondary options, stronger chamfers on CTA, coherent glass materials, restrained title styling; preserve exact board and all choices. These are proposals, not approved code changes. Quick Play freeze pending further approval and retest.
