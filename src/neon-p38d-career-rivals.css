@@ -1,0 +1,52 @@
+/* P3.8d — Rivals premium portraits and real state hierarchy.
+   Preserve six horizontal cards, existing data and compact/landscape fit. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading {
+ border-color:#61cce888!important;
+ background:radial-gradient(ellipse at 0 50%,#247c9844,transparent 70%),var(--career-panel-face)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading h3 {font-style:normal;letter-spacing:.07em;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading p {line-height:1.3;overflow-wrap:anywhere;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {box-sizing:border-box;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {
+ border:0!important;box-shadow:none!important;clip-path:none!important;
+ border-radius:7px!important;justify-self:center;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card strong {line-height:1.18;letter-spacing:.015em;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card .rm-rival-chapter-progress {white-space:nowrap;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card small[id^="career-rival-card-status-"] {min-width:0;overflow-wrap:anywhere;line-height:1.18;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="locked"] img {filter:saturate(.48) brightness(.72)!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="locked"] .rm-rival-chapter-progress {color:#9aabc1!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] {
+ background:radial-gradient(ellipse at 12% 50%,#2fcf9b30,transparent 60%),var(--career-panel-face)!important;
+ border-color:#65dab599!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] img {filter:drop-shadow(0 0 5px #52d9ae77)!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] small[id^="career-rival-card-status-"] {color:#b5f5db!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="available"]:not([data-current="true"]) img {filter:drop-shadow(0 0 4px #4ed9ff66)!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] {
+ background:radial-gradient(ellipse at 14% 50%,#b367fa4f,transparent 65%),var(--career-accent-face)!important;
+ border-color:#e1acff!important;
+ box-shadow:inset 0 1px 0 #f3d1ff66,inset 0 0 16px #b76aff38,0 0 7px #ba69f966!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] img {filter:drop-shadow(0 0 8px #d48dffa6)!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] strong {color:#f9e8ff!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] small[id^="career-rival-card-status-"] {color:#f0d1ff!important;font-weight:800;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] small[id^="career-rival-card-status-"]::before {
+ border-color:#e5bdff;background:linear-gradient(145deg,#8550af,#43225f);
+ box-shadow:0 0 5px #d48dff77;
+}
+@media (orientation:portrait) and (min-width:351px) and (min-height:721px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading {padding:9px 12px;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading p {font-size:clamp(.78rem,3.2vw,.92rem);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rivals-grid {gap:clamp(6px,1dvh,9px)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {
+  grid-template-columns:clamp(70px,22vw,96px) minmax(0,1fr) minmax(64px,auto)!important;
+  padding:5px 9px!important;gap:2px 10px!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {max-width:96px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card strong {font-size:clamp(.94rem,4vw,1.2rem)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card .rm-rival-levels {font-size:clamp(.77rem,3.1vw,.9rem)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card .rm-rival-chapter-progress {font-size:clamp(.84rem,3.5vw,1.05rem)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card small[id^="career-rival-card-status-"] {font-size:clamp(.7rem,2.75vw,.82rem)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card small[id^="career-rival-card-status-"]::before {width:32px;height:32px;}
+}
