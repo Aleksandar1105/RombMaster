@@ -554,3 +554,7 @@ Video 36.673 s, 1080×2340, sampled at 1 s and startup at 0.2 s. Owner confirms 
 ## P2.7 — owner visual acceptance (2026-11-26)
 
 Owner explicitly confirmed no scrolling in P2.6e and accepted P2.6f video 34763.mp4. Video 25.05 s, 1080×2340, sampled at 3 s intervals: Quick Play title, no visual ticks, cyan/violet selection, both modes with visible CTA, Small/Classic/Grand previews and return to Home visible. No claim of measured animation, full match, audio/haptics, or all viewport sizes. Visual freeze PASS by owner; expected 281 regression tests not confirmed by log, APK commit not independently verified. Deferred first-launch issue remains recorded. Next P3.1 Career concept only; no runtime modifications here.
+
+## P2.7 — Final regression gate PASS (2026-11-26)
+
+Owner supplied `run_regression_tests.log (8).txt`: 281/281 PASS, 0 fail, 0 cancelled, 0 skipped, 0 todo; duration 4659.807584 ms. All P2.2–P2.6f checks (200–217), including final P2.6f checks 215–217, pass. Together with prior owner device confirmation of no scrolling and visual acceptance of video 34763.mp4, the Quick Play visual freeze and automated regression gate are complete. Log contains no source SHA; exact APK provenance is not independently established. No runtime changes; Home and Quick Play remain frozen; deferred startup continuity stays open. Proceed to P3.1 Career concept.
