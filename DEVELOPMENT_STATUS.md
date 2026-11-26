@@ -448,3 +448,7 @@ Owner feedback on build 6aff67098f52ca2751290f01 documented in QA_STATUS.md. Run
 
 ## V25.5A3–E — implementation candidates, 2026-11-20
 A3 `1edeb42`: starter form and feathered victory artwork. B `c4561b5`: responsive HUD, portraits, score, turn and controls. C `7c1d9c6`: mission identity, real completion meter and rival states. Infinity `ad5655f`: persisted Level 100 victory displays milestone and opens the existing Arena mode selection. D `8af325c`: structured Quick Play choices, playable-cell counts and live preview. E `c5f7536`: skin/character ownership, affordability cues, themed catalog and disabled seasonal purchases. All are implementation candidates, not QA-approved. No new assets or economy formula changes; no Actions or APK generated here. Full tests, browser geometry, asset audit and physical visual approval pending.
+
+## P2.6c — Quick Play final polish implementation candidate (2026-11-26)
+
+Owner-approved background and enhanced glass concept. CSS-only presentation candidate with local Tactical Arena WebP (`67a1c8e`), scoped group frames, cyan inactive/violet selected materials, red angular Start Match, finite reduced-motion-aware CTA shimmer, tall-phone preview sizing and compact landscape safeguards (`8548298`). CSS import is the only main.js change for this phase. Three new tests (`8e36783`); no claim of full regression or physical QA PASS. Home remains frozen. Next manual Codemagic Cloud Test APK; no Actions.
