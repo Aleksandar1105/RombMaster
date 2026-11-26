@@ -852,7 +852,17 @@ function refreshRivalPortraits(profile) {
                     profile && profile.unlockedLevel >= world.start ? 'available' : 'locked');
                 card.hidden = false;
                 card.dataset.state = ownState;
-                card.dataset.current = String(home ? current : Boolean(profile && careerWorld(profile.unlockedLevel) === world));
+                card.dataset.current = String(home || coreEdition ? current : Boolean(profile && careerWorld(profile.unlockedLevel) === world));
+                if (!home) {
+                    const indicator = card.querySelector?.('.rm-rival-chapter-progress');
+                    if (indicator) {
+                        const completed = Array.from({length:end-start+1},(_,offset)=>start+offset)
+                            .filter(level=>Boolean(profile?.stars?.[level])).length;
+                        const total = end-start+1;
+                        indicator.textContent = coreEdition ? '★'.repeat(completed)+'☆'.repeat(total-completed) : completed+' / '+total;
+                        indicator.setAttribute('aria-label',completed+' of '+total+' chapter levels completed');
+                    }
+                }
                 if (coreEdition) {
                     card.dataset.levels = start + '–' + end;
                     const levelLabel = card.querySelector?.('.rm-rival-levels');
@@ -860,6 +870,10 @@ function refreshRivalPortraits(profile) {
                     card.setAttribute('aria-label', world.rival + ', levels ' + start + ' to ' + end + ', ' +
                         (current ? 'current opponent' : ownState));
                 }
+            }
+            if (status && prefix === 'career-rival-card' && coreEdition) {
+                status.textContent = state === 'defeated' ? 'Completed' : current ? 'Current rival' : reached ? 'Available' : 'Locked';
+                continue;
             }
             if (status) status.textContent = coreEdition
                 ? (state === 'defeated' ? 'Completed' : state === 'available' ? 'Current rival' : 'Locked')
