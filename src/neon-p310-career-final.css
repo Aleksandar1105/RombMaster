@@ -1,0 +1,215 @@
+/* P3.10a–d — Career final edition. The frozen Quick Play P2.3/P2.6c/e/f
+   material is the reference; no changes to Quick Play, Home or game rules. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title {
+ position:relative!important;display:block!important;grid-column:2!important;grid-row:1!important;align-self:center!important;
+ min-width:0!important;margin:0!important;padding:0 0 6px!important;
+ font-family:Orbitron,Rajdhani,"Eurostile","Arial Black",system-ui,sans-serif!important;
+ font-size:clamp(1.02rem,4.7vw,1.45rem)!important;font-weight:900!important;
+ font-style:normal!important;letter-spacing:.075em!important;line-height:1.15!important;
+ color:#f3fbff!important;-webkit-text-fill-color:#f3fbff!important;
+ text-shadow:0 1px 0 #81a8c1,0 0 9px #57dfff66!important;text-align:center!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title::after {
+ content:""!important;display:block!important;position:absolute!important;
+ inset:auto 8% 0!important;height:2px!important;width:auto!important;
+ background:linear-gradient(90deg,transparent,#49dcff 27%,#d27aff 62%,#ff5c78 82%,transparent)!important;
+ box-shadow:0 0 5px #a66bff70!important;pointer-events:none;
+}
+@media (min-width:340px) and (forced-colors:none) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title {color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-title::before {
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0 0 6px!important;margin:0!important;width:auto!important;height:auto!important;aspect-ratio:auto!important;
+  background:url('/assets/premium/master/career-title.svg') center / contain no-repeat!important;
+  filter:drop-shadow(0 0 5px #57dfff55);pointer-events:none;
+ }
+}
+/* Same faceted material as Quick Play; state specificity remains explicit. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab],
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn {
+  --rim:radial-gradient(ellipse 75% 55% at 50% 0%,#e3ffff 0%,#71e8ff 24%,transparent 82%),linear-gradient(175deg,#8af0ff,#20d9fa 26%,#196c91 62%,#41e7ff)!important;
+  --face:linear-gradient(180deg,#244965 0%,#10283e 28%,#081426 72%,#12314a)!important;
+  --qp-glass-facet:#bffaff38;--qp-glass-edge:#d4faffb0;--qp-glass-light:#43dfff;--qp-rim-inset:2px;
+  --rm-cut:7px;clip-path:polygon(var(--rm-cut) 0,calc(100% - var(--rm-cut)) 0,100% var(--rm-cut),100% calc(100% - var(--rm-cut)),calc(100% - var(--rm-cut)) 100%,var(--rm-cut) 100%,0 calc(100% - var(--rm-cut)),0 var(--rm-cut))!important;
+  position:relative!important;isolation:isolate;border-radius:0!important;
+  background:var(--rim)!important;background-image:var(--rim)!important;
+  color:#f3faff!important;filter:drop-shadow(0 2px 2px #000b) drop-shadow(0 0 3px #21d9ff70)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-level-state="cleared"]:not(:disabled),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="cleared"]:not(:disabled) {
+  --rim:radial-gradient(ellipse 75% 55% at 50% 0%,#c7ffed,#68e3bb 24%,transparent 82%),linear-gradient(175deg,#a5f5d6,#38bfa3,#307a82)!important;
+  --face:linear-gradient(180deg,#276c60,#1c4843 28%,#0e252e 72%,#21534c)!important;
+  --qp-glass-facet:#b4ffe23d;--qp-glass-edge:#bdffe0b0;--qp-glass-light:#52ddb8;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled) {
+  --rim:radial-gradient(ellipse 80% 60% at 50% 0%,#fff8ff,#f2b4ff 30%,transparent 86%),linear-gradient(180deg,#eebaff,#bc58ff 30%,#8d35de 66%,#f07aff)!important;
+  --face:linear-gradient(180deg,#633b8f,#392353 30%,#1b1338 70%,#54266d)!important;
+  --qp-glass-facet:#f3caff55;--qp-glass-edge:#fff0ffcc;--qp-glass-light:#dc6cff;--qp-rim-inset:3px;
+  filter:drop-shadow(0 2px 2px #000b) drop-shadow(0 0 7px #c250ffad)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled) {
+  --rim:radial-gradient(ellipse 85% 55% at 50% 0%,#fff3ee,#ff989c 30%,transparent 85%),linear-gradient(180deg,#ffd5cc,#ff4966 30%,#b61938 65%,#ff5d70)!important;
+  --face:linear-gradient(180deg,#b52b42,#7a1832 33%,#390e23 73%,#9c203d)!important;
+  --qp-glass-facet:#ffd1cf44;--qp-glass-edge:#ffe9e0dc;--qp-glass-light:#ff4c62;--qp-rim-inset:3px;--rm-cut:12px;
+  filter:drop-shadow(0 3px 3px #000b) drop-shadow(0 0 8px #ff345a9c)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter):disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:disabled,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-level-state="locked"],:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="locked"] {
+  --rim:linear-gradient(150deg,#647c97,#33445b 65%,#536a85)!important;
+  --face:linear-gradient(155deg,#24354a,#101b2d)!important;
+  --qp-glass-facet:#a9bed018;--qp-glass-edge:#b9d5f033;--qp-glass-light:#50627a;
+  opacity:.77!important;filter:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter)::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn::before {
+  content:""!important;display:block!important;position:absolute!important;inset:var(--qp-rim-inset)!important;
+  border:0!important;border-radius:0!important;clip-path:inherit!important;
+  background:linear-gradient(142deg,var(--qp-glass-facet) 0 9%,transparent 9% 79%,var(--qp-glass-facet) 79% 88%,transparent 88%),
+   linear-gradient(180deg,#efffff40 0%,#e7ffff12 15%,transparent 39%,#01071344 68%,color-mix(in srgb,var(--qp-glass-light) 20%,transparent) 100%),
+   radial-gradient(ellipse 84% 95% at 50% -18%,color-mix(in srgb,var(--qp-glass-light) 35%,transparent) 0%,transparent 67%),var(--face)!important;
+  box-shadow:inset 0 1px 0 var(--qp-glass-edge),inset 0 -1px 0 var(--qp-glass-edge),inset 0 0 8px color-mix(in srgb,var(--qp-glass-light) 30%,transparent),inset 0 -3px 8px #01071388!important;
+  pointer-events:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter):not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled):focus-visible {--rim:linear-gradient(135deg,#fff0b0,#ffdf70,#fff8da)!important;outline:2px solid #fff0b0!important;outline-offset:-4px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-state="cleared"]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[data-state="cleared"]:not(:disabled):focus-visible,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-level-state="cleared"]:not(:disabled):focus-visible {--rim:linear-gradient(135deg,#fff0b0,#ffdf70,#fff8da)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back:not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter):not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button:not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled):active,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled):active {filter:brightness(1.2) drop-shadow(0 0 7px var(--qp-glass-light))!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) > #page-back:not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .chapter-nav :is(#previous-chapter,#next-chapter):not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button:not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled):active::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled):active::before {box-shadow:inset 0 1px 0 #fff8,inset 0 0 12px var(--qp-glass-light),inset 0 -3px 8px #01071399!important;}
+}
+@media (prefers-reduced-motion:no-preference) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play:not(:disabled)::after,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn:not(:disabled)::after {
+   background:linear-gradient(110deg,transparent 29%,#fff4ee24 42%,#ffffff92 49%,#ffffff70 51%,#fff4ee24 58%,transparent 71%)!important;
+   background-size:100% 100%!important;pointer-events:none!important;
+   animation:rm-career-p310-sweep 3.2s ease-in-out 2!important;
+  }
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab][aria-pressed="true"]:not(:disabled)::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[aria-pressed="true"]:not(:disabled)::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card[aria-pressed="true"]:not(:disabled)::before {animation:rm-career-p310-select 220ms ease-out;}
+ }
+ @keyframes rm-career-p310-sweep {0%,18%{translate:-100% 0;opacity:0}30%{opacity:.85}65%{translate:100% 0;opacity:.85}76%,100%{translate:100% 0;opacity:0}}
+ @keyframes rm-career-p310-select {0%{opacity:.72}100%{opacity:1}}
+}
+@media (prefers-reduced-motion:reduce) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play::after,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn::after,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button::before,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card::before {animation:none!important;}
+ }
+}
+/* Keep the full screen flow natural: no clipping or forced hidden overflow.
+   Intrinsic growth remains possible on extreme viewports and enlarged text. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) {
+  box-sizing:border-box!important;justify-content:flex-start!important;align-items:stretch!important;
+  padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important;
+  overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #career-page:not([hidden])) > .home-shell {
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  width:100%!important;max-width:540px!important;min-height:100%!important;height:auto!important;max-height:none!important;
+  flex:0 0 auto!important;margin:0 auto!important;padding:0!important;gap:0!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) {box-sizing:border-box!important;display:grid!important;grid-template-columns:70px minmax(0,1fr) 70px!important;grid-template-rows:minmax(46px,auto) minmax(min-content,1fr)!important;gap:5px!important;padding:0!important;min-height:0!important;max-height:none!important;flex:1 0 auto!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) {grid-column:1/-1!important;grid-row:2!important;align-self:stretch!important;min-height:0!important;margin:0!important;padding:0!important;grid-template-rows:auto minmax(min-content,1fr) auto!important;gap:6px!important;align-content:stretch!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) > [data-career-screen]:not([hidden]) {grid-row:2!important;align-self:stretch!important;min-height:0!important;margin:0!important;padding:2px!important;box-sizing:border-box;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) > #career-screen-nav:not([hidden]) {grid-row:1!important;margin:0!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) > #career-status:not(:empty) {grid-row:3!important;margin:0!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]):has(#career-identity:not([hidden])) {grid-template-rows:auto!important;align-content:start!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) {grid-template-rows:auto minmax(min-content,1fr) auto auto auto auto!important;gap:clamp(6px,1.1dvh,10px)!important;align-content:stretch!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-hero {grid-template-columns:minmax(0,43%) minmax(0,1fr);padding:8px 10px!important;gap:10px;align-self:stretch;align-content:center;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-portrait {max-width:min(42vw,clamp(100px,20dvh,184px))!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route {gap:5px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-levels-heading {font-size:.92rem;margin:0!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .rm-career-progress {padding:6px 9px!important;gap:5px!important;margin:0!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) {grid-template-rows:minmax(min-content,1fr) auto!important;gap:6px!important;align-content:stretch!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list {grid-template-rows:auto repeat(5,minmax(min-content,1fr)) auto;gap:clamp(4px,.8dvh,7px)!important;align-content:stretch;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header {padding:4px 8px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header h3 {display:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header p {margin:0!important;font-weight:750;font-size:clamp(.78rem,3.2vw,.95rem);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary {padding:5px 8px!important;gap:6px;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary > svg {width:26px;height:26px;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) {grid-template-rows:auto minmax(min-content,1fr)!important;gap:6px!important;align-content:stretch!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading {padding:4px 8px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading h3 {display:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading p {margin:0!important;font-weight:750;font-size:clamp(.78rem,3.2vw,.95rem);}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rivals-grid {grid-template-rows:repeat(6,minmax(min-content,1fr));gap:clamp(4px,.75dvh,7px)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {grid-template-columns:clamp(52px,9dvh,76px) minmax(0,1fr) minmax(55px,auto)!important;padding:3px 7px!important;gap:1px 8px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {max-width:76px!important;}
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-screen-nav:not([hidden]) #career-direct-nav button[data-career-tab]:not(:disabled) {min-height:46px!important;padding:4px 3px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button {min-height:clamp(60px,9.5dvh,84px)!important;gap:4px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card {min-height:clamp(58px,8dvh,74px)!important;padding:5px 7px!important;grid-template-columns:28px minmax(0,1fr) minmax(58px,auto)!important;gap:6px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-icon {width:27px!important;height:27px!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy {gap:2px;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-card-copy > small {line-height:1.2;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card .rm-mission-xp {padding:3px 3px;gap:2px;}
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play,
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn {min-height:52px!important;height:auto!important;margin:0!important;padding:6px 12px!important;align-self:end!important;font-size:clamp(1rem,4.6vw,1.26rem)!important;letter-spacing:.055em!important;}
+ }
+}
+@media (orientation:portrait) and (max-height:720px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {grid-template-columns:clamp(44px,8dvh,58px) minmax(0,1fr) minmax(55px,auto)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {max-width:58px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-portrait {max-width:105px!important;}
+}
+/* Feather only the local square art edges, retaining the existing characters. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-portrait,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {
+ mask-image:radial-gradient(ellipse at center,#000 53%,#000e 70%,transparent 99%);
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] {border-color:#f0c7ff!important;box-shadow:inset 0 0 16px #b76aff55,0 0 8px #ba69f988!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card small[id^="career-rival-card-status-"]::before {
+ content:""!important;display:block!important;width:24px;height:24px;border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:currentColor!important;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Crect x='5' y='10' width='14' height='11' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3m-4 4v3'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] small[id^="career-rival-card-status-"]::before {
+ content:""!important;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M12 2 21 6v7c0 4-5 7-9 9-4-2-9-5-9-9V6zM7 12l3 3 7-7'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="available"] small[id^="career-rival-card-status-"]::before {
+ content:""!important;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M12 2 21 6v7c0 4-5 7-9 9-4-2-9-5-9-9V6zM10 8l6 4-6 4z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
