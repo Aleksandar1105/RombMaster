@@ -566,3 +566,7 @@ Owner explicitly approved the three-screen P3.1 Career mockup (Levels / Mission 
 ## P3.2 — Career direct navigation implementation (2026-11-26)
 
 Implemented three direct Core Neon Career controls with real existing panes, aria-pressed state, guarded click handlers, and legacy navigation retained for other skins/editions. Existing Back and identity flow unchanged. Commits `41fef27`, `c735918`, `53a26d0`; three source regression tests `0ae0d16`. Expected 284 tests, not executed here. Home and Quick Play remain frozen. Next P3.3 Levels and Chapters; combined Android QA pending.
+
+## P3.3 — Levels and Chapters implementation (2026-11-26)
+
+Implemented chapter hero using existing local rival art, real five-level chapter completion, actual earned stars, five angular level tiles, overall progress and violet direct Play Level action. Both launch controls reuse the existing guarded confirmation/start path. Core Neon scoped layout with legacy fallback and narrow viewport accommodation. Commits `b47bd8e`, `4bdcc90`, `3225b00`, `0658333`, `775eda1`, `9efa7bf`, tests `90d21bc`. Expected 288 total tests; execution and Android visual QA pending. Home and Quick Play frozen. Owner explicitly permits Picsart use for useful Career artwork; no new artwork generated or credits spent in this step. Next P3.4 Mission, P3.5 Rivals, then combined QA. Preserve approved P3.1 mockup and existing game economy/rules.
