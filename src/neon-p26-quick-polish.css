@@ -1,0 +1,82 @@
+/* P2.6c — approved Quick Play concept, scoped to visible Core Neon setup.
+   The production background is a bundled local asset; never request a CDN at runtime.
+   Home, shared board renderer, choices, saves, and native navigation are untouched. */
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) {
+  background: #050b1c linear-gradient(180deg,#02081822,#02081808 65%,#02081844) !important;
+  background-image:linear-gradient(180deg,#02081822,#02081808 65%,#02081844),
+    url('/assets/premium/master/neon-tactical-arena-v1.jpg'),
+    url('/assets/premium/master/neon-home-h6.webp') !important;
+  background-position:center !important;background-size:cover !important;
+  background-repeat:no-repeat !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-group:not([hidden]) {
+  box-sizing:border-box; padding:7px 7px 8px !important;
+  border:1px solid #4fadd650 !important;border-radius:14px !important;
+  background:linear-gradient(145deg,#10273e9e,#070d20c9 70%,#21132988) !important;
+  box-shadow:inset 0 1px 0 #c6f3ff22 !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-label {
+  display:flex !important;align-items:center;justify-content:center;gap:8px;
+  color:#e5f7ff !important;text-align:center;white-space:nowrap;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-label::before,
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-label::after {
+  content:"" !important;display:block !important;flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,#5cecffb0) !important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-label::after {transform:scaleX(-1);}
+:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) #quick-match-summary {
+  color:#f2f8ff !important;background:#060c1dc9 !important;
+  border-radius:10px;padding:5px 10px !important;
+  text-shadow:0 1px 3px #000 !important;
+}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
+   --rim:radial-gradient(ellipse 75% 55% at 50% 0%,#e3ffff 0%,#71e8ff 24%,transparent 82%),
+     linear-gradient(175deg,#8af0ff,#20d9fa 26%,#196c91 62%,#41e7ff) !important;
+   --face:linear-gradient(180deg,#244965 0%,#10283e 28%,#081426 72%,#12314a) !important;
+   --qp-glass-facet:#bffaff38;--qp-glass-edge:#d4faffb0;
+   --qp-glass-light:#43dfff;--qp-rim-inset:2px;--qp-icon:#b6f6ff;
+   filter:drop-shadow(0 2px 2px #000b) drop-shadow(0 0 3px #21d9ff70) !important;
+   clip-path:none !important;border-radius:12px !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) .btn-group button[aria-pressed="true"] {
+   --rim:radial-gradient(ellipse 80% 60% at 50% 0%,#fff8ff,#f2b4ff 30%,transparent 86%),
+     linear-gradient(180deg,#eebaff,#bc58ff 30%,#8d35de 66%,#f07aff) !important;
+   --face:linear-gradient(180deg,#633b8f,#392353 30%,#1b1338 70%,#54266d) !important;
+   --qp-glass-facet:#f3caff55;--qp-glass-edge:#fff0ffcc;
+   --qp-glass-light:#dc6cff;--qp-rim-inset:2.5px;--qp-icon:#f7ddff;
+   filter:drop-shadow(0 2px 2px #000b) drop-shadow(0 0 7px #c250ffad) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play:not(:disabled) {
+   --rim:radial-gradient(ellipse 85% 55% at 50% 0%,#fff3ee,#ff989c 30%,transparent 85%),
+     linear-gradient(180deg,#ffd5cc,#ff4966 30%,#b61938 65%,#ff5d70) !important;
+   --face:linear-gradient(180deg,#b52b42,#7a1832 33%,#390e23 73%,#9c203d) !important;
+   --qp-glass-facet:#ffd1cf44;--qp-glass-edge:#ffe9e0dc;
+   --qp-glass-light:#ff4c62;--qp-rim-inset:3px;--qp-icon:#fff4f1;
+   clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px) !important;
+   border-radius:0 !important;
+   filter:drop-shadow(0 3px 3px #000b) drop-shadow(0 0 8px #ff345a9c) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play)::before {border-radius:inherit !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):focus-visible {
+   --rim:linear-gradient(135deg,#fff0b0,#ffdf70,#fff8da) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):not(:disabled):active {
+   filter:brightness(1.2) drop-shadow(0 0 7px var(--qp-glass-light)) !important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play):disabled {filter:none !important;}
+}
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play:not(:disabled)::before {
+   animation:rm-quick-p26-glass-breathe 2.4s ease-in-out 3;
+ }
+ @keyframes rm-quick-p26-glass-breathe {0%,100%{opacity:1;}50%{opacity:.88;}}
+}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play::before {animation:none !important;}
+}
+@media (orientation:portrait) and (max-height:720px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-group:not([hidden]) {padding:4px 5px 5px !important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) #quick-match-summary {padding:3px 6px !important;}
+}
