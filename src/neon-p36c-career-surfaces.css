@@ -1,0 +1,74 @@
+/* P3.6c — shared Career surfaces and readability on Command Center V1.
+   No interactive control styling, layout reflow, motion or game-state changes. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) {
+ --career-panel-face:linear-gradient(145deg,#15344bea,#0a172de8 60%,#211a36e8);
+ --career-panel-line:#53b5d580;
+ --career-panel-glint:inset 0 1px 0 #b6f3ff25,inset 0 0 14px #39c7ed0d;
+ --career-accent-face:linear-gradient(125deg,#392455ed,#111e36ef 70%,#292047ed);
+ --career-progress-track:#101d32;
+ --career-progress-fill:linear-gradient(90deg,#27b8e7,#7bf4ff);
+ border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]),:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]),:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) {
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-hero {
+ background:radial-gradient(ellipse at 18% 48%,#247c9855,transparent 62%),var(--career-panel-face)!important;
+ border-color:#68d8edaa!important;box-shadow:var(--career-panel-glint)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .rm-career-progress {
+ background:var(--career-panel-face)!important;
+ border:1px solid var(--career-panel-line)!important;border-radius:8px;
+ box-shadow:var(--career-panel-glint)!important;
+ padding:5px 9px;box-sizing:border-box;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header,
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading {
+ background:var(--career-panel-face)!important;
+ border:1px solid var(--career-panel-line)!important;
+ border-radius:0!important;
+ clip-path:polygon(9px 0,calc(100% - 9px) 0,100% 9px,100% calc(100% - 9px),calc(100% - 9px) 100%,9px 100%,0 calc(100% - 9px),0 9px);
+ box-shadow:var(--career-panel-glint)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-chapter-summary {
+ background:var(--career-accent-face)!important;
+ box-shadow:inset 0 1px 0 #f4d0ff26,inset 0 0 12px #bd65ff18!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {
+ background:var(--career-panel-face)!important;
+ border-color:var(--career-panel-line)!important;
+ box-shadow:var(--career-panel-glint)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="locked"] {
+ background:linear-gradient(125deg,#15263ce8,#0a1527ed)!important;
+ border-color:#536d8c80!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] {
+ border-color:#55bda8a8!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"] {
+ background:var(--career-accent-face)!important;
+ border-color:#d08aff!important;
+ box-shadow:inset 0 1px 0 #f2c6ff44,inset 0 0 14px #ad55ff33!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card strong {
+ background:transparent!important;clip-path:none!important;padding:0!important;
+ text-shadow:0 1px 3px #020713!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) :is(#career-chapter-number,#career-chapter-rival,#career-chapter-name,#career-chapter-count,#career-levels-heading,#career-progress),
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list > header :is(h3,p),
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) #career-rivals-heading :is(h3,p) {
+ text-shadow:0 1px 3px #020713,0 0 5px #02071399;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]) progress {
+ background:var(--career-progress-track)!important;border-color:#4d7391!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]) progress::-webkit-progress-bar {
+ background:var(--career-progress-track)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]) progress::-webkit-progress-value {
+ background:var(--career-progress-fill)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) [data-career-screen]:not([hidden]) progress::-moz-progress-bar {
+ background:var(--career-progress-fill)!important;
+}
