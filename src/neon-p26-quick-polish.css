@@ -31,7 +31,7 @@
   text-shadow:0 1px 3px #000 !important;
 }
 @layer neonControls {
- :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :is(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) :where(#page-back,#quick-settings:not([hidden]) .btn-group button,#quick-settings:not([hidden]) #setup-play) {
    --rim:radial-gradient(ellipse 75% 55% at 50% 0%,#e3ffff 0%,#71e8ff 24%,transparent 82%),
      linear-gradient(175deg,#8af0ff,#20d9fa 26%,#196c91 62%,#41e7ff) !important;
    --face:linear-gradient(180deg,#244965 0%,#10283e 28%,#081426 72%,#12314a) !important;
@@ -71,7 +71,7 @@
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play:not(:disabled)::before {
    animation:rm-quick-p26-glass-breathe 2.4s ease-in-out 3;
  }
- @keyframes rm-quick-p26-glass-breathe {0%,100%{opacity:1;}50%{opacity:.88;}}
+ @keyframes rm-quick-p26-glass-breathe {0%,100%{filter:brightness(1);}50%{filter:brightness(1.09);}}
 }
 @media (prefers-reduced-motion:reduce) {
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#quick-settings:not([hidden])) #quick-settings:not([hidden]) #setup-play::before {animation:none !important;}
@@ -79,4 +79,14 @@
 @media (orientation:portrait) and (max-height:720px) {
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-group:not([hidden]) {padding:4px 5px 5px !important;}
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) #quick-match-summary {padding:3px 6px !important;}
+}
+
+/* Preserve room for the extra group padding; enhance the preview on taller phones only. */
+@media (orientation:portrait) and (min-height:820px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #menu-page:not([hidden]) #quick-settings:not([hidden]) #setup-preview {
+   width:min(72vw,29dvh,256px) !important;
+ }
+}
+@media (orientation:landscape) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) #quick-settings:not([hidden])) #quick-settings:not([hidden]) .rm-quick-group:not([hidden]) {padding:3px 5px 4px !important;}
 }
