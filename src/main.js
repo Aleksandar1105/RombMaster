@@ -20,6 +20,7 @@ import './neon-p34-career-mission.css';
 import './neon-p35-career-rivals.css';
 import './neon-p36-career-ambience.css';
 import './neon-p36c-career-surfaces.css';
+import './neon-p36d-career-controls.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
