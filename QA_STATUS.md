@@ -721,3 +721,11 @@ Scope: Gameplay and Results only. Home, Quick Play Setup and Career remain froze
 
 ### Resume protocol
 Active repository: Aleksandar1105/RombMaster. Active branch: feat/android-closed-test-core. Before any continuation, read the latest checkpoint in ROADMAP.md, DEVELOPMENT_STATUS.md and QA_STATUS.md on this exact branch, cross-check actual source and latest commits, reconcile any mismatch, and resume the first unfinished task. After each approved plan or implementation, record the current phase, actual commit(s), test evidence versus pending checks, and explicit next task in all three files. Do not infer completion from a mockup, source-only checks, or conversation summary. If an operation is interrupted, re-read current branch and source before retrying. Do not start a build or advance to P5 based on superseded next-step entries.
+
+
+## P4.10a — Artwork review checkpoint (2026-11-27)
+
+Owner clarified that work stopped during Picsart Gameplay / Results background review: the first design looked like two images stacked vertically. P4.10a remains IN REVIEW / NEXT, not approved or integrated. Picsart Drive lists two recent possible assets, identified by filenames and creation order (exact original-vs-preview relationship not independently verified):
+- Background candidate: https://gcdn.picsart.com/pipeline-output/b889861d-d7ab-4bde-9e1b-d12e69c3307f.png (Drive UID b09b3892-4c2f-45dd-a812-ca71069a40a2).
+- Related candidate: https://gcdn.picsart.com/pipeline-output/8713b03b-2e0c-45b8-9c80-19c0f13a0b04.png (Drive UID 0e4ed29d-e935-4ce6-9595-de05116ba6c8).
+Direct binary retrieval failed due to DNS, so do not claim either file visually verified or selected. A separate ChatGPT-generated seamless arena alternative was shown in the conversation; it is not a Picsart result and is not approved. Direction: one continuous portrait arena, unified perspective, lighting and material, no horizontal seam or stacked composition, quiet central area for the board, restrained cyan/coral edge accents, no baked UI or lettering. Next: review corrected background with owner, then optimize/package the approved local asset and verify Gameplay/Results scope before P4.10b. No runtime changes, new generation, Picsart spend, Actions or build in this checkpoint.
