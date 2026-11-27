@@ -26,7 +26,20 @@ export class Renderer {
     };
     const reserved = measure('#match-mode') + measure('#scoreboard') + measure('#turn-status') +
       measure('#controls') + measure('#game-save-status') + 100;
-    const availableWidth = Math.max(120, width - 48);
+    // P4.10c: use the actual safe-area padding in the active portrait match.
+    // All previews, other skins, landscape and legacy edition keep the old inset.
+    let horizontalInset = 48;
+    if (height >= width && viewElement.matches?.(':root[data-skin="neon"][data-edition="core"] #view-game.active-view')) {
+      const style = globalThis.getComputedStyle?.(viewElement);
+      if (style) {
+        const left = parseFloat(style.paddingLeft);
+        const right = parseFloat(style.paddingRight);
+        if (Number.isFinite(left) && Number.isFinite(right)) {
+          horizontalInset = Math.max(28, left + right + 8);
+        }
+      }
+    }
+    const availableWidth = Math.max(120, width - horizontalInset);
     const availableHeight = Math.max(160, height - reserved);
     // Upper bound keeps the board usable on tablets without gigantic controls.
     const size = Math.max(120, Math.floor(Math.min(availableWidth, availableHeight, 520)));
