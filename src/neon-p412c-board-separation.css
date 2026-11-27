@@ -1,0 +1,15 @@
+/* P4.12c — static optical separation behind the live board.
+   No canvas resizing, added border, shared-edge changes or input geometry changes.
+   The wrapper's isolated pseudo-element sits behind its transparent canvas. */
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #canvas-wrapper {
+ position:relative;
+ isolation:isolate;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #canvas-wrapper::before {
+ content:"";
+ position:absolute;
+ inset:-8% -8%;
+ z-index:-1;
+ pointer-events:none;
+ background:radial-gradient(ellipse farthest-side at 50% 50%,#030a16e6 0%,#030a16bf 82%,#030a1680 90%,transparent 100%);
+}
