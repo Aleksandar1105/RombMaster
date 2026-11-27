@@ -1,0 +1,16 @@
+/* P4.10a — shared offline arena; Core Neon match and finished results only.
+   Keep the existing transparent result surfaces and board renderer. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view,
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) {
+  background-image:linear-gradient(180deg,#07112422,transparent 34% 72%,#07112433),url('/assets/premium/master/neon-gameplay-arena-v2.webp')!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important;
+  background-color:#0b142e!important;
+ }
+ @media (orientation:landscape) {
+  :root[data-skin="neon"][data-edition="core"] #view-game.active-view,
+  :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) {background-size:100% 100%,cover!important;}
+ }
+}
