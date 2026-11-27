@@ -1,0 +1,35 @@
+/* P4.12d — local variable fonts; only the active Core Neon match and finished results. */
+@font-face {
+ font-family:"RM Exo 2";src:url('/assets/fonts/rombm/exo-2.woff2') format('woff2');
+ font-style:normal;font-weight:100 900;font-display:swap;
+}
+@font-face {
+ font-family:"RM Manrope";src:url('/assets/fonts/rombm/manrope.woff2') format('woff2');
+ font-style:normal;font-weight:200 800;font-display:swap;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view,
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) {
+ --rm-match-display:"RM Exo 2",system-ui,sans-serif;
+ --rm-match-text:"RM Manrope",system-ui,sans-serif;
+ font-family:var(--rm-match-text);
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view :is(.rm-mode-name,.rm-mode-level,#turn-label,#scoreboard .score-num) {
+ font-family:var(--rm-match-display)!important;font-weight:800;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-label {font-weight:700;letter-spacing:.065em;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view :is(#scoreboard .p-label,.rm-mode-detail,#turn-hint,.undo-counter,.save-status) {
+ font-family:var(--rm-match-text)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .p-label {font-weight:700;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view .rm-mode-detail {font-weight:600;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-hint {font-weight:500;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon span {font-family:var(--rm-match-display)!important;font-weight:700;letter-spacing:.025em;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(#result-title,#result-score,.rm-final-side strong,.rm-result-metric strong,.rm-analysis-stat strong,.rm-victory-caption,.rm-outcome-caption) {
+ font-family:var(--rm-match-display)!important;font-weight:800;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(#rm-result-context,.rm-final-side small,.rm-result-metric small,.rm-result-progress small,.rm-analysis-heading,.rm-analysis-stat span,#rm-result-note,#result-unlocks,#career-reward,#next-clue) {
+ font-family:var(--rm-match-text)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(.result-actions button,#nextCareerBtn) {font-family:var(--rm-match-display)!important;font-weight:700;letter-spacing:.025em;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view :is(.rm-mode-goal,.score-num),
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(#result-score,.rm-result-metric strong,.rm-analysis-stat strong) {font-variant-numeric:tabular-nums;}
