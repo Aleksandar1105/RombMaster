@@ -1,0 +1,35 @@
+/* P4.10b — compact, readable Core Neon HUD and headings.
+   Keep two-line reservations, live content and existing turn feedback.
+   No board sizing, controls, emblem art, motion or other screens. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode {
+  font-size:clamp(.76rem,3.1vw,.9rem)!important;
+  padding:3px 8px 5px!important;min-height:calc(2.5em + 8px);
+  text-align:center;overflow-wrap:anywhere;letter-spacing:.035em;
+  background:linear-gradient(180deg,#0b1e32b3,#0a162b80)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .player-card {
+  min-height:clamp(56px,7.5dvh,66px);padding:4px 6px;gap:5px;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .match-portrait:not([hidden]) {
+  width:clamp(40px,13.2vw,54px);flex:none;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .score-meta {gap:1px;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .p-label {font-size:clamp(.74rem,3.1vw,.9rem);line-height:1.15;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .score-num {font-size:clamp(1.5rem,7vw,1.9rem);line-height:1;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] {padding:2px 7px;gap:0;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-label {font-size:clamp(.8rem,3.4vw,.98rem);line-height:1.2;min-height:2.4em;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-hint {font-size:clamp(.7rem,2.85vw,.82rem);line-height:1.15;min-height:2.3em;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #rm-result-context {
+  font-size:clamp(.76rem,3vw,.88rem);letter-spacing:.09em;line-height:1.2;
+  color:#e4f3ff;text-shadow:0 1px 3px #030a17;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-title {
+  font-size:clamp(1.5rem,7vw,2.2rem)!important;line-height:1.1;letter-spacing:.065em;
+ }
+}
+@media (orientation:portrait) and (max-height:700px) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .player-card {min-height:54px;padding:3px 5px;gap:4px;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .match-portrait:not([hidden]) {width:40px;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .score-num {font-size:1.5rem;}
+}
