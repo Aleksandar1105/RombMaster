@@ -233,3 +233,54 @@
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) .rm-chapter-copy {width:min(86%,280px);text-align:center;gap:5px;}
  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-rival {font-style:normal;font-size:clamp(1.35rem,6vw,1.9rem);letter-spacing:.035em;}
 }
+
+/* P3.10g — optical polish only; keep P3.10f tracks and touch geometry. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-hero {
+ border-color:#65c6e34d!important;
+ background:radial-gradient(ellipse at 50% 37%,#4180c65c,transparent 63%),linear-gradient(155deg,#132f4866,#0b172c91 70%,#28204477)!important;
+ box-shadow:inset 0 0 20px #43dfff17!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-portrait,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {
+ mask-image:radial-gradient(ellipse closest-side at center,#000 64%,#000d 79%,transparent 100%)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-chapter-number {display:none!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card {
+ background:linear-gradient(142deg,#bffaff17 0 9%,transparent 9% 82%,#bffaff13 82% 90%,transparent 90%),linear-gradient(180deg,#c9faff12,transparent 35%,#02081838 72%),var(--career-panel-face)!important;
+ box-shadow:inset 0 1px 0 #b0ebff40,inset 0 -1px 0 #4cc9ed33!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="defeated"] {
+ background:linear-gradient(142deg,#a5ffe020 0 9%,transparent 9% 82%,#a5ffe015 82% 90%,transparent 90%),radial-gradient(ellipse at 12% 50%,#2fcf9b40,transparent 60%),var(--career-panel-face)!important;
+ box-shadow:inset 0 1px 0 #b5f5db50,inset 0 -1px 0 #38bfa344!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] {
+ background:linear-gradient(142deg,#f3caff30 0 9%,transparent 9% 82%,#f3caff24 82% 90%,transparent 90%),radial-gradient(ellipse at 14% 50%,#b367fa70,transparent 64%),var(--career-accent-face)!important;
+ box-shadow:inset 0 1px 0 #f3d1ff88,inset 0 0 17px #b76aff55,0 0 8px #ba69f988!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-state="locked"] img {filter:saturate(.48) brightness(.72)!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card[data-current="true"][data-state="available"] img {filter:drop-shadow(0 0 8px #d48dffa6)!important;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #career-level-play,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-start-btn {
+  font-family:inherit!important;font-weight:900!important;font-style:normal!important;
+  text-transform:uppercase!important;letter-spacing:.055em!important;
+  font-size:clamp(1rem,4.6vw,1.26rem)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-level-state="locked"] > small::after {
+  content:""!important;display:inline-block;width:.85rem;height:.85rem;
+  vertical-align:middle;background:#a6d9f4!important;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Crect x='5' y='10' width='14' height='11' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3m-4 4v3'/%3E%3C/svg%3E") center/contain no-repeat;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:not(:disabled):not([data-state="locked"]) .rm-mission-xp {
+  background:linear-gradient(142deg,#ffecad45 0 12%,transparent 12% 78%,#ffdc8726 78% 88%,transparent 88%),linear-gradient(180deg,#785b29,#3b3024 40%,#1b2430 78%,#4d3a24)!important;
+  border-color:#f1cd7999!important;
+  box-shadow:inset 0 1px 0 #fff0b96e,inset 0 -1px 0 #edc66f44!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-mission-pane:not([hidden]) #career-mission-list .rm-mission-card:not(:disabled):not([data-state="locked"]) .rm-mission-xp svg {filter:drop-shadow(0 0 3px #ffce6080);}
+}
+@media (orientation:portrait) and (min-width:351px) and (min-height:760px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-rivals-pane:not([hidden]) .premium-rival-card img {scale:1.035;}
+}
+@media (forced-colors:active) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(#career-page:not([hidden])) #career-page:not([hidden]) #career-levels-pane:not([hidden]) #chapter-route button[data-level-state="locked"] > small::after {content:"🔒"!important;mask:none;background:none!important;font-size:.85rem;width:auto;height:auto;}
+ }
+}
