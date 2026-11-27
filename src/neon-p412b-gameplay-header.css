@@ -1,0 +1,55 @@
+/* P4.12b — compact tactical heading; live Career data, no new assets. */
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] {
+ position:relative;isolation:isolate;box-sizing:border-box;flex:none;
+ width:100%;max-width:var(--hud-max);min-height:calc(3.6em + 8px);
+ padding:3px 8px 5px!important;display:grid;align-content:center;gap:2px;
+ background:none!important;box-shadow:none!important;border:0!important;
+ clip-path:none!important;white-space:normal;line-height:1.15;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode]::first-line {font-size:inherit;font-weight:inherit;color:inherit;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode]::after {display:none;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-heading {
+ display:grid;grid-template-columns:minmax(12px,1fr) auto minmax(12px,1fr);
+ align-items:center;gap:clamp(6px,2.2vw,12px);
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-heading::before,
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-heading::after {
+ content:"";height:9px;min-width:0;pointer-events:none;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-heading::before {
+ background:linear-gradient(90deg,transparent,#4bdfff 85%);
+ clip-path:polygon(0 80%,70% 80%,86% 0,100% 0,100% 16%,88% 16%,72% 100%,0 100%);
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-heading::after {
+ background:linear-gradient(90deg,#ff6689 15%,transparent);
+ clip-path:polygon(0 0,14% 0,30% 80%,100% 80%,100% 100%,28% 100%,12% 16%,0 16%);
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-name {
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 8px;
+ color:#e3f8ff;font-size:clamp(.9rem,4vw,1.13rem);font-weight:850;
+ letter-spacing:.13em;text-transform:uppercase;text-shadow:0 1px 5px #061424;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-level {
+ color:#c4f5ff;background:#14283e;border:1px solid #63d5ea;
+ padding:2px 5px;font-size:.68em;letter-spacing:.04em;font-variant-numeric:tabular-nums;
+ clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px);
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-detail {
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:2px;min-height:2.3em;font-size:clamp(.68rem,2.8vw,.8rem);
+ color:#c3daeb;line-height:1.15;letter-spacing:.035em;font-weight:600;
+ overflow-wrap:anywhere;text-align:center;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-goal {
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:3px 6px;
+ font-variant-numeric:tabular-nums;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-progress {
+ appearance:none;-webkit-appearance:none;display:block;
+ width:clamp(46px,19vw,92px);height:4px;border:0;border-radius:3px;
+ background:#26384c;color:#61dcf5;overflow:hidden;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-progress::-webkit-progress-bar {background:#26384c;border-radius:3px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-progress::-webkit-progress-value {background:linear-gradient(90deg,#349abe,#80edff);border-radius:3px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-progress::-moz-progress-bar {background:#61dcf5;border-radius:3px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode][data-rm-mode="quick"] .rm-mode-detail {letter-spacing:.16em;text-transform:uppercase;color:#a6c5dc;}
