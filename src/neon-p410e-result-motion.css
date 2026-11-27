@@ -1,0 +1,80 @@
+/* P4.10e — finite 2.5D motion for finished Core Neon outcomes only.
+   Preserve live rewards, existing star cue name, layout and immediate controls.
+   All new motion is opt-in via the system motion preference. */
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::before {
+  animation:rm-p410e-victory 920ms cubic-bezier(.16,.78,.24,1) both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-victory-caption {
+  animation:rm-p410e-caption 440ms 280ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-final-star[data-earned="true"] {
+  animation:rm-p47c-star 480ms var(--star-delay) cubic-bezier(.2,.7,.25,1.2) both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="defeat"] .rm-outcome-emblem {
+  animation:rm-p410e-defeat 760ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .rm-outcome-emblem {
+  animation:rm-p410e-draw 820ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .rm-emblem-left {
+  animation:rm-p410e-draw-left 720ms cubic-bezier(.2,.75,.25,1) both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .rm-emblem-right {
+  animation:rm-p410e-draw-right 720ms cubic-bezier(.2,.75,.25,1) both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-caption {
+  animation:rm-p410e-caption 380ms 360ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-score {
+  animation:rm-p410e-score 420ms 280ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric {
+  animation:rm-p410e-metric 400ms 900ms ease-out both;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric:nth-child(2) {animation-delay:980ms;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric:nth-child(3) {animation-delay:1060ms;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric:nth-child(4) {animation-delay:1140ms;}
+}
+@keyframes rm-p410e-victory {
+ 0% {opacity:0;transform:perspective(500px) translateY(12px) rotateY(-24deg) rotateX(12deg) scale(.64);}
+ 48% {opacity:1;transform:perspective(500px) translateY(-3px) rotateY(10deg) rotateX(-4deg) scale(1.06);}
+ 76% {opacity:1;transform:perspective(500px) rotateY(-3deg) scale(.99);}
+ 100% {opacity:1;transform:none;}
+}
+@keyframes rm-p410e-defeat {
+ 0% {opacity:0;transform:perspective(500px) rotateY(-14deg) scale(1.09);}
+ 36% {opacity:1;transform:perspective(500px) rotateZ(-3deg) scale(.98);}
+ 55% {opacity:1;transform:rotateZ(2deg) scale(1.01);}
+ 76% {opacity:1;transform:rotateZ(-1deg);}
+ 100% {opacity:1;transform:none;}
+}
+@keyframes rm-p410e-draw {
+ 0% {opacity:0;transform:scale(.9);}
+ 35% {opacity:1;}
+ 78% {opacity:1;transform:scale(1.035);}
+ 100% {opacity:1;transform:none;}
+}
+@keyframes rm-p410e-draw-left {
+ 0% {transform:perspective(500px) translateX(-13%) rotateY(-13deg);}
+ 72% {transform:translateX(0);}
+ 100% {transform:none;}
+}
+@keyframes rm-p410e-draw-right {
+ 0% {transform:perspective(500px) translateX(13%) rotateY(13deg);}
+ 72% {transform:translateX(0);}
+ 100% {transform:none;}
+}
+@keyframes rm-p410e-caption {
+ from {opacity:0;transform:translateY(6px);}
+ to {opacity:1;transform:none;}
+}
+@keyframes rm-p410e-score {
+ from {transform:translateY(3px);}
+ to {transform:none;}
+}
+@keyframes rm-p410e-metric {
+ 0% {transform:translateY(4px);}
+ 65% {transform:translateY(-1px);}
+ 100% {transform:none;}
+}
