@@ -16,13 +16,13 @@
 :root[data-skin="neon"][data-edition="core"] #view-game.active-view :is(.rm-mode-name,.rm-mode-level,#turn-label,#scoreboard .score-num) {
  font-family:var(--rm-match-display)!important;font-weight:800;
 }
-:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-label {font-weight:700;letter-spacing:.065em;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] #turn-label {font-weight:700;letter-spacing:.065em;}
 :root[data-skin="neon"][data-edition="core"] #view-game.active-view :is(#scoreboard .p-label,.rm-mode-detail,#turn-hint,.undo-counter,.save-status) {
  font-family:var(--rm-match-text)!important;
 }
 :root[data-skin="neon"][data-edition="core"] #view-game.active-view #scoreboard .p-label {font-weight:700;}
-:root[data-skin="neon"][data-edition="core"] #view-game.active-view .rm-mode-detail {font-weight:600;}
-:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-hint {font-weight:500;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #match-mode[data-rm-mode] .rm-mode-detail {font-weight:600;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] #turn-hint {font-weight:500;}
 :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon span {font-family:var(--rm-match-display)!important;font-weight:700;letter-spacing:.025em;}
 :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(#result-title,#result-score,.rm-final-side strong,.rm-result-metric strong,.rm-analysis-stat strong,.rm-victory-caption,.rm-outcome-caption) {
  font-family:var(--rm-match-display)!important;font-weight:800;
