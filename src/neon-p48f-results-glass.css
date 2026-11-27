@@ -1,0 +1,21 @@
+/* P4.8f — Results Glass Cleanup. Paint only, preserve P4.8e geometry.
+   The existing arena remains behind the panel; no second image or blur. */
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .center-panel {
+ background:radial-gradient(ellipse at 50% 14%,color-mix(in srgb,var(--result-light) 9%,transparent),transparent 52%),linear-gradient(180deg,#0814266b,#07122291 52%,#060f1ea3)!important;
+ border-color:#84cde814!important;
+ box-shadow:inset 0 1px #dcf8ff12,inset 0 0 14px #53bfe312!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #match-analysis:not([hidden]) {
+ background:linear-gradient(180deg,#10223426,#0a16243b)!important;
+ border-color:transparent!important;
+ box-shadow:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat {
+ background:none!important;
+ border-bottom-color:#91bed429!important;
+ box-shadow:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat:last-child {
+ border-bottom-color:transparent!important;
+}
