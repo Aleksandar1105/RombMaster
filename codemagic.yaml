@@ -102,23 +102,8 @@ workflows:
           if [ "$CM_BRANCH" = "feat/android-closed-test-core" ]; then
             git add -- src/public/assets/premium/master/neon-gameplay-arena-v2.webp
             test -f src/public/assets/premium/master/neon-gameplay-arena-v2.webp
-            test -z "$(git diff --cached --name-only | grep -v '^src/public/assets/premium/master/neon-gameplay-arena-v2\.webp
-            test -z "$(git diff --name-only)"
-            test -z "$(git ls-files --others --exclude-standard)"
-          else
-            git add -- src/public/assets/premium/master/ src/skin-store-compact.css
-          fi
-          if git diff --cached --quiet; then echo "ASSETS ALREADY CURRENT"; exit 0; fi
-          git diff --cached --name-only
-          git -c user.name="RombMaster Asset Bot" -c user.email="rombmaster-assets@users.noreply.github.com" commit -m "chore(assets): import optimized Picsart artwork [skip ci]"
-          export GIT_TERMINAL_PROMPT=0
-          ASKPASS="$(mktemp)"
-          trap 'rm -f "$ASKPASS"' EXIT
-          printf '%s\n' '#!/bin/sh' 'case "$1" in *Username*) printf "%s\\n" "x-access-token";; *) printf "%s\\n" "$ROMBMASTER_ASSET_TOKEN";; esac' > "$ASKPASS"
-          chmod 700 "$ASKPASS"
-          GIT_ASKPASS="$ASKPASS" git -c credential.helper= push https://github.com/Aleksandar1105/RombMaster.git "HEAD:refs/heads/$CM_BRANCH"
-          echo "ASSET PUSH: PASS"
- || true)"
+            staged="$(git diff --cached --name-only)"
+            test -z "$staged" || test "$staged" = "src/public/assets/premium/master/neon-gameplay-arena-v2.webp"
             test -z "$(git diff --name-only)"
             test -z "$(git ls-files --others --exclude-standard)"
           else
