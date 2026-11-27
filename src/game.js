@@ -213,7 +213,7 @@ export const Game = {
       if (item) item.textContent = value;
     };
     setLabel('p1-name', playerName + ' · X');
-    const world=careerWorld(this.settings.careerLevel);
+    const world=careerWorld(this.settings.careerLevel, document.documentElement?.dataset?.edition === 'core');
     const playerPortrait = document.getElementById('match-player-portrait');
     if (playerPortrait) {
       playerPortrait.hidden = !aiMatch || !profile;

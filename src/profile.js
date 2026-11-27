@@ -3,7 +3,14 @@
 export const PROFILE_KEY = 'rombmaster_profile_v1';
 export const CAREER_LEVEL_COUNT = 100;
 export const CAREER_WORLDS = Object.freeze([["First Steps",1,10,"Rookie","🤖","Learn safe moves"],["Neon City",11,25,"Trickster","🦊","Avoid tactical traps"],["Crystal World",26,40,"Predator","🐲","Manage capture chains"],["Ancient Kingdom",41,60,"Phantom","🌙","Plan sacrifices"],["Cyber Arena",61,80,"Grandmaster","♜","Calculate the endgame"],["Master Realm",81,100,"Omega","◆","Master the arena"]].map(([name,start,end,rival,icon,focus])=>Object.freeze({name,start,end,rival,icon,focus})));
-export function careerWorld(level){return CAREER_WORLDS.find(w=>level>=w.start&&level<=w.end);}
+// Core presents six rivals across its first 30 levels. Keep the legacy
+// world boundaries for full edition and historical saves beyond level 30.
+export function careerWorld(level, core = false){
+  if (core && Number.isInteger(level) && level >= 1 && level <= 30) {
+    return CAREER_WORLDS[Math.floor((level - 1) / 5)];
+  }
+  return CAREER_WORLDS.find(w=>level>=w.start&&level<=w.end);
+}
 
 
 // Preset avatars need no photo uploads, personal information or accounts.

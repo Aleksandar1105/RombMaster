@@ -369,7 +369,7 @@ function renderRoute(profile, selected) {
     const first = Math.floor((selected - 1) / 5) * 5 + 1;
     // Core UI presents six rivals over 30 levels (five per rival).
     // The historical 100-level world/AI/save tables are never modified.
-    const world=coreEdition ? CAREER_WORLDS[Math.floor((selected-1)/5)] : careerWorld(selected);
+    const world=careerWorld(selected, coreEdition);
     if(!world)return;
     renderCareerProgress(profile);
     const mission=missionFor(selected);

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-async function harness({ storage = new Map(), autoStart = true } = {}) {
+async function harness({ storage = new Map(), autoStart = true, edition = undefined } = {}) {
   const timers = new Map();
   const frames = new Map();
   let frameId = 0;
@@ -24,7 +24,7 @@ async function harness({ storage = new Map(), autoStart = true } = {}) {
   };
   const context = vm.createContext({
     console, window: {},
-    document: { getElementById: getElement },
+    document: { getElementById: getElement, documentElement: { dataset: { edition } } },
     localStorage: {
       getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value),
@@ -815,4 +815,44 @@ test('pre-chapter saved level 1 keeps its original board and first playable edge
   assert.equal(state.history[0].boardState.h[2][1], false);
   assert.equal(state.board.h[2][1], true);
   assert.equal(state.player, 0);
+});
+
+
+function unlockedCareerFixture() {
+  return new Map([['rombmaster_profile_v1',JSON.stringify({version:1,name:'Player',avatar:'spark',xp:0,unlockedLevel:30,stars:{},stats:{played:0,wins:0,draws:0,losses:0,streak:0,bestStreak:0}})]]);
+}
+
+test('P4.1: Core gameplay displays the Career rival for all 30 levels', async () => {
+  const h = await harness({autoStart:false, edition:'core',storage:unlockedCareerFixture()});
+  const rivals = ['Rookie','Trickster','Predator','Phantom','Grandmaster','Omega'];
+  for (let level=1; level<=30; level++) {
+    assert.equal(h.game.start(level<=10?4:level<=20?6:8,'ai',level<=10?'easy':level<=20?'normal':'hard',level),true);
+    const expected = level === 5 ? 'Fox' : rivals[Math.floor((level-1)/5)];
+    assert.ok(h.getElement('p2-name').textContent.includes(expected+' · O'), 'level '+level);
+    assert.equal(h.getElement('match-rival-portrait').dataset.rival,level===5?'guided-fox':expected.toLowerCase());
+  }
+});
+test('P4.1: full edition retains historical rivals; Quick Play and PvP remain unchanged', async () => {
+  const h = await harness({autoStart:false, edition:'full',storage:unlockedCareerFixture()});
+  assert.equal(h.game.start(4,'ai','easy',7),true);
+  assert.ok(h.getElement('p2-name').textContent.includes('Rookie · O'));
+  assert.equal(h.game.start(6,'ai','normal',11),true);
+  assert.ok(h.getElement('p2-name').textContent.includes('Trickster · O'));
+  h.game.start(4,'ai','easy');
+  assert.equal(h.getElement('p2-name').textContent,'Computer · O');
+  h.game.start(4,'pvp','easy');
+  assert.equal(h.getElement('p2-name').textContent,'Player 2 · O');
+  assert.equal(h.getElement('match-rival-portrait').hidden,true);
+});
+
+
+test('P4.1: resuming Core level 7 keeps Trickster and original saved settings', async () => {
+  const h=await harness({autoStart:false,edition:'core',storage:unlockedCareerFixture()});
+  assert.equal(h.game.start(4,'ai','easy',7),true);
+  h.game.executeMove(nonScoringMove(h.game.board));
+  const settings=JSON.stringify(h.game.settings);
+  assert.equal(h.game.resume(),true);
+  assert.equal(JSON.stringify(h.game.settings),settings);
+  assert.equal(h.getElement('match-rival-portrait').dataset.rival,'trickster');
+  assert.ok(h.getElement('p2-name').textContent.includes('Trickster · O'));
 });
