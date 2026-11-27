@@ -1,0 +1,38 @@
+/* P4.8h — final result identity, no changes to result data or handlers. */
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .arena-brand {
+ /* Source image 1048x700; top wordmark only. Preserve its central lower
+    diamond tip but exclude the stray side crystal and lower board. */
+ aspect-ratio:2.9;
+ background-position:center top!important;
+ background-size:140% auto!important;
+ clip-path:polygon(0 0,100% 0,100% 83%,60% 83%,50% 100%,40% 83%,0 83%);
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .result-actions {
+ max-width:420px;gap:clamp(6px,1.1dvh,10px);
+ background:none!important;border-color:transparent!important;box-shadow:none!important;
+}
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .result-actions {flex-direction:column;align-items:stretch;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .result-actions > button {flex:none;width:100%;box-sizing:border-box;}
+}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .center-panel .result-actions #againBtn:not(:disabled) {
+  background:linear-gradient(175deg,#fce8ff,#dd77fb 25%,#812bb3 68%,#f6a0ff)!important;
+  --result-face:linear-gradient(180deg,#85429f,#4a205f 35%,#271334 75%,#652a78);
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .center-panel .result-actions #backMenuBtn:not(:disabled) {
+  background:linear-gradient(175deg,#c9faff,#3ae1fa 25%,#23638c 68%,#66e5ff)!important;
+  --result-face:linear-gradient(180deg,#2a5673,#12304a 35%,#09192c 75%,#1d4964);
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .center-panel .result-actions > :is(#againBtn,#backMenuBtn) {
+  min-height:clamp(44px,6.5dvh,60px)!important;
+  height:auto!important;
+  padding-block:8px!important;
+  font-weight:850;letter-spacing:.025em;
+ }
+ /* The original :focus-visible and :active rules remain intact. */
+}
+@media (orientation:landscape) and (max-height:779px) {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .result-actions {flex-direction:row;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .result-actions > button {flex:1;min-width:0;}
+}
