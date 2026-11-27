@@ -1,0 +1,29 @@
+/* P4.7c — finite cinematic victory; no layout, input or reward changes. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .center-panel {border-color:#66c8ef30!important;box-shadow:inset 0 0 18px #1a72971a!important;}
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title {--hero-size:min(52vw,23dvh,190px);isolation:isolate;overflow:visible;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::before {position:relative;z-index:1;width:var(--hero-size);filter:drop-shadow(0 0 12px #72e5ff99);}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-victory-caption {display:block;position:relative;z-index:2;color:#ffe7a2;background:linear-gradient(180deg,#fff8db 8%,#ffdb76 34%,#ad681c 53%,#ffdd80 76%,#fff2bf 93%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 1px #431d0c) drop-shadow(0 0 7px #ffb83d66);}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-final-star {position:relative;isolation:isolate;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric {position:relative;isolation:isolate;overflow:hidden;}
+@media(max-height:700px) { :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title {--hero-size:min(42vw,18dvh,130px);} }
+@media(max-height:450px) { :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title {--hero-size:72px;} }
+@media(prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title {animation:none;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::before {animation:rm-p47c-emblem .82s cubic-bezier(.18,.75,.2,1) both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::after {content:"";display:block;position:absolute;left:50%;top:calc(var(--hero-size) / 2);width:calc(var(--hero-size) * 1.65);aspect-ratio:1;z-index:0;pointer-events:none;background:repeating-conic-gradient(from 7deg,#8eecff77 0deg 3deg,transparent 6deg 30deg);mask-image:radial-gradient(circle,transparent 18%,#000 43%,transparent 70%);animation:rm-p47c-rays 1.95s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-victory-caption {animation:rm-p47c-caption .5s .24s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title .rm-victory-caption::before {content:none;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .center-panel::after {content:"";position:absolute;pointer-events:none;left:50%;top:calc(clamp(30px,6dvh,50px) + 36px + var(--wave-radius,65px));width:min(34vw,130px);aspect-ratio:1;border:2px solid #a1eeff;border-radius:50%;box-shadow:0 0 16px #67e6ff,inset 0 0 8px #67e6ff;z-index:-1;animation:rm-p47c-wave .85s .16s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-final-star[data-earned="true"] {animation:rm-p47c-star .42s var(--star-delay) cubic-bezier(.2,.7,.25,1.2) both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-final-star[data-earned="true"]::after {content:"";position:absolute;inset:-22%;pointer-events:none;background:radial-gradient(circle at 10% 50%,#fff3ba 0 2px,transparent 3px),radial-gradient(circle at 90% 50%,#ffda69 0 2px,transparent 3px),radial-gradient(circle at 50% 10%,#fff5d4 0 2px,transparent 3px),radial-gradient(circle at 50% 90%,#ffda69 0 2px,transparent 3px),radial-gradient(circle at 22% 22%,#ffd56a 0 1.5px,transparent 3px),radial-gradient(circle at 78% 22%,#fff7d6 0 1.5px,transparent 3px),radial-gradient(circle at 22% 78%,#fff7d6 0 1.5px,transparent 3px),radial-gradient(circle at 78% 78%,#ffd56a 0 1.5px,transparent 3px);animation:rm-p47c-sparks .55s calc(var(--star-delay) + 120ms) ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] .rm-result-metric::after {content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,#fff1b54f 49%,transparent 63%);animation:rm-p47c-sheen .55s 1.35s ease-out both;}
+}
+@keyframes rm-p47c-emblem {0%{opacity:0;transform:scale(.62) rotate(-6deg)}62%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes rm-p47c-caption {from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes rm-p47c-rays {0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scale(.75)}32%{opacity:.85}100%{opacity:0;transform:translate(-50%,-50%) rotate(65deg) scale(1.12)}}
+@keyframes rm-p47c-wave {0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}20%{opacity:.72}100%{opacity:0;transform:translate(-50%,-50%) scale(2)}}
+@keyframes rm-p47c-star {0%{opacity:0;transform:scale(.45)}60%{opacity:1;transform:scale(1.17)}100%{opacity:1;transform:none}}
+@keyframes rm-p47c-sparks {0%{opacity:0;transform:scale(.55)}25%{opacity:1}100%{opacity:0;transform:scale(1.48)}}
+@keyframes rm-p47c-sheen {0%{opacity:0;transform:translateX(-100%)}20%,75%{opacity:1}100%{opacity:0;transform:translateX(100%)}}

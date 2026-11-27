@@ -7,6 +7,11 @@ export function renderCoreResult(overlay, game, doc) {
   const victory = outcome === 'victory';
   const title = el('result-title');
   if (outcome === 'defeat') title.textContent = 'Defeat';
+  if (victory) {
+    const caption = doc.createElement('span'); caption.className = 'rm-victory-caption';
+    caption.textContent = title.textContent;
+    title.replaceChildren(caption);
+  }
   const context = el('rm-result-context') || doc.createElement('p');
   context.id = 'rm-result-context';
   context.textContent = level ? 'Career · Level ' + level : game.settings.mode === 'pvp' ? 'Local match' : 'Quick Play';
@@ -35,9 +40,17 @@ export function renderCoreResult(overlay, game, doc) {
       const star = doc.createElement('span'); star.className = 'rm-final-star';
       star.dataset.earned = String(i < earned); star.style.setProperty('--star-delay', (550 + i * 200) + 'ms');
       star.setAttribute('aria-hidden', 'true');
-      if (i < earned) star.addEventListener('animationend', () => {
-        if (star.isConnected && overlay.classList.contains('flex')) game.resultStarCue?.(i);
-      }, {once:true});
+      if (i < earned) {
+        let played = false;
+        star.addEventListener('animationend', event => {
+          // Pseudo-element bursts have their own animation events. Only the
+          // actual star arrival can sound, once, while this result is current.
+          if (played || event.target !== star || event.pseudoElement || event.animationName !== 'rm-p47c-star') return;
+          if (!star.isConnected || !stars.contains(star) || !overlay.classList.contains('flex') || overlay.dataset.outcome !== 'victory') return;
+          played = true;
+          game.resultStarCue?.(i);
+        });
+      }
       stars.append(star);
     }
   }

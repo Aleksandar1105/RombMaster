@@ -427,7 +427,7 @@ export const Game = {
 
   resultStarCue(index) {
     if (!this.gameOver || document.hidden || !document.getElementById('overlay')?.classList.contains('flex')) return;
-    audio.playTone?.([660, 880, 1100][index] || 660, 'sine', .15, .065);
+    audio.playTone?.([784, 988, 1319][index] || 784, 'sine', .16, .055);
   },
 
   endGame() {

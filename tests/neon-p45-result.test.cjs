@@ -8,7 +8,7 @@ async function fixture({outcome='victory',level=7,ready=true,earned=2,next=true,
  const elements=new Map();
  const node=()=>({children:[],dataset:{},style:{setProperty(){}},attrs:{},isConnected:true,textContent:'',hidden:false,
    append(...nodes){for(const n of nodes){if(n.id)elements.set(n.id,n);this.children=this.children.filter(x=>x!==n);this.children.push(n);}},
-   before(n){elements.set(n.id,n);},replaceChildren(...nodes){this.children=nodes;},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];},addEventListener(k,fn){this[k]=fn;}});
+   before(n){elements.set(n.id,n);},replaceChildren(...nodes){this.children=nodes;},contains(n){return this.children.includes(n);},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];},addEventListener(k,fn){this[k]=fn;}});
  const doc={createElement:node,getElementById:id=>elements.get(id)||null};
  for(const id of ['result-title','result-score','result-stars','p1-name','p2-name','nextCareerBtn','match-analysis'])elements.set(id,node());
  const overlay=node(),overview=node();overlay.dataset.outcome=outcome;overlay.classList={contains:()=>true};overlay.querySelector=()=>overview;
@@ -21,7 +21,7 @@ test('P4.5 actual earned stars, score and next level are displayed without writi
  const h=await fixture();const original=JSON.stringify(h.game.careerOutcome);h.render();
  assert.equal(h.el('result-stars').attrs['aria-label'],'2 of 3 stars earned');assert.deepEqual(h.el('result-stars').children.map(s=>s.dataset.earned),['true','true','false']);
  assert.equal(h.el('result-score').children[0].children[1].textContent,'7');assert.equal(h.el('result-score').children[2].children[0].textContent,'Trickster · O');
- assert.equal(h.el('rm-result-note').textContent,'Next challenge · Play level 8');h.el('result-stars').children[0].animationend();assert.deepEqual(h.cues,[0]);
+ assert.equal(h.el('rm-result-note').textContent,'Next challenge · Play level 8');const star=h.el('result-stars').children[0];star.animationend({target:star,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
  assert.equal(JSON.stringify(h.game.careerOutcome),original);
 });
 test('P4.5 defeat, draw, unavailable reward and local matches never display unearned stars',async()=>{
@@ -35,4 +35,22 @@ test('P4.5 overlay styles isolated, finite motion and focus feedback; main uses 
  assert.ok(css.includes('prefers-reduced-motion:reduce'));assert.ok(css.includes(':focus-visible'));assert.ok(!css.includes('infinite'));
  assert.ok(main.includes("import './neon-p45-results.css';"));assert.ok(main.includes('renderCoreResult(overlay,Game,document)'));
  assert.ok(!/localStorage|ProfileStore|SaveStore|setTimeout/.test(read('src/neon-result.js')));
+});
+
+
+test('P4.7c star arrival sounds once; particle events and stale results are ignored',async()=>{
+ const h=await fixture();h.el('result-title').textContent='Victory';h.render();
+ assert.equal(h.el('result-title').children[0].textContent,'Victory');
+ const [a,b]=h.el('result-stars').children;
+ a.animationend({target:a,animationName:'rm-p47c-sparks',pseudoElement:'::after'});assert.deepEqual(h.cues,[]);
+ a.animationend({target:a,animationName:'rm-p47c-star'});a.animationend({target:a,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
+ h.render();b.animationend({target:b,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
+ const current=h.el('result-stars').children[1];h.overlay.classList.contains=()=>false;
+ current.animationend({target:current,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
+});
+test('P4.7c cinematic effects are victory-only, nonblocking and reduced-motion safe',()=>{
+ const css=read('src/neon-p47c-victory.css');
+ assert.ok(css.split('\n').filter(l=>l.trim().startsWith(':root')).every(l=>l.includes('[data-edition="core"] #overlay.flex[data-outcome="victory"]')));
+ assert.ok(css.includes('prefers-reduced-motion:no-preference'));assert.ok(css.includes('pointer-events:none'));assert.ok(!css.includes('infinite'));
+ assert.ok(css.includes('rm-p47c-star')&&css.includes('rm-p47c-sparks')&&css.includes('rm-p47c-wave')&&css.includes('rm-p47c-sheen'));
 });
