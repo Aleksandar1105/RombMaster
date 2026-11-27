@@ -421,6 +421,11 @@ export const Game = {
     this.saveLocal();
   },
 
+  resultStarCue(index) {
+    if (!this.gameOver || document.hidden || !document.getElementById('overlay')?.classList.contains('flex')) return;
+    audio.playTone?.([660, 880, 1100][index] || 660, 'sine', .15, .065);
+  },
+
   endGame() {
     if (this.gameOver || this.paused || !this.board.isGameOver()) return;
     this.cancelPendingAction();

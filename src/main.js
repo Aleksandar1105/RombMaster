@@ -32,6 +32,8 @@ import './neon-p38e-career-motion.css';
 import './neon-p310-career-final.css';
 import './neon-p42-gameplay-hud.css';
 import './neon-p44-match-feedback.css';
+import './neon-p45-results.css';
+import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
@@ -496,7 +498,8 @@ function renderPremiumResult(){
             function tick(now){
                 if(generation!==resultAnimation||!number.isConnected||!el('overlay').classList.contains('flex'))return;
                 if(startTime===null)startTime=now;
-                const t=Math.max(0,Math.min(1,(now-startTime-250)/1450));
+                const premiumVictory=coreEdition && el('overlay').dataset.outcome==='victory';
+                const t=Math.max(0,Math.min(1,(now-startTime-(premiumVictory?1000:250))/(premiumVictory?850:1450)));
                 number.textContent='+'+Math.round(target*(1-(1-t)**2));
                 if(t<1)requestAnimationFrame(tick);
             }
@@ -576,6 +579,7 @@ Game.refreshResultPages=()=>{
     if(reward)reward.hidden=!Game.settings.careerLevel||Game.careerOutcome?.status==='ready';
     const analysis=el('match-analysis');
     if(analysis)analysis.hidden=true;
+    if(coreEdition && document.documentElement.dataset.skin==='neon') renderCoreResult(overlay,Game,document);
 };
 function applySkin(id) {
     renderSkinVariables(setActiveSkin(id));
