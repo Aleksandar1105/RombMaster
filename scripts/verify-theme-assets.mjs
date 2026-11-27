@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const css=['style.css','skin-store-compact.css','neon-p26-quick-polish.css','neon-p26f-quick-finish.css','neon-p36-career-ambience.css','neon-p38a-career-nav.css'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
+const css=['style.css','skin-store-compact.css','neon-p26-quick-polish.css','neon-p26f-quick-finish.css','neon-p36-career-ambience.css','neon-p38a-career-nav.css','neon-p410a-gameplay-arena.css'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
 const sources=css+'\n'+['index.html','main.js','skins.js'].map(name=>readFileSync(join(root,'src',name),'utf8')).join('\n');
 const references=[...new Set(Array.from(sources.matchAll(/\/assets\/premium\/reference\/([a-z0-9-]+\.webp)/g),m=>'reference/'+m[1]))].sort();
 const master=[...new Set([
@@ -24,12 +24,13 @@ const KiB=1024,MiB=1024*1024;
 const limits={reference:[250*KiB,4*MiB],portrait:[256*KiB,6*MiB],arena:[512*KiB,8*MiB],button:[256*KiB,4*MiB],victory:[512*KiB,8*MiB],other:[512*KiB,5*MiB]};
 limits.legacy=[512*KiB,6*MiB];
 const bytes=Object.fromEntries(Object.keys(limits).map(k=>[k,0]));
-const category=name=>name.startsWith('arenas/')||name.startsWith('rivals/')?'legacy':name.startsWith('reference/')?'reference':/\/(?:avatar|rival)-/.test(name)?'portrait':/-master-arena\.webp$/.test(name)?'arena':/-master-button-clean\.webp$/.test(name)?'button':/-master-victory\.webp$/.test(name)?'victory':'other';
+const category=name=>name.startsWith('arenas/')||name.startsWith('rivals/')?'legacy':name.startsWith('reference/')?'reference':/\/(?:avatar|rival)-/.test(name)?'portrait':/(?:-master-arena|neon-gameplay-arena-v2)\.webp$/.test(name)?'arena':/-master-button-clean\.webp$/.test(name)?'button':/-master-victory\.webp$/.test(name)?'victory':'other';
 const skins=['neon','royal','cyber','ice','wood','white','autumn-kingdom','frozen-christmas','golden-dragon','spring-blossom','summer-paradise','halloween-curse','midnight-gold','obsidian-neon','celestial-void','synthwave-sunset'];
 const expected=[...skins.flatMap(id=>['arena','button-clean','victory'].map(kind=>'master/'+id+'-master-'+kind+'.webp'))];
 const avatars=['spark','fox','robot','rocket','dragon','shield','neon-fox','azure-squire','jade-huntress','crimson-sentinel','frost-oracle','onyx-warden','crown-ascendant','circuit-valkyrie','storm-raptor','ember-ronin','moon-weaver','coral-corsair','prism-golem','solar-sovereign','void-monarch','celestial-empress','dragon-emperor','aurora-seraph','chronos-architect'];
 const rivals=['rookie','trickster','predator','phantom','grandmaster','omega'];
 expected.push(...avatars.map(id=>'master/avatar-'+id+'-master.webp'),...rivals.map(id=>'master/rival-'+id+'-master.webp'),...['blitz','infinity','perfect','puzzle','survival'].map(id=>'master/arena-'+id+'.webp'));
+expected.push('master/neon-gameplay-arena-v2.webp');
 for(const name of expected)if(!master.includes(name))problems.push('Expected asset is not referenced: '+name);
 if(references.length!==37)problems.push('Expected 37 reference assets; found '+references.length);
 const legacyIds=['first-steps','neon-city','crystal-world','ancient-kingdom','cyber-arena','master-realm'].map(id=>'arenas/'+id+'.webp').concat(rivals.map(id=>'rivals/'+id+'.webp'));
