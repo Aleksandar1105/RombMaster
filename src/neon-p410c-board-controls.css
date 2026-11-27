@@ -1,0 +1,20 @@
+/* P4.10c — board/control proportions in active Core Neon portrait matches.
+   Canvas dimensions come from Renderer.resize, never CSS scaling. */
+@media (orientation:portrait) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls {
+  width:100%;max-width:520px;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(5px,1.6vw,8px);align-items:start;flex:none;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .undo-control {width:100%;min-width:0;gap:2px;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon {width:100%;min-width:0;box-sizing:border-box;gap:3px;padding:3px 2px;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon svg {width:clamp(18px,5vw,22px);height:clamp(18px,5vw,22px);flex:none;}
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon {min-height:44px!important;height:clamp(44px,6.2dvh,52px)!important;}
+  :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon span {font-size:clamp(.67rem,2.85vw,.8rem)!important;line-height:1.1;white-space:normal;}
+ }
+}
+@media (orientation:portrait) and (max-height:700px) {
+ @layer neonControls {
+  :root[data-skin="neon"][data-edition="core"] #view-game.active-view #controls .btn-icon {height:44px!important;}
+ }
+}
