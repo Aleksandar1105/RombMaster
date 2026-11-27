@@ -7,6 +7,8 @@ export class Renderer {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d", { alpha: true });
     this.particles = [];
+    this.premiumMatch = false;
+    this.moveEffect = null;
     this.CELL = 0;
     this.offX = 0;
     this.offY = 0;
@@ -43,9 +45,39 @@ export class Renderer {
     this.offY = (size - gridPx) / 2;
   }
 
+  // P4.3: transient presentation only, enabled by the live Core match.
+  premiumMotion(skin = this.skin || activeSkin()) {
+    return this.premiumMatch && skin.id === 'neon' &&
+      !globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  }
+
+  animateMove(move, player) {
+    this.moveEffect = this.premiumMotion() ? { ...move, player, born: Date.now() } : null;
+  }
+
+  moveProgress(now = Date.now()) {
+    if (!this.moveEffect) return null;
+    const t = Math.max(0, (now - this.moveEffect.born) / 180);
+    if (t >= 1 || !this.premiumMotion()) { this.moveEffect = null; return null; }
+    return t;
+  }
+
+  captureScale(r, c, now) {
+    if (!this.premiumMotion()) return 1;
+    let p;
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      if (this.particles[i].r === r && this.particles[i].c === c) { p = this.particles[i]; break; }
+    }
+    if (!p) return 1;
+    const t = Math.max(0, (now - p.born) / 220);
+    if (t >= 1) return 1;
+    return t < .55 ? .72 + .34 * (1 - Math.pow(1 - t / .55, 3)) : 1.06 - .06 * ((t - .55) / .45);
+  }
+
   draw(board, lastMove, previewMove = null) {
     const skin = this.skin || activeSkin();
     const colors = skin.colors;
+    const now = Date.now(), sweep = this.moveProgress(now);
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (['neon','royal','cyber','ice','wood','white','frozen-christmas','golden-dragon','spring-blossom','summer-paradise','autumn-kingdom','halloween-curse','midnight-gold','obsidian-neon','celestial-void','synthwave-sunset'].includes(skin.id)) {
@@ -112,7 +144,7 @@ export class Renderer {
         } else {
           this.paintCapture(skin, x, y, size, color);
         }
-        this.drawSymbol(skin, owner, x + size / 2, y + size / 2, size);
+        this.drawSymbol(skin, owner, x + size / 2, y + size / 2, size * this.captureScale(r, c, now));
       }
     }
 
@@ -160,6 +192,20 @@ export class Renderer {
                 this.ctx.shadowBlur = 0;
                 this.ctx.stroke();
                 return;
+            }
+            // Use the existing stroke, not a second outline. The mixed-owner
+            // boundary above always keeps its exact perpendicular 1px gradient.
+            const effect = this.moveEffect;
+            if (isLast && sweep !== null && effect.t === type && effect.r === r && effect.c === c) {
+                const base = owner != null ? color : effect.player === CONSTANTS.X ? colors.x : colors.o;
+                const head = Math.min(.99, Math.max(.01, sweep));
+                const light = this.ctx.createLinearGradient(x1, y1, x2, y2);
+                light.addColorStop(0, base);
+                light.addColorStop(Math.max(0, head - .24), base);
+                light.addColorStop(head, '#ffffff');
+                light.addColorStop(Math.min(1, head + .18), base);
+                light.addColorStop(1, base);
+                this.ctx.strokeStyle = light;
             }
             this.ctx.shadowColor = isLast ? colors.glow : color;
             this.ctx.shadowBlur = isLast ? (skin.id === 'white' || skin.id === 'wood' ? 0 : 10) : owner != null ? Math.min(3, skin.finish.glow) : 0;
@@ -401,7 +447,7 @@ export class Renderer {
     const color = player === CONSTANTS.X ? skin.colors.x : skin.colors.o;
     // Grid coordinates keep the animation aligned through a resize.
     const born = Date.now();
-    this.particles.push({r,c,color,born,duration:skin.finish.duration,effect:skin.finish.effect,count:skin.finish.particles});
+    this.particles.push({r,c,color,born,duration:this.premiumMotion(skin) ? 380 : skin.finish.duration,effect:skin.finish.effect,count:skin.finish.particles});
     // Bound memory when several cells are captured in a rapid chain.
     if (this.particles.length > 48) this.particles.splice(0,this.particles.length-48);
   }

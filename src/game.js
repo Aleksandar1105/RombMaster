@@ -100,6 +100,7 @@ export const Game = {
   stop() {
     this.cancelPendingAction();
     this.cancelAnimation();
+    if (this.renderer) this.renderer.moveEffect = null;
     this.hoverMove = null;
     audio.pause();
     this.aiThinking = false;
@@ -233,6 +234,8 @@ export const Game = {
     if (this.paused) audio.pause();
     // 2. Исчисти партикли
     this.renderer.particles = [];
+    this.renderer.moveEffect = null;
+    this.renderer.premiumMatch = document.documentElement?.dataset?.edition === 'core';
 
     // 3. Смени го погледот (View)
     this.ui.viewMenu.classList.add('hidden');
@@ -284,6 +287,7 @@ export const Game = {
     this.moveLog.push({ t: move.t, r: move.r, c: move.c });
 
     this.lastMove = move;
+    this.renderer.animateMove?.(move, this.player);
     this.hoverMove = null;
     Native.vibrate('light');
 
@@ -376,6 +380,7 @@ export const Game = {
     this.board.score = s.score;
     this.lastMove = s.lastMove;
     this.renderer.particles = [];
+    this.renderer.moveEffect = null;
     // Undo invalidates the prior capture announcement as well as its particles.
     const combo = document.getElementById('capture-combo');
     if (combo) {
@@ -586,7 +591,7 @@ export const Game = {
     // A settled board needs no continuous animation. Moves, undo, resize,
     // hover and resume explicitly invalidate it; capture effects continue to
     // request frames until the last particle expires.
-    if (this.renderer.particles.length > 0)
+    if (this.renderer.particles.length > 0 || this.renderer.moveEffect)
       this.requestRender();
   },
 

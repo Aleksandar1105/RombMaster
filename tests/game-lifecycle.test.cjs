@@ -856,3 +856,16 @@ test('P4.1: resuming Core level 7 keeps Trickster and original saved settings', 
   assert.equal(h.getElement('match-rival-portrait').dataset.rival,'trickster');
   assert.ok(h.getElement('p2-name').textContent.includes('Trickster · O'));
 });
+
+test('P4.3 move effects keep rendering only while active and clear on Undo and restart',async()=>{
+  const h=await harness({edition:'core',autoStart:false});
+  const r=h.game.renderer;
+  r.animateMove=(move,player)=>{r.moveEffect={...move,player};};
+  let draws=0;r.draw=()=>{if(++draws===3)r.moveEffect=null;};
+  h.game.start(6,'pvp','normal');assert.equal(r.premiumMatch,true);h.tick();
+  const player=h.game.player,move=nonScoringMove(h.game.board,player);
+  h.game.executeMove(move);assert.equal(r.moveEffect.player,player);
+  h.tick();assert.equal(h.frames.size,1);h.tick();assert.equal(h.frames.size,0);
+  h.game.executeMove(nonScoringMove(h.game.board,h.game.player));h.game.undo();assert.equal(r.moveEffect,null);
+  h.game.executeMove(nonScoringMove(h.game.board,h.game.player));h.game.start(6,'pvp','normal');assert.equal(r.moveEffect,null);
+});

@@ -75,3 +75,19 @@ test('skin effects are distinct, bounded and do not add any game rules',async()=
   assert.equal(skins[0].finish.glow,0);
   assert.ok(skins.every(s=>s.finish.particles>=8&&s.finish.particles<=20));
 });
+
+test('P4.3 moving highlight uses one stroke and never replaces a mixed-owner edge',async()=>{
+  const {Renderer,Board,skins}=await load();
+  const canvas=fakeCanvas(),renderer=new Renderer(canvas,skins[0]),board=new Board(4);
+  renderer.CELL=60;renderer.offX=renderer.offY=10;renderer.premiumMatch=true;
+  const move={t:'h',r:2,c:2};board.h[2][2]=true;
+  renderer.animateMove(move,1);renderer.moveEffect.born=Date.now()-90;
+  renderer.draw(board,move);
+  const target=()=>canvas.strokes.filter(s=>JSON.stringify(s.pts)===JSON.stringify([[130,130],[190,130]]));
+  assert.equal(target().length,1);assert.ok(target()[0].style.stops.some(s=>s[1]==='#ffffff'));
+  board.owner[1][2]=1;board.owner[2][2]=0;
+  canvas.strokes.length=0;renderer.draw(board,move);
+  assert.equal(target().length,1);assert.equal(target()[0].width,1);
+  assert.deepEqual(Array.from(target()[0].style.coords),[130,129.5,130,130.5]);
+  assert.equal(target()[0].style.stops.length,4);
+});

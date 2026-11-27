@@ -76,3 +76,26 @@ test('reduced motion suppresses optional capture animations',async()=>{
   const h=await load(true),r=new h.Renderer(canvas());
   r.spawnParticles(2,2,1);assert.equal(r.particles.length,0);
 });
+
+
+test('P4.3 Core Neon move sweep and capture scale are finite and opt-in',async()=>{
+  const h=await load(),r=new h.Renderer(canvas());
+  const move={t:'h',r:2,c:1};
+  r.animateMove(move,1);assert.equal(r.moveEffect,null);
+  r.premiumMatch=true;r.animateMove(move,1);
+  assert.equal(r.moveProgress(),0);assert.equal(r.moveEffect.player,1);
+  r.spawnParticles(2,1,1);assert.equal(r.particles[0].duration,380);
+  assert.equal(r.captureScale(2,1,1000),.72);assert.equal(r.captureScale(1,1,1000),1);
+  h.advance(90);assert.equal(r.moveProgress(),.5);
+  assert.ok(r.captureScale(2,1,1090)>.72);
+  h.advance(140);assert.equal(r.moveProgress(),null);assert.equal(r.captureScale(2,1,1230),1);
+  r.CELL=60;r.offX=r.offY=10;h.advance(200);r.updateParticles();assert.equal(r.particles.length,0);
+});
+test('P4.3 reduced motion and alternate skins do not activate premium effects',async()=>{
+  const h=await load(true),r=new h.Renderer(canvas());r.premiumMatch=true;
+  r.animateMove({t:'v',r:1,c:1},0);r.spawnParticles(1,1,0);
+  assert.equal(r.moveEffect,null);assert.equal(r.particles.length,0);assert.equal(r.captureScale(1,1,1000),1);
+  const k=await load(),royal=new k.Renderer(canvas(),k.skins.SKINS.find(s=>s.id==='royal'));
+  royal.premiumMatch=true;royal.animateMove({t:'v',r:1,c:1},0);royal.spawnParticles(1,1,0);
+  assert.equal(royal.moveEffect,null);assert.equal(royal.particles[0].duration,royal.skin.finish.duration);
+});
