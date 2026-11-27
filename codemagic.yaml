@@ -127,3 +127,46 @@ workflows:
           chmod 700 "$ASKPASS"
           GIT_ASKPASS="$ASKPASS" git -c credential.helper= push https://github.com/Aleksandar1105/RombMaster.git "HEAD:refs/heads/$CM_BRANCH"
           echo "ASSET PUSH: PASS"
+
+  rombmaster-font-import:
+    name: RombMaster Offline Font Import
+    instance_type: mac_mini_m2
+    max_build_duration: 15
+    environment:
+      groups:
+        - rombmaster_asset_write
+    scripts:
+      - name: Validate source revision
+        script: |
+          set -eu
+          test "$CM_BRANCH" = "feat/android-closed-test-core"
+          test "$(git rev-parse HEAD)" = "$CM_COMMIT"
+          test -n "${ROMBMASTER_ASSET_TOKEN:-}"
+          test -z "$(git status --porcelain)"
+      - name: Import and verify offline fonts
+        script: |
+          set -eu
+          python3 -m venv /tmp/rombmaster-font-venv
+          /tmp/rombmaster-font-venv/bin/pip install --disable-pip-version-check fonttools==4.60.1 brotli==1.1.0
+          /tmp/rombmaster-font-venv/bin/python scripts/import-p412d-fonts.py
+          node scripts/verify-p412d-fonts.mjs
+      - name: Commit verified offline fonts
+        script: |
+          set -eu
+          for file in exo-2.woff2 manrope.woff2 exo-2-OFL.txt manrope-OFL.txt manifest.json; do
+            git add -- "src/public/assets/fonts/rombm/$file"
+          done
+          test -z "$(git diff --name-only)"
+          test -z "$(git ls-files --others --exclude-standard)"
+          git diff --cached --name-only | while IFS= read -r p; do
+            case "$p" in src/public/assets/fonts/rombm/exo-2.woff2|src/public/assets/fonts/rombm/manrope.woff2|src/public/assets/fonts/rombm/exo-2-OFL.txt|src/public/assets/fonts/rombm/manrope-OFL.txt|src/public/assets/fonts/rombm/manifest.json) ;; *) exit 1;; esac
+          done
+          if git diff --cached --quiet; then echo "FONTS ALREADY CURRENT"; exit 0; fi
+          git -c user.name="RombMaster Asset Bot" -c user.email="rombmaster-assets@users.noreply.github.com" commit -m "chore(assets): import verified offline fonts [skip ci]"
+          export GIT_TERMINAL_PROMPT=0
+          ASKPASS="$(mktemp)"
+          trap 'rm -f "$ASKPASS"' EXIT
+          printf '%s\n' '#!/bin/sh' 'case "$1" in *Username*) printf "%s\\n" "x-access-token";; *) printf "%s\\n" "$ROMBMASTER_ASSET_TOKEN";; esac' > "$ASKPASS"
+          chmod 700 "$ASKPASS"
+          GIT_ASKPASS="$ASKPASS" git -c credential.helper= push https://github.com/Aleksandar1105/RombMaster.git "HEAD:refs/heads/$CM_BRANCH"
+          echo "FONT PUSH: PASS"
