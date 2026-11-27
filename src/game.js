@@ -11,6 +11,45 @@ import { nearestLegalLine, canvasPoint } from './input.js';
 
 const audio = new AudioController();
 
+// P4.12b: present existing match data; legacy and lightweight test DOMs keep plain text.
+function renderCoreNeonModeHeading(element, info) {
+  const root = document.documentElement?.dataset;
+  if (root?.edition !== 'core' || root?.skin !== 'neon' ||
+      typeof document.createElement !== 'function' || typeof element.replaceChildren !== 'function' ||
+      typeof element.setAttribute !== 'function') {
+    element.removeAttribute?.('data-rm-mode');
+    return;
+  }
+  const make = (tag, className, text) => {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const heading = make('span', 'rm-mode-heading');
+  const name = make('span', 'rm-mode-name', info.level ? 'Career' : 'Quick Play');
+  if (info.level) name.appendChild(make('span', 'rm-mode-level', 'Level ' + info.level));
+  heading.appendChild(name);
+  const detail = make('span', 'rm-mode-detail');
+  if (!info.level) {
+    detail.textContent = 'Tactical arena';
+  } else {
+    if (info.missionTitle) detail.appendChild(make('span', 'rm-mode-mission', info.missionTitle));
+    const goal = make('span', 'rm-mode-goal');
+    goal.appendChild(make('span', 'rm-mode-goal-text', info.progress));
+    if (info.double === null && Number.isFinite(info.target) && info.target > 0 && Number.isFinite(info.earned)) {
+      const meter = make('progress', 'rm-mode-progress');
+      meter.max = info.target;
+      meter.value = Math.max(0, Math.min(info.target, info.earned));
+      meter.setAttribute('aria-hidden', 'true');
+      goal.appendChild(meter);
+    }
+    detail.appendChild(goal);
+  }
+  element.replaceChildren(heading, detail);
+  element.setAttribute('data-rm-mode', info.level ? 'career' : 'quick');
+}
+
 export const Game = {
   board: null,
   renderer: null,
@@ -583,9 +622,11 @@ export const Game = {
         const progress = double === null ? goal : double ? 'Double capture ✓' : 'Goal: double capture';
         modeLabel.textContent = 'Career · Level ' + level + '\n' + (mission?.title ?? progress);
         modeLabel.title = progress;
+        renderCoreNeonModeHeading(modeLabel, { level, missionTitle: mission?.title, progress, double, earned, target });
       } else {
         modeLabel.textContent = 'Quick Play';
         modeLabel.title = '';
+        renderCoreNeonModeHeading(modeLabel, { level: 0 });
       }
     }
     this.updateTurnStatus();
