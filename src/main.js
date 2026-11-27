@@ -40,6 +40,7 @@ import './neon-p47d-outcomes.css';
 import './neon-p48e-final-polish.css';
 import './neon-p48f-results-glass.css';
 import './neon-p48g-open-results.css';
+import './neon-p48h-result-identity.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
