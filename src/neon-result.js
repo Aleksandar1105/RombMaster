@@ -12,6 +12,17 @@ export function renderCoreResult(overlay, game, doc) {
     caption.textContent = title.textContent;
     title.replaceChildren(caption);
   }
+  if (outcome === 'defeat' || outcome === 'draw') {
+    const hero = doc.createElement('span'); hero.className = 'rm-outcome-emblem';
+    hero.setAttribute('aria-hidden','true');
+    for (const side of ['left','right']) {
+      const part=doc.createElement('span'); part.className='rm-emblem-part rm-emblem-'+side;hero.append(part);
+    }
+    const caption=doc.createElement('span');caption.className='rm-outcome-caption';caption.textContent=outcome === 'draw' ? 'Draw' : 'Defeat';
+    title.replaceChildren(hero,caption);
+    const replay=el('againBtn');
+    if (replay && outcome === 'draw' && !level) replay.textContent='Rematch';
+  }
   const context = el('rm-result-context') || doc.createElement('p');
   context.id = 'rm-result-context';
   context.textContent = level ? 'Career · Level ' + level : game.settings.mode === 'pvp' ? 'Local match' : 'Quick Play';
@@ -63,5 +74,23 @@ export function renderCoreResult(overlay, game, doc) {
   overlay.querySelector('.rm-result-overview').append(note);
   // Keep the actual persistence warning and earned rewards visible, including zero gains.
   const analysis = el('match-analysis');
-  if (analysis) analysis.hidden = outcome === 'victory' || game.settings.mode !== 'ai';
+  if (analysis) {
+    analysis.hidden = outcome === 'victory' || game.settings.mode !== 'ai';
+    if (!analysis.hidden) {
+      const fields=[['Moves','moves'],['Cells captured','captured'],['Double captures','doubles'],['Best chain','bestChain'],['Immediate concessions','gifts']];
+      const values=fields.map(([,key])=>analysis.dataset?.[key]);
+      // Missing stats retain the original analysis text; do not invent zeros.
+      if (values.every(value=>typeof value==='string' && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)))) {
+        const heading=doc.createElement('h3');heading.className='rm-analysis-heading';heading.textContent='Match analysis';
+        const grid=doc.createElement('div');grid.className='rm-analysis-grid';
+        fields.forEach(([label],i)=>{
+          const card=doc.createElement('div');card.className='rm-analysis-stat';
+          const name=doc.createElement('span');name.textContent=label;
+          const value=doc.createElement('strong');value.textContent=values[i];
+          card.append(name,value);grid.append(card);
+        });
+        analysis.replaceChildren(heading,grid);
+      }
+    }
+  }
 }

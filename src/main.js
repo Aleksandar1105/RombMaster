@@ -36,6 +36,7 @@ import './neon-p45-results.css';
 import './neon-p47a-gameplay-optics.css';
 import './neon-p47b-capture.css';
 import './neon-p47c-victory.css';
+import './neon-p47d-outcomes.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';

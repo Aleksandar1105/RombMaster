@@ -10,7 +10,7 @@ async function fixture({outcome='victory',level=7,ready=true,earned=2,next=true,
    append(...nodes){for(const n of nodes){if(n.id)elements.set(n.id,n);this.children=this.children.filter(x=>x!==n);this.children.push(n);}},
    before(n){elements.set(n.id,n);},replaceChildren(...nodes){this.children=nodes;},contains(n){return this.children.includes(n);},setAttribute(k,v){this.attrs[k]=v;},removeAttribute(k){delete this.attrs[k];},addEventListener(k,fn){this[k]=fn;}});
  const doc={createElement:node,getElementById:id=>elements.get(id)||null};
- for(const id of ['result-title','result-score','result-stars','p1-name','p2-name','nextCareerBtn','match-analysis'])elements.set(id,node());
+ for(const id of ['result-title','result-score','result-stars','p1-name','p2-name','nextCareerBtn','match-analysis','againBtn'])elements.set(id,node());
  const overlay=node(),overview=node();overlay.dataset.outcome=outcome;overlay.classList={contains:()=>true};overlay.querySelector=()=>overview;
  const el=doc.getElementById;el('result-score').textContent='7 - 2';el('p1-name').textContent='Player · X';el('p2-name').textContent='Trickster · O';el('nextCareerBtn').hidden=!next;el('nextCareerBtn').textContent='Play level 8';
  const cues=[];const game={settings:{careerLevel:level,mode},careerOutcome:ready?{status:'ready',awardedStars:earned,earnedXP:125,walletReward:{coins:20}}:{status:'unavailable'},resultStarCue:i=>cues.push(i)};
@@ -53,4 +53,22 @@ test('P4.7c cinematic effects are victory-only, nonblocking and reduced-motion s
  assert.ok(css.split('\n').filter(l=>l.trim().startsWith(':root')).every(l=>l.includes('[data-edition="core"] #overlay.flex[data-outcome="victory"]')));
  assert.ok(css.includes('prefers-reduced-motion:no-preference'));assert.ok(css.includes('pointer-events:none'));assert.ok(!css.includes('infinite'));
  assert.ok(css.includes('rm-p47c-star')&&css.includes('rm-p47c-sparks')&&css.includes('rm-p47c-wave')&&css.includes('rm-p47c-sheen'));
+});
+
+
+test('P4.7d actual match metrics render as five cards; missing data stays textual',async()=>{
+ const h=await fixture({outcome:'defeat',next:false});const a=h.el('match-analysis');
+ Object.assign(a.dataset,{moves:'12',captured:'3',doubles:'1',bestChain:'2',gifts:'0'});h.render();
+ assert.equal(h.el('result-title').children[0].children.length,2);
+ assert.deepEqual(a.children[1].children.map(c=>c.children[1].textContent),['12','3','1','2','0']);
+ const missing=await fixture({outcome:'draw',next:false,level:null});missing.el('match-analysis').textContent='Original analysis';missing.render();
+ assert.equal(missing.el('match-analysis').textContent,'Original analysis');assert.equal(missing.el('againBtn').textContent,'Rematch');
+ const local=await fixture({outcome:'draw',next:false,level:null,mode:'pvp'});local.render();assert.equal(local.el('match-analysis').hidden,true);
+});
+test('P4.7d bundled emblems and CSS are non-victory only and finite',()=>{
+ const css=read('src/neon-p47d-outcomes.css');
+ assert.ok(css.split('\n').filter(l=>l.trim().startsWith(':root')).every(l=>l.includes('[data-edition="core"] #overlay.flex')&&l.includes('[data-outcome="draw"]')));
+ assert.ok(css.includes('prefers-reduced-motion:no-preference')&&css.includes('pointer-events:none')&&!css.includes('infinite'));
+ for(const kind of ['defeat','draw'])assert.ok(read('src/skin-art/neon-'+kind+'-emblem.svg').includes('viewBox="0 0 240 240"'));
+ assert.ok(read('src/main.js').includes("import './neon-p47d-outcomes.css';"));
 });

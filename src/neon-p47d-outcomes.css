@@ -1,0 +1,35 @@
+/* P4.7d: approved non-victory emblems and authoritative match analysis. */
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) { --outcome-art:url('./skin-art/neon-defeat-emblem.svg');--outcome-pale:#ffe1e6;--outcome-accent:#ff698c; }
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] { --outcome-art:url('./skin-art/neon-draw-emblem.svg');--outcome-pale:#f4eaff;--outcome-accent:#bca0ff; }
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .center-panel {gap:clamp(4px,1dvh,9px);justify-content:flex-start;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #result-title::before {content:none!important;display:none!important;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #result-title {text-shadow:none!important;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-emblem {position:relative;display:block;width:min(53vw,22dvh,190px);aspect-ratio:1;margin:0 auto 3px;filter:drop-shadow(0 0 8px var(--result-light));}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-emblem-part {position:absolute;inset:0;background:var(--outcome-art) center/contain no-repeat;pointer-events:none;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-emblem-left {clip-path:inset(0 50% 0 0);}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-emblem-right {clip-path:inset(0 0 0 50%);}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-caption {display:block;text-transform:uppercase;letter-spacing:.13em;background:linear-gradient(#fff 4%,var(--outcome-pale) 25%,var(--outcome-accent) 53%,var(--outcome-pale) 80%);color:var(--outcome-pale);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 7px var(--result-light));}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #match-analysis:not([hidden]) {border:0;background:none;padding:0;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-heading {font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#c6dcee;margin:0 0 5px;text-align:left;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat {display:flex;justify-content:space-between;align-items:center;gap:5px;min-width:0;padding:5px 7px;border:1px solid #5a87a456;border-radius:5px;background:linear-gradient(145deg,#162b42e8,#0d1a2df2);text-align:left;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat span {font-size:.69rem;color:#c3d6e8;line-height:1.15;overflow-wrap:anywhere;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat strong {font-size:1.16rem;line-height:1;font-variant-numeric:tabular-nums;color:#e7f7ff;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat:last-child {grid-column:1/-1;}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat:last-child strong {color:var(--outcome-accent);}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .result-details {gap:5px;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .center-panel:has(#nextCareerBtn[hidden]) #againBtn:not(:disabled) {background:linear-gradient(170deg,#e6d9ff,#987bff 27%,#4e358b 67%,#c09cff)!important;--result-face:linear-gradient(180deg,#6550a3,#392b69 35%,#201933 75%,#4b397e);}
+}
+@media(min-height:780px) { :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .result-actions {flex-direction:column;} :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .result-actions button {flex:none;width:100%;} }
+@media(max-height:700px) { :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-emblem {width:min(40vw,16dvh,120px);} :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat {padding:4px 6px;} :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-stat strong {font-size:1rem;} }
+@media(prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-emblem {animation:rm-p47d-arrive .68s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .rm-emblem-left {animation:rm-p47d-left .65s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] .rm-emblem-right {animation:rm-p47d-right .65s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-analysis-grid {animation:rm-p47d-stats .45s .32s ease-out both;}
+}
+@keyframes rm-p47d-arrive {from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+@keyframes rm-p47d-left {from{transform:translateX(-16px)}to{transform:none}}
+@keyframes rm-p47d-right {from{transform:translateX(16px)}to{transform:none}}
+@keyframes rm-p47d-stats {from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}

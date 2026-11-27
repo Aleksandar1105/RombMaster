@@ -506,6 +506,7 @@ export const Game = {
         }
       }
       analysis.hidden=this.settings.mode!=='ai';
+      if (analysis.dataset) Object.assign(analysis.dataset,{moves:String(moves),captured:String(captured),doubles:String(doubles),bestChain:String(bestChain),gifts:String(gifts)});
       analysis.textContent='Match analysis · '+moves+' moves · '+captured+' cells · '+doubles+' double captures · Best chain '+bestChain+' · Immediate concessions '+gifts;
     }
     overlay.classList.add('flex');
