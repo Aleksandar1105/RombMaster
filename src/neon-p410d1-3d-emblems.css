@@ -1,0 +1,9 @@
+/* P4.10d.1 — offline 2.5D outcome art. Keep actual captions, stars,
+   reward data, geometry and existing outcome animation hooks. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::before {
+  background-image:url('/assets/premium/master/neon-3d-victory-emblem.webp')!important;
+ }
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="defeat"] {--outcome-art:url('/assets/premium/master/neon-3d-defeat-emblem.webp');}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="draw"] {--outcome-art:url('/assets/premium/master/neon-3d-draw-emblem.webp');}
