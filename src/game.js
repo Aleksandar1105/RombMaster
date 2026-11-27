@@ -245,7 +245,9 @@ export const Game = {
         ? 'guided-fox' : world?.rival.toLowerCase() || 'rookie';
     }
     if (this.ui.viewGame.dataset) this.ui.viewGame.dataset.world = world?.name.toLowerCase().replace(/ /g, '-') || '';
-    this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5 ? '🦊 Fox' : world ? world.icon+' '+world.rival : 'Computer';
+    const plainRival = document.documentElement?.dataset?.edition === 'core';
+    this.rivalName = this.settings.openingVersion && this.settings.careerLevel === 5
+      ? (plainRival ? 'Fox' : '🦊 Fox') : world ? (plainRival ? world.rival : world.icon+' '+world.rival) : 'Computer';
     const combo=document.getElementById('capture-combo');if(combo)combo.hidden=true;
     setLabel('p2-name', (aiMatch ? this.rivalName : 'Player 2') + ' · O');
     this.updateUI();

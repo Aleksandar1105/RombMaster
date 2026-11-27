@@ -33,6 +33,7 @@ import './neon-p310-career-final.css';
 import './neon-p42-gameplay-hud.css';
 import './neon-p44-match-feedback.css';
 import './neon-p45-results.css';
+import './neon-p47a-gameplay-optics.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';

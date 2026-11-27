@@ -907,3 +907,18 @@ test('P4.3 move effects keep rendering only while active and clear on Undo and r
   assert.doesNotMatch(h.getElement('capture-combo').textContent,/EXTRA TURN/);
   h.game.stop();assert.equal(h.getElement('capture-combo').hidden,true);
 });
+
+
+test('P4.7a Core rival labels omit decorative emoji without changing identity or legacy labels',async()=>{
+  const core=await harness({edition:'core',autoStart:false,storage:unlockedCareerFixture()});
+  assert.equal(core.game.start(4,'ai','easy',7),true);
+  assert.equal(core.getElement('p2-name').textContent,'Trickster · O');
+  assert.equal(core.getElement('match-rival-portrait').dataset.rival,'trickster');
+  core.game.executeMove(nonScoringMove(core.game.board));
+  assert.match(core.getElement('turn-label').textContent,/^Trickster thinking/);
+  assert.equal(core.game.start(4,'ai','easy',5),true);
+  assert.equal(core.getElement('p2-name').textContent,'Fox · O');
+  const legacy=await harness({edition:'full',autoStart:false,storage:unlockedCareerFixture()});
+  assert.equal(legacy.game.start(4,'ai','easy',7),true);
+  assert.equal(legacy.getElement('p2-name').textContent,'🤖 Rookie · O');
+});
