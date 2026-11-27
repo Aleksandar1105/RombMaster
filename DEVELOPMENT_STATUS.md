@@ -611,3 +611,23 @@ Owner explicitly requested transparent, borderless surfaces behind Victory, Defe
 ## P4.8h — Final Results Identity (2026-11-27)
 
 Owner approved continuation of three remaining result refinements. Replaced the local Defeat SVG with an original faceted crimson crystal, branching fractures, floating shards and transparent radial aura; retained retry glyph and existing finite animation. This is a vector interpretation of the approved 3D concept, not a photorealistic raster render. Core Neon result-only logo crop calculated from the existing 1048x700 WebP: retain central diamond tip while excluding lower board and side crystal, no Home asset change. All portrait outcomes use equal full-width stacked Replay/Rematch and Home actions (violet and cyan respectively); compact landscape retains side-by-side layout. Career next-level action and existing handlers, focus and press feedback remain unchanged. P4.8g transparent surfaces retained. Art 38cca22, CSS aad6d68, import fd2a398, two new tests ad6b704. Fourteen direct source checks PASS; expected total 350 Node tests, full suite and Android build not executed here. Device visual quality, actual logo crop, compact portrait scrolling, contrast, button accessibility and motion need verification. No new Picsart credits or GitHub Actions. Next combined manual Codemagic Cloud Test APK on feat/android-closed-test-core, owner QA of all outcomes and gameplay before P4 freeze; then P5 audio/haptics.
+
+
+## P4.10–P4.11 — Gameplay / Results redesign: authoritative resume checkpoint (2026-11-27)
+
+Owner supplied the previously agreed plan as a screenshot and explicitly requested that GitHub records be corrected. This checkpoint supersedes the P4.8h next-step instruction to build immediately. P4.8h remains the last verified recorded implementation baseline; do not reopen P1/P2/P3 or discard P4.8h changes. No P4.9 device result or P4.10 implementation has been verified from available evidence. All steps below are PLANNED, not implemented or accepted:
+
+| Phase | Scope | State |
+| --- | --- | --- |
+| P4.10a | New Gameplay / Results background | PLANNED — NEXT |
+| P4.10b | Compact HUD and headings | PLANNED |
+| P4.10c | Board and control proportions | PLANNED |
+| P4.10d | Transparent Victory, Defeat and Draw emblems | PLANNED |
+| P4.10e | Results and reward animations | PLANNED |
+| P4.10f | Integrated source review | PLANNED |
+| P4.11 | Codemagic APK and Android QA | PLANNED |
+
+Scope: Gameplay and Results only. Home, Quick Play Setup and Career remain frozen/out of scope. Do not change game rules, economy or saved progress. Implement animation in code with restrained Android rendering cost. No GitHub Actions. Preserve actual result/reward data and previous fixes. A generated background preview is not evidence of owner acceptance or offline asset integration; verify the agreed artwork and source state at P4.10a before committing runtime changes. No build until P4.10f integrated review; P5 follows P4.11 and owner visual acceptance. Last recorded full Node execution: 342/342 PASS at P4.7d; P4.8h expected 350 tests, not verified by a full run. This correction is documentation only.
+
+### Resume protocol
+Active repository: Aleksandar1105/RombMaster. Active branch: feat/android-closed-test-core. Before any continuation, read the latest checkpoint in ROADMAP.md, DEVELOPMENT_STATUS.md and QA_STATUS.md on this exact branch, cross-check actual source and latest commits, reconcile any mismatch, and resume the first unfinished task. After each approved plan or implementation, record the current phase, actual commit(s), test evidence versus pending checks, and explicit next task in all three files. Do not infer completion from a mockup, source-only checks, or conversation summary. If an operation is interrupted, re-read current branch and source before retrying. Do not start a build or advance to P5 based on superseded next-step entries.
