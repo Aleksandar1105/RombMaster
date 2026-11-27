@@ -1,0 +1,56 @@
+/* P4.12a — compact faceted turn HUD, approved visual direction.
+   Live text and existing state attributes remain authoritative.
+   Two-line reservations avoid ordinary turn-to-turn board displacement.
+   Very long names may wrap naturally rather than be clipped. */
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] {
+ --turn-accent:#ff7295;--turn-pale:#ffd8e3;--turn-rim-dark:#8c3759;
+ --turn-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2038%2020%2020%2038%202%2020Z%22%20fill%3D%22%23101e32%22%20stroke%3D%22%23ff8eaa%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m14%2014%2012%2012m0-12L14%2026%22%20stroke%3D%22%23ff8eaa%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E");
+ --turn-cut:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px);
+ position:relative;isolation:isolate;box-sizing:border-box;flex:none;
+ display:grid;grid-template-columns:clamp(28px,9vw,36px) minmax(0,1fr) clamp(28px,9vw,36px);
+ grid-template-rows:auto auto;align-items:center;justify-content:center;gap:0 4px;
+ width:100%;max-width:var(--hud-max);padding:3px 8px;
+ clip-path:var(--turn-cut);border:0!important;border-radius:0;
+ background:linear-gradient(155deg,var(--turn-pale),var(--turn-rim-dark) 32%,#25354c 56%,var(--turn-accent))!important;
+ box-shadow:none;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-player="two"] {--turn-accent:#43e6ff;--turn-pale:#b1faff;--turn-rim-dark:#297e9c;--turn-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2038%2020%2020%2038%202%2020Z%22%20fill%3D%22%23101e32%22%20stroke%3D%22%2372efff%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%227%22%20fill%3D%22none%22%20stroke%3D%22%2372efff%22%20stroke-width%3D%222.5%22%2F%3E%3C%2Fsvg%3E");}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-turn-kind="extra"] {--turn-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2038%2020%2020%2038%202%2020Z%22%20fill%3D%22%23101e32%22%20stroke%3D%22%23ffce7a%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m22%209-10%2013h8l-2%209%2011-14h-8z%22%20fill%3D%22%23ffd582%22%2F%3E%3C%2Fsvg%3E");}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-turn-kind="paused"] {--turn-accent:#9fb5ca;--turn-pale:#dce8f2;--turn-rim-dark:#52667d;--turn-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2038%2020%2020%2038%202%2020Z%22%20fill%3D%22%23101e32%22%20stroke%3D%22%23adbed0%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M16%2013v14m8-14v14%22%20stroke%3D%22%23adbed0%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E");}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-turn-kind="complete"] {--turn-accent:#9fb5ca;--turn-pale:#dce8f2;--turn-rim-dark:#52667d;--turn-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2038%2020%2020%2038%202%2020Z%22%20fill%3D%22%23101e32%22%20stroke%3D%22%23adbed0%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m12%2020%206%206%2010-12%22%20fill%3D%22none%22%20stroke%3D%22%23adbed0%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E");}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player]::before {
+ content:"";display:block;position:absolute;inset:1.5px;width:auto;height:auto;z-index:-1;
+ border:0;border-radius:0;clip-path:var(--turn-cut);pointer-events:none;
+ background:linear-gradient(145deg,#ffffff17 0 9%,transparent 9% 85%,#ffffff12 85% 91%,transparent 91%),
+ radial-gradient(ellipse 34% 5% at 50% 100%,var(--turn-accent),transparent 95%),
+ linear-gradient(180deg,color-mix(in srgb,var(--turn-rim-dark) 34%,#101e32),#101d30 48%,#0b1628)!important;
+ box-shadow:inset 0 1px #ffffff38;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player]::after {
+ content:"";display:block;position:static;grid-column:1;grid-row:1/3;
+ width:100%;aspect-ratio:1;align-self:center;pointer-events:none;
+ background:var(--turn-icon) center/contain no-repeat;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] #turn-label {
+ grid-column:2;grid-row:1;display:grid;place-content:end center;
+ min-height:2.2em;min-width:0;font-size:clamp(.72rem,3.1vw,.88rem);line-height:1.1;
+ font-weight:800;letter-spacing:.055em;text-transform:uppercase;color:var(--turn-pale)!important;
+ text-align:center;white-space:normal;overflow-wrap:anywhere;margin:0;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] #turn-label::before {display:none;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player] #turn-hint {
+ grid-column:2;grid-row:2;display:grid;place-content:start center;position:static;
+ width:auto;height:auto;min-width:0;min-height:2.3em;clip-path:none;
+ overflow:visible;font-size:clamp(.65rem,2.7vw,.76rem);line-height:1.15;
+ font-weight:500;letter-spacing:.015em;text-align:center;color:#c5d6e5!important;
+ white-space:normal;overflow-wrap:anywhere;margin:0;
+}
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-player="one"]::after {animation:rm-p412a-x 280ms ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-player="two"]::after {animation:rm-p412a-o 280ms ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player][data-turn-kind="extra"]::after {animation:rm-p412a-extra 360ms ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-player]:is([data-turn-kind="paused"],[data-turn-kind="complete"])::after {animation:none;}
+}
+@keyframes rm-p412a-x {from{opacity:.55;transform:scale(.9);}to{opacity:1;transform:none;}}
+@keyframes rm-p412a-o {from{opacity:.55;transform:scale(.9);}to{opacity:1;transform:none;}}
+@keyframes rm-p412a-extra {0%{opacity:.6;transform:scale(.9);}55%{opacity:1;transform:scale(1.08);}100%{opacity:1;transform:none;}}
