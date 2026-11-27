@@ -94,16 +94,24 @@ workflows:
           set -eu
           python3 -m venv /tmp/rombmaster-assets-venv
           /tmp/rombmaster-assets-venv/bin/pip install --disable-pip-version-check Pillow==12.0.0
-          /tmp/rombmaster-assets-venv/bin/python scripts/picsart-assets.py
+          if [ "$CM_BRANCH" = "feat/android-closed-test-core" ]; then
+            /tmp/rombmaster-assets-venv/bin/python scripts/import-p410d1-emblems.py
+          else
+            /tmp/rombmaster-assets-venv/bin/python scripts/picsart-assets.py
+          fi
       - name: Commit generated assets to the same feature branch
         script: |
           set -eu
           node scripts/verify-theme-assets.mjs
           if [ "$CM_BRANCH" = "feat/android-closed-test-core" ]; then
-            git add -- src/public/assets/premium/master/neon-gameplay-arena-v2.webp
-            test -f src/public/assets/premium/master/neon-gameplay-arena-v2.webp
-            staged="$(git diff --cached --name-only)"
-            test -z "$staged" || test "$staged" = "src/public/assets/premium/master/neon-gameplay-arena-v2.webp"
+            for outcome in defeat draw victory; do
+              p="src/public/assets/premium/master/neon-3d-${outcome}-emblem.webp"
+              test -f "$p"
+              git add -- "$p"
+            done
+            git diff --cached --name-only | while IFS= read -r p; do
+              case "$p" in ""|src/public/assets/premium/master/neon-3d-defeat-emblem.webp|src/public/assets/premium/master/neon-3d-draw-emblem.webp|src/public/assets/premium/master/neon-3d-victory-emblem.webp) ;; *) echo "Unexpected staged path"; exit 1;; esac
+            done
             test -z "$(git diff --name-only)"
             test -z "$(git ls-files --others --exclude-standard)"
           else
