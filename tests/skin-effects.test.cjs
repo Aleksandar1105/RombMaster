@@ -99,3 +99,24 @@ test('P4.3 reduced motion and alternate skins do not activate premium effects',a
   royal.premiumMatch=true;royal.animateMove({t:'v',r:1,c:1},0);royal.spawnParticles(1,1,0);
   assert.equal(royal.moveEffect,null);assert.equal(royal.particles[0].duration,royal.skin.finish.duration);
 });
+
+
+test('P4.7b cinematic capture stays clipped, finite and uses real gain and bounded chain',async()=>{
+  const h=await load(),c=canvas(),r=new h.Renderer(c);r.premiumMatch=true;r.CELL=60;r.offX=r.offY=10;
+  r.spawnParticles(1,2,1,{gain:2,chain:9});const p=r.particles[0];
+  assert.equal(p.duration,480);assert.equal(p.intensity,4);assert.equal(p.double,true);
+  h.advance(100);r.updateParticles();assert.ok(c.log.some(x=>x[0]==='clip'));
+  for(const [op,x,y,w,z] of c.log.filter(x=>x[0]==='fillRect')){
+    assert.ok(x>=130&&y>=70&&x+w<=190&&y+z<=130);
+  }
+  h.advance(381);r.updateParticles();assert.equal(r.particles.length,0);
+  r.spawnParticles(1,2,1,{gain:1,chain:3});assert.equal(r.particles[0].duration,460);
+  r.spawnParticles(1,2,1,{gain:1,chain:1});assert.equal(r.particles[1].duration,420);
+});
+test('P4.7b distinct capture sound uses cancellable audio cues and keeps mute authoritative',async()=>{
+  const h=await load(),a=new h.audio();a.init();a.captureFeedback(2,2);h.flush();
+  assert.ok(h.played.some(x=>x[0]===1568));
+  a.captureFeedback(1,3);h.flush();assert.ok(h.played.some(x=>x[0]===1319));
+  a.captureFeedback(2,2);a.pause();const count=h.played.length;h.flush();assert.equal(h.played.length,count);
+  a.resume();a.enabled=false;a.captureFeedback(2,2);assert.equal(h.timers.size,0);assert.equal(h.played.length,count);
+});

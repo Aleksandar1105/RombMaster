@@ -441,13 +441,17 @@ export class Renderer {
     ctx.restore();
   }
 
-  spawnParticles(r, c, player) {
+  spawnParticles(r, c, player, feedback = null) {
     if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
     const skin = this.skin || activeSkin();
     const color = player === CONSTANTS.X ? skin.colors.x : skin.colors.o;
     // Grid coordinates keep the animation aligned through a resize.
     const born = Date.now();
-    this.particles.push({r,c,color,born,duration:this.premiumMotion(skin) ? 380 : skin.finish.duration,effect:skin.finish.effect,count:skin.finish.particles});
+    const cinematic = this.premiumMotion(skin) && feedback && feedback.gain > 0;
+    const intensity = cinematic ? Math.min(4, Math.max(1, feedback.chain)) : 1;
+    const duration = cinematic ? (feedback.gain === 2 ? 480 : intensity > 1 ? 460 : 420) : this.premiumMotion(skin) ? 380 : skin.finish.duration;
+    this.particles.push({r,c,color,born,duration,effect:skin.finish.effect,count:skin.finish.particles,
+      cinematic: Boolean(cinematic), intensity, double: Boolean(cinematic && feedback.gain === 2)});
     // Bound memory when several cells are captured in a rapid chain.
     if (this.particles.length > 48) this.particles.splice(0,this.particles.length-48);
   }
@@ -489,6 +493,27 @@ export class Renderer {
           }
         }
       } else if (p.effect==='neon-pulse') {
+        if (p.cinematic) {
+          // A travelling light wash inside the cell, never a second grid stroke.
+          const span=size-2*margin, thick=Math.min(5,span*.10);
+          const head=(t*1.65)%1, length=Math.min(span*.52,span*(.26+.055*p.intensity));
+          ctx.globalAlpha=.85*a;ctx.fillStyle='#ffffff';
+          const edge=(offset,vertical,reverse)=>{
+            const pos=(head+offset)%1, start=Math.max(0,pos*span-length/2), end=Math.min(span,pos*span+length/2);
+            if(end<=start)return;
+            const along=reverse?span-end:start;
+            if(vertical)ctx.fillRect(x+margin+(reverse?span-thick:0),y+margin+along,thick,end-start);
+            else ctx.fillRect(x+margin+along,y+margin+(reverse?span-thick:0),end-start,thick);
+          };
+          edge(0,false,false);edge(.25,true,true);edge(.5,false,true);edge(.75,true,false);
+          ctx.fillStyle=p.color;ctx.globalAlpha=.20*a*(1+p.intensity*.15);
+          ctx.fillRect(x+margin,y+margin,span,span);
+          if(p.double){
+            ctx.globalAlpha=.7*a;ctx.strokeStyle='#ffffff';ctx.lineWidth=Math.max(1,span*.025);
+            ctx.beginPath();ctx.arc(cx,cy,span*(.12+.28*ease),0,Math.PI*2);ctx.stroke();
+          }
+          ctx.strokeStyle=p.color;ctx.fillStyle=p.color;
+        }
         ctx.globalAlpha=.28*a;
         ctx.fillRect(x+margin,y+margin,size-2*margin,size-2*margin);
         for(let j=0;j<2;j++){

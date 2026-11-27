@@ -311,11 +311,19 @@ export const Game = {
     this.hoverMove = null;
     Native.vibrate('light');
 
+    let chain=0;
+    for(let i=this.historyStack.length-1;i>=0;i--){
+      const turn=this.historyStack[i],after=this.historyStack[i+1]?.score??this.board.score;
+      if(turn.player!==snapshot.player || after[snapshot.player]-turn.score[snapshot.player] <= 0)break;
+      chain+=after[snapshot.player]-turn.score[snapshot.player];
+    }
+    const core = this.coreMatchFeedback();
     if (res.points > 0) {
-      audio.score();
+      if(core && audio.captureFeedback) audio.captureFeedback(res.points,chain);
+      else audio.score();
       Native.vibrate('medium');
       res.capturedSquares.forEach((sq) => {
-        this.renderer.spawnParticles(sq.r, sq.c, this.player);
+        this.renderer.spawnParticles(sq.r, sq.c, this.player, core ? {gain:res.points,chain} : null);
       });
     } else {
       audio.move();
@@ -325,19 +333,13 @@ export const Game = {
     this.clearMatchFeedback();
     const combo=document.getElementById('capture-combo');
     if(combo){
-      let chain=0;
-      for(let i=this.historyStack.length-1;i>=0;i--){
-        const turn=this.historyStack[i],after=this.historyStack[i+1]?.score??this.board.score;
-        if(turn.player!==snapshot.player || after[snapshot.player]-turn.score[snapshot.player] <= 0)break;
-        chain+=after[snapshot.player]-turn.score[snapshot.player];
-      }
-      const core = this.coreMatchFeedback();
       combo.hidden=res.points===0||(!core&&chain<2);
       if(!combo.hidden){
         if (core) {
           const title = res.points === 2 ? 'DOUBLE CAPTURE' : chain >= 2 ? 'COMBO ×' + chain : this.board.isGameOver() ? 'CAPTURE' : 'EXTRA TURN';
           combo.textContent = title + ' · +' + res.points + (chain > res.points && res.points === 2 ? ' · COMBO ×' + chain : '');
           combo.dataset.intensity = String(Math.min(4, chain));
+          combo.dataset.kind = res.points === 2 ? 'double' : chain >= 2 ? 'chain' : 'single';
         } else combo.textContent=(res.points===2?'Double Capture':chain>=4?'Quad Chain':chain===3?'Triple Chain':'Double Chain')+' · '+chain+' cells';
         combo.dataset.owner=String(snapshot.player);
         combo.classList?.remove('combo-flash');void combo.offsetWidth;combo.classList?.add('combo-flash');

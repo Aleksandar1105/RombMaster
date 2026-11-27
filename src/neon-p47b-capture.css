@@ -1,0 +1,14 @@
+/* P4.7b: distinct finite feedback, scoped to the live match. */
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo:not([hidden]) {letter-spacing:.065em;white-space:normal;text-align:center;box-shadow:0 0 var(--feedback-glow) var(--feedback-owner),inset 0 1px #fff8;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-kind="double"] {border-color:#ffe2a0;background:linear-gradient(135deg,#ffdf8733,transparent 35%,#ffdf871e),#101c2f;box-shadow:0 0 20px var(--feedback-owner),inset 0 0 7px #ffdf8755;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-kind="chain"] {border-color:var(--feedback-owner);background:linear-gradient(125deg,#b793ff33,transparent 42%,#b793ff22),#101c2f;}
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo.combo-flash[data-kind="single"] {animation:rm-p47b-single .65s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo.combo-flash[data-kind="double"] {animation:rm-p47b-double .85s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo.combo-flash[data-kind="chain"] {animation:rm-p47b-chain .85s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view .score-num.rm-score-gain {animation:rm-p47b-score .42s ease-out both;}
+}
+@keyframes rm-p47b-single {0%{opacity:0;transform:translateX(-50%) scale(.92)}18%,66%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;visibility:hidden;transform:translate(-50%,-5px)}}
+@keyframes rm-p47b-double {0%{opacity:0;transform:translateX(-50%) scale(.82)}24%{opacity:1;transform:translateX(-50%) scale(1.06)}38%,72%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;visibility:hidden;transform:translate(-50%,-7px)}}
+@keyframes rm-p47b-chain {0%{opacity:0;transform:translate(-50%,6px)}20%,72%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;visibility:hidden;transform:translate(-50%,-9px)}}
+@keyframes rm-p47b-score {0%,100%{transform:none;filter:none}35%{transform:scale(1.13);filter:brightness(1.45)}}

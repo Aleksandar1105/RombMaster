@@ -82,5 +82,14 @@ export class AudioController {
   }
   move(id) { this.cue('move',id); }
   score(id) { this.cue('capture',id); }
+  captureFeedback(gain, chain, id = activeSkin().id) {
+    this.score(id);
+    if (id !== 'neon' || this.paused || !this.enabled || !this.ctx) return;
+    if (gain === 2) this.later(() => this.playTone(1568,'sine',.16,.032),195);
+    else if (chain >= 2) {
+      const frequency = [1047,1319,1568][Math.min(4,chain)-2];
+      this.later(() => this.playTone(frequency,'triangle',.14,.028),165);
+    }
+  }
   win(id) { this.cue('win',id); }
 }
