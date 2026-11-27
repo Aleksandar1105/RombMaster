@@ -1,0 +1,16 @@
+/* P4.10d — actual transparent outcome artwork over the shared arena.
+   Keep Master art for existing catalog/preview uses; preserve result geometry
+   and finite motion. The reference medallion has a real WebP alpha channel. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex[data-outcome="victory"] #result-title::before {
+  background-image:url('/assets/premium/reference/victory-medallion.webp')!important;
+  background-color:transparent!important;
+  background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important;
+  mask-image:none!important;-webkit-mask-image:none!important;
+  border:0!important;box-shadow:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-emblem {
+  background:none!important;border-color:transparent!important;box-shadow:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) .rm-emblem-part {background-color:transparent!important;}
+}
