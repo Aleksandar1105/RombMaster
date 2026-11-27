@@ -869,3 +869,41 @@ test('P4.3 move effects keep rendering only while active and clear on Undo and r
   h.game.executeMove(nonScoringMove(h.game.board,h.game.player));h.game.undo();assert.equal(r.moveEffect,null);
   h.game.executeMove(nonScoringMove(h.game.board,h.game.player));h.game.start(6,'pvp','normal');assert.equal(r.moveEffect,null);
 });
+
+ test('P4.4 Core feedback uses real capture gain and chain, and undo clears it',async()=>{
+  const h=await harness({edition:'core',autoStart:false});h.game.start(6,'pvp','normal');
+  const fixture=chainFixture(h.game);h.game.board=fixture.board;
+  h.game.executeMove(fixture.move);
+  const combo=h.getElement('capture-combo');assert.equal(combo.hidden,true);
+  for(let i=0;i<2;i++){
+    const move=scoringMove(h.game.board);const before=h.game.board.score[0];
+    h.game.executeMove(move);
+    const gain=h.game.board.score[0]-before;
+    assert.ok(gain>0);assert.equal(combo.hidden,false);assert.equal(combo.dataset.owner,'0');
+    assert.ok(combo.textContent.includes('+'+gain));assert.equal(h.game.ui.p2Score.textContent,h.game.board.score[0]);
+    assert.ok(h.game.ui.p2Score.classList.contains('rm-score-gain'));
+    assert.ok(Number(combo.dataset.intensity)>=i+1);
+  }
+  assert.match(combo.textContent,/COMBO|DOUBLE CAPTURE/);
+  assert.equal(h.getElement('turn-status').dataset.turnKind,'extra');
+  h.game.undo();assert.equal(combo.hidden,true);assert.equal(h.game.ui.p2Score.classList.contains('rm-score-gain'),false);
+});
+ test('P4.4 thinking state follows actual AI turn and clears on pause, resume and restart',async()=>{
+  const h=await harness({edition:'core'});const banner=h.getElement('turn-status');
+  assert.equal(banner.dataset.turnKind,'normal');h.game.executeMove(nonScoringMove(h.game.board));
+  assert.equal(banner.dataset.turnKind,'thinking');assert.equal(h.timers.size,1);
+  h.game.setActive('native',false);assert.equal(banner.dataset.turnKind,'paused');assert.equal(h.getElement('capture-combo').hidden,true);
+  h.game.setActive('native',true);assert.equal(banner.dataset.turnKind,'thinking');assert.equal(h.timers.size,1);
+  h.game.start(6,'pvp','normal');assert.equal(banner.dataset.turnKind,'normal');assert.equal(h.timers.size,0);
+});
+ test('P4.4 legacy edition retains capture feedback and Core final capture is not an extra turn',async()=>{
+  const legacy=await harness({autoStart:false});legacy.game.start(6,'pvp','normal');
+  const fixture=chainFixture(legacy.game);legacy.game.board=fixture.board;legacy.game.executeMove(fixture.move);
+  const before=legacy.game.board.score[0];legacy.game.executeMove(scoringMove(legacy.game.board));
+  if(legacy.game.board.score[0]-before===1) assert.equal(legacy.getElement('capture-combo').hidden,true);
+  assert.equal(legacy.game.ui.p2Score.classList.contains('rm-score-gain'),false);
+  const h=await harness({edition:'core',autoStart:false});scheduleFinish(h.game);
+  assert.equal(h.getElement('turn-status').dataset.turnKind,'complete');
+  assert.doesNotMatch(h.getElement('capture-combo').textContent,/EXTRA TURN/);
+  h.game.stop();assert.equal(h.getElement('capture-combo').hidden,true);
+});

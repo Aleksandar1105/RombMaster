@@ -1,0 +1,28 @@
+/* P4.4: finite Core Neon match feedback; no layout or input changes. */
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo:not([hidden]) {
+ --feedback-owner:var(--skin-o);--feedback-glow:12px;
+ position:absolute;top:36%;left:50%;margin:0;transform:translateX(-50%);
+ max-width:calc(100% - 24px);width:max-content;box-sizing:border-box;
+ padding:7px 12px;pointer-events:none;z-index:3;border:1px solid var(--feedback-owner);
+ border-radius:6px;background:linear-gradient(140deg,#ffffff20 0 9%,transparent 9% 83%,#ffffff18 83% 90%,transparent 90%),linear-gradient(180deg,#20364a,#091626 65%,#142b40);
+ color:#f4faff;font-weight:900;font-size:clamp(.75rem,3.3vw,.98rem);letter-spacing:.045em;line-height:1.25;
+ text-shadow:0 0 5px var(--feedback-owner);box-shadow:0 0 var(--feedback-glow) var(--feedback-owner),inset 0 1px #ffffff60;
+}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-owner="1"] {--feedback-owner:var(--skin-x);}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-intensity="2"] {--feedback-glow:16px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-intensity="3"] {--feedback-glow:20px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo[data-intensity="4"] {--feedback-glow:24px;}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-turn-kind="extra"] {box-shadow:inset 0 0 9px var(--gem);}
+:root[data-skin="neon"][data-edition="core"] #view-game.active-view #turn-status[data-turn-kind="thinking"] #turn-label {color:#d8faff;}
+@media (prefers-reduced-motion:no-preference) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo.combo-flash {animation:rm-feedback-toast .85s ease-out both;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view .score-num.rm-score-gain {animation:rm-feedback-score .32s ease-out both;transform-origin:center;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view:has(#turn-status[data-turn-kind="thinking"]) #p2-card.active::before {animation:rm-feedback-thinking .65s ease-in-out 1;}
+}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #capture-combo.combo-flash {animation:rm-feedback-static .85s steps(1,end) both;}
+}
+@keyframes rm-feedback-toast {0%{opacity:0;transform:translateX(-50%) scale(.94)} 14%,62%{opacity:1;transform:translateX(-50%) scale(1)} 100%{opacity:0;visibility:hidden;transform:translate(-50%,-5px)}}
+@keyframes rm-feedback-score {0%,100%{transform:none} 40%{transform:scale(1.14)}}
+@keyframes rm-feedback-thinking {0%,100%{filter:none} 50%{filter:brightness(1.35)}}
+@keyframes rm-feedback-static {from{visibility:visible}to{visibility:hidden}}

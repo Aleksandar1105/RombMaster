@@ -42,6 +42,7 @@ export const Game = {
       if (this.board && !this.ui.viewGame.classList.contains('hidden') && !this.gameOver) this.saveLocal();
       this.cancelPendingAction();
       this.cancelAnimation();
+      this.clearMatchFeedback();
       this.hoverMove = null;
       audio.pause();
       if (this.board) this.updateUI();
@@ -100,6 +101,7 @@ export const Game = {
   stop() {
     this.cancelPendingAction();
     this.cancelAnimation();
+    this.clearMatchFeedback();
     if (this.renderer) this.renderer.moveEffect = null;
     this.hoverMove = null;
     audio.pause();
@@ -204,7 +206,23 @@ export const Game = {
     return true;
   },
 
+  coreMatchFeedback() {
+    return document.documentElement?.dataset?.edition === 'core';
+  },
+
+  clearMatchFeedback() {
+    if (!this.coreMatchFeedback()) return;
+    const combo = document.getElementById('capture-combo');
+    if (combo) {
+      combo.hidden = true;
+      combo.textContent = '';
+      combo.classList?.remove('combo-flash');
+    }
+    for (const score of [this.ui?.p1Score, this.ui?.p2Score]) score?.classList?.remove('rm-score-gain');
+  },
+
   showBoard() {
+    this.clearMatchFeedback();
     const aiMatch = this.settings.mode === 'ai';
     const profile = aiMatch ? ProfileStore.read().profile : null;
     const playerName = aiMatch ? profile?.name || 'You' : 'Player 1';
@@ -302,6 +320,7 @@ export const Game = {
       this.player = 1 - this.player;
     }
 
+    this.clearMatchFeedback();
     const combo=document.getElementById('capture-combo');
     if(combo){
       let chain=0;
@@ -310,15 +329,24 @@ export const Game = {
         if(turn.player!==snapshot.player || after[snapshot.player]-turn.score[snapshot.player] <= 0)break;
         chain+=after[snapshot.player]-turn.score[snapshot.player];
       }
-      combo.hidden=res.points===0||chain<2;
+      const core = this.coreMatchFeedback();
+      combo.hidden=res.points===0||(!core&&chain<2);
       if(!combo.hidden){
-        combo.textContent=(res.points===2?'Double Capture':chain>=4?'Quad Chain':chain===3?'Triple Chain':'Double Chain')+' · '+chain+' cells';
+        if (core) {
+          const title = res.points === 2 ? 'DOUBLE CAPTURE' : chain >= 2 ? 'COMBO ×' + chain : this.board.isGameOver() ? 'CAPTURE' : 'EXTRA TURN';
+          combo.textContent = title + ' · +' + res.points + (chain > res.points && res.points === 2 ? ' · COMBO ×' + chain : '');
+          combo.dataset.intensity = String(Math.min(4, chain));
+        } else combo.textContent=(res.points===2?'Double Capture':chain>=4?'Quad Chain':chain===3?'Triple Chain':'Double Chain')+' · '+chain+' cells';
         combo.dataset.owner=String(snapshot.player);
         combo.classList?.remove('combo-flash');void combo.offsetWidth;combo.classList?.add('combo-flash');
       }
     }
     this.saveLocal();
     this.updateUI();
+    if (this.coreMatchFeedback() && res.points > 0) {
+      const score = snapshot.player === CONSTANTS.X ? this.ui.p1Score : this.ui.p2Score;
+      if (score) { void score.offsetWidth; score.classList?.add('rm-score-gain'); }
+    }
 
     if (this.board.isGameOver()) {
       // Store career progress synchronously at the final move, not after the
@@ -381,6 +409,7 @@ export const Game = {
     this.lastMove = s.lastMove;
     this.renderer.particles = [];
     this.renderer.moveEffect = null;
+    this.clearMatchFeedback();
     // Undo invalidates the prior capture announcement as well as its particles.
     const combo = document.getElementById('capture-combo');
     if (combo) {
@@ -396,6 +425,7 @@ export const Game = {
     if (this.gameOver || this.paused || !this.board.isGameOver()) return;
     this.cancelPendingAction();
     this.gameOver = true;
+    this.clearMatchFeedback();
     const s = this.board.score;
     const result = resultPresentation(s, this.settings.mode);
     const overlay = document.getElementById('overlay');
@@ -498,7 +528,10 @@ export const Game = {
     const extraTurn = last && last.player === this.player &&
       this.board.score[this.player] > last.score[this.player];
 
-    if (banner.dataset) banner.dataset.player = this.player === CONSTANTS.X ? 'one' : 'two';
+    if (banner.dataset) {
+      banner.dataset.player = this.player === CONSTANTS.X ? 'one' : 'two';
+      banner.dataset.turnKind = this.paused ? 'paused' : this.gameOver || this.board.isGameOver() ? 'complete' : isComputer ? 'thinking' : extraTurn ? 'extra' : 'normal';
+    }
     if (this.paused) {
       label.textContent = 'Game paused';
       hint.textContent = 'Return to continue playing';
@@ -509,8 +542,8 @@ export const Game = {
       label.textContent = extraTurn ? this.rivalName + ' gets another turn' : this.rivalName + ' thinking…';
       hint.textContent = extraTurn ? 'Square captured · Computer plays again' : 'Choosing a line';
     } else if (extraTurn) {
-      label.textContent = currentName + ' gets another turn';
-      hint.textContent = 'You captured a square — play again';
+      label.textContent = this.coreMatchFeedback() ? 'Extra turn · ' + (this.settings.mode === 'ai' ? 'You' : currentName) : currentName + ' gets another turn';
+      hint.textContent = this.coreMatchFeedback() ? 'Square captured — play again' : 'You captured a square — play again';
     } else {
       label.textContent = this.settings.mode === 'ai' ? 'Your turn' : currentName + "'s turn";
       hint.textContent = this.firstCaptureHint() ? 'Tap the gold line to close your first square' : 'Tap between two dots to draw a line';

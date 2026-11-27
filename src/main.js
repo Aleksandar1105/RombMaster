@@ -31,6 +31,7 @@ import './neon-p38d-career-rivals.css';
 import './neon-p38e-career-motion.css';
 import './neon-p310-career-final.css';
 import './neon-p42-gameplay-hud.css';
+import './neon-p44-match-feedback.css';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
 import { Game } from './game.js';
