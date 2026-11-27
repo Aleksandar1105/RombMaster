@@ -34,8 +34,10 @@ def validate(item):
                     or re.fullmatch(r"/(?:editing-temp|picsart-mcp)/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(png|jpe?g|webp)", u.path))
             or u.query or u.fragment):
         raise ValueError("Only direct Picsart image URLs are allowed")
-    if type(maximum) is not int or not 320 <= maximum <= 2048:
+    if type(maximum) is not int or not (320 <= maximum <= 2048 or (name == "neon-gameplay-arena-v2.webp" and maximum == 2560)):
         raise ValueError("Invalid max_side")
+    if name == "neon-gameplay-arena-v2.webp" and (maximum != 2560 or url != "https://gcdn.picsart.com/editing-temp/a2cfc9a9-40b0-4ea4-8995-9edbbb0f8257.jpeg"):
+        raise ValueError("Unexpected P4.10a source or resolution")
     return name, url, maximum
 
 def download(url):
@@ -57,6 +59,8 @@ def convert(data, out, maximum):
             raise ValueError("Invalid source dimensions")
         im.load()
         im = ImageOps.exif_transpose(im)
+        if maximum == 2560 and im.size != (1504, 2664):
+            raise ValueError("P4.10a original dimensions differ from approved source")
         im = im.convert("RGBA" if "A" in im.getbands() or "transparency" in im.info else "RGB")
         im.thumbnail((maximum, maximum), Image.Resampling.LANCZOS)
         im.save(out, "WEBP", quality=88, method=6)
@@ -65,6 +69,8 @@ def convert(data, out, maximum):
         check.load()
         if check.format != "WEBP" or check.size != expected:
             raise ValueError("Encoded WebP verification failed")
+    if maximum == 2560 and (expected != (1445, 2560) or out.stat().st_size > 512 * 1024):
+        raise ValueError("P4.10a WebP dimensions or byte budget failed")
     return expected
 
 # Reviewed silhouettes in the imported 1024 x 575 reference coordinate system.
@@ -153,6 +159,16 @@ def self_test():
             pass
         else:
             raise AssertionError("Unsafe filename accepted")
+        original = io.BytesIO()
+        Image.new("RGB", (1504, 2664), "#10233f").save(original, "JPEG")
+        assert convert(original.getvalue(), Path(tmp) / "arena.webp", 2560) == (1445, 2560)
+        assert validate({"name": "neon-gameplay-arena-v2.webp", "url": "https://gcdn.picsart.com/editing-temp/a2cfc9a9-40b0-4ea4-8995-9edbbb0f8257.jpeg", "max_side": 2560})[2] == 2560
+        for item in [{"name": "test.webp", "url": direct, "max_side": 2560}, {"name": "neon-gameplay-arena-v2.webp", "url": direct, "max_side": 2560}]:
+            try:
+                validate(item)
+            except ValueError:
+                continue
+            raise AssertionError("Unapproved high-resolution source accepted")
     print("ASSET SELF TEST: PASS")
 
 def main():
