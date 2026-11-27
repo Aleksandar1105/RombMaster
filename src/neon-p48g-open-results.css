@@ -1,0 +1,34 @@
+/* P4.8g — open, borderless Core Neon results. Preserve the arena behind the
+   content, the existing emblem art, animations and layout geometry. */
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .glass-panel.center-panel {
+ background:none!important;
+ border-color:transparent!important;border-image:none!important;
+ box-shadow:none!important;outline:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-title {
+ background:none!important;border-color:transparent!important;
+ border-image:none!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+/* The Victory image is deliberately retained, not reset by background:none. */
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"])[data-outcome="victory"] #result-title::before {
+ background-color:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]):is([data-outcome="defeat"],[data-outcome="draw"]) .rm-outcome-emblem {
+ background:none!important;border-color:transparent!important;
+ box-shadow:none!important;
+}
+/* P4.7c's important Victory rim lives in neonControls; layered important
+   declarations outrank unlayered important declarations. Override in-layer. */
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) .glass-panel.center-panel {
+  background:none!important;border-color:transparent!important;
+  border-image:none!important;box-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"])[data-outcome="victory"] .glass-panel.center-panel {
+  border-color:transparent!important;box-shadow:none!important;
+ }
+}
