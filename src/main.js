@@ -48,6 +48,7 @@ import './neon-p410d-transparent-emblems.css';
 import './neon-p410d1-3d-emblems.css';
 import './neon-p410e-result-motion.css';
 import './neon-p412a-turn-status.css';
+import './neon-p412b-gameplay-header.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
