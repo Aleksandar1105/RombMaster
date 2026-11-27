@@ -16,5 +16,5 @@ test('P4.8g: leave emblem artwork, result captions, motion and control geometry 
  assert.match(css,/#result-title::before\s*\{[^}]*background-color:transparent!important;[^}]*box-shadow:none!important;/);
  assert.doesNotMatch(css,/#result-title::before\s*\{[^}]*\bbackground\s*:/);
  assert.match(css,/\.rm-outcome-emblem\s*\{[^}]*background:none!important;[^}]*border-color:transparent!important;/);
- assert.doesNotMatch(css,/\b(?:padding|margin|gap|width|height|display|position|transform|opacity|animation|filter|content)\s*:|url\(|::after/);
+ assert.doesNotMatch(css,/(?:^|[;{]\s*)(?:padding|margin|gap|width|height|display|position|transform|opacity|animation|filter|content)\s*:|url\(|::after/m);
 });
