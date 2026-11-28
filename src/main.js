@@ -54,6 +54,7 @@ import './neon-p412d-typography.css';
 import './neon-p414-final-ux.css';
 import './neon-p52-profile.css';
 import './neon-p53-characters.css';
+import './neon-p54-statistics.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
@@ -164,11 +165,16 @@ function paginateRows(rows,page,size,prevId,nextId,labelId){
 function renderAchievementPage(){
     const rows=Array.from(el('achievement-list').children||[]);
     const size=window.innerHeight<560?2:window.innerHeight<740?4:6;
-    achievementPage=paginateRows(rows,achievementPage,size,'profile-achievements-prev','profile-achievements-next','profile-achievements-label').current;
+    const result=paginateRows(rows,achievementPage,size,'profile-achievements-prev','profile-achievements-next','profile-achievements-label');
+    achievementPage=result.current;
+    if(coreEdition)el('profile-achievement-pager').hidden=result.count===1;
 }
 function setAchievementView(show=false){
     achievementView=show;el('profile-stat-grid').hidden=show;el('profile-achievements-page').hidden=!show;
-    el('profile-stats-toggle').textContent=show?'‹ Statistics':'View achievements ›';
+    el('profile-stats-toggle').textContent=coreEdition
+        ? (show?'Statistics':'View achievements')
+        : (show?'‹ Statistics':'View achievements ›');
+    if(coreEdition)el('profile-stats-toggle').setAttribute('aria-expanded',String(show));
     if(show)renderAchievementPage();
 }
 function renderAvatarPage(){
@@ -1032,6 +1038,51 @@ function renderProfileOverview(profile, summary, walletState) {
     const progress=el('rm-profile-progress');
     if(progress){progress.max=campaignLimit;progress.value=summary?.clearedLevels ?? 0;}
 }
+// Read-only Career statistics: use the already capped/validated summary.
+function renderProfileStatistics(summary) {
+    const values={
+        'stat-played': summary?.played,
+        'stat-wins': summary?.wins,
+        'stat-draws': summary?.draws,
+        'stat-losses': summary?.losses,
+        'stat-win-rate': summary ? summary.winRate+'%' : null,
+        'stat-best-streak': summary?.bestStreak,
+        'stat-cleared': summary ? summary.clearedLevels+' / '+campaignLimit : null,
+        'stat-stars': summary ? summary.totalStars+' / '+campaignLimit*3 : null
+    };
+    for(const [id,value] of Object.entries(values))el(id).textContent=String(value??'—');
+    el('achievement-count').textContent=summary
+        ? summary.earnedAchievements+' / '+summary.achievements.length : '—';
+    if(coreEdition){
+        const win=el('rm-stat-win-meter'), trophies=el('rm-achievement-meter');
+        win.hidden=!summary;win.value=summary?.winRate??0;
+        trophies.hidden=!summary;trophies.max=Math.max(1,summary?.achievements.length??0);
+        trophies.value=summary?.earnedAchievements??0;
+        el('profile-stats-toggle').disabled=!summary;
+        if(!summary)setAchievementView(false);
+    }
+    const achievementList=el('achievement-list');
+    achievementList.replaceChildren?.();
+    if(summary&&typeof document.createElement==='function'&&achievementList.appendChild){
+        for(const achievement of summary.achievements){
+            const li=document.createElement('li');
+            li.className=achievement.earned?'earned':'locked';
+            if(coreEdition){
+                li.dataset.achievement=achievement.id;
+                const icon=document.createElement('span');icon.className='rm-trophy-icon';
+                icon.textContent=achievement.earned?'★':'◇';icon.setAttribute('aria-hidden','true');
+                const title=document.createElement('strong');title.className='rm-trophy-title';title.textContent=achievement.title;
+                const detail=document.createElement('span');detail.className='rm-trophy-description';detail.textContent=achievement.description;
+                const state=document.createElement('small');state.className='rm-trophy-state';state.textContent=achievement.earned?'Earned':'Locked';
+                li.append(icon,title,detail,state);
+            }else{
+                li.textContent=`${achievement.earned ? '🏆' : '🔒'} ${achievement.title} — ${achievement.description}`;
+            }
+            achievementList.appendChild(li);
+        }
+    }
+    if(achievementView)renderAchievementPage();
+}
 const refreshCareer = () => {
     syncSkin();
     const state = ProfileStore.read();
@@ -1049,7 +1100,7 @@ const refreshCareer = () => {
         }
         renderAvatarPage();
         refreshPremiumHome(null, null);
-        if(coreEdition){renderProfileOverview(null,null,null);el('identity-name').textContent='Profile unavailable';el('identity-art').dataset.avatar='';}
+        if(coreEdition){renderProfileOverview(null,null,null);renderProfileStatistics(null);el('identity-name').textContent='Profile unavailable';el('identity-art').dataset.avatar='';}
         return;
     }
     const p = visibleProfile(state.profile);
@@ -1095,31 +1146,7 @@ const refreshCareer = () => {
     }
     refreshPremiumHome(p, summary);
     renderProfileOverview(p, summary, walletState);
-    for (const [id, value] of Object.entries({
-        'stat-played': summary.played,
-        'stat-wins': summary.wins,
-        'stat-draws': summary.draws,
-        'stat-losses': summary.losses,
-        'stat-win-rate': `${summary.winRate}%`,
-        'stat-best-streak': summary.bestStreak,
-        'stat-cleared': `${summary.clearedLevels} / ${campaignLimit}`,
-        'stat-stars': `${summary.totalStars} / ${campaignLimit*3}`,
-    })) el(id).textContent = String(value);
-    el('achievement-count').textContent =
-        `${summary.earnedAchievements} / ${summary.achievements.length}`;
-    const achievementList = el('achievement-list');
-    // Create plain text nodes, never inject player names or remote HTML.
-    achievementList.replaceChildren?.();
-    if (typeof document.createElement === 'function' && achievementList.appendChild) {
-        for (const achievement of summary.achievements) {
-            const li = document.createElement('li');
-            li.className = achievement.earned ? 'earned' : 'locked';
-            li.textContent =
-                `${achievement.earned ? '🏆' : '🔒'} ${achievement.title} — ${achievement.description}`;
-            achievementList.appendChild(li);
-        }
-    }
-    if(achievementView)renderAchievementPage();
+    renderProfileStatistics(summary);
     careerXP.textContent = `${p.xp} XP`;
     renderCareerProgress(p);
     const mission = missionFor(p.unlockedLevel);

@@ -882,3 +882,50 @@ test('P5.3 Character styles stay within the selected visible Core Neon Character
  assert.ok(css.includes('prefers-reduced-motion:reduce'));
  assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
 });
+
+
+test('P5.4 Core statistics and trophies display actual capped summary and switch without writing progress',async()=>{
+ const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:2,stars:{1:3},stats:{played:3,wins:2,draws:0,losses:1}});
+ const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
+ assert.equal(h.el('stat-win-rate').textContent,'67%');assert.equal(h.el('rm-stat-win-meter').value,67);
+ assert.equal(h.el('stat-cleared').textContent,'1 / 30');assert.equal(h.el('stat-stars').textContent,'3 / 90');
+ assert.equal(h.el('achievement-count').textContent,'1 / 18');
+ assert.equal(h.el('rm-achievement-meter').max,18);assert.equal(h.el('rm-achievement-meter').value,1);
+ const rows=h.el('achievement-list').children;assert.equal(rows.length,18);
+ const won=rows.find(r=>r.dataset.achievement==='first-win');assert.equal(won.className,'earned');
+ assert.deepEqual(won.children.map(c=>c.textContent),['★','First Victory','Win 1 Career match','Earned']);
+ const locked=rows.find(r=>r.dataset.achievement==='champion');assert.equal(locked.className,'locked');
+ assert.equal(locked.children[3].textContent,'Locked');
+ assert.ok(!rows.some(r=>r.dataset.achievement==='boss-100'||r.dataset.achievement==='stars-300'));
+ const before=h.storage.get('rombmaster_profile_v1');
+ h.el('profile-stats-toggle').click();assert.equal(h.el('profile-stat-grid').hidden,true);
+ assert.equal(h.el('profile-achievements-page').hidden,false);assert.equal(h.el('profile-stats-toggle').getAttribute('aria-expanded'),'true');
+ assert.equal(rows.filter(r=>!r.hidden).length,6);assert.equal(h.el('profile-achievements-label').textContent,'1 / 3');
+ h.el('profile-achievements-next').click();assert.equal(h.el('profile-achievements-label').textContent,'2 / 3');
+ h.el('profile-stats-toggle').click();assert.equal(h.el('profile-stat-grid').hidden,false);
+ assert.equal(h.el('profile-achievements-page').hidden,true);assert.equal(h.storage.get('rombmaster_profile_v1'),before);
+});
+test('P5.4 unreadable Core profile never presents stale statistics or earned trophies',async()=>{
+ const invalid='{broken';const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',invalid]])});
+ assert.equal(h.el('stat-win-rate').textContent,'—');assert.equal(h.el('stat-played').textContent,'—');
+ assert.equal(h.el('rm-stat-win-meter').hidden,true);assert.equal(h.el('rm-achievement-meter').hidden,true);
+ assert.equal(h.el('achievement-count').textContent,'—');assert.equal(h.el('achievement-list').children.length,0);
+ assert.equal(h.el('profile-stats-toggle').disabled,true);assert.equal(h.el('reset-career-btn').disabled,true);
+ assert.equal(h.storage.get('rombmaster_profile_v1'),invalid);
+});
+test('P5.4 full edition retains the original 24 achievement text entries',async()=>{
+ const h=await boot({autoStart:false});
+ const rows=h.el('achievement-list').children;assert.equal(rows.length,24);
+ assert.equal(h.el('achievement-count').textContent,'0 / 24');
+ assert.match(rows[0].textContent,/First Victory — Win 1 Career match/);
+});
+test('P5.4 scoped Statistics presentation preserves hidden views, paging and guarded reset',()=>{
+ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+ const css=read('src/neon-p54-statistics.css'),main=read('src/main.js'),html=read('src/index.html');
+ assert.ok(main.indexOf("import './neon-p54-statistics.css'")>main.indexOf("import './neon-p53-characters.css'"));
+ assert.ok(css.includes(':root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]):has(#profile-section-stats:checked)'));
+ assert.ok(css.includes('#profile-stat-grid,#profile-achievements-page,#profile-achievement-pager'));
+ assert.ok(css.includes('#achievement-list > li[hidden]'));assert.ok(css.includes('prefers-reduced-motion:reduce'));
+ assert.ok(html.includes('id="rm-stat-win-meter"'));assert.ok(html.includes('id="rm-achievement-meter"'));
+ assert.ok(main.includes("el('reset-career-btn').onclick"));assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
+});
