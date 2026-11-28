@@ -26,7 +26,7 @@ test('P4.5 actual earned stars, score and next level are displayed without writi
 });
 test('P4.5 defeat, draw, unavailable reward and local matches never display unearned stars',async()=>{
  for(const options of [{outcome:'defeat',next:false},{outcome:'draw',next:false},{ready:false,next:false},{level:null,mode:'pvp',next:false}]){
-  const h=await fixture(options);h.render();assert.equal(h.el('result-stars').hidden,true);assert.equal(h.el('result-stars').children.length,0);assert.equal(h.el('match-analysis').hidden,options.outcome!=='defeat'&&options.outcome!=='draw');
+  const h=await fixture(options);h.render();assert.equal(h.el('result-stars').hidden,true);assert.equal(h.el('result-stars').children.length,0);assert.equal(h.el('match-analysis').hidden,true);
  }
 });
 test('P4.5 overlay styles isolated, finite motion and focus feedback; main uses existing award flow',()=>{
@@ -56,13 +56,13 @@ test('P4.7c cinematic effects are victory-only, nonblocking and reduced-motion s
 });
 
 
-test('P4.7d actual match metrics render as five cards; missing data stays textual',async()=>{
+test('P4.14a actual match metrics remain hidden and data stays intact',async()=>{
  const h=await fixture({outcome:'defeat',next:false});const a=h.el('match-analysis');
  Object.assign(a.dataset,{moves:'12',captured:'3',doubles:'1',bestChain:'2',gifts:'0'});h.render();
  assert.equal(h.el('result-title').children[0].children.length,2);
- assert.deepEqual(a.children[1].children.map(c=>c.children[1].textContent),['12','3','1','2','0']);
+ assert.equal(a.hidden,true);assert.deepEqual(a.dataset,{moves:'12',captured:'3',doubles:'1',bestChain:'2',gifts:'0'});assert.equal(h.el('rm-result-note').hidden,true);
  const missing=await fixture({outcome:'draw',next:false,level:null});missing.el('match-analysis').textContent='Original analysis';missing.render();
- assert.equal(missing.el('match-analysis').textContent,'Original analysis');assert.equal(missing.el('againBtn').textContent,'Rematch');
+ assert.equal(missing.el('match-analysis').hidden,true);assert.equal(missing.el('match-analysis').textContent,'Original analysis');assert.equal(missing.el('rm-result-note').hidden,true);assert.equal(missing.el('againBtn').textContent,'Rematch');
  const local=await fixture({outcome:'draw',next:false,level:null,mode:'pvp'});local.render();assert.equal(local.el('match-analysis').hidden,true);
 });
 test('P4.7d bundled emblems and CSS are non-victory only and finite',()=>{

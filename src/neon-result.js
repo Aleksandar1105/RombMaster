@@ -69,28 +69,10 @@ export function renderCoreResult(overlay, game, doc) {
   note.id = 'rm-result-note';
   const next = el('nextCareerBtn');
   note.textContent = !next.hidden ? 'Next challenge · ' + next.textContent :
-    level && ready && victory ? 'Level complete' : outcome === 'defeat' ? 'Try a new strategy on your next attempt.' :
-    outcome === 'draw' ? 'Evenly matched. A rematch awaits.' : 'Match complete';
+    level && ready && victory ? 'Level complete' : victory ? 'Match complete' : '';
+  note.hidden = !note.textContent;
   overlay.querySelector('.rm-result-overview').append(note);
-  // Keep the actual persistence warning and earned rewards visible, including zero gains.
+  // Keep computed statistics in Game.endGame and its data attributes.
   const analysis = el('match-analysis');
-  if (analysis) {
-    analysis.hidden = outcome === 'victory' || game.settings.mode !== 'ai';
-    if (!analysis.hidden) {
-      const fields=[['Moves','moves'],['Cells captured','captured'],['Double captures','doubles'],['Best chain','bestChain'],['Immediate concessions','gifts']];
-      const values=fields.map(([,key])=>analysis.dataset?.[key]);
-      // Missing stats retain the original analysis text; do not invent zeros.
-      if (values.every(value=>typeof value==='string' && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)))) {
-        const heading=doc.createElement('h3');heading.className='rm-analysis-heading';heading.textContent='Match analysis';
-        const grid=doc.createElement('div');grid.className='rm-analysis-grid';
-        fields.forEach(([label],i)=>{
-          const card=doc.createElement('div');card.className='rm-analysis-stat';
-          const name=doc.createElement('span');name.textContent=label;
-          const value=doc.createElement('strong');value.textContent=values[i];
-          card.append(name,value);grid.append(card);
-        });
-        analysis.replaceChildren(heading,grid);
-      }
-    }
-  }
+  if (analysis) analysis.hidden = true;
 }

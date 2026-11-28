@@ -51,6 +51,7 @@ import './neon-p412a-turn-status.css';
 import './neon-p412b-gameplay-header.css';
 import './neon-p412c-board-separation.css';
 import './neon-p412d-typography.css';
+import './neon-p414-final-ux.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
@@ -127,6 +128,7 @@ const menuPages = {
     ...(el('arcade-page')?{'arcade-page':'Challenge Arena'}:{}),
 };
 let pageTrigger = null;
+let returningFromMatch = false;
 // All pages retain their original DOM controls and save handlers.
 const careerScreens=['levels','mission','rivals'],skinDetailScreens=['overview','board','effects'];
 let careerScreen=0,skinDetailScreen=0,achievementPage=0,avatarPage=0,achievementView=false,creatingPlayer=false;
@@ -245,7 +247,7 @@ document.querySelectorAll('[data-page]').forEach(button => {
         pageTrigger = button;
         const selected = button.dataset.page;
         if (coreEdition && selected === 'arcade-page') return;
-        if (coreEdition && button.id === 'startBtn') {
+        if (coreEdition && button.id === 'startBtn' && !returningFromMatch) {
             const profile = ProfileStore.read();
             const saved = Game.refreshSavedGame();
             if (['empty', 'ready'].includes(profile.status) && profile.profile.unlockedLevel === 1 &&
@@ -1566,16 +1568,51 @@ el('restartBtn').onclick = () => {
         });
     } else restart();
 };
-el('menuBtn').onclick = () => {
+// Explicit Home and contextual Back share the same guarded exit.
+function leaveMatch(contextual = false) {
+    if (ui.viewGame.classList.contains('hidden')) return false;
+    const settings = {...Game.settings};
     Game.saveLocal();
-    if (!Game.gameOver && Game.saveFailed) return;
-    showHome();
+    if (!Game.gameOver && Game.saveFailed) return false;
+    el('overlay').classList.remove('flex');
     Game.stop();
     ui.viewGame.classList.add('hidden'); ui.viewGame.classList.remove('active-view');
     ui.viewMenu.classList.remove('hidden'); ui.viewMenu.classList.add('active-view');
+    showHome();
     Game.refreshSavedGame();
     refreshCareer();
-};
+    if (contextual) {
+        const page = settings.careerLevel ? 'career-page' : 'quick-settings';
+        const trigger = Array.from(document.querySelectorAll('[data-page]')).find(button => button.dataset.page === page);
+        if (trigger) {
+            returningFromMatch = true;
+            try { trigger.onclick(); } finally { returningFromMatch = false; }
+            if (page === 'quick-settings') {
+                size = settings.size; mode = settings.mode; diff = settings.diff;
+                renderQuickSetup();
+            } else if (el('career-identity').hidden) {
+                const profile = visibleProfile(ProfileStore.read().profile);
+                if (profile && settings.careerLevel <= profile.unlockedLevel) {
+                    careerSelect.value = String(settings.careerLevel);
+                    careerSelect.onchange();
+                    setCareerScreen(0);
+                }
+            }
+            el('page-back').focus();
+        }
+    }
+    return true;
+}
+function returnToMatchMenu() {
+    if (confirmDialog.isOpen() || ui.viewGame.classList.contains('hidden')) return;
+    leaveMatch(true);
+}
+el('menuBtn').onclick = () => leaveMatch(false);
+const matchBack = el('game-back-btn');
+if (matchBack) {
+    matchBack.hidden = !coreEdition;
+    matchBack.onclick = returnToMatchMenu;
+}
 
 // Копче "Play Again"
 el('againBtn').onclick = () => {
@@ -1910,8 +1947,10 @@ Native.onBack(() => {
     } else if (el('help-modal').classList.contains('flex')) {
         el('closeHelpBtn').click();
     } else if (el('overlay').classList.contains('flex')) {
-        el('overlay').classList.remove('flex');
+        if (coreEdition && !ui.viewGame.classList.contains('hidden')) returnToMatchMenu();
+        else el('overlay').classList.remove('flex');
     } else if (!ui.viewGame.classList.contains('hidden')) {
+        if (coreEdition) { returnToMatchMenu(); return; }
         if (Game.gameOver) {
             el('menuBtn').click();
             return;

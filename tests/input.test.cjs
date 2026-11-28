@@ -686,3 +686,59 @@ test('P1.13.1 Home HUD renders live XP and separate captions without replacing t
   }
   assert.equal(xp.querySelector('.unknown-hud-field'),null);
 });
+
+
+test('P4.14b Core visible Back and Android Back return to Quick setup, keep save and selection; Home stays Home',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});
+ h.game.start(8,'pvp','hard');
+ h.game.executeMove(h.game.board.getFreeMoves()[0]);
+ const saved=h.storage.get('rhombus_save'), board=JSON.stringify(h.game.board);
+ h.el('game-back-btn').click();
+ assert.equal(h.el('view-game').classList.contains('hidden'),true);
+ assert.equal(h.el('quick-settings').hidden,false);
+ assert.equal(h.el('home-hub').hidden,true);
+ assert.equal(h.el('setup-size-8').classList.contains('selected'),true);
+ assert.equal(h.el('setup-ai-pvp').classList.contains('selected'),true);
+ assert.equal(h.storage.get('rhombus_save'),saved);
+ h.nativeEvents.back();
+ assert.equal(h.el('home-hub').hidden,false);
+ h.el('continueBtn').click();
+ assert.equal(JSON.stringify(h.game.board),board);
+ h.nativeEvents.back();
+ assert.equal(h.el('quick-settings').hidden,false);
+ h.nativeEvents.back();
+ h.el('continueBtn').click();
+ h.el('menuBtn').click();
+ assert.equal(h.el('home-hub').hidden,false);
+ assert.equal(h.storage.get('rhombus_save'),saved);
+});
+test('P4.14b Core Back refuses to leave if save fails and closes confirmation first',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});
+ h.game.start(6,'pvp','normal');
+ h.game.executeMove(h.game.board.getFreeMoves()[0]);
+ h.el('restartBtn').click();
+ h.nativeEvents.back();
+ assert.equal(h.el('confirm-dialog').hidden,true);
+ assert.equal(h.el('view-game').classList.contains('hidden'),false);
+ h.game.saveLocal=()=>{h.game.saveFailed=true;};
+ h.el('game-back-btn').click();
+ assert.equal(h.el('view-game').classList.contains('hidden'),false);
+ assert.equal(h.game.gameOver,false);
+});
+test('P4.14b Core Career Back returns to selected level, and completed Quick result Back bypasses intro',async()=>{
+ const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:5,stars:{1:3,2:3,3:3,4:3},stats:{played:4,wins:4,draws:0,losses:0}});
+ const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
+ const stage=h.game.start(4,'ai','normal',3);assert.equal(stage,true);
+ h.nativeEvents.back();
+ assert.equal(h.el('career-page').hidden,false);
+ assert.equal(h.el('career-level').value,'3');
+ assert.equal(h.el('home-hub').hidden,true);
+ const q=await boot({coreEdition:true,autoStart:false});
+ q.game.start(4,'pvp','normal');q.game.gameOver=true;
+ q.storage.delete('rhombus_save');q.el('overlay').classList.add('flex');
+ q.nativeEvents.back();
+ assert.equal(q.el('overlay').classList.contains('flex'),false);
+ assert.equal(q.el('view-game').classList.contains('hidden'),true);
+ assert.equal(q.el('quick-settings').hidden,false);
+ assert.equal(q.game.settings.careerLevel,null);
+});
