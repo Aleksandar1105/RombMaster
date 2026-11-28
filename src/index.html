@@ -307,7 +307,16 @@
                 <section id="player-settings" class="home-drawer" hidden>
                     <button type="button" data-page="skin-page" class="btn-secondary">Skin Store &amp; Collection</button>
                     <div class="home-drawer-content">
-                    <div class="identity-banner"><span id="identity-art" aria-hidden="true"></span><strong id="identity-name"></strong></div><div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <div class="identity-banner"><span id="identity-art" aria-hidden="true"></span><strong id="identity-name"></strong><small id="rm-profile-level" hidden></small></div><div class="career-heading"><span>PLAYER PROFILE</span><span id="career-xp">0 XP</span></div>
+                    <section id="rm-profile-overview" hidden aria-label="Player progress">
+                        <div class="rm-profile-metrics">
+                            <div><strong id="rm-profile-coins">—</strong><span>Coins</span></div>
+                            <div><strong id="rm-profile-xp">—</strong><span>XP</span></div>
+                            <div><strong id="rm-profile-stars">—</strong><span>Stars</span></div>
+                        </div>
+                        <div class="rm-profile-progress-label"><label for="rm-profile-progress">Career progress</label><strong id="rm-profile-cleared">—</strong></div>
+                        <progress id="rm-profile-progress" max="30" value="0" aria-label="Career progress"></progress>
+                    </section>
                     <fieldset class="profile-switcher">
                         <legend class="profile-switcher-legend">Profile sections</legend>
                         <label><input type="radio" name="profile-section" id="profile-section-players" checked><span>Players</span></label>

@@ -1,0 +1,100 @@
+/* P5.2: visible Core Neon Profile only. Reuse existing native radio controls,
+   local-player handlers, artwork and P4.18 Back material. No new assets. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) {
+ grid-template-columns:70px minmax(0,1fr) 70px!important;
+ grid-template-rows:minmax(44px,auto) minmax(min-content,1fr)!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #page-title {
+ align-self:center!important;text-align:center!important;text-transform:uppercase!important;
+ font-family:"RM Exo 2",system-ui,sans-serif!important;font-weight:900!important;
+ font-size:clamp(1rem,4.7vw,1.45rem)!important;letter-spacing:.07em!important;
+ color:#f3faff!important;text-shadow:0 0 9px #57dfff66!important;
+ background:none!important;padding:4px 0 8px!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #page-title::after {content:"";display:block;height:2px;margin:5px 8% 0;background:linear-gradient(90deg,transparent,#49dcff,#a377ff,#ff5c78,transparent);}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) {
+ display:flex!important;flex-direction:column!important;gap:12px!important;
+ padding:clamp(6px,2vw,12px)!important;box-sizing:border-box;
+ background:radial-gradient(ellipse at 50% 13%,#19476680,transparent 42%),linear-gradient(155deg,#10263f99,#071222cc 64%,#30172b99)!important;
+ border:0!important;box-shadow:none!important;min-width:0;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) > button[data-page="skin-page"] {order:2;min-height:44px!important;margin:0!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) > .home-drawer-content {order:1;display:flex!important;flex-direction:column!important;gap:clamp(8px,1.35dvh,14px)!important;padding:0!important;min-width:0;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .identity-banner {
+ display:grid!important;grid-template-columns:minmax(0,1fr);justify-items:center;gap:4px!important;
+ padding:4px 0 0!important;min-width:0;background:none!important;
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #identity-art {
+ width:clamp(84px,29vw,138px)!important;height:clamp(84px,29vw,138px)!important;
+ border:0!important;border-radius:0!important;background-size:contain!important;background-position:center!important;
+ background-repeat:no-repeat!important;filter:drop-shadow(0 0 15px #48cfff80);
+}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #identity-name {font-family:"RM Exo 2",system-ui,sans-serif;font-weight:900;font-size:clamp(1.25rem,6vw,1.85rem);color:#f3faff;overflow-wrap:anywhere;max-width:100%;text-align:center;line-height:1.2;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-level {font-size:.8rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:#82eaff;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-level[hidden],:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-overview[hidden],:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-player-chooser[hidden],:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #profile-create-form[hidden],:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-name-row[hidden] {display:none!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .career-heading {display:none!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-overview:not([hidden]) {display:grid;gap:7px;min-width:0;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-metrics {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-metrics > div {min-width:0;display:grid;gap:3px;justify-items:center;padding:8px 3px;background:linear-gradient(155deg,#244761b8,#0b1a2eb8);border:1px solid #4d8aa4a0;border-radius:6px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-metrics strong {font-family:"RM Exo 2",system-ui,sans-serif;font-size:clamp(1rem,4.8vw,1.45rem);font-variant-numeric:tabular-nums;line-height:1.15;color:#f9d47a;max-width:100%;overflow-wrap:anywhere;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-xp {color:#8ce9ff;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-metrics span {font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:#c3d7ea;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-progress-label {display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:#d4e8f7;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-progress {width:100%;height:7px;appearance:none;border:0;border-radius:4px;background:#18283f;overflow:hidden;accent-color:#55dbf6;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-progress::-webkit-progress-bar {background:#18283f;border-radius:4px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-profile-progress::-webkit-progress-value {background:linear-gradient(90deg,#20aadd,#75f0ff);border-radius:4px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-switcher {display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-switcher label {border:0!important;background:none!important;box-shadow:none!important;padding:0!important;min-height:44px!important;min-width:0;position:relative;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-switcher label span {display:grid!important;place-items:center;width:100%;height:100%;min-height:44px;padding:4px 2px;box-sizing:border-box;pointer-events:none;font-size:clamp(.68rem,3.2vw,.86rem)!important;overflow-wrap:anywhere;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-switcher input {z-index:3;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .local-player-toolbar {display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .local-player-toolbar > label {font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:#8bb8d4;margin:0;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #rm-player-chooser:not([hidden]) {display:grid!important;grid-template-columns:minmax(0,1fr);gap:6px!important;max-height:none!important;overflow:visible!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-player-option {width:100%!important;min-height:48px!important;white-space:normal!important;overflow-wrap:anywhere;text-align:center;font-size:.9rem!important;padding:7px 10px!important;margin:0!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-name-row:not([hidden]) {display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:8px!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(#profile-name,#new-local-player-name) {box-sizing:border-box;width:100%!important;min-width:0!important;min-height:44px!important;font-size:1rem!important;background:#102337!important;color:#f3faff!important;border:1px solid #507891!important;border-radius:6px!important;padding:8px 10px!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(#save-profile-btn,#profile-create-toggle,#create-local-player-btn) {min-height:44px!important;margin:0!important;padding:8px 12px!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #profile-create-form:not([hidden]) {display:flex!important;flex-direction:column!important;gap:8px!important;align-items:stretch!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #profile-create-form .rm-starter-picker {min-width:0;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #profile-create-form #new-local-player-avatar-art {width:clamp(62px,20vw,90px)!important;height:clamp(62px,20vw,90px)!important;background-size:contain!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(#local-player-feedback,#profile-feedback):empty {display:none!important;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.profile-switcher label span,.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn),
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) > button[data-page="skin-page"] {
+ --rim:radial-gradient(ellipse 75% 55% at 50% 0%,#e3ffff,#71e8ff 24%,transparent 82%),linear-gradient(175deg,#8af0ff,#20d9fa 26%,#196c91 62%,#41e7ff)!important;
+ --face:linear-gradient(180deg,#244965,#10283e 28%,#081426 72%,#12314a)!important;
+ --p52-facet:#bffaff38;--p52-edge:#d4faffb0;--p52-light:#43dfff;
+ position:relative!important;isolation:isolate!important;border:0!important;border-radius:0!important;
+ clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)!important;
+ background:var(--rim)!important;background-image:var(--rim)!important;color:#f3faff!important;
+ box-shadow:none!important;font-family:"RM Exo 2",system-ui,sans-serif!important;font-weight:800!important;
+ text-shadow:0 1px 2px #020a1a!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.profile-switcher label:has(input:checked) span,.rm-player-option[aria-pressed="true"]) {
+ --rim:radial-gradient(ellipse 80% 60% at 50% 0%,#fff8ff,#f2b4ff 30%,transparent 86%),linear-gradient(180deg,#eebaff,#bc58ff 30%,#8d35de 66%,#f07aff)!important;
+ --face:linear-gradient(180deg,#633b8f,#392353 30%,#1b1338 70%,#54266d)!important;
+ --p52-facet:#f3caff55;--p52-edge:#fff0ffcc;--p52-light:#dc6cff;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.profile-switcher label span,.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn)::before,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) > button[data-page="skin-page"]::before {
+ content:""!important;display:block!important;position:absolute!important;inset:2px!important;z-index:-1!important;
+ border:0!important;border-radius:0!important;clip-path:inherit!important;pointer-events:none!important;
+ background:linear-gradient(142deg,var(--p52-facet) 0 9%,transparent 9% 79%,var(--p52-facet) 79% 88%,transparent 88%),linear-gradient(180deg,#efffff40,#e7ffff12 15%,transparent 39%,#01071344 68%,color-mix(in srgb,var(--p52-light) 20%,transparent)),var(--face)!important;
+ box-shadow:inset 0 1px 0 var(--p52-edge),inset 0 -1px 0 var(--p52-edge),inset 0 0 8px color-mix(in srgb,var(--p52-light) 30%,transparent)!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.profile-switcher label span,.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn)::after,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) > button[data-page="skin-page"]::after {content:none!important;display:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(button:not(:disabled):focus-visible,.profile-switcher label:has(input:focus-visible) span) {outline:2px solid #fff0b0!important;outline-offset:-4px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn):not(:disabled):active,:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .profile-switcher label:active span {filter:brightness(1.2)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(#profile-create-toggle,#create-local-player-btn):disabled {opacity:.5!important;filter:none!important;}
+}
+ /* Keep identity compact on non-Players tabs and on short screens, allowing native scroll. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]):not(:has(#profile-section-players:checked)) .identity-banner {grid-template-columns:48px minmax(0,1fr);justify-items:start;align-items:center;column-gap:8px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]):not(:has(#profile-section-players:checked)) #identity-art {width:48px!important;height:48px!important;grid-row:1/3;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]):not(:has(#profile-section-players:checked)) #identity-name {font-size:1.1rem;text-align:left;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]):not(:has(#profile-section-players:checked)) #rm-profile-level {grid-column:2;}
+@media (max-height:700px) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) #identity-art {width:76px!important;height:76px!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) .rm-profile-metrics > div {padding:5px 3px;}
+}
+@media (prefers-reduced-motion:reduce) {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden])) > #player-settings:not([hidden]) :is(.profile-switcher label span,.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn) {transition:none!important;animation:none!important;}
+}

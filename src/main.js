@@ -52,6 +52,7 @@ import './neon-p412b-gameplay-header.css';
 import './neon-p412c-board-separation.css';
 import './neon-p412d-typography.css';
 import './neon-p414-final-ux.css';
+import './neon-p52-profile.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
@@ -190,7 +191,7 @@ function renderAvatarPage(){
 function setCreatePlayer(show=false){
     creatingPlayer=show;el('profile-create-form').hidden=!show;
     el('profile-create-toggle').setAttribute('aria-expanded',String(show));
-    el('profile-create-toggle').textContent=show?'‹ Existing players':'Create new player ›';
+    el('profile-create-toggle').textContent=coreEdition?(show?'Existing players':'+ New player'):(show?'‹ Existing players':'Create new player ›');
     el('rm-player-chooser').hidden=show;
     el('local-player-feedback').textContent='';
     const nameRow=el('profile-name')?.parentElement;if(nameRow)nameRow.hidden=show;
@@ -1013,6 +1014,23 @@ el('skin-home-preview').onclick = () => {
     el('home-preview-close').focus?.();
 };
 el('home-preview-close').onclick = closeHomePreview;
+// Profile presentation reads the same active profile, summary and wallet as Home.
+function renderProfileOverview(profile, summary, walletState) {
+    if (!coreEdition) return;
+    const overview = el('rm-profile-overview'), level = el('rm-profile-level');
+    if (!overview || !level) return;
+    overview.hidden = level.hidden = !profile || !summary;
+    level.textContent = profile ? 'Level ' + profile.unlockedLevel : '';
+    const values = {
+        'rm-profile-coins': walletState?.status === 'ready' ? walletBalance(walletState.wallet).toLocaleString('en-US') : '—',
+        'rm-profile-xp': profile?.xp ?? '—',
+        'rm-profile-stars': summary?.totalStars ?? '—',
+        'rm-profile-cleared': summary ? summary.clearedLevels + ' / ' + campaignLimit : '—'
+    };
+    for (const [id,value] of Object.entries(values)) { const node=el(id); if(node)node.textContent=String(value); }
+    const progress=el('rm-profile-progress');
+    if(progress){progress.max=campaignLimit;progress.value=summary?.clearedLevels ?? 0;}
+}
 const refreshCareer = () => {
     syncSkin();
     const state = ProfileStore.read();
@@ -1030,6 +1048,7 @@ const refreshCareer = () => {
         }
         renderAvatarPage();
         refreshPremiumHome(null, null);
+        if(coreEdition){renderProfileOverview(null,null,null);el('identity-name').textContent='Profile unavailable';el('identity-art').dataset.avatar='';}
         return;
     }
     const p = visibleProfile(state.profile);
@@ -1074,6 +1093,7 @@ const refreshCareer = () => {
         summary.earnedAchievements = summary.achievements.filter(item => item.earned).length;
     }
     refreshPremiumHome(p, summary);
+    renderProfileOverview(p, summary, walletState);
     for (const [id, value] of Object.entries({
         'stat-played': summary.played,
         'stat-wins': summary.wins,

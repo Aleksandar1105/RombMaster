@@ -792,3 +792,37 @@ test('P4.16 Back buttons share the exact P4.2 glass material and are accessible'
  assert.ok(css.includes('#result-back-btn[hidden]'));
  assert.ok(css.includes('#overlay:not(.flex) #result-back-btn'));
 });
+
+test('P5.2 Core profile overview uses live identity, capped summary and active wallet, then refreshes on slot change',async()=>{
+ const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:45,stars:{1:3,40:2},stats:{played:3,wins:2,draws:0,losses:1}});
+ const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
+ assert.equal(h.el('rm-profile-overview').hidden,false);
+ assert.equal(h.el('identity-name').textContent,'Veteran');
+ assert.equal(h.el('rm-profile-xp').textContent,'300');
+ assert.equal(h.el('rm-profile-progress').max,30);
+ assert.equal(h.el('rm-profile-stars').textContent,String(h.el('premium-player-stars').querySelector('.rm-hud-number').textContent).replace(/^★ /,''));
+ assert.equal(h.el('rm-profile-coins').textContent,h.el('premium-player-coins').textContent);
+ const original=h.storage.get('rombmaster_profile_v1');
+ h.el('new-local-player-name').value='Second';h.el('new-local-player-avatar').value='robot';h.el('create-local-player-btn').click();
+ assert.equal(h.el('identity-name').textContent,'Second');assert.equal(h.el('rm-profile-xp').textContent,'0');
+ assert.equal(h.el('rm-profile-cleared').textContent,'0 / 30');assert.equal(h.el('rm-profile-progress').value,0);
+ assert.equal(h.storage.get('rombmaster_profile_v1'),original);
+ h.el('local-player-select').value='guest';h.el('local-player-select').onchange();
+ assert.equal(h.el('identity-name').textContent,'Veteran');assert.equal(h.el('rm-profile-xp').textContent,'300');
+});
+test('P5.2 invalid Core profile does not display stale progress or mutate unreadable storage',async()=>{
+ const invalid='{broken';const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',invalid]])});
+ assert.equal(h.el('rm-profile-overview').hidden,true);assert.equal(h.el('rm-profile-level').hidden,true);
+ assert.equal(h.el('rm-profile-coins').textContent,'—');assert.equal(h.el('rm-profile-progress').value,0);
+ assert.equal(h.storage.get('rombmaster_profile_v1'),invalid);
+});
+test('P5.2 Profile stylesheet is isolated and preserves hidden controls, native tabs and scroll fallback',()=>{
+ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+ const css=read('src/neon-p52-profile.css'), main=read('src/main.js'),html=read('src/index.html');
+ assert.ok(main.indexOf("import './neon-p52-profile.css'")>main.indexOf("import './neon-p414-final-ux.css'"));
+ assert.ok(css.includes(':root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]):has(> #player-settings:not([hidden]))'));
+ for(const id of ['rm-profile-overview','rm-profile-level','rm-player-chooser','profile-create-form'])assert.ok(css.includes('#'+id+'[hidden]'));
+ assert.ok(css.includes('repeat(3,minmax(0,1fr))'));assert.ok(css.includes('grid-template-columns:70px minmax(0,1fr) 70px'));
+ assert.ok(html.includes('name="profile-section"'));assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
+ assert.ok(css.includes('prefers-reduced-motion:reduce'));
+});
