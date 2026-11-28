@@ -1613,6 +1613,14 @@ if (matchBack) {
     matchBack.hidden = !coreEdition;
     matchBack.onclick = returnToMatchMenu;
 }
+const resultBack = el('result-back-btn');
+if (resultBack) {
+    resultBack.hidden = !coreEdition;
+    resultBack.onclick = () => {
+        if (!coreEdition || !Game.gameOver || !el('overlay').classList.contains('flex')) return;
+        returnToMatchMenu();
+    };
+}
 
 // Копче "Play Again"
 el('againBtn').onclick = () => {

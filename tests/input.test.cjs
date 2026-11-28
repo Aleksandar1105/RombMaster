@@ -744,3 +744,51 @@ test('P4.14b Core Career Back returns to selected level, and completed Quick res
  // Quick Play omits careerLevel rather than setting it to null.
  assert.equal(q.game.settings.careerLevel,undefined);
 });
+
+
+test('P4.16 result Back uses the existing contextual exit for all completed Quick outcomes',async()=>{
+ for(const outcome of ['victory','defeat','draw']){
+  const h=await boot({coreEdition:true,autoStart:false});
+  assert.equal(h.el('result-back-btn').hidden,false);
+  assert.equal(h.game.start(8,'pvp','hard'),true);
+  h.el('result-back-btn').click();
+  assert.equal(h.el('view-game').classList.contains('hidden'),false);
+  h.game.gameOver=true;h.storage.delete('rhombus_save');
+  h.el('overlay').dataset.outcome=outcome;h.el('overlay').classList.add('flex');
+  h.el('result-back-btn').click();
+  assert.equal(h.el('overlay').classList.contains('flex'),false);
+  assert.equal(h.el('view-game').classList.contains('hidden'),true);
+  assert.equal(h.el('quick-settings').hidden,false);
+  assert.equal(h.el('home-hub').hidden,true);
+  assert.equal(h.el('setup-size-8').classList.contains('selected'),true);
+  assert.equal(h.el('setup-ai-pvp').classList.contains('selected'),true);
+  assert.equal(h.storage.has('rhombus_save'),false);
+ }
+});
+test('P4.16 completed Career Back keeps its level; full edition result Back remains hidden',async()=>{
+ const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:5,stars:{1:3,2:3,3:3,4:3},stats:{played:4,wins:4,draws:0,losses:0}});
+ const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
+ assert.equal(h.game.start(4,'ai','easy',3),true);
+ h.game.gameOver=true;h.storage.delete('rhombus_save');
+ h.el('overlay').dataset.outcome='victory';h.el('overlay').classList.add('flex');
+ h.el('result-back-btn').click();
+ assert.equal(h.el('career-page').hidden,false);
+ assert.equal(h.el('career-level').value,'3');
+ assert.equal(h.el('overlay').classList.contains('flex'),false);
+ assert.equal(h.storage.get('rombmaster_profile_v1'),profile);
+ const legacy=await boot({autoStart:false});
+ assert.equal(legacy.el('result-back-btn').hidden,true);
+});
+test('P4.16 Back buttons share the exact P4.2 glass material and are accessible',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../src/index.html'),'utf8');
+ const css=fs.readFileSync(path.join(__dirname,'../src/neon-p414-final-ux.css'),'utf8');
+ const hud=fs.readFileSync(path.join(__dirname,'../src/neon-p42-gameplay-hud.css'),'utf8');
+ for(const id of ['game-back-btn','result-back-btn'])assert.ok(html.includes('id="'+id+'" type="button" hidden aria-label="Back to match setup"'));
+ for(const token of ['--rim:radial-gradient','--face:linear-gradient','background:linear-gradient(142deg,var(--hud-facet)']){
+  const start=hud.indexOf(token);assert.ok(start>=0);const end=hud.indexOf(';',start);assert.ok(css.includes(hud.slice(start,end)));
+ }
+ assert.ok(css.includes('min-width:44px;min-height:44px'));
+ assert.ok(css.includes('position:absolute!important'));
+ assert.ok(css.includes('#result-back-btn[hidden]'));
+ assert.ok(css.includes('#overlay:not(.flex) #result-back-btn'));
+});
