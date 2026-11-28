@@ -104,3 +104,23 @@ test('P4.17: actual Core reward summary shows positive match rewards only, no ex
  Game.careerOutcome={...outcome,earnedXP:50,walletReward:{coins:0}};render();
  assert.equal(summary.children[0].children.length,1);assert.equal(summary.children[0].children[0].children[1].textContent,'+50');
 });
+
+test('P4.18: all seven Core Neon Back controls use one 70 by 44 size and material',()=>{
+ const css=read('src/neon-p414-final-ux.css').split('/* P4.18')[1];
+ assert.ok(css);
+ for(const id of ['page-back','game-back-btn','result-back-btn','daily-close-btn','tutorial-back','arcade-back','arcade-progress-back']) assert.ok(css.includes('#'+id),id);
+ assert.match(css,/width:70px!important;min-width:70px!important;max-width:70px!important/);
+ assert.match(css,/height:44px!important;min-height:44px!important;max-height:44px!important/);
+ assert.ok(css.includes(':not([hidden])'));assert.ok(css.includes('var(--p418-facet)'));
+ assert.ok(!css.includes('#home-hub'));assert.ok(css.includes(':focus-visible'));
+});
+test('P4.18: only victory with visible next action gets two equal columns; preserve launch hierarchy',()=>{
+ const css=read('src/neon-p414-final-ux.css').split('/* P4.18')[1];
+ const row='[data-outcome="victory"] .center-panel:has(> #nextCareerBtn:not([hidden])) .result-actions';
+ assert.ok(css.includes(row+' {'));assert.ok(css.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'));
+ assert.ok(css.includes('.center-panel:has(> #nextCareerBtn[hidden]) #againBtn'));
+ assert.ok(css.includes('.center-panel:has(> #nextCareerBtn:not([hidden])) #againBtn'));
+ const launch=read('src/neon-p310-career-final.css');
+ for(const color of ['#ffd5cc,#ff4966 30%,#b61938 65%,#ff5d70','#b52b42,#7a1832 33%,#390e23 73%,#9c203d']) {assert.ok(css.includes(color));assert.ok(launch.includes(color));}
+ assert.ok(css.includes(':active'));assert.ok(css.includes('pointer-events:none!important'));
+});
