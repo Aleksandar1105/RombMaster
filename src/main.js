@@ -203,6 +203,7 @@ function setCreatePlayer(show=false){
     el('rm-player-chooser').hidden=show;
     el('local-player-feedback').textContent='';
     const nameRow=el('profile-name')?.parentElement;if(nameRow)nameRow.hidden=show;
+    if(coreEdition)el('rm-player-management').hidden=show;
 }
 function backSubpage(){
     if(el('menu-page').hidden)return false;
@@ -1173,7 +1174,21 @@ const localPlayerSelect = el('local-player-select');
 const localPlayerFeedback = el('local-player-feedback');
 const newLocalPlayerName = el('new-local-player-name');
 const refreshPlayerChooser = () => {
+    // Resume an interrupted deletion after restart or next Profile refresh.
+    if(coreEdition)LocalSlots.finishDeletion();
     const slots = LocalSlots.read();
+    const deleteButton=el('delete-player-btn');
+    if(coreEdition){
+        const id=slots.index?.activeId;
+        const target=id&&id!=='guest'?ProfileStore.readSlot(id):null;
+        deleteButton.disabled=slots.status!=='ready'||id==='guest'||target?.status!=='ready'||Boolean(slots.index?.pendingDelete);
+        el('rm-player-management').hidden=creatingPlayer;
+        el('delete-player-note').textContent=slots.index?.pendingDelete
+            ? 'Player removed; storage cleanup is pending. Reopen Profile to retry.'
+            : id==='guest'?'The built-in Guest profile cannot be deleted.'
+            : target?.status==='ready'?'Permanently remove the active local player. Other players are kept.'
+            : 'Player deletion is unavailable while data cannot be read.';
+    }
     if (slots.status !== 'ready') {
         localPlayerFeedback.textContent = 'Local player data cannot be read. No profiles were changed.';
         localPlayerSelect.disabled = true;
@@ -1272,6 +1287,47 @@ el('create-local-player-btn').onclick = () => {
     renderStarterCharacter('new-local-player-avatar');
     updateActivePlayerView();
     localPlayerFeedback.textContent = profileName.value + ' is now the active player.';
+};
+// Only the active secondary player can be removed from this UI.
+// Selecting a different player first makes the deletion target unambiguous.
+const canDeletePlayerHere=()=>coreEdition&&!el('menu-page').hidden&&!el('player-settings').hidden
+    &&el('profile-section-players').checked&&!creatingPlayer
+    &&ui.viewGame.classList.contains('hidden')&&dailyModal.hidden&&!homePreviewSkin
+    &&el('career-reset-modal').hidden;
+el('delete-player-btn').onclick=()=>{
+    if(!canDeletePlayerHere()||el('delete-player-btn').disabled||confirmDialog.isOpen())return;
+    const registry=LocalSlots.read(),id=registry.index?.activeId;
+    if(registry.status!=='ready'||id==='guest'||registry.index.pendingDelete)return;
+    const target=ProfileStore.readSlot(id);
+    if(target.status!=='ready')return;
+    const name=target.profile.name;
+    confirmDialog.open({
+        heading:'Delete '+name+'?',
+        detail:'Permanently delete this local player, including Career progress, Coins, cosmetics, saved match and Daily progress. Other players are kept. This cannot be undone.',
+        confirmLabel:'Delete player',cancelLabel:'Keep player',focusReturn:el('delete-player-btn'),
+        onConfirm:()=>{
+            const fresh=LocalSlots.read(),current=ProfileStore.readSlot(id);
+            if(!canDeletePlayerHere()||fresh.status!=='ready'||fresh.index.activeId!==id
+                ||current.status!=='ready'||current.profile.name!==name){
+                localPlayerFeedback.textContent='Deletion cancelled: the selected player or screen changed.';
+                return;
+            }
+            // Clear previous board BEFORE committing the active-slot change.
+            Game.stop();Game.board=null;
+            const result=LocalSlots.deletePlayer(id,id);
+            if(result.removed){
+                setCreatePlayer(false);
+                updateActivePlayerView();
+                const pending=LocalSlots.read().index?.pendingDelete;
+                localPlayerFeedback.textContent=pending
+                    ? 'Player removed from the list. Storage cleanup is pending; reopen Profile to retry.'
+                    : 'Player deleted. Other players were kept.';
+            }else{
+                refreshPlayerChooser();Game.refreshSavedGame();
+                localPlayerFeedback.textContent='Could not delete player. Existing profiles were preserved.';
+            }
+        }
+    });
 };
 refreshPlayerChooser();
 refreshCareer();
@@ -1372,6 +1428,8 @@ el('save-profile-btn').onclick = () => {
     const state = ProfileStore.saveName(profileName.value);
     if (state.status === 'bad-name') {
         profileFeedback.textContent = 'Choose a name of 1–18 characters.';
+    } else if (state.status === 'duplicate-name') {
+        profileFeedback.textContent = 'Choose a different player name.';
     } else if (state.status === 'ready') {
         if(coreEdition)refreshPlayerChooser();
         refreshCareer();

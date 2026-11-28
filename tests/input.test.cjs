@@ -112,7 +112,8 @@ async function boot({ storage = new Map(), autoStart = true, coreEdition = false
     clientX: (move.c + (move.t === 'h' ? 0.5 : 0)) * 40,
     clientY: (move.r + (move.t === 'v' ? 0.5 : 0)) * 40,
   };
-  return { game, el, event, storage, events, nativeEvents, context, get exits() { return exits; }, canvas: el('canvas') };
+  const { LocalSlots, ProfileStore } = modules.get(path.resolve(__dirname, '../src/profile.js')).namespace;
+  return { game, el, event, storage, events, nativeEvents, context, LocalSlots, ProfileStore, get exits() { return exits; }, canvas: el('canvas') };
 }
 
 for (const pointerType of ['mouse', 'touch', 'pen']) {
@@ -962,4 +963,84 @@ test('P5.5 scoped motion and input polish keeps native controls, stationary art 
  assert.ok(css.includes('overflow-y:auto!important'));assert.ok(css.includes('font-size:16px!important'));
  assert.ok(html.includes('aria-controls="profile-create-form"'));assert.ok(html.includes('aria-controls="profile-achievements-page"'));
  assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));assert.ok(!css.includes('#page-back'));
+});
+
+
+// P5.6B: disposable local slots only; verify real persisted keys.
+const P56_BASES=['rombmaster_profile_v1','rhombus_save','rombmaster_daily_progress_v1','rombmaster_skin_v1','rombmaster_arcade_v1','rombmaster_quick_setup','rombmaster_wallet_v1'];
+const P56_REG='rombmaster_player_slots_v1';
+function p56Create(h,name){h.el('new-local-player-name').value=name;h.el('new-local-player-avatar').value='robot';h.el('create-local-player-btn').click();}
+function p56Open(h){h.el('profile').click();h.el('profile-section-players').checked=true;}
+test('P5.6B delete cancel and Android Back preserve every persisted record; guest protected',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});p56Open(h);
+ assert.equal(h.el('delete-player-btn').disabled,true);
+ assert.equal(h.LocalSlots.deletePlayer('guest','guest').status,'protected');
+ p56Create(h,'Disposable');
+ assert.equal(h.el('delete-player-btn').disabled,false);
+ const before=JSON.stringify([...h.storage]);
+ h.el('delete-player-btn').click();assert.equal(h.el('confirm-dialog').hidden,false);
+ assert.equal(h.el('confirm-dialog-title').textContent,'Delete Disposable?');
+ h.el('confirm-dialog-cancel').click();assert.equal(JSON.stringify([...h.storage]),before);
+ h.el('delete-player-btn').click();h.nativeEvents.back();assert.equal(h.el('confirm-dialog').hidden,true);
+ assert.equal(JSON.stringify([...h.storage]),before);
+});
+test('P5.6B active deletion removes exactly seven scoped records, falls back and survives restart without ID reuse',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});p56Open(h);
+ p56Create(h,'Disposable');
+ for(const base of P56_BASES.slice(1))h.storage.set(base+':slot-1','disposable');
+ const guestBefore=P56_BASES.map(k=>h.storage.get(k));
+ h.el('delete-player-btn').click();h.el('confirm-dialog-accept').click();
+ const index=JSON.parse(h.storage.get(P56_REG));
+ assert.equal(index.activeId,'guest');assert.deepEqual(index.slots,['guest']);assert.equal(index.nextId,2);
+ assert.equal(index.pendingDelete,undefined);
+ for(const base of P56_BASES)assert.equal(h.storage.has(base+':slot-1'),false);
+ assert.deepEqual(P56_BASES.map(k=>h.storage.get(k)),guestBefore);
+ assert.equal(h.game.board,null);assert.equal(h.el('delete-player-btn').disabled,true);
+ const reboot=await boot({coreEdition:true,autoStart:false,storage:h.storage});
+ assert.equal(reboot.el('local-player-select').value,'guest');
+ p56Create(reboot,'Another');assert.equal(reboot.el('local-player-select').value,'slot-2');
+});
+test('P5.6B inactive secondary removal and stale confirmation preserve remaining players',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});p56Open(h);
+ p56Create(h,'First');p56Create(h,'Second');
+ const remaining=h.storage.get('rombmaster_profile_v1:slot-2');
+ assert.equal(h.LocalSlots.deletePlayer('slot-1','guest').status,'stale');
+ assert.equal(h.LocalSlots.deletePlayer('slot-1','slot-2').status,'ready');
+ assert.equal(h.storage.has('rombmaster_profile_v1:slot-1'),false);
+ assert.equal(h.storage.get('rombmaster_profile_v1:slot-2'),remaining);
+ h.el('delete-player-btn').click();
+ h.LocalSlots.switchTo('guest');h.el('confirm-dialog-accept').click();
+ assert.equal(h.storage.get('rombmaster_profile_v1:slot-2'),remaining);
+});
+test('P5.6B interrupted cleanup keeps validated tombstone, retries at startup and never removes guest',async()=>{
+ class Interrupted extends Map {delete(key){if(this.block&&key==='rhombus_save:slot-1')throw Error('storage failure');return super.delete(key);}}
+ const storage=new Interrupted();const h=await boot({coreEdition:true,autoStart:false,storage});p56Open(h);
+ p56Create(h,'Disposable');storage.set('rhombus_save:slot-1','old save');
+ storage.set('rhombus_save','guest sentinel');storage.block=true;
+ const result=h.LocalSlots.deletePlayer('slot-1','slot-1');assert.equal(result.status,'cleanup-pending');assert.equal(result.removed,true);
+ assert.equal(JSON.parse(storage.get(P56_REG)).pendingDelete,'slot-1');
+ assert.equal(storage.get('rhombus_save'),'guest sentinel');
+ assert.equal(h.LocalSlots.storageKey('rhombus_save','slot-1'),null);
+ storage.block=false;
+ const reboot=await boot({coreEdition:true,autoStart:false,storage});
+ assert.equal(reboot.el('local-player-select').value,'guest');
+ assert.equal(JSON.parse(storage.get(P56_REG)).pendingDelete,undefined);
+ assert.equal(storage.has('rhombus_save:slot-1'),false);assert.equal(storage.get('rhombus_save'),'guest sentinel');
+});
+test('P5.6B registry write failure deletes no data; invalid registry is fail closed',async()=>{
+ class Blocked extends Map {set(key,value){if(this.block&&key===P56_REG)throw Error('write denied');return super.set(key,value);}}
+ const storage=new Blocked();const h=await boot({coreEdition:true,autoStart:false,storage});p56Create(h,'Disposable');
+ const before=JSON.stringify([...storage]);storage.block=true;
+ assert.equal(h.LocalSlots.deletePlayer('slot-1','slot-1').status,'unavailable');assert.equal(JSON.stringify([...storage]),before);
+ storage.block=false;storage.set(P56_REG,'{broken');
+ assert.equal(h.LocalSlots.deletePlayer('slot-1','slot-1').status,'invalid');assert.ok(storage.has('rombmaster_profile_v1:slot-1'));
+});
+test('P5.6B rename rejects case-insensitive duplicate and permits unchanged name',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});h.el('profile-name').value='Veteran';h.el('save-profile-btn').click();
+ p56Create(h,'Second');const before=h.storage.get('rombmaster_profile_v1:slot-1');
+ h.el('profile-name').value=' veteran ';h.el('save-profile-btn').click();
+ assert.equal(h.storage.get('rombmaster_profile_v1:slot-1'),before);
+ assert.match(h.el('profile-feedback').textContent,/different player name/);
+ assert.equal(h.ProfileStore.saveName('Second').status,'ready');
+ assert.equal(h.ProfileStore.saveName('Renamed').status,'ready');
 });

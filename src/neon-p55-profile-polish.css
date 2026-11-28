@@ -60,3 +60,23 @@
 @media(prefers-reduced-motion:reduce) {
  :root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) .profile-pane,:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) :is(#profile-create-form,#profile-stat-grid,#profile-achievements-page),:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) :is(.rm-player-option,#profile-create-toggle,#save-profile-btn,#create-local-player-btn,#new-local-player-avatar-prev,#new-local-player-avatar-next,#profile-avatar-prev,#profile-avatar-next,#profile-stats-toggle,#profile-achievements-prev,#profile-achievements-next,#reset-career-btn,button[data-page="skin-page"]),:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) :is(.profile-switcher,.rm-character-categories) label span,:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) :is(#identity-art,.avatar-art),:root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden])) #menu-page:not([hidden]) > #player-settings:not([hidden]) .avatar-choice::before {animation:none!important;transition:none!important;}
 }
+
+/* P5.6B: local-player management, no change to the shared confirmation UI. */
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #rm-player-management[hidden] {display:none!important;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #rm-player-management:not([hidden]) {display:grid;gap:5px;min-width:0;margin-top:6px;}
+:root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-note {font-size:.74rem;line-height:1.35;color:#b8cadd;margin:0;text-align:center;overflow-wrap:anywhere;}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn {
+ min-height:44px!important;width:100%!important;position:relative!important;isolation:isolate!important;
+ --rim:linear-gradient(180deg,#b77e8b,#8d4c5b 60%,#b67a87)!important;
+ --face:linear-gradient(180deg,#3b2937,#211b2a 70%,#342431)!important;
+ background:var(--rim)!important;background-image:var(--rim)!important;border:0!important;border-radius:0!important;border-image:none!important;box-shadow:none!important;
+ clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)!important;
+ color:#ffdae0!important;font-family:"RM Exo 2",system-ui,sans-serif!important;font-weight:800!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn::before {content:""!important;display:block!important;position:absolute!important;inset:2px!important;z-index:-1!important;clip-path:inherit!important;pointer-events:none!important;background:var(--face)!important;border:0!important;transform:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn::after {content:none!important;display:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn:disabled {opacity:.43!important;filter:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn:not(:disabled):active {filter:brightness(1.2)!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]) #delete-player-btn:focus-visible {outline:2px solid #86f0ff!important;outline-offset:-3px!important;}
+}

@@ -341,6 +341,10 @@
                             aria-label="Your player name" autocomplete="nickname">
                         <button id="save-profile-btn" type="button" class="btn-secondary">Save</button>
                     </div>
+                    <div id="rm-player-management" hidden>
+                        <button id="delete-player-btn" type="button" class="btn-secondary" disabled>Delete player</button>
+                        <p id="delete-player-note">The built-in Guest profile cannot be deleted.</p>
+                    </div>
                     </div>
                     <div class="profile-pane" data-profile-pane="avatar">
                     <div class="profile-avatar-row">
@@ -515,7 +519,7 @@
         <div class="glass-panel career-reset-content" role="alertdialog" aria-modal="true"
              aria-labelledby="career-reset-title" aria-describedby="career-reset-description">
             <h2 id="career-reset-title">Reset Career Progress?</h2>
-            <p id="career-reset-description">Your Career levels, XP, stars, statistics and achievements will return to the beginning. Your nickname, avatar, Quick Play/PvP saves and Daily Brain Challenge remain unchanged. This cannot be undone.</p>
+            <p id="career-reset-description">Your Career levels, XP, stars, statistics and achievements will return to the beginning. Your nickname, avatar, earned Coins, unlocked cosmetics, Quick Play/PvP saves and Daily Brain Challenge remain unchanged. This cannot be undone.</p>
             <div class="career-reset-actions">
                 <button id="career-reset-cancel" type="button" class="btn-secondary">Keep Progress</button>
                 <button id="career-reset-confirm" type="button" class="btn-primary">Reset Career</button>

@@ -193,7 +193,16 @@ function parseSlotIndex(raw) {
     greatest = Math.max(greatest, Number(match[1]));
   }
   if (record.nextId <= greatest) throw Error('Invalid next slot ID');
-  return { version: 1, activeId: record.activeId, nextId: record.nextId, slots: record.slots };
+  // Optional single deletion tombstone. The registry is committed before
+  // removing any scoped key, so a crash cannot expose a half-deleted player.
+  const pending = record.pendingDelete;
+  if (pending !== undefined) {
+    const match = typeof pending === 'string' && SLOT_ID.exec(pending);
+    if (!match || unique.has(pending) || Number(match[1]) >= record.nextId)
+      throw Error('Invalid pending deletion');
+  }
+  return { version: 1, activeId: record.activeId, nextId: record.nextId, slots: record.slots,
+    ...(pending === undefined ? {} : { pendingDelete: pending }) };
 }
 
 export const LocalSlots = {
@@ -254,6 +263,51 @@ export const LocalSlots = {
       // An orphan may remain, but no existing profile or game is overwritten.
       return { status: 'unavailable' };
     }
+  },
+
+  // Retry only a validated tombstone; never touch guest or registered keys.
+  // removeItem is idempotent, so interruption at any point is safe to retry.
+  finishDeletion() {
+    const result = this.read();
+    if (result.status !== 'ready') return result;
+    const index = result.index, id = index.pendingDelete;
+    if (!id) return { status: 'ready', activeId: index.activeId };
+    try {
+      for (const base of SCOPED_KEYS) localStorage.removeItem(scopedKey(base, id));
+      if (SCOPED_KEYS.some(base => localStorage.getItem(scopedKey(base, id)) !== null))
+        return { status: 'cleanup-pending', activeId: index.activeId };
+      const { pendingDelete, ...next } = index;
+      localStorage.setItem(PLAYER_SLOTS_KEY, JSON.stringify(next));
+      return { status: 'ready', activeId: next.activeId };
+    } catch {
+      return { status: 'cleanup-pending', activeId: index.activeId };
+    }
+  },
+
+  deletePlayer(id, expectedActiveId) {
+    const result = this.read();
+    if (result.status !== 'ready') return result;
+    const index = result.index;
+    if (id === 'guest') return { status: 'protected' };
+    if (typeof id !== 'string' || !index.slots.includes(id)) return { status: 'not-found' };
+    if (expectedActiveId !== index.activeId) return { status: 'stale' };
+    if (index.pendingDelete) return { status: 'cleanup-pending', activeId: index.activeId, removed: false };
+    const target = ProfileStore.readSlot(id);
+    if (target.status !== 'ready') return target;
+    const slots = index.slots.filter(slot => slot !== id);
+    let activeId = index.activeId;
+    if (id === activeId) {
+      activeId = slots.find(slot => ['ready', 'empty'].includes(ProfileStore.readSlot(slot).status));
+      if (!activeId) return { status: 'no-valid-fallback' };
+    }
+    try {
+      // Atomic single-key registry update: no deletion before this succeeds.
+      // nextId never decreases; deleted/orphaned IDs cannot be reused.
+      localStorage.setItem(PLAYER_SLOTS_KEY, JSON.stringify({
+        ...index, slots, activeId, pendingDelete: id,
+      }));
+    } catch { return { status: 'unavailable' }; }
+    return { ...this.finishDeletion(), activeId, removed: true };
   },
 
   switchTo(id) {
@@ -319,8 +373,17 @@ export const ProfileStore = {
     try { name = cleanPlayerName(rawName); }
     catch { return { status: 'bad-name' }; }
     const current = this.read();
-    // An unrecognized profile must not be overwritten without explicit reset.
-    if (current.status === 'invalid' || current.status === 'unavailable') return current;
+    // Reject collisions using the same case-insensitive rule as creation.
+    if (!['ready', 'empty'].includes(current.status)) return current;
+    const slots = LocalSlots.read();
+    if (slots.status !== 'ready') return slots;
+    for (const id of slots.index.slots) {
+      if (id === slots.index.activeId) continue;
+      const other = this.readSlot(id);
+      if (!['ready', 'empty'].includes(other.status)) return other;
+      if (other.profile.name.toLocaleLowerCase() === name.toLocaleLowerCase())
+        return { status: 'duplicate-name' };
+    }
     return persist({ ...current.profile, name });
   },
 
