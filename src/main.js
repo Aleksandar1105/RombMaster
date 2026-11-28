@@ -234,7 +234,7 @@ function showHome() {
     arcade?.leave();
     stopSkinPreview();
     skinDetailsOpen = false;
-    el('page-back').textContent = '← Back';
+    el('page-back').textContent = 'Back';
     el('menu-page').hidden = true;
     clearNeonHomePress(document);
     el('home-hub').hidden = false;
@@ -502,6 +502,8 @@ function renderPremiumResult(){
     const ready=outcome?.status==='ready';
     summary.hidden=!ready;
     if(!ready)return;
+    // Core results show only real, positive rewards from this match.
+    if (coreEdition && !outcome.victory) { summary.hidden=true; return; }
     const metrics=document.createElement('div');metrics.className='rm-result-metrics';
     function metric(label,value){
         const card=document.createElement('div');card.className='rm-result-metric';
@@ -526,24 +528,15 @@ function renderPremiumResult(){
             requestAnimationFrame(()=>requestAnimationFrame(tick));
         }
     }
+    if (coreEdition) {
+        if (Number.isSafeInteger(wallet?.coins) && wallet.coins > 0) metric('Coins earned',wallet.coins);
+        if (Number.isSafeInteger(outcome.earnedXP) && outcome.earnedXP > 0) metric('XP earned',outcome.earnedXP);
+        if (metrics.children.length) summary.append(metrics);
+        else summary.hidden=true;
+        return;
+    }
     metric('Coins earned',wallet?.coins);
     metric('XP earned',outcome.earnedXP);
-    if (coreEdition && Game.settings.careerLevel === 1 && outcome.victory) {
-        const turns = Game.historyStack;
-        for (let i = turns.length - 1; i >= 0; i--) {
-            const after = turns[i + 1]?.score ?? Game.board.score;
-            const gained = after[CONSTANTS.X] - turns[i].score[CONSTANTS.X];
-            if (gained <= 0) continue;
-            const move = Game.moveLog[i];
-            const note = document.createElement('p');
-            note.textContent = 'Your last capture: the ' + (move.t === 'h' ? 'horizontal' : 'vertical') +
-                ' line at row ' + (move.r + 1) + ', column ' + (move.c + 1) +
-                ' closed ' + gained + (gained === 1 ? ' square.' : ' squares.');
-            summary.append(note);
-            break;
-        }
-        el('againBtn').textContent = 'Play again';
-    }
     summary.append(metrics);
     const total=document.createElement('small');total.className='rm-result-total';
     total.textContent=outcome.profile.xp+' XP total';
@@ -634,7 +627,7 @@ function setSkinPanel(detail) {
     skinDetailsOpen = detail;
     el('skin-catalog-panel').hidden = detail;
     el('skin-detail-panel').hidden = !detail;
-    el('page-back').textContent = '← Back';
+    el('page-back').textContent = 'Back';
     if (detail) {
         setSkinDetailScreen(0);
         el('page-title').textContent = 'Skin Details';

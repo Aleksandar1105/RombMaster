@@ -126,7 +126,7 @@
                 </div>
                 </div>
                 <div id="menu-page" hidden>
-                    <button type="button" id="page-back" class="btn-secondary">← Back</button>
+                    <button type="button" id="page-back" class="btn-secondary">Back</button>
                     <img class="section-brand" src="./neon/brand.webp" alt="RombMaster"><h2 id="page-title"></h2>
                     <section id="career-page" hidden class="career-panel home-career" aria-label="Career mode">
                     <form id="career-identity" hidden>
@@ -217,7 +217,7 @@
                             <canvas id="setup-preview" width="160" height="160" aria-label="Board preview"></canvas>
                             <p id="quick-match-summary" role="status" aria-live="polite"></p>
                         </div>
-                        <button id="setup-play" type="button" class="btn-primary"><span aria-hidden="true">▷</span> Start match</button>
+                        <button id="setup-play" type="button" class="btn-primary">Start match</button>
                     </div>
                 </section>
                 <section id="arcade-page" hidden class="arcade-panel" aria-label="Challenge Arena">
@@ -250,7 +250,7 @@
  <button id="arcade-progress-open" type="button">Progress &amp; Rewards</button>
  </div>
  <div id="arcade-play" class="arena-view" hidden>
- <button id="arcade-back" type="button">Back to Arena</button>
+ <button id="arcade-back" type="button" aria-label="Back to Arena">Back</button>
  <h3 id="arcade-title">Choose a challenge</h3><p id="arcade-instruction"></p>
  <div class="arena-match-hud"><p id="arcade-score"></p><p id="arcade-clock" aria-live="off"></p></div>
  <canvas id="arcade-canvas" hidden aria-label="Challenge board. Tap between dots to draw a line."></canvas>
@@ -258,7 +258,7 @@
  <button id="arcade-next" type="button" class="btn-primary" hidden>Play again</button>
  </div>
  <div id="arcade-progress" class="arena-view" hidden>
- <button id="arcade-progress-back" type="button">Back to Arena</button>
+ <button id="arcade-progress-back" type="button" aria-label="Back to Arena">Back</button>
  <nav class="rm-page-nav" aria-label="Progress categories"><button id="arena-category-prev" type="button">‹</button><strong id="arena-category-label">Statistics</strong><button id="arena-category-next" type="button">›</button></nav>
  <section class="arcade-performance" data-progress-pane="stats"><h3>Brain Performance</h3><button id="arcade-period" type="button">Last 30 days</button><div id="arcade-summary" class="arena-stat-grid"></div><small>Local practice statistics, not a measurement of intelligence.</small></section>
  <section id="arcade-rewards" class="arcade-rewards" aria-label="Arena rewards">
@@ -387,7 +387,7 @@
 
         <!-- GAME VIEW -->
         <div id="view-game" class="view hidden">
-            <button id="game-back-btn" type="button" hidden aria-label="Back to match setup" title="Back"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M10 5 3 12l7 7M4 12h17"/></svg></button>
+            <button id="game-back-btn" type="button" hidden aria-label="Back to match setup" title="Back">Back</button>
             <div class="arena-brand" aria-label="RombMaster"></div>
             <div id="match-mode"></div>
             <div id="scoreboard">
@@ -433,7 +433,7 @@
 
     <!-- MODALS -->
     <div id="overlay">
-        <button id="result-back-btn" type="button" hidden aria-label="Back to match setup" title="Back"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M10 5 3 12l7 7M4 12h17"/></svg></button>
+        <button id="result-back-btn" type="button" hidden aria-label="Back to match setup" title="Back">Back</button>
         <div class="glass-panel center-panel">
             <div class="arena-brand" aria-label="RombMaster"></div>
             <span id="result-stars" aria-hidden="true" hidden></span>
@@ -480,7 +480,7 @@
             <button id="tutorial-play" class="btn-secondary" type="button" hidden>Draw the fourth side</button>
             <p id="tutorial-step-text" aria-live="polite">Four starter squares are already owned.</p>
             <div class="tutorial-actions">
-                <button id="tutorial-back" type="button" class="btn-secondary" hidden>Previous</button>
+                <button id="tutorial-back" type="button" class="btn-secondary" hidden aria-label="Back to previous tutorial step">Back</button>
                 <button id="tutorial-next" type="button" class="btn-primary">Next</button>
             </div>
             <button id="closeHelpBtn" class="text-btn full-width" type="button">Close tutorial</button>
@@ -526,7 +526,7 @@
             <p id="daily-feedback" role="status" aria-live="polite"></p>
             <div class="daily-actions">
                 <button id="daily-next-btn" type="button" class="btn-primary" hidden>Next Challenge</button>
-                <button id="daily-close-btn" type="button" class="btn-secondary">Back to Menu</button>
+                <button id="daily-close-btn" type="button" class="btn-secondary" aria-label="Back to menu">Back</button>
             </div>
         </div>
     </div>

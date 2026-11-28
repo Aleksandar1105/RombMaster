@@ -21,7 +21,7 @@ test('P4.5 actual earned stars, score and next level are displayed without writi
  const h=await fixture();const original=JSON.stringify(h.game.careerOutcome);h.render();
  assert.equal(h.el('result-stars').attrs['aria-label'],'2 of 3 stars earned');assert.deepEqual(h.el('result-stars').children.map(s=>s.dataset.earned),['true','true','false']);
  assert.equal(h.el('result-score').children[0].children[1].textContent,'7');assert.equal(h.el('result-score').children[2].children[0].textContent,'Trickster · O');
- assert.equal(h.el('rm-result-note').textContent,'Next challenge · Play level 8');const star=h.el('result-stars').children[0];star.animationend({target:star,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
+ assert.equal(h.el('rm-result-note').textContent,'');assert.equal(h.el('rm-result-note').hidden,true);assert.equal(h.el('nextCareerBtn').hidden,false);const star=h.el('result-stars').children[0];star.animationend({target:star,animationName:'rm-p47c-star'});assert.deepEqual(h.cues,[0]);
  assert.equal(JSON.stringify(h.game.careerOutcome),original);
 });
 test('P4.5 defeat, draw, unavailable reward and local matches never display unearned stars',async()=>{
@@ -71,4 +71,36 @@ test('P4.7d bundled emblems and CSS are non-victory only and finite',()=>{
  assert.ok(css.includes('prefers-reduced-motion:no-preference')&&css.includes('pointer-events:none')&&!css.includes('infinite'));
  for(const kind of ['defeat','draw'])assert.ok(read('src/skin-art/neon-'+kind+'-emblem.svg').includes('viewBox="0 0 240 240"'));
  assert.ok(read('src/main.js').includes("import './neon-p47d-outcomes.css';"));
+});
+
+test('P4.17: navigation text is plain Back and Start match; keep Home and paging distinct',()=>{
+ const html=read('src/index.html'),main=read('src/main.js'),css=read('src/neon-p414-final-ux.css');
+ for(const id of ['page-back','game-back-btn','result-back-btn','arcade-back','arcade-progress-back','daily-close-btn','tutorial-back']){
+  const tag=html.match(new RegExp('<button[^>]*id="'+id+'"[^>]*>Back</button>'));
+  assert.ok(tag,id);
+ }
+ assert.match(html,/<button[^>]*id="setup-play"[^>]*>Start match<\/button>/);
+ assert.match(html,/<button[^>]*id="backMenuBtn"[^>]*>Home<\/button>/);
+ assert.ok(!main.includes("el('page-back').textContent = '← Back'"));
+ assert.ok(css.includes('#page-back::after {content:none!important;display:none!important;}'));
+});
+test('P4.17: actual Core reward summary shows positive match rewards only, no extra text',()=>{
+ const source=read('src/main.js'),start=source.indexOf('function renderPremiumResult(){'),end=source.indexOf('Game.refreshResultPages=',start);
+ assert.ok(start>=0&&end>start);
+ const node=()=>({children:[],hidden:false,textContent:'',append(...nodes){this.children.push(...nodes)},replaceChildren(){this.children=[]}});
+ const summary=node(),overview=node();
+ const outcome={status:'ready',victory:true,earnedXP:200,walletReward:{coins:120},profile:{xp:600},newAchievements:[{title:'First Victory'}]};
+ const Game={settings:{careerLevel:1},careerOutcome:outcome};
+ const context={Game,coreEdition:true,resultAnimation:0,document:{querySelector:()=>overview,createElement:node},el:()=>summary};
+ const render=vm.runInNewContext(source.slice(start,end)+'\nrenderPremiumResult',context);
+ const original=JSON.stringify(outcome);render();
+ assert.equal(summary.hidden,false);assert.equal(summary.children.length,1);
+ assert.deepEqual(summary.children[0].children.map(card=>card.children.map(n=>n.textContent)),[['Coins earned','+120'],['XP earned','+200']]);
+ assert.equal(JSON.stringify(outcome),original);
+ Game.careerOutcome={...outcome,victory:false,earnedXP:0,walletReward:{coins:0}};render();
+ assert.equal(summary.hidden,true);assert.equal(summary.children.length,0);
+ Game.careerOutcome={...outcome,earnedXP:0,walletReward:{coins:0}};render();
+ assert.equal(summary.hidden,true);assert.equal(summary.children.length,0);
+ Game.careerOutcome={...outcome,earnedXP:50,walletReward:{coins:0}};render();
+ assert.equal(summary.children[0].children.length,1);assert.equal(summary.children[0].children[0].children[1].textContent,'+50');
 });

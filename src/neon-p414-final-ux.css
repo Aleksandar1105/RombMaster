@@ -1,6 +1,6 @@
 /* P4.16 — contextual Back controls in active matches and finished results.
    Same cyan faceted material as the four P4.2 gameplay controls.
-   Both icon-only buttons are outside the normal flow; no board or result layout changes. */
+   Both text-only buttons are outside the normal flow; no board or result layout changes. */
 #game-back-btn[hidden],#result-back-btn[hidden],#overlay:not(.flex) #result-back-btn,
 #overlay:not(:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"])) #result-back-btn {display:none!important;}
 :root[data-edition="core"] #view-game.active-view #game-back-btn:not([hidden]),
@@ -42,3 +42,21 @@
 }
 :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #match-analysis[hidden],
 :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="defeat"],[data-outcome="draw"]) #rm-result-note[hidden] {display:none!important;}
+
+/* P4.17 — text-only navigation. Keep the established glass surfaces and handlers. */
+#menu-page #page-back {font-size:.76rem!important;min-height:44px;white-space:nowrap;}
+#menu-page #page-back::after {content:none!important;display:none!important;}
+:root[data-edition="core"] #view-game.active-view #game-back-btn:not([hidden]),
+:root[data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-back-btn:not([hidden]) {
+ font-family:"RM Exo 2",system-ui,sans-serif;font-size:.76rem;font-weight:700;line-height:1;white-space:nowrap;text-transform:none;
+}
+@layer neonControls {
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #page-back {font-size:.76rem!important;line-height:1!important;text-transform:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #page-back::after {content:none!important;display:none!important;}
+ :root[data-skin="neon"][data-edition="core"] #view-game.active-view #game-back-btn:not([hidden]),
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-back-btn:not([hidden]) {
+  font-size:.76rem!important;font-weight:700!important;text-transform:none!important;padding:4px!important;
+ }
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) :is(#match-analysis,#rm-result-note,#premium-result-summary)[hidden],
+ :root[data-skin="neon"][data-edition="core"] #overlay.flex:is([data-outcome="victory"],[data-outcome="defeat"],[data-outcome="draw"]) #result-wallet {display:none!important;}
+}

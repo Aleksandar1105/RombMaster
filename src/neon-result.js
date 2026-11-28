@@ -67,10 +67,9 @@ export function renderCoreResult(overlay, game, doc) {
   }
   const note = el('rm-result-note') || doc.createElement('p');
   note.id = 'rm-result-note';
-  const next = el('nextCareerBtn');
-  note.textContent = !next.hidden ? 'Next challenge · ' + next.textContent :
-    level && ready && victory ? 'Level complete' : victory ? 'Match complete' : '';
-  note.hidden = !note.textContent;
+  // The score, real rewards and next-level CTA already communicate the outcome.
+  note.textContent = '';
+  note.hidden = true;
   overlay.querySelector('.rm-result-overview').append(note);
   // Keep computed statistics in Game.endGame and its data attributes.
   const analysis = el('match-analysis');
