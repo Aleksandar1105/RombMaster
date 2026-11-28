@@ -929,3 +929,37 @@ test('P5.4 scoped Statistics presentation preserves hidden views, paging and gua
  assert.ok(html.includes('id="rm-stat-win-meter"'));assert.ok(html.includes('id="rm-achievement-meter"'));
  assert.ok(main.includes("el('reset-career-btn').onclick"));assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
 });
+
+
+test('P5.5 Core rename immediately refreshes chooser and selector without changing other slot data',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});
+ h.el('new-local-player-name').value='Second';h.el('new-local-player-avatar').value='robot';h.el('create-local-player-btn').click();
+ const guest=h.storage.get('rombmaster_profile_v1');
+ h.el('profile-name').value='Renamed';h.el('save-profile-btn').click();
+ assert.equal(h.el('identity-name').textContent,'Renamed');
+ assert.ok(h.el('rm-player-chooser').children.some(b=>b.dataset.slot==='slot-1'&&b.textContent==='Renamed'&&b.getAttribute('aria-pressed')==='true'));
+ assert.match(h.el('local-player-select').innerHTML,/>Renamed<\/option>/);
+ assert.equal(h.storage.get('rombmaster_profile_v1'),guest);
+});
+test('P5.5 unreadable Core registry clears stale chooser and blocks create without changing records',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});
+ assert.ok(h.el('rm-player-chooser').children.length>0);
+ h.storage.set('rombmaster_player_slots_v1','{broken');
+ h.el('local-player-select').onchange();
+ assert.equal(h.el('rm-player-chooser').children.length,0);
+ assert.equal(h.el('profile-create-toggle').disabled,true);
+ assert.equal(h.el('create-local-player-btn').disabled,true);
+ assert.equal(h.storage.get('rombmaster_player_slots_v1'),'{broken');
+});
+test('P5.5 scoped motion and input polish keeps native controls, stationary art and reduced motion',()=>{
+ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+ const css=read('src/neon-p55-profile-polish.css'),main=read('src/main.js'),html=read('src/index.html');
+ assert.ok(main.indexOf("import './neon-p55-profile-polish.css'")>main.indexOf("import './neon-p54-statistics.css'"));
+ assert.ok(css.includes(':root[data-skin="neon"][data-edition="core"] #view-menu:has(#menu-page:not([hidden]) > #player-settings:not([hidden]))'));
+ assert.ok(css.includes('from {opacity:.86;}to {opacity:1;}'));
+ assert.ok(css.includes('transform:none!important;animation:none!important;'));
+ assert.ok(css.includes('prefers-reduced-motion:reduce'));
+ assert.ok(css.includes('overflow-y:auto!important'));assert.ok(css.includes('font-size:16px!important'));
+ assert.ok(html.includes('aria-controls="profile-create-form"'));assert.ok(html.includes('aria-controls="profile-achievements-page"'));
+ assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));assert.ok(!css.includes('#page-back'));
+});

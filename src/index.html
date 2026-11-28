@@ -327,7 +327,7 @@
                     <div class="local-player-toolbar">
                         <label for="local-player-select">Active local player</label>
                         <select id="local-player-select" hidden aria-label="Switch local player"></select><div id="rm-player-chooser" class="rm-player-chooser" role="group" aria-label="Choose active player"></div>
-                        <button id="profile-create-toggle" type="button" aria-expanded="false">＋ New player</button><div class="local-player-add" id="profile-create-form" hidden role="group" aria-label="Create a new player">
+                        <button id="profile-create-toggle" type="button" aria-controls="profile-create-form" aria-expanded="false">＋ New player</button><div class="local-player-add" id="profile-create-form" hidden role="group" aria-label="Create a new player">
                             <label for="new-local-player-name">New player name</label>
                             <input id="new-local-player-name" type="text" maxlength="18"
                                 placeholder="New player name" aria-label="New local player name" autocomplete="off">
@@ -373,7 +373,7 @@
                             <div><span>Levels cleared</span><strong id="stat-cleared">0 / 100</strong></div>
                             <div><span>Stars earned</span><strong id="stat-stars">0 / 300</strong></div>
                         </div>
-                        <button id="profile-stats-toggle" type="button">View achievements</button><div id="profile-achievements-page" hidden><h3 class="achievements-title">Achievements <span id="achievement-count">0 / 24</span></h3><progress id="rm-achievement-meter" max="24" value="0" aria-label="Earned Career achievements" hidden></progress>
+                        <button id="profile-stats-toggle" type="button" aria-controls="profile-achievements-page" aria-expanded="false">View achievements</button><div id="profile-achievements-page" hidden><h3 class="achievements-title">Achievements <span id="achievement-count">0 / 24</span></h3><progress id="rm-achievement-meter" max="24" value="0" aria-label="Earned Career achievements" hidden></progress>
                         <ul id="achievement-list" class="achievement-list" aria-label="Career achievements"></ul>
                         <nav id="profile-achievement-pager" class="rm-page-nav" aria-label="Achievement pages"><button id="profile-achievements-prev" type="button">‹ Prev</button><span id="profile-achievements-label"></span><button id="profile-achievements-next" type="button">Next ›</button></nav></div><p class="career-stats-note">Statistics are for Career Mode on this device only.</p>
                     </details>

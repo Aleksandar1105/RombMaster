@@ -55,6 +55,7 @@ import './neon-p414-final-ux.css';
 import './neon-p52-profile.css';
 import './neon-p53-characters.css';
 import './neon-p54-statistics.css';
+import './neon-p55-profile-polish.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
@@ -233,7 +234,10 @@ bindPage('profile-avatar-prev',()=>{avatarPage--;renderAvatarPage();});
 bindPage('profile-avatar-next',()=>{avatarPage++;renderAvatarPage();});
 if(el('character-filter'))el('character-filter').onchange=()=>{avatarPage=0;renderAvatarPage();};
 document.querySelectorAll('.rm-character-categories input').forEach(input=>{input.onchange=()=>{if(input.checked){el('character-filter').value=input.value;avatarPage=0;renderAvatarPage();}};});
-if(el('profile-section-avatar'))el('profile-section-avatar').onchange=()=>{avatarPage=0;renderAvatarPage();};
+if(el('profile-section-avatar'))el('profile-section-avatar').onchange=()=>{avatarPage=0;renderAvatarPage();if(coreEdition)ui.viewMenu.scrollTop=0;};
+if(coreEdition)for(const id of ['profile-section-players','profile-section-stats']){
+    const tab=el(id);if(tab)tab.onchange=()=>{if(tab.checked)ui.viewMenu.scrollTop=0;};
+}
 window.addEventListener('resize',()=>{if(!el('player-settings').hidden){renderAvatarPage();if(achievementView)renderAchievementPage();}});
 function showHome() {
     if(document.documentElement?.dataset) delete document.documentElement.dataset.rmIntroSettled;
@@ -1089,7 +1093,7 @@ const refreshCareer = () => {
     if (state.status === 'invalid' || state.status === 'unavailable') {
         renderCareerProgress(null);
         profileFeedback.textContent = state.status === 'invalid'
-            ? 'Profile data could not be read. Reset only if you want to replace it.'
+            ? 'Profile data could not be read. Existing data was preserved.'
             : 'Profile storage is unavailable. Career progress cannot be saved.';
         el('career-start-btn').disabled = true;
         el('reset-career-btn').disabled = true;
@@ -1174,6 +1178,13 @@ const refreshPlayerChooser = () => {
         localPlayerFeedback.textContent = 'Local player data cannot be read. No profiles were changed.';
         localPlayerSelect.disabled = true;
         el('create-local-player-btn').disabled = true;
+        if(coreEdition){
+            localPlayerSelect.replaceChildren();
+            el('rm-player-chooser').replaceChildren();
+            setCreatePlayer(false);
+            el('profile-create-toggle').disabled = true;
+            localPlayerFeedback.textContent = 'Local player data cannot be read. No profiles were changed.';
+        }
         return;
     }
     localPlayerSelect.disabled = false;
@@ -1181,6 +1192,7 @@ const refreshPlayerChooser = () => {
     el('create-local-player-btn').disabled = full;
     el('profile-create-toggle').disabled = full;
     if (full) el('profile-create-toggle').textContent = 'All ' + MAX_LOCAL_PLAYERS + ' player slots are in use';
+    else if(coreEdition)el('profile-create-toggle').textContent=creatingPlayer?'Existing players':'+ New player';
     localPlayerSelect.innerHTML = slots.index.slots.map(id => {
         const p = ProfileStore.readSlot(id);
         const label = p.status === 'ready' || p.status === 'empty'
@@ -1361,6 +1373,7 @@ el('save-profile-btn').onclick = () => {
     if (state.status === 'bad-name') {
         profileFeedback.textContent = 'Choose a name of 1–18 characters.';
     } else if (state.status === 'ready') {
+        if(coreEdition)refreshPlayerChooser();
         refreshCareer();
         profileFeedback.textContent = 'Name saved on this device.';
     } else {
