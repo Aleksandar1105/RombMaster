@@ -53,6 +53,7 @@ import './neon-p412c-board-separation.css';
 import './neon-p412d-typography.css';
 import './neon-p414-final-ux.css';
 import './neon-p52-profile.css';
+import './neon-p53-characters.css';
 import { renderCoreResult } from './neon-result.js';
 import { mountArcade } from './arcade-ui.js';
 import { missionFor, drawOpening } from './career-missions.js';
@@ -340,9 +341,9 @@ if(avatarGrid&&avatarSelect){
 }
 function characterStatus(c,entitlement,wallet){
     if(entitlement==='owned')return 'Owned';
-    if(entitlement==='locked')return 'Win level '+c.level;
+    if(entitlement==='locked')return coreEdition && c.level>campaignLimit?'Future Career · Level '+c.level:'Win level '+c.level;
     if(entitlement==='coins')return c.price+' Coins';
-    if(c.currency==='gems')return c.price+' Gems · Preview';
+    if(c.currency==='gems')return coreEdition?'Gem preview':c.price+' Gems · Preview';
     return 'Coming soon';
 }
 // Presentation only: derive progress from validated Career stars, never from wallet or unlocked level.

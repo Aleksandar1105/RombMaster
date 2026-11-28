@@ -826,3 +826,59 @@ test('P5.2 Profile stylesheet is isolated and preserves hidden controls, native 
  assert.ok(html.includes('name="profile-section"'));assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
  assert.ok(css.includes('prefers-reduced-motion:reduce'));
 });
+
+
+test('P5.3 Core Characters preserves all 25 catalog entries and real equip, filters and page states',async()=>{
+ const h=await boot({coreEdition:true,autoStart:false});
+ const cards=h.el('character-grid').children;
+ assert.equal(cards.length,25);
+ const card=id=>cards.find(c=>c.dataset.profileAvatar===id);
+ const status=id=>card(id).querySelector('[data-avatar-lock]').textContent;
+ assert.equal(cards.filter(c=>!c.hidden).length,6);
+ assert.equal(card('spark').getAttribute('aria-pressed'),'true');
+ assert.equal(status('spark'),'Equipped');
+ assert.equal(status('neon-fox'),'Win level 5');
+ assert.equal(status('crimson-sentinel'),'Future Career · Level 40');
+ assert.equal(status('moon-weaver'),'Gem preview');
+ assert.equal(card('crimson-sentinel').disabled,true);
+ assert.equal(card('moon-weaver').disabled,true);
+ card('dragon').click();
+ assert.equal(card('dragon').getAttribute('aria-pressed'),'true');
+ assert.equal(status('dragon'),'Equipped');
+ assert.equal(status('spark'),'Owned');
+ assert.equal(JSON.parse(h.storage.get('rombmaster_profile_v1')).avatar,'dragon');
+ const saved=h.storage.get('rombmaster_profile_v1');
+ h.el('character-filter').value='career';h.el('character-filter').onchange();
+ assert.equal(cards.filter(c=>!c.hidden).length,6);
+ assert.ok(cards.filter(c=>!c.hidden).every(c=>c.dataset.category==='career'));
+ assert.equal(h.el('profile-avatar-next').disabled,false);
+ h.el('profile-avatar-next').click();
+ assert.equal(cards.filter(c=>!c.hidden).length,1);
+ assert.equal(h.el('profile-avatar-next').disabled,true);
+ card('crown-ascendant').click();
+ assert.equal(h.storage.get('rombmaster_profile_v1'),saved);
+ h.el('character-filter').value='owned';h.el('character-filter').onchange();
+ assert.equal(cards.filter(c=>!c.hidden).length,6);
+ assert.ok(cards.filter(c=>!c.hidden).every(c=>c.dataset.entitlement==='owned'));
+ assert.equal(h.el('profile-avatar-pager').hidden,true);
+});
+test('P5.3 full edition retains historical Career and gem labels',async()=>{
+ const h=await boot({autoStart:false});
+ const cards=h.el('character-grid').children;
+ const status=id=>cards.find(c=>c.dataset.profileAvatar===id).querySelector('[data-avatar-lock]').textContent;
+ assert.equal(status('crimson-sentinel'),'Win level 40');
+ assert.equal(status('moon-weaver'),'100 Gems · Preview');
+});
+test('P5.3 Character styles stay within the selected visible Core Neon Characters pane',()=>{
+ const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+ const css=read('src/neon-p53-characters.css'),main=read('src/main.js');
+ assert.ok(main.indexOf("import './neon-p53-characters.css'")>main.indexOf("import './neon-p52-profile.css'"));
+ assert.ok(css.includes(':root[data-skin="neon"][data-edition="core"] #view-menu #menu-page:not([hidden]) > #player-settings:not([hidden]):has(#profile-section-avatar:checked)'));
+ assert.ok(css.includes('.avatar-choice[hidden]'));
+ for(const count of [2,3,4,6])assert.ok(css.includes('repeat('+count+',minmax(0,1fr))'));
+ assert.ok(css.includes('background-size:contain!important'));
+ assert.ok(css.includes('.avatar-choice[aria-pressed="true"]::before'));
+ assert.ok(css.includes('.avatar-choice:not(:disabled):focus-visible'));
+ assert.ok(css.includes('prefers-reduced-motion:reduce'));
+ assert.ok(!css.includes('#home-hub'));assert.ok(!css.includes('#view-game'));
+});
