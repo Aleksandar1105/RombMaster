@@ -728,7 +728,8 @@ test('P4.14b Core Back refuses to leave if save fails and closes confirmation fi
 test('P4.14b Core Career Back returns to selected level, and completed Quick result Back bypasses intro',async()=>{
  const profile=JSON.stringify({version:1,name:'Veteran',xp:300,unlockedLevel:5,stars:{1:3,2:3,3:3,4:3},stats:{played:4,wins:4,draws:0,losses:0}});
  const h=await boot({coreEdition:true,autoStart:false,storage:new Map([['rombmaster_profile_v1',profile]])});
- const stage=h.game.start(4,'ai','normal',3);assert.equal(stage,true);
+ // Level 3 uses the easy tier; the runtime correctly rejects a mismatched difficulty.
+ const stage=h.game.start(4,'ai','easy',3);assert.equal(stage,true);
  h.nativeEvents.back();
  assert.equal(h.el('career-page').hidden,false);
  assert.equal(h.el('career-level').value,'3');
@@ -740,5 +741,6 @@ test('P4.14b Core Career Back returns to selected level, and completed Quick res
  assert.equal(q.el('overlay').classList.contains('flex'),false);
  assert.equal(q.el('view-game').classList.contains('hidden'),true);
  assert.equal(q.el('quick-settings').hidden,false);
- assert.equal(q.game.settings.careerLevel,null);
+ // Quick Play omits careerLevel rather than setting it to null.
+ assert.equal(q.game.settings.careerLevel,undefined);
 });
